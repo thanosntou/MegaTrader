@@ -6,7 +6,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/register-option.css">
+        <link rel="stylesheet" href="css/register-option.css">
         <title>Register</title>
     </head>
     <body>
