@@ -1,7 +1,7 @@
 databaseChangeLog:
   - preConditions:
     - runningAs:
-        username: qnyxyqyxtsobqs
+        username: postgres
 
   - changeSet:
       id: createTable-users
