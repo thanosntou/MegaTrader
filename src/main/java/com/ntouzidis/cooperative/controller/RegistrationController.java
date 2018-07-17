@@ -142,7 +142,7 @@ public class RegistrationController {
         userDetailsManager.createUser(tempUser);
         memberService.save(member);
 
-        return "redirect:/welcome";
+        return "redirect:/";
     }
 
     private void changeePassword(Principal principal, String pass) {
