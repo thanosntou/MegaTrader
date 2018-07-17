@@ -1,0 +1,20 @@
+#menu{
+/*    margin-left: 160px;  Same as the width of the sidenav */
+    background-color: #503A7A;
+    padding-top: 20px;
+    position: fixed;
+    z-index: 5;
+    margin-top: 0px;
+    
+}
+
+.main {
+/*    margin-left: 160px;  Same as the width of the sidenav 
+
+    font-size: 18px;  Increased text to enable scrolling 
+    padding: 0px 10px;*/
+    text-align: center;
+    padding: 100px;
+}
+
+

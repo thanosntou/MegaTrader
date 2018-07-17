@@ -1,0 +1,11 @@
+html, body{
+}
+
+#side-menu{
+    background-color: lightgray;
+}
+
+.fa-chevron-up{
+    margin-left:10px ;
+    margin-right: 3px;
+}
