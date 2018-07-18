@@ -1,19 +1,6 @@
 package com.ntouzidis.cooperative.controller;
 
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.Principal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import com.ntouzidis.cooperative.module.Category.CategoryService;
 import com.ntouzidis.cooperative.module.Customer.Customer;
 import com.ntouzidis.cooperative.module.Customer.CustomerService;
@@ -27,19 +14,12 @@ import com.ntouzidis.cooperative.module.Product.Product;
 import com.ntouzidis.cooperative.module.Product.ProductService;
 import com.ntouzidis.cooperative.module.Sale.Sale;
 import com.ntouzidis.cooperative.module.Sale.SaleService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/management-panel")
@@ -59,48 +39,6 @@ public class ManagementPanelController {
     private OfferService offerService;
     @Autowired
     private PaymentService paymentService;
-
-//    @GetMapping
-//    public String showPanel(@RequestParam(name="salesBefore", defaultValue = "1", required=false) int sbef,
-//                            @RequestParam(name="pill", defaultValue = "pills-products") String tab,
-//
-//                            @RequestParam(name="sortProductsBy", defaultValue = "name") String sprb,
-//                            @RequestParam(name="sortCustomersBy", defaultValue = "username") String scb,
-//                            @RequestParam(name="sortMembersBy", defaultValue = "username") String smb,
-//                            @RequestParam(name="sortSalesBy", defaultValue = "dateofc") String ssb,
-//                            @RequestParam(name="sortOffersBy", defaultValue = "product.id") String sob,
-//                            @RequestParam(name="sortPaymentsBy", defaultValue = "date") String spab,
-//
-//                            @RequestParam(name="orderProductsBy", defaultValue = "asc") String oprb,
-//                            @RequestParam(name="orderCustomersBy", defaultValue = "asc") String ocb,
-//                            @RequestParam(name="orderMembersBy", defaultValue = "asc") String omb,
-//                            @RequestParam(name="orderSalesBy", defaultValue = "desc") String osb,
-//                            @RequestParam(name="orderOffersBy", defaultValue = "asc") String oob,
-//                            @RequestParam(name="orderPaymentsBy", defaultValue = "desc") String opab,
-//                            Model model, Principal principal){
-//
-//        Member currentUser = memberService.getByUsername(principal.getName());
-//        List<Product> products = productService.getSortedBy(sprb, oprb);
-//        List<Customer> customers = customerService.getSortedAndOrdered(scb, ocb);
-//        List<Member> members = memberService.getAllSortedAndOrdered(smb, omb);
-//        List<Sale> sales = saleService.getAllSortedAndOrdered(ssb, osb);
-//        List<Offer> offers = offerService.getAllSortedAndOrdered(sob, oob);
-//        List<Payment> payments = paymentService.getAllSortedAndOrdered(spab, opab);
-//
-//        model.addAttribute("user", currentUser);
-//        model.addAttribute("products", products);
-//        model.addAttribute("customers", customers);
-//        model.addAttribute("members", members);
-//        model.addAttribute("sales", sales);
-//        model.addAttribute("offers", offers);
-//        model.addAttribute("payments", payments);
-////        model.addAttribute("sumSales", String.valueOf(saleService.getSalesSum()));
-////        model.addAttribute("adminProfit", String.valueOf(paymentService.getAdminProfit()));
-////        model.addAttribute("membersProfit", String.valueOf(paymentService.getMembersProfit()));
-////        model.addAttribute("personalProfit", String.valueOf(paymentService.getPersonalProfit(currentMember.getId())));
-//
-//        return "management-panel";
-//    }
 
     @GetMapping(value = {"", "/", "/products"})
     public String showProducts(@RequestParam(name="sortBy", defaultValue = "name") String sb,
