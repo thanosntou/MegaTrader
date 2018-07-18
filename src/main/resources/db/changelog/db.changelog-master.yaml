@@ -3,27 +3,31 @@ databaseChangeLog:
     - runningAs:
         username: qnyxyqyxtsobqs
 
-  - changeSet:
-      id: createTable-users
-      author: ntouzidis
-      changes:
-        - createTable:
-            tableName: users
-            columns:
-              - column:
-                  name: username
-                  type: varchar(50)
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: password
-                  type: varchar(75)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: enabled
-                  type: boolean
+  - include:
+      file: changeset-createTable-users.yaml
+      relativeToChangelogFile: true
+
+#  - changeSet:
+#      id: createTable-users
+#      author: ntouzidis
+#      changes:
+#        - createTable:
+#            tableName: users
+#            columns:
+#              - column:
+#                  name: username
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: password
+#                  type: varchar(75)
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: enabled
+#                  type: boolean
 
   - changeSet:
       id: 002-createTable-users
@@ -47,10 +51,13 @@ databaseChangeLog:
 
 
   - changeSet:
-      id: 003-createIndex-example
+      id: 003-createIndex-authorities
       author: ntouzidis
       changes:
         - createIndex:
+            indexName: authorities_idx_1
+            tableName: authorities
+            unique: true
             columns:
               - column:
                   name: username
@@ -58,9 +65,7 @@ databaseChangeLog:
               - column:
                   name: authority
                   type: varchar(50)
-            indexName: authorities_idx_1
-            tableName: authorities
-            unique: true
+
 
 
 #  - changeSet:
