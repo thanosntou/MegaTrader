@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-insertAdmin
+      author: ntouzidis
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  type: varchar(50)
+                  value: athan
+              - column:
+                  name: password
+                  type: varchar(75)
+                  value: {bcrypt}$2a$04$wQpCWG/5679VUJxWjo6feuDcjrbV.k5CcOKlp7MXFHkQDtRxR4bia
+              - column:
+                  name: enabled
+                  type: boolean
+                  valueBoolean: true
+
+        - insert:
+            tableName: authorities
+            columns:
+              - column:
+                  name: username
+                  type: varchar(50)
+                  value: athan
+              - column:
+                  name: authority
+                  type: varchar(50)
+                  value: ROLE_ADMIN
+
+        - insert:
+            tableName: members
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  valueNumeric: 1
+              - column:
+                  name: username
+                  type: varchar(255)
+                  value: athan
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  value: Thanos
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  value: Ntouzidis
+              - column:
+                  name: email
+                  type: varchar(255)
+                  value: thanosntouzidis@gmail.com
+              - column:
+                  name: ssn
+                  type: int
+                  valueNumeric: 12345
+              - column:
+                  name: verified
+                  type: int
+                  valueNumeric: 1
