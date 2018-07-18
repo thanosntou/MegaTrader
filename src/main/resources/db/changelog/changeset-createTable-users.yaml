@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-createTable-users
+      author: ntouzidis
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(75)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
