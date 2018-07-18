@@ -4,11 +4,11 @@ databaseChangeLog:
         username: postgres
 
   - include:
-      file: changeset-001createTable-users.yaml
+      file: changeset-001-createDomainTables.yaml
       relativeToChangelogFile: true
-  - include:
-      file: changeset-002-createTable-authorities.yaml
-      relativeToChangelogFile: true
-  - include:
-      file: changeset-003-addProducts.yaml
-      relativeToChangelogFile: true
+#  - include:
+#      file: changeset-002-createTable-authorities.yaml
+#      relativeToChangelogFile: true
+#  - include:
+#      file: changeset-003-addProducts.yaml
+#      relativeToChangelogFile: true

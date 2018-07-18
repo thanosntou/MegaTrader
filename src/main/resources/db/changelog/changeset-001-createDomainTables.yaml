@@ -1,0 +1,291 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-createDomainTables
+      author: ntouzidis
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: category
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: description
+                  type: varchar(255)
+                  defaultValue: null
+              - column:
+                  name: name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: price_buy
+                  type: double
+                  defaultValueNumeric: 0
+              - column:
+                  name: price_shop
+                  type: double
+                  defaultValueNumeric: 0
+              - column:
+                  name: quantity
+                  type: int
+                  defaultValueNumeric: 0
+
+        - createTable:
+            tableName: member
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: email
+                  type: varchar(255)
+                  defaultValue: null
+              - column:
+                  name: ssn
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: verified
+                  type: int
+                  defaultValueNumeric: 0
+
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: email
+                  type: varchar(255)
+                  defaultValue: null
+
+#        - createTable:
+#            tableName: product
+#            columns:
+#              - column:
+#                  name: id
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: category
+#                  type: varchar(75)
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: description
+#                  type: boolean
+#              - column:
+#                  name: name
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_buy
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_shop
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: quantity
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#
+#        - createTable:
+#            tableName: product
+#            columns:
+#              - column:
+#                  name: id
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: category
+#                  type: varchar(75)
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: description
+#                  type: boolean
+#              - column:
+#                  name: name
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_buy
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_shop
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: quantity
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#
+#        - createTable:
+#            tableName: product
+#            columns:
+#              - column:
+#                  name: id
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: category
+#                  type: varchar(75)
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: description
+#                  type: boolean
+#              - column:
+#                  name: name
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_buy
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_shop
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: quantity
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#
+#        - createTable:
+#            tableName: product
+#            columns:
+#              - column:
+#                  name: id
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: category
+#                  type: varchar(75)
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: description
+#                  type: boolean
+#              - column:
+#                  name: name
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_buy
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: price_shop
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: quantity
+#                  type: varchar(50)
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#
+#        - createTable:
+#            tableName: authorities
+#            columns:
+#              - column:
+#                  name: username
+#                  type: varchar(50)
+#                  constraints:
+#                    foreignKeyName: authorities_fk_1
+#                    references: users(username)
+#                    nullable: false
+#              - column:
+#                  name: authority
+#                  type: varchar(50)
+#                  constraints:
+#                    nullable: false
+#
+#        - createIndex:
+#            indexName: authorities_idx_1
+#            tableName: authorities
+#            unique: true
+#            columns:
+#              - column:
+#                  name: username
+#                  type: varchar(50)
+#              - column:
+#                  name: authority
+#                  type: varchar(50
