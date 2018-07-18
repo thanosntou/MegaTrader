@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 004-insertAdmin
+      id: 006-insertAdminAgain
       author: ntouzidis
       changes:
         - insert:
@@ -32,7 +32,7 @@ databaseChangeLog:
                   value: ROLE_ADMIN
 
         - insert:
-            tableName: member
+            tableName: members
             columns:
               - column:
                   name: id
