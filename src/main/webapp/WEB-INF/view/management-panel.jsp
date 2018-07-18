@@ -174,8 +174,8 @@
                         </div>
                     </c:if>
 
+                    <!----------------------------------------- Customer Tab ---------------------------------------------->
                     <c:if test="${businessEntity == 'customers'}">
-                    <!-- Customer Tab -->
                     <div id="pills-customers">
                         <!-- Ascendant order Links --->
                         <c:url var="sortCustomersByIdLink" value="/management-panel/customers">

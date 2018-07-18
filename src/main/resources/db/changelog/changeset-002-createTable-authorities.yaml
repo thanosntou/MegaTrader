@@ -18,10 +18,7 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     nullable: false
-  - changeSet:
-      id: 003-createIndex-authorities
-      author: ntouzidis
-      changes:
+
         - createIndex:
             indexName: authorities_idx_1
             tableName: authorities

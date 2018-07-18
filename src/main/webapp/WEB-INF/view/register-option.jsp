@@ -16,7 +16,7 @@
         <div class="container">
         <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse"></button>
-            <a class="navbar-brand" href="${pageContext.request.contextPath}">BioUnion</a>
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/">BioUnion</a>
         </div> 
         </div>
         </nav>
