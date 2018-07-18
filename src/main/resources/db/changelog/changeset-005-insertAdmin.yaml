@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 004-insertAdmin
+      id: 005-insertAdmin
       author: ntouzidis
       changes:
         - insert:
@@ -13,7 +13,7 @@ databaseChangeLog:
               - column:
                   name: password
                   type: varchar(75)
-                  value: {bcrypt}$2a$04$wQpCWG/5679VUJxWjo6feuDcjrbV.k5CcOKlp7MXFHkQDtRxR4bia
+                  value: '{bcrypt}$2a$04$wQpCWG/5679VUJxWjo6feuDcjrbV.k5CcOKlp7MXFHkQDtRxR4bia'
               - column:
                   name: enabled
                   type: boolean
