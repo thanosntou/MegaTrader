@@ -1,6 +1,9 @@
 package com.ntouzidis.cooperative.controller;
 
+import java.security.Principal;
 import java.util.List;
+
+import com.ntouzidis.cooperative.module.Admin.AdminService;
 import com.ntouzidis.cooperative.module.Category.CategoryService;
 import com.ntouzidis.cooperative.module.Customer.Customer;
 import com.ntouzidis.cooperative.module.Customer.CustomerService;
@@ -15,11 +18,16 @@ import com.ntouzidis.cooperative.module.Product.ProductService;
 import com.ntouzidis.cooperative.module.Sale.Sale;
 import com.ntouzidis.cooperative.module.Sale.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.jws.soap.SOAPBinding;
 
 @Controller
 @RequestMapping("/management-panel")
@@ -29,6 +37,8 @@ public class ManagementPanelController {
     private CustomerService customerService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private AdminService adminService;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -43,11 +53,17 @@ public class ManagementPanelController {
     @GetMapping(value = {"", "/", "/products"})
     public String showProducts(@RequestParam(name="sortBy", defaultValue = "name") String sb,
                                @RequestParam(name="orderBy", defaultValue = "asc") String ob,
-                               Model model) {
+                               Model model, Principal principal) {
 
         List<Product> products = productService.getSortedBy(sb, ob);
         model.addAttribute("businessEntity", "products");
         model.addAttribute("businessList", products);
+        model.addAttribute(
+                "user",
+                (principal.getName().equalsIgnoreCase("athan")
+                        ?adminService.getByUsername(principal.getName())
+                        :memberService.getByUsername(principal.getName()))
+        );
         return "management-panel";
     }
 
