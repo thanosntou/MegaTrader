@@ -32,7 +32,7 @@ databaseChangeLog:
                   value: ROLE_ADMIN
 
         - insert:
-            tableName: member
+            tableName: admin
             columns:
               - column:
                   name: id
@@ -54,11 +54,3 @@ databaseChangeLog:
                   name: email
                   type: varchar(255)
                   value: thanosntouzidis@gmail.com
-              - column:
-                  name: ssn
-                  type: int
-                  valueNumeric: 12345
-              - column:
-                  name: verified
-                  type: int
-                  valueNumeric: 1
