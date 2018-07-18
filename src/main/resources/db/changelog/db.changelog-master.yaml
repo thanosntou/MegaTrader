@@ -4,11 +4,17 @@ databaseChangeLog:
         username: qnyxyqyxtsobqs
 
   - include:
-      file: changeset-001createTable-users.yaml
+      file: changeset-001-createDomainTables.yaml
       relativeToChangelogFile: true
   - include:
-      file: changeset-002-createTable-authorities.yaml
+      file: changeset-002-createTable-users.yaml
       relativeToChangelogFile: true
   - include:
-      file: changeset-003-addProducts.yaml
+      file: changeset-003-createTable-authorities.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset-004-addProducts.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset-005-insertAdmin.yaml
       relativeToChangelogFile: true
