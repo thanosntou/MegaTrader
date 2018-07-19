@@ -55,7 +55,7 @@ public class ManagementPanelController {
                                @RequestParam(name="orderBy", defaultValue = "asc") String ob,
                                Model model, Principal principal) {
 
-        List<Product> products = productService.getSortedBy(sb, ob);
+        List<Product> products = productService.getAllSortedAndOrdered(sb, ob);
         model.addAttribute("businessEntity", "products");
         model.addAttribute("businessList", products);
         model.addAttribute(

@@ -10,5 +10,5 @@ public interface ProductService {
 
     Product getById(int id);
 
-    List<Product> getSortedBy(String sb, String or);
+    List<Product> getAllSortedAndOrdered(String sb, String or);
 }

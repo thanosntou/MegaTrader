@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getSortedBy(String sb, String or) {
+    public List<Product> getAllSortedAndOrdered(String sb, String or) {
             Sort sort = new Sort((or.equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC), sb);
             return productRepository.findAll(sort);
     }
@@ -31,4 +31,5 @@ public class ProductServiceImpl implements ProductService {
     public Product getById(int id) {
         return productRepository.getOne(id);
     }
+
 }

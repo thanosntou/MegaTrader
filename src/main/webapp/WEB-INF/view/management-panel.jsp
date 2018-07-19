@@ -385,7 +385,6 @@
                                 <c:param name="sortBy" value="dateofc" />
                                 <c:param name="orderBy" value="asc" />
                             </c:url>
-
                             <!-- Descedant order Links --->
                             <c:url var="sortSalesDescByIdLink" value="/management-panel/sales">
                                 <c:param name="sortBy" value="id" />
@@ -509,8 +508,8 @@
                                 <c:param name="orderBy" value="desc" />
                             </c:url>
                             <c:url var="sortOffersDescByActiveLink" value="/management-panel/offers">
-                                <c:param name="sortOffersBy" value="active" />
-                                <c:param name="orderOffersBy" value="desc" />
+                                <c:param name="sortBy" value="active" />
+                                <c:param name="orderBy" value="desc" />
                             </c:url>
 
                             <table class="table table-hover table-sm"><br/>
@@ -588,7 +587,6 @@
                                 <c:param name="sortBy" value="date" />
                                 <c:param name="orderBy" value="asc" />
                             </c:url>
-
                             <!-- Descedant order Links --->
                             <c:url var="sortPaymentsDescByIdLink" value="/management-panel/payments">
                                 <c:param name="sortBy" value="id" />
