@@ -12,6 +12,16 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
 
     @Override
+    public Customer getOne(int id) {
+        return customerRepository.getOne(id);
+    }
+
+    @Override
+    public Customer getOne(String username) {
+        return customerRepository.findByUsername(username);
+    }
+
+    @Override
     public List<Customer> getSortedAndOrdered(String scb, String ocb) {
         Sort sort = new Sort((ocb.equals("asc")?Sort.Direction.ASC:Sort.Direction.DESC), scb);
         return customerRepository.findAll(sort);
