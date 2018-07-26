@@ -67,11 +67,11 @@
                     <!-- Page components -->
 
                     <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel" role="button">Products</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/customers" role="button">Customers</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/members" role="button">Members</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/offers" role="button">Offers</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/sales" role="button">Sales</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/payments" role="button">Payments</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/customers?sortBy=username&orderBy=asc" role="button">Customers</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/members?sortBy=username&orderBy=asc" role="button">Members</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/offers?sortBy=product.id&orderBy=asc" role="button">Offers</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/sales?sortBy=dateofc&orderBy=desc" role="button">Sales</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/payments?sortBy=date&orderBy=desc" role="button">Payments</a>
 
 
 
@@ -441,7 +441,7 @@
                                             <td>${tempSale.customer.username}</td>
                                             <td>${tempSale.quantity}</td>
                                             <td>${tempSale.price}</td>
-                                            <td>${tempSale.dateOfC}</td>
+                                            <td>${tempSale.dateofc}</td>
                                             <td class="text-center">
                                                 <c:if test="${tempSale.paid == 1}">
                                                     <i class="far fa-check-circle"></i>

@@ -84,7 +84,7 @@ public class RegistrationController {
         //TODO: don't remember the purpose of this if (maybe to change a registered customer his pass?)
         if (theCustomer.getId() != null && pass.equals(confirmPass)) {
             if (principal instanceof UserDetails) {
-                changeePassword(principal, pass);
+                changePassword(principal, pass);
             }
             customerService.save(theCustomer);
             return "redirect:/management-panel";
@@ -123,7 +123,7 @@ public class RegistrationController {
 
         if (member.getId() != null && pass.equals(confirmPass)){
             if (principal instanceof UserDetails) {
-                changeePassword(principal, pass);
+                changePassword(principal, pass);
             }
             memberService.save(member);
             return "redirect:/management-panel";
@@ -145,7 +145,7 @@ public class RegistrationController {
         return "redirect:/";
     }
 
-    private void changeePassword(Principal principal, String pass) {
+    private void changePassword(Principal principal, String pass) {
         String username = ((UserDetails) principal).getUsername();
         String password = ((UserDetails) principal).getPassword();
         String encodedPassword = passwordEncoder.encode(pass);
