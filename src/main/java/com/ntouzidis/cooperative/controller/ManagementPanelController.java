@@ -1,6 +1,7 @@
 package com.ntouzidis.cooperative.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ntouzidis.cooperative.module.Admin.AdminService;
@@ -24,10 +25,9 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.jws.soap.SOAPBinding;
 
 @Controller
 @RequestMapping("/management-panel")
@@ -50,12 +50,12 @@ public class ManagementPanelController {
     @Autowired
     private PaymentService paymentService;
 
-    @GetMapping(value = {"", "/", "/products"})
+    @GetMapping(value = {"", "/"})
     public String showProducts(@RequestParam(name="sortBy", defaultValue = "name") String sb,
                                @RequestParam(name="orderBy", defaultValue = "asc") String ob,
                                Model model, Principal principal) {
 
-        List<Product> products = productService.getSortedBy(sb, ob);
+        List<Product> products = productService.getAllSortedAndOrdered(sb, ob);
         model.addAttribute("businessEntity", "products");
         model.addAttribute("businessList", products);
         model.addAttribute(
@@ -67,60 +67,93 @@ public class ManagementPanelController {
         return "management-panel";
     }
 
-    @GetMapping("/customers")
-    public String showCustomers(@RequestParam(name="sortBy", defaultValue = "username") String sb,
-                                @RequestParam(name="orderBy", defaultValue = "asc") String ob,
-                                Model model) {
+    @GetMapping(value = {"/{tab}"})
+    public String showTab(@PathVariable(name = "tab") String tab,
+                          @RequestParam(name="sortBy") String sb,
+                          @RequestParam(name="orderBy") String ob,
+                               Model model, Principal principal) {
 
-        List<Customer> customers = customerService.getSortedAndOrdered(sb, ob);
-        model.addAttribute("businessEntity", "customers");
-        model.addAttribute("businessList", customers);
+        List<?> tabContent = null;
+
+        if (tab.equals("products")) {
+            tabContent = productService.getAllSortedAndOrdered(sb, ob);
+        } else if (tab.equals("customers")) {
+            tabContent = customerService.getSortedAndOrdered(sb, ob);
+        } else if (tab.equals("members")) {
+            tabContent = memberService.getAllSortedAndOrdered(sb, ob);
+        } else if (tab.equals("sales")) {
+            tabContent = saleService.getAllSortedAndOrdered(sb, ob);
+        } else if (tab.equals("offers")) {
+            tabContent = offerService.getAllSortedAndOrdered(sb, ob);
+        } else if (tab.equals("payments")) {
+            tabContent = paymentService.getAllSortedAndOrdered(sb, ob);
+        }
+
+        model.addAttribute("businessEntity", tab);
+        model.addAttribute("businessList", tabContent);
+        model.addAttribute("user", (principal.getName().equalsIgnoreCase("athan")
+                ?adminService.getByUsername(principal.getName())
+                :memberService.getByUsername(principal.getName()))
+        );
+
         return "management-panel";
     }
 
-    @GetMapping("/members")
-    public String showMembers(@RequestParam(name="sortBy", defaultValue = "username") String sb,
-                              @RequestParam(name="orderBy", defaultValue = "asc") String ob,
-                              Model model) {
 
-        List<Member> members = memberService.getAllSortedAndOrdered(sb, ob);
-        model.addAttribute("businessEntity", "members");
-        model.addAttribute("businessList", members);
-        return "management-panel";
-    }
-
-    @GetMapping("/sales")
-    public String showSales(@RequestParam(name="sortBy", defaultValue = "dateofc") String sb,
-                            @RequestParam(name="orderBy", defaultValue = "asc") String ob,
-                            Model model) {
-
-        List<Sale> sales = saleService.getAllSortedAndOrdered(sb, ob);
-        model.addAttribute("businessEntity", "sales");
-        model.addAttribute("businessList", sales);
-        return "management-panel";
-    }
-
-    @GetMapping("/offers")
-    public String showoffers(@RequestParam(name="sortBy", defaultValue = "product.id") String sb,
-                             @RequestParam(name="orderBy", defaultValue = "asc") String ob,
-                             Model model) {
-
-        List<Offer> offers = offerService.getAllSortedAndOrdered(sb, ob);
-        model.addAttribute("businessEntity", "offers");
-        model.addAttribute("businessList", offers);
-        return "management-panel";
-    }
-
-    @GetMapping("/payments")
-    public String showPayments(@RequestParam(name="sortBy", defaultValue = "date") String sb,
-                               @RequestParam(name="orderBy", defaultValue = "asc") String ob,
-                               Model model) {
-
-        List<Payment> payments = paymentService.getAllSortedAndOrdered(sb, ob);
-        model.addAttribute("businessEntity", "payments");
-        model.addAttribute("businessList", payments);
-        return "management-panel";
-    }
+//    @GetMapping("/customers")
+//    public String showCustomers(@RequestParam(name="sortBy", defaultValue = "username") String sb,
+//                                @RequestParam(name="orderBy", defaultValue = "asc") String ob,
+//                                Model model) {
+//
+//        List<Customer> customers = customerService.getSortedAndOrdered(sb, ob);
+//        model.addAttribute("businessEntity", "customers");
+//        model.addAttribute("businessList", customers);
+//        return "management-panel";
+//    }
+//
+//    @GetMapping("/members")
+//    public String showMembers(@RequestParam(name="sortBy", defaultValue = "username") String sb,
+//                              @RequestParam(name="orderBy", defaultValue = "asc") String ob,
+//                              Model model) {
+//
+//        List<Member> members = memberService.getAllSortedAndOrdered(sb, ob);
+//        model.addAttribute("businessEntity", "members");
+//        model.addAttribute("businessList", members);
+//        return "management-panel";
+//    }
+//
+//    @GetMapping("/sales")
+//    public String showSales(@RequestParam(name="sortBy", defaultValue = "dateofc") String sb,
+//                            @RequestParam(name="orderBy", defaultValue = "asc") String ob,
+//                            Model model) {
+//
+//        List<Sale> sales = saleService.getAllSortedAndOrdered(sb, ob);
+//        model.addAttribute("businessEntity", "sales");
+//        model.addAttribute("businessList", sales);
+//        return "management-panel";
+//    }
+//
+//    @GetMapping("/offers")
+//    public String showoffers(@RequestParam(name="sortBy", defaultValue = "product.id") String sb,
+//                             @RequestParam(name="orderBy", defaultValue = "asc") String ob,
+//                             Model model) {
+//
+//        List<Offer> offers = offerService.getAllSortedAndOrdered(sb, ob);
+//        model.addAttribute("businessEntity", "offers");
+//        model.addAttribute("businessList", offers);
+//        return "management-panel";
+//    }
+//
+//    @GetMapping("/payments")
+//    public String showPayments(@RequestParam(name="sortBy", defaultValue = "date") String sb,
+//                               @RequestParam(name="orderBy", defaultValue = "asc") String ob,
+//                               Model model) {
+//
+//        List<Payment> payments = paymentService.getAllSortedAndOrdered(sb, ob);
+//        model.addAttribute("businessEntity", "payments");
+//        model.addAttribute("businessList", payments);
+//        return "management-panel";
+//    }
 
 
 

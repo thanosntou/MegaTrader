@@ -35,7 +35,7 @@ public class Payment implements Serializable{
     @Column(name="amount")
     private Double amount;
 
-    @Column(name="date")
+    @Column(name="dateofc")
     private LocalDateTime date;
 
     public Payment() {

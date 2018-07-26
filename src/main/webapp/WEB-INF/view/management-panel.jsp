@@ -67,11 +67,11 @@
                     <!-- Page components -->
 
                     <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel" role="button">Products</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/customers" role="button">Customers</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/members" role="button">Members</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/offers" role="button">Offers</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/sales" role="button">Sales</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/payments" role="button">Payments</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/customers?sortBy=username&orderBy=asc" role="button">Customers</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/members?sortBy=username&orderBy=asc" role="button">Members</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/offers?sortBy=product.id&orderBy=asc" role="button">Offers</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/sales?sortBy=dateofc&orderBy=desc" role="button">Sales</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/payments?sortBy=date&orderBy=desc" role="button">Payments</a>
 
 
 
@@ -385,7 +385,6 @@
                                 <c:param name="sortBy" value="dateofc" />
                                 <c:param name="orderBy" value="asc" />
                             </c:url>
-
                             <!-- Descedant order Links --->
                             <c:url var="sortSalesDescByIdLink" value="/management-panel/sales">
                                 <c:param name="sortBy" value="id" />
@@ -442,7 +441,7 @@
                                             <td>${tempSale.customer.username}</td>
                                             <td>${tempSale.quantity}</td>
                                             <td>${tempSale.price}</td>
-                                            <td>${tempSale.dateOfC}</td>
+                                            <td>${tempSale.dateofc}</td>
                                             <td class="text-center">
                                                 <c:if test="${tempSale.paid == 1}">
                                                     <i class="far fa-check-circle"></i>
@@ -509,8 +508,8 @@
                                 <c:param name="orderBy" value="desc" />
                             </c:url>
                             <c:url var="sortOffersDescByActiveLink" value="/management-panel/offers">
-                                <c:param name="sortOffersBy" value="active" />
-                                <c:param name="orderOffersBy" value="desc" />
+                                <c:param name="sortBy" value="active" />
+                                <c:param name="orderBy" value="desc" />
                             </c:url>
 
                             <table class="table table-hover table-sm"><br/>
@@ -588,7 +587,6 @@
                                 <c:param name="sortBy" value="date" />
                                 <c:param name="orderBy" value="asc" />
                             </c:url>
-
                             <!-- Descedant order Links --->
                             <c:url var="sortPaymentsDescByIdLink" value="/management-panel/payments">
                                 <c:param name="sortBy" value="id" />

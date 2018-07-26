@@ -18,5 +18,10 @@ public class OfferServiceImpl implements OfferService {
         return offerRepository.findAll(sort);
     }
 
+    @Override
+    public Offer save(Offer offer) {
+        return offerRepository.saveAndFlush(offer);
+    }
+
 
 }

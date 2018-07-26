@@ -6,4 +6,6 @@ public interface OfferService {
 
     List<Offer> getAllSortedAndOrdered(String smb, String omb);
 
+    Offer save(Offer offer);
+
 }

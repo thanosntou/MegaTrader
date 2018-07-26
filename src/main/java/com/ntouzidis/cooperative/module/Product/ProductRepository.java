@@ -13,9 +13,4 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findAllByCategory(String category);
 
-
-//      They are working
-//    List<Product> findAllByOrderByNameAsc();
-//
-//    List<Product> findAllByOrderByNameDesc();
 }
