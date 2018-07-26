@@ -4,6 +4,10 @@ package com.ntouzidis.cooperative.controller;
 import java.security.Principal;
 import java.util.List;
 import javax.servlet.http.HttpSession;
+
+import com.ntouzidis.cooperative.module.Cart.CartService;
+import com.ntouzidis.cooperative.module.Customer.CustomerService;
+import com.ntouzidis.cooperative.module.Sale.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -17,18 +21,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/sales")
 public class OrderController {
     
-//    @Autowired
-//    private CustomerService customerService;
+    @Autowired
+    private CustomerService customerService;
 //    @Autowired
 //    private MemberService memberService;
 //    @Autowired
 //    private ProductService productService;
-//    @Autowired
-//    private SaleService saleService;
+    @Autowired
+    private SaleService saleService;
 //    @Autowired
 //    private UserDetailsManager userDetailsManager;
-//    @Autowired
-//    private CartService cartService;
+    @Autowired
+    private CartService cartService;
 
 
     @GetMapping("/productDetails")
@@ -38,9 +42,8 @@ public class OrderController {
 
 
     @PostMapping("/checkout")
-    public String checkout(HttpSession session, Principal principal){
-//        List<Cart> cart = cartService.getProductsOfCart(customerService.getCustomerByUsername(principal.getName()));
-//        saleService.orderWholeCart(cart);
+    public String checkout(Principal principal){
+        saleService.orderWholeCart(cartService.getAllByCustomer(customerService.getOne(principal.getName())));
         return "redirect:/shop";
     }
 }
