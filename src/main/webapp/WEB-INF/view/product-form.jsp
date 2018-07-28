@@ -36,7 +36,8 @@
                                     </div>
                                 </div>
 
-                                <%--<form:hidden path="id" />--%>
+                                <form:hidden path="id" />
+                                <form:hidden path="quantity" />
 
                                 <!-- User name -->
                                 Category name *

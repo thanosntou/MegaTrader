@@ -1,8 +1,31 @@
 databaseChangeLog:
   - changeSet:
-      id: 004-addProducts
+      id: 004-addProductsAndCategories
       author: ntouzidis
       changes:
+
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  type: varchar(50)
+                  value: fruits
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  type: varchar(50)
+                  value: vegetables
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  type: varchar(50)
+                  value: mushrooms
+
         - insert:
             tableName: product
             columns:
