@@ -66,7 +66,7 @@ public class OfferController {
         theOffer.setMember(memberService.getByUsername(principal.getName()));
         theOffer.setActive(0);
         offerService.save(theOffer);
-        return "redirect:/management-panel#pills-offers";
+        return "redirect:/management-panel/offers";
     }
     
     

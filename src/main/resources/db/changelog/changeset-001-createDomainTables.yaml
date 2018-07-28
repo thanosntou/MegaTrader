@@ -127,7 +127,6 @@ databaseChangeLog:
                   type: serial
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: customer
                   type: int
@@ -152,10 +151,9 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
+                  type: serial
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: product
                   type: int
