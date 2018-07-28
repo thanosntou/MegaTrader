@@ -32,9 +32,13 @@
                             <form:form action="${pageContext.request.contextPath}/logout" method="POST">
                                 <input type="submit" class="btn btn-outline-dark" value="Logout"/>
                             </form:form>
-                            <br/><h5><a href="${pageContext.request.contextPath}/management-panel/new-product">New Product</a></h5><br/>
-                            <h5><a href="${newCustomerLink}">New Customer</a></h5>
-                            <br/>
+                            <br>
+                            <h5><a href="${pageContext.request.contextPath}/management-panel/new-product">New Product</a></h5>
+                            <h5><a href="${pageContext.request.contextPath}/register/customerRegistrationForm">New Customer</a></h5>
+                            <h5><a href="${pageContext.request.contextPath}/register/memberRegistrationForm">New Member</a></h5><br/>
+                            <security:authorize access="hasRole('MEMBER')">
+                                <h5><a href="${pageContext.request.contextPath}/offers/new-offer">New Offer</a></h5><br/>
+                            </security:authorize>
                             <h5>Total sales:<br/><span style="color: red">${sumSales} <i class="fas fa-euro-sign"></i></span></h5>
                             <br/>
                             <h5>Admin Sales profit:<br/><span style="color: red">${adminProfit} <i class="fas fa-euro-sign"></i></span></h5>
@@ -513,9 +517,7 @@
                             </c:url>
 
                             <table class="table table-hover table-sm"><br/>
-                                <security:authorize access="hasRole('MEMBER')">
-                                    <h5><a href="${pageContext.request.contextPath}/offers/new-offer">New Offer</a></h5><br/>
-                                </security:authorize>
+
                                 <thead class="thead bg-info">
                                     <tr>
                                         <th scope="col">Id<a href="${sortOffersByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortOffersDescByIdLink}"><i class="fas fa-chevron-down"></i></a></th>

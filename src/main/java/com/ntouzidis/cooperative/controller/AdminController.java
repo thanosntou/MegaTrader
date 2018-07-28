@@ -37,7 +37,8 @@ public class AdminController {
         offerService.deactivate(Integer.parseInt(offerId));
         return "redirect:/management-panel/offers";
     }
-    
+
+    //TODO: implement disable function
     @GetMapping("/disable")
     public String disableCustomer(@RequestParam("customerId") String customerId){
 //        customerService.disable(Integer.parseInt(customerId));

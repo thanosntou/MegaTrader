@@ -1,5 +1,9 @@
 package com.ntouzidis.cooperative.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +22,20 @@ import com.ntouzidis.cooperative.module.Product.Product;
 import com.ntouzidis.cooperative.module.Product.ProductService;
 import com.ntouzidis.cooperative.module.Sale.Sale;
 import com.ntouzidis.cooperative.module.Sale.SaleService;
+import javassist.ClassPath;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/management-panel")
@@ -100,43 +108,44 @@ public class ManagementPanelController {
         return "management-panel";
     }
 
-//    @GetMapping("/new-product")
-//    public String newProduct(ModelMap model){
-//        model.addAttribute("product", new Product());
-//        model.addAttribute("theCategories", categoryService.getCategories());
-//        return "product-form";
-//    }
-//
-//    @GetMapping("/updateProduct")
-//    public String updateProduct(@RequestParam("productId") int theId, Model theModel) {
-//	Product theProduct = productService.getProduct(theId);
-//	theModel.addAttribute("product", theProduct);
-//        theModel.addAttribute("theCategories", categoryService.getCategories());
-//	return "product-form";
-//    }
-//
-//    @PostMapping("/save-product")
-//    public String submit(
-//            @Valid @ModelAttribute("product") Product theProduct,
-//            @RequestParam(required=false,name="myfile") MultipartFile file, ModelMap model,
-//            HttpServletRequest request) {
-//
-////        model.addAttribute("file", file);
-//        productService.saveProduct(theProduct);
-//
+    @GetMapping("/new-product")
+    public String newProduct(ModelMap model){
+        model.addAttribute("product", new Product());
+        model.addAttribute("theCategories", categoryService.getAllSortedAndOrdered("name", "asc"));
+        return "product-form";
+    }
+
+    @GetMapping("/updateProduct")
+    public String updateProduct(@RequestParam("productId") int id, Model theModel) {
+        theModel.addAttribute("product", productService.getById(id));
+        theModel.addAttribute("theCategories", categoryService.getAllSortedAndOrdered("name", "asc"));
+	    return "product-form";
+    }
+
+    @PostMapping("/save-product")
+    public String submit(
+            @Valid @ModelAttribute("product") Product theProduct,
+            @RequestParam(required=false,name="myfile") MultipartFile file, ModelMap model,
+            HttpServletRequest request) {
+
+        model.addAttribute("file", file);
+        productService.save(theProduct);
+
+        //TODO: fix the upload file part
 //        try {
 //            byte[] bytes = file.getBytes();
 //            String s = request.getContextPath();
-//            String s2 = (request.getContextPath() + "/resources/images/" + file.getOriginalFilename());
+//            String s2 = (request.getContextPath() + "/resources/static/images/" + file.getOriginalFilename());
 //            model.addAttribute("info", s);
 //            model.addAttribute("info2", s2);
 //            Path path = Paths.get("//home//athan//Desktop//cooperativeeshop//src//main//webapp//resources//images//" + file.getOriginalFilename());
 //            Files.write(path, bytes);
-//        } catch (IOException ex) {
-//            Logger.getLogger(ManagementPanelController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException e) {
+//            System.out.println("file to bytes failed");
+//            e.printStackTrace();
 //        }
-//        return "redirect:/management-panel";
-//    }
+        return "redirect:/management-panel";
+    }
     
 
 //    @GetMapping("/updateCustomer")
