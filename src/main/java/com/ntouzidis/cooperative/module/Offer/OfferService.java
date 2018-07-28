@@ -8,4 +8,7 @@ public interface OfferService {
 
     Offer save(Offer offer);
 
+    void activate(int i);
+
+    void deactivate(int i);
 }

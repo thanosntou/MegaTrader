@@ -69,24 +69,25 @@ public class ManagementPanelController {
 
     @GetMapping(value = {"/{tab}"})
     public String showTab(@PathVariable(name = "tab") String tab,
-                          @RequestParam(name="sortBy") String sb,
-                          @RequestParam(name="orderBy") String ob,
+                          @RequestParam(name="sortBy", required = false, defaultValue = "username") String sb,
+                          @RequestParam(name="orderBy", required = false, defaultValue = "asc") String ob,
                                Model model, Principal principal) {
 
         List<?> tabContent = null;
 
         if (tab.equals("products")) {
-            tabContent = productService.getAllSortedAndOrdered(sb, ob);
+            tabContent = productService.getAllSortedAndOrdered((sb.equals("username")?"name":sb), ob);
         } else if (tab.equals("customers")) {
             tabContent = customerService.getSortedAndOrdered(sb, ob);
         } else if (tab.equals("members")) {
             tabContent = memberService.getAllSortedAndOrdered(sb, ob);
         } else if (tab.equals("sales")) {
-            tabContent = saleService.getAllSortedAndOrdered(sb, ob);
+            tabContent = saleService.getAllSortedAndOrdered((sb.equals("username")?"dateofc":sb), ob);
+            sb = "name";
         } else if (tab.equals("offers")) {
-            tabContent = offerService.getAllSortedAndOrdered(sb, ob);
+            tabContent = offerService.getAllSortedAndOrdered((sb.equals("username")?"id":sb), ob);
         } else if (tab.equals("payments")) {
-            tabContent = paymentService.getAllSortedAndOrdered(sb, ob);
+            tabContent = paymentService.getAllSortedAndOrdered((sb.equals("username")?"date":sb), ob);
         }
 
         model.addAttribute("businessEntity", tab);
