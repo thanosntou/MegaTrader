@@ -2,14 +2,13 @@ package com.ntouzidis.cooperative.controller;
 
 import java.security.Principal;
 import java.util.List;
-import javax.servlet.http.HttpSession;
 
-import com.ntouzidis.cooperative.module.Cart.Cart;
-import com.ntouzidis.cooperative.module.Cart.CartService;
-import com.ntouzidis.cooperative.module.Customer.Customer;
-import com.ntouzidis.cooperative.module.Customer.CustomerService;
-import com.ntouzidis.cooperative.module.Product.Product;
-import com.ntouzidis.cooperative.module.Product.ProductService;
+import com.ntouzidis.cooperative.module.cart.Cart;
+import com.ntouzidis.cooperative.module.cart.CartService;
+import com.ntouzidis.cooperative.module.customer.Customer;
+import com.ntouzidis.cooperative.module.customer.CustomerService;
+import com.ntouzidis.cooperative.module.product.Product;
+import com.ntouzidis.cooperative.module.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

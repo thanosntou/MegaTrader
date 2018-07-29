@@ -1,11 +1,10 @@
 package com.ntouzidis.cooperative.controller;
 
 import java.util.List;
-import javax.servlet.http.HttpSession;
 
-import com.ntouzidis.cooperative.module.Category.CategoryService;
-import com.ntouzidis.cooperative.module.Product.Product;
-import com.ntouzidis.cooperative.module.Product.ProductService;
+import com.ntouzidis.cooperative.module.category.CategoryService;
+import com.ntouzidis.cooperative.module.product.Product;
+import com.ntouzidis.cooperative.module.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -2,12 +2,10 @@ package com.ntouzidis.cooperative.controller;
 
 
 import java.security.Principal;
-import java.util.List;
-import javax.servlet.http.HttpSession;
 
-import com.ntouzidis.cooperative.module.Cart.CartService;
-import com.ntouzidis.cooperative.module.Customer.CustomerService;
-import com.ntouzidis.cooperative.module.Sale.SaleService;
+import com.ntouzidis.cooperative.module.cart.CartService;
+import com.ntouzidis.cooperative.module.customer.CustomerService;
+import com.ntouzidis.cooperative.module.sale.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;

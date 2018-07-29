@@ -1,39 +1,22 @@
 package com.ntouzidis.cooperative.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
-
-import com.ntouzidis.cooperative.module.Admin.AdminService;
-import com.ntouzidis.cooperative.module.Category.CategoryService;
-import com.ntouzidis.cooperative.module.Customer.Customer;
-import com.ntouzidis.cooperative.module.Customer.CustomerService;
-import com.ntouzidis.cooperative.module.Member.Member;
-import com.ntouzidis.cooperative.module.Member.MemberService;
-import com.ntouzidis.cooperative.module.Offer.Offer;
-import com.ntouzidis.cooperative.module.Offer.OfferService;
-import com.ntouzidis.cooperative.module.Payment.Payment;
-import com.ntouzidis.cooperative.module.Payment.PaymentService;
-import com.ntouzidis.cooperative.module.Product.Product;
-import com.ntouzidis.cooperative.module.Product.ProductService;
-import com.ntouzidis.cooperative.module.Sale.Sale;
-import com.ntouzidis.cooperative.module.Sale.SaleService;
-import javassist.ClassPath;
+import com.ntouzidis.cooperative.module.admin.AdminService;
+import com.ntouzidis.cooperative.module.category.CategoryService;
+import com.ntouzidis.cooperative.module.customer.CustomerService;
+import com.ntouzidis.cooperative.module.member.MemberService;
+import com.ntouzidis.cooperative.module.offer.OfferService;
+import com.ntouzidis.cooperative.module.payment.PaymentService;
+import com.ntouzidis.cooperative.module.product.Product;
+import com.ntouzidis.cooperative.module.product.ProductService;
+import com.ntouzidis.cooperative.module.sale.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -129,7 +112,7 @@ public class ManagementPanelController {
             HttpServletRequest request) {
 
         model.addAttribute("file", file);
-        productService.save(theProduct);
+        productService.saveOrUpdate(theProduct);
 
         //TODO: fix the upload file part
 //        try {
