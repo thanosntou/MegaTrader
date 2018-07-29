@@ -129,34 +129,31 @@ public class ManagementPanelController {
 //        }
         return "redirect:/management-panel";
     }
-    
+
+    //TODO: maybe change to delete requests, but have to figure out jstl delete reqs...
+    @GetMapping("/deleteProduct")
+    public String deleteProduct(@RequestParam("productId") int theId) {
+	productService.delete(theId);
+	return "redirect:/management-panel/products";
+    }
 
 //    @GetMapping("/updateCustomer")
 //    public String showFormForUpdate(@RequestParam("customerId") int theId, Model theModel) {
-//	Customer theCustomer = customerService.getCustomer(theId);
-//	theModel.addAttribute("customer", theCustomer);
-//	return "registration-form-customer";
+//	    Customer theCustomer = customerService.getCustomer(theId);
+//	    theModel.addAttribute("customer", theCustomer);
+//	    return "registration-form-customer";
 //    }
-//
+
 //    @GetMapping("/deleteCustomer")
 //    public String deleteCustomer(@RequestParam("customerId") int theId) {
-//	customerService.deleteCustomer(theId);
-//	return "redirect:/shop";
+//	    customerService.deleteCustomer(theId);
+//	    return "redirect:/shop";
 //    }
-//
-//
-//
-//    @GetMapping("/deleteProduct")
-//    public String deleteProduct(@RequestParam("productId") int theId) {
-//	productService.deleteProduct(theId);
-//	return "redirect:/shop";
-//    }
-//
+
 //    @GetMapping("/payment")
 //    public String getPayments(Model model){
 //        List<Payment> payments2 = paymentService.getPayments();
 //        model.addAttribute("payments2", payments2);
 //        return "management-panel";
 //    }
-    
 }

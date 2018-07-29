@@ -13,4 +13,6 @@ public interface ProductService {
     List<Product> getAllSortedAndOrdered(String sb, String or);
 
     void saveOrUpdate(Product theProduct);
+
+    void delete(int theId);
 }
