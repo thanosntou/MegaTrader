@@ -136,30 +136,24 @@ public class ManagementPanelController {
 	productService.delete(theId);
 	return "redirect:/management-panel/products";
     }
-    
 
 //    @GetMapping("/updateCustomer")
 //    public String showFormForUpdate(@RequestParam("customerId") int theId, Model theModel) {
-//	Customer theCustomer = customerService.getCustomer(theId);
-//	theModel.addAttribute("customer", theCustomer);
-//	return "registration-form-customer";
+//	    Customer theCustomer = customerService.getCustomer(theId);
+//	    theModel.addAttribute("customer", theCustomer);
+//	    return "registration-form-customer";
 //    }
-//
+
 //    @GetMapping("/deleteCustomer")
 //    public String deleteCustomer(@RequestParam("customerId") int theId) {
-//	customerService.deleteCustomer(theId);
-//	return "redirect:/shop";
+//	    customerService.deleteCustomer(theId);
+//	    return "redirect:/shop";
 //    }
-//
-//
-//
 
-//
 //    @GetMapping("/payment")
 //    public String getPayments(Model model){
 //        List<Payment> payments2 = paymentService.getPayments();
 //        model.addAttribute("payments2", payments2);
 //        return "management-panel";
 //    }
-    
 }
