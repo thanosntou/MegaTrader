@@ -5,8 +5,8 @@
  */
 package com.ntouzidis.cooperative.controller;
 
-import com.ntouzidis.cooperative.module.Customer.CustomerService;
-import com.ntouzidis.cooperative.module.Offer.OfferService;
+import com.ntouzidis.cooperative.module.customer.CustomerService;
+import com.ntouzidis.cooperative.module.offer.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

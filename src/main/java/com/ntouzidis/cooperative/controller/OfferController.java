@@ -1,10 +1,10 @@
 package com.ntouzidis.cooperative.controller;
 
-import com.ntouzidis.cooperative.module.Member.MemberService;
-import com.ntouzidis.cooperative.module.Offer.Offer;
-import com.ntouzidis.cooperative.module.Offer.OfferService;
-import com.ntouzidis.cooperative.module.Product.Product;
-import com.ntouzidis.cooperative.module.Product.ProductService;
+import com.ntouzidis.cooperative.module.member.MemberService;
+import com.ntouzidis.cooperative.module.offer.Offer;
+import com.ntouzidis.cooperative.module.offer.OfferService;
+import com.ntouzidis.cooperative.module.product.Product;
+import com.ntouzidis.cooperative.module.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -30,7 +30,6 @@ databaseChangeLog:
                     foreignKeyName: fk_prod1_categ
                     references: categories(name)
                     nullable: false
-
               - column:
                   name: description
                   type: varchar(255)

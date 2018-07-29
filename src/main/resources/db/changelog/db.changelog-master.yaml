@@ -13,7 +13,7 @@ databaseChangeLog:
       file: changeset-003-createTable-authorities.yaml
       relativeToChangelogFile: true
   - include:
-      file: changeset-004-addProducts.yaml
+      file: changeset-004-addProductsAndCategories.yaml
       relativeToChangelogFile: true
   - include:
       file: changeset-005-insertAdmin.yaml
