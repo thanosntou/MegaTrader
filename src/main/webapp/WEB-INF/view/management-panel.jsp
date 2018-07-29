@@ -16,7 +16,6 @@
         <div class="container-fluid">
             <div class="row">
 
-
             <!--------------------------- Side Menu----------------------------- -->
                 <div class="col-sm-2" id="side-menu">
                     <aside class="sm-side">
@@ -133,6 +132,9 @@
                                 <c:param name="sortBy" value="quantity" />
                                 <c:param name="orderBy" value="desc" />
                             </c:url>
+                            <br/>
+                            <h4>-- Products --</h4>
+
                             <table class="table table-hover table-sm"><br/>
 
                                 <thead class="thead bg-info">
@@ -224,6 +226,9 @@
                             <c:param name="sortBy" value="email" />
                             <c:param name="orderBy" value="desc" />
                         </c:url>
+                        <br/>
+                        <h4>-- Customers --</h4>
+
                         <table class="table table-hover table-sm"><br/>
                             <c:url var="newCustomerLink" value="/register/showRegistrationForm">
                                 <c:param name="selector" value="customer" />
@@ -309,12 +314,12 @@
                                 <c:param name="sortBy" value="email" />
                                 <c:param name="orderBy" value="desc" />
                             </c:url>
-
+                            <br/>
+                            <h4>-- Members --</h4>
                                 <table class="table table-hover table-sm"><br/>
                                     <c:url var="newMemberLink" value="/register/showRegistrationForm">
                                     <c:param name="selector" value="member" />
                                 </c:url>
-                                <h5><a href="${newMemberLink}">New Member</a></h5><br/>
                                 <thead class="thead bg-info">
                                     <tr>
                                         <th scope="col">Id<a href="${sortMembersByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortMembersDescByIdLink}"><i class="fas fa-chevron-down"></i></a></th>
@@ -421,9 +426,8 @@
                             <c:url var="getSalesByDateThisMonth" value="/management-panel/sales">
                                 <c:param name="salesBefore" value="1" />
                             </c:url>
-
-                            <a href="${getSalesByDateThisMonth}"><i class="fas fa-chevron-left"></i></a>${currentMonth}${paginationMonth}<a href="${getSalesByDateOneMonthBefore}"><i class="fas fa-chevron-right"></i></a>
-
+                            <br/>
+                            <h4>-- Sales --</h4>
                             <table class="table table-hover table-sm"><br/>
                                 <thead class="thead bg-info">
                                     <tr>
@@ -515,9 +519,9 @@
                                 <c:param name="sortBy" value="active" />
                                 <c:param name="orderBy" value="desc" />
                             </c:url>
-
+                            <br/>
+                            <h4>-- Offers --</h4>
                             <table class="table table-hover table-sm"><br/>
-
                                 <thead class="thead bg-info">
                                     <tr>
                                         <th scope="col">Id<a href="${sortOffersByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortOffersDescByIdLink}"><i class="fas fa-chevron-down"></i></a></th>
@@ -611,9 +615,8 @@
                                 <c:param name="sortBy" value="date" />
                                 <c:param name="orderBy" value="desc" />
                             </c:url>
-
                             <br/>
-                            <h3>--Payments--</h3>
+                            <h4>--Payments--</h4>
                             <table class="table table-hover table-sm"><br/>
                                 <thead class="thead bg-info">
                                     <tr>

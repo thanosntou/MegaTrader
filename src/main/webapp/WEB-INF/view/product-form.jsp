@@ -38,6 +38,7 @@
 
                                 <form:hidden path="id" />
                                 <form:hidden path="quantity" />
+                                <form:hidden path="description" />
 
                                 <!-- User name -->
                                 Category name *

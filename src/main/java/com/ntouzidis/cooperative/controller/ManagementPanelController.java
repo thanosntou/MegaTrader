@@ -129,6 +129,13 @@ public class ManagementPanelController {
 //        }
         return "redirect:/management-panel";
     }
+
+    //TODO: maybe change to delete requests, but have to figure out jstl delete reqs...
+    @GetMapping("/deleteProduct")
+    public String deleteProduct(@RequestParam("productId") int theId) {
+	productService.delete(theId);
+	return "redirect:/management-panel/products";
+    }
     
 
 //    @GetMapping("/updateCustomer")
@@ -146,11 +153,7 @@ public class ManagementPanelController {
 //
 //
 //
-//    @GetMapping("/deleteProduct")
-//    public String deleteProduct(@RequestParam("productId") int theId) {
-//	productService.deleteProduct(theId);
-//	return "redirect:/shop";
-//    }
+
 //
 //    @GetMapping("/payment")
 //    public String getPayments(Model model){
