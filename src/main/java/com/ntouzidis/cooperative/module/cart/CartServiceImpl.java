@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -27,7 +28,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Product> getAllByCustomer(Customer c) {
-        return cartRepository.getOne(c.getId()).getProducts();
+    public Set<Product> getAllByCustomer(int id) {
+        return cartRepository.getOne(id).getProducts();
     }
 }

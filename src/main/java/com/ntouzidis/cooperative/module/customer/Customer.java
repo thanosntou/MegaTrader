@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "customer")
@@ -17,21 +18,23 @@ public class Customer implements Serializable{
     @Column(name = "id")
     private Integer id;
 
-    @NotNull
+    @NotNull(message=" is required")
+    @Size(min=3, max=50, message="3 to 50 characters")
     @Column(name = "first_name")
     private String firstName;
 
-    @NotNull
+    @NotNull(message=" is required")
+    @Size(min=3, max=50, message="3 to 50 characters")
     @Column(name = "last_name")
     private String lastName;
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
 
-    @NotNull
+    @NotNull(message=" is required")
     @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")
     @Column(name = "email")
     private String email;
 
-    @NotNull
+    @NotNull(message=" is required")
+    @Size(min=3, max=50, message="3 to 50 characters")
     @Column(name = "username")
     private String username;
     
@@ -46,8 +49,7 @@ public class Customer implements Serializable{
     private List<Address> addresses = new ArrayList<>();
     
 
-    public Customer() {
-    }
+    public Customer() {}
 
 
     public Integer getId() {
@@ -115,7 +117,7 @@ public class Customer implements Serializable{
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 ", sales=" + sales +
+                ", addresses=" + addresses +
                 '}';
     }
-
 }

@@ -32,7 +32,7 @@ public class CartController {
     @GetMapping
     public String showCart(Model model, Principal principal){
         Customer c = customerService.getOne(principal.getName());
-//        model.addAttribute("productsOfCart", cartService.getAllByCustomer(c));
+        model.addAttribute("productsOfCart", cartService.getAllByCustomer(c.getId()));
 
         return "cart";
     }

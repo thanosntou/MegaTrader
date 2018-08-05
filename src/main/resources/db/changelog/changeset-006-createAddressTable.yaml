@@ -20,6 +20,6 @@ databaseChangeLog:
                     references: customer(id)
                     nullable: false
               - column:
-                  name: name
+                  name: street
                   type: varchar(50)
                   defaultValue: null

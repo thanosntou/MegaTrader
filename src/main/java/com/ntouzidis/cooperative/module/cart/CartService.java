@@ -4,10 +4,11 @@ import com.ntouzidis.cooperative.module.customer.Customer;
 import com.ntouzidis.cooperative.module.product.Product;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CartService {
 
-    List<Product> getAllByCustomer(Customer c);
+    Set<Product> getAllByCustomer(int id);
 
     List<Cart> getAllSortedAndOrdered(String smb, String omb);
 

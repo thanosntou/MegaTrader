@@ -11,6 +11,9 @@
       
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
       <link rel="stylesheet" href="${pageContext.request.contextPath}/css/register-form-member.css">
+        <style>
+            .error,#passFail{color: red;}
+        </style>
     </head> 
 
     <body>
@@ -41,7 +44,7 @@
                             <!-- User name -->
                             <form:label path="username">Username *</form:label><form:errors path="username" cssClass="error" />
                             <div style="margin-bottom: 25px" class="input-group">
-				<span class="input-group-addon"><i class="fas fa-address-card"></i></span> 
+				            <span class="input-group-addon"><i class="fas fa-address-card"></i></span>
                                 <form:input path="username" placeholder="username" class="form-control" />
                             </div>
 

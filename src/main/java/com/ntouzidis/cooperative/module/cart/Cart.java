@@ -3,8 +3,9 @@ package com.ntouzidis.cooperative.module.cart;
 import com.ntouzidis.cooperative.module.customer.Customer;
 import com.ntouzidis.cooperative.module.product.Product;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 
 @Entity
@@ -12,21 +13,23 @@ import javax.persistence.*;
 public class Cart implements Serializable {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
     private Integer id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "product")
-    private List<Product> products =  new ArrayList<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "cart_product",
+            joinColumns = @JoinColumn(name = "cart_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> products = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "customer", unique = true)
     @MapsId
     private Customer customer;
 
-    public Cart() {
-    }
+    public Cart() {}
 
     public Cart(Customer customer, Product product, Integer quantity) {
 
@@ -40,11 +43,11 @@ public class Cart implements Serializable {
         this.id = id;
     }
 
-    public List<Product> getProducts() {
+    public Set<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(Set<Product> products) {
         this.products = products;
     }
 

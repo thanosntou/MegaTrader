@@ -1,6 +1,14 @@
 package com.ntouzidis.cooperative.module.customer;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
@@ -16,14 +24,14 @@ public class Address implements Serializable {
     @JoinColumn(name = "customer")
     private Customer customer;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "street")
+    private String street;
 
     public Address() {}
 
-    public Address(Customer customer, String name) {
+    public Address(Customer customer, String street) {
         this.customer = customer;
-        this.name = name;
+        this.street = street;
     }
 
     public Integer getId() {
@@ -43,10 +51,10 @@ public class Address implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return street;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.street = name;
     }
 }

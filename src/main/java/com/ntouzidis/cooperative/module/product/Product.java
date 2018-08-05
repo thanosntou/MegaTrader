@@ -1,6 +1,10 @@
 package com.ntouzidis.cooperative.module.product;
 
+import com.ntouzidis.cooperative.module.cart.Cart;
+
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 
 @Entity
@@ -30,6 +34,9 @@ public class Product implements Serializable {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToMany(mappedBy = "products")
+    private Set<Cart> carts = new HashSet<>();
 
     public Product() {
     }
@@ -95,6 +102,14 @@ public class Product implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(Set<Cart> carts) {
+        this.carts = carts;
     }
 
     @Override

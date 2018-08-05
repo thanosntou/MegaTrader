@@ -27,7 +27,7 @@ public class SaleServiceImpl implements SaleService {
     //TODO: implement the paying logic
     @Override
     public void orderWholeCart(Cart cart) {
-        cart.setProducts(Collections.emptyList());
+        cart.setProducts(Collections.emptySet());
 
     }
 }
