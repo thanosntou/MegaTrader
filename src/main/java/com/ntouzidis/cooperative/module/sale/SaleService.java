@@ -8,5 +8,5 @@ public interface SaleService {
 
     List<Sale> getAllSortedAndOrdered(String smb, String omb);
 
-    void orderWholeCart(List<Cart> allByCustomer);
+    void orderWholeCart(Cart allByCustomer);
 }

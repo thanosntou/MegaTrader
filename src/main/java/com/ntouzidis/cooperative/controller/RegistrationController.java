@@ -1,8 +1,12 @@
 package com.ntouzidis.cooperative.controller;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
+
+import com.ntouzidis.cooperative.module.cart.Cart;
+import com.ntouzidis.cooperative.module.cart.CartService;
 import com.ntouzidis.cooperative.module.customer.Customer;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.Member;
@@ -42,6 +46,8 @@ public class RegistrationController {
     private CustomerService customerService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private CartService cartService;
     
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
@@ -102,7 +108,10 @@ public class RegistrationController {
         List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_CUSTOMER");
         User tempUser = new User(theCustomer.getUsername(), encodedPassword, authorities);
         userDetailsManager.createUser(tempUser);
+        Cart cart = new Cart();
+        cart.setCustomer(theCustomer);
         customerService.save(theCustomer);
+        cartService.saveCart(cart);
 
         return "redirect:/";
     }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ShopController {
     
     @Autowired
-    private ProductService productService;
+    private ProductService ProductService;
 
     @Autowired
     private CategoryService categoryService;
@@ -29,10 +29,10 @@ public class ShopController {
     
     @GetMapping("/shop")
     public String showShop(Model model){
-        List<Product> products = productService.findAll();
-        List<Product> fruits = productService.findAllByCategory("fruits");
-        List<Product> vegetables = productService.findAllByCategory("vegetables");
-        List<Product> mushrooms = productService.findAllByCategory("mushrooms");
+        List<Product> products = ProductService.findAll();
+        List<Product> fruits = ProductService.findAllByCategory("fruits");
+        List<Product> vegetables = ProductService.findAllByCategory("vegetables");
+        List<Product> mushrooms = ProductService.findAllByCategory("mushrooms");
 //        List<Category> categories = categoryService.getCategories();
         model.addAttribute("products", products);
         model.addAttribute("fruits", fruits);
@@ -44,13 +44,13 @@ public class ShopController {
     
     @GetMapping("/shop/productDetails")
     public String showProductDetails(@RequestParam("productId") int theId, Model model){
-        model.addAttribute("product", productService.getById(theId));
+        model.addAttribute("product", ProductService.getById(theId));
         return "product-buy-form";
     }
     
     @PostMapping("/shop/productDetails")
     public String addProductToCart(@RequestParam("productId") int theId, Model model){
-        model.addAttribute("product", productService.getById(theId));
+        model.addAttribute("product", ProductService.getById(theId));
         model.addAttribute("addSuccessfully", "Product added to cart");
         return "product-buy-form";
     }

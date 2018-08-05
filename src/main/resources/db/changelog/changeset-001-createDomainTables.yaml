@@ -138,28 +138,12 @@ databaseChangeLog:
             tableName: cart
             columns:
               - column:
-                  name: id
-                  type: serial
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: customer
+                  name: customer_id
                   type: int
                   constraints:
                     foreignKeyName: fk_cart1_customer
                     references: customer(id)
                     nullable: false
-              - column:
-                  name: product
-                  type: int
-                  constraints:
-                    foreignKeyName: fk_cart2_product
-                    references: product(id)
-                    nullable: false
-              - column:
-                  name: quantity
-                  type: int
-                  defaultValueNumeric: 0
 
         - createTable:
             tableName: offer
@@ -235,7 +219,6 @@ databaseChangeLog:
                   type: DATETIME
                   defaultValue: null
 
-
         - createTable:
             tableName: payment
             columns:
@@ -266,13 +249,3 @@ databaseChangeLog:
                   name: dateofc
                   type: DATETIME
                   defaultValue: null
-#
-#        - createTable:
-#            tableName: categories
-#            columns:
-#              - column:
-#                  name: name
-#                  type: varchar(50)
-#                  constraints:
-#                    primaryKey: true
-#                    nullable: false

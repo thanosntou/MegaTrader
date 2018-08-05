@@ -9,11 +9,6 @@ public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @SequenceGenerator(
-//            name="product_id_seq",
-//            sequenceName="product_id_seq",
-//            allocationSize=20
-//    )
     @Column(name = "id")
     private Integer id;
 

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -22,24 +23,30 @@ public class Member implements Serializable{
     @Column(name = "id")
     private Integer id;
 
+    @NotNull
     @Column(name = "first_name")
     private String firstName;
 
     @NotNull(message="is required")
-    @Size(min=1, message="at least 1 character")
+    @Size(min=3, message="at least 1 character")
     @Column(name = "last_name")
     private String lastName;
 
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @NotNull
+    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Column(name = "email")
     private String email;
 
+    @NotNull
+    @Size(min=5, max = 5, message="ssn must be 5 numbers")
     @Column(name="ssn")
     private String ssn;
 
     @Column(name="verified")
     private Integer verified;
 
+    @NotNull
+    @Size(min=3, max = 50, message="3 to 50 characters")
     @Column(name="username")
     private String username;
 

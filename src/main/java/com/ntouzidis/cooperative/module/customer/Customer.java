@@ -2,14 +2,11 @@ package com.ntouzidis.cooperative.module.customer;
 
 import com.ntouzidis.cooperative.module.sale.Sale;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "customer")
@@ -19,22 +16,34 @@ public class Customer implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    
+
+    @NotNull
     @Column(name = "first_name")
     private String firstName;
-    
+
+    @NotNull
     @Column(name = "last_name")
     private String lastName;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    
+
+    @NotNull
+    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")
     @Column(name = "email")
     private String email;
-    
+
+    @NotNull
     @Column(name = "username")
     private String username;
     
     @OneToMany(mappedBy="customer")
     private List<Sale> sales;
+
+    @OneToMany(
+            mappedBy = "customer",
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true
+    )
+    private List<Address> addresses = new ArrayList<>();
     
 
     public Customer() {
@@ -87,6 +96,14 @@ public class Customer implements Serializable{
 
     public void setSales(List<Sale> sales) {
         this.sales = sales;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
     }
 
     @Override

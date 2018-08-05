@@ -18,3 +18,6 @@ databaseChangeLog:
   - include:
       file: changeset-005-insertAdmin.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-006-createAddressTable.yaml
+      relativeToChangelogFile: true

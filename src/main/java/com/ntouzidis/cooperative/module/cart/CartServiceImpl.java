@@ -1,6 +1,7 @@
 package com.ntouzidis.cooperative.module.cart;
 
 import com.ntouzidis.cooperative.module.customer.Customer;
+import com.ntouzidis.cooperative.module.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<Cart> getAllByCustomer(Customer c) {
-        return cartRepository.findAllByCustomer(c);
+    public List<Product> getAllByCustomer(Customer c) {
+        return cartRepository.getOne(c.getId()).getProducts();
     }
 }

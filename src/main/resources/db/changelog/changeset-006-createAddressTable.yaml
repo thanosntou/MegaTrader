@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-createAddressTable
+      author: ntouzidis
+      changes:
+        - createTable:
+            tableName: address
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: customer
+                  type: int
+                  defaultValue: null
+                  constraints:
+                    foreignKeyName: fk_addr1_cust
+                    references: customer(id)
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  defaultValue: null

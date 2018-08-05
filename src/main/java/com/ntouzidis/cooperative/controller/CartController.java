@@ -32,8 +32,8 @@ public class CartController {
     @GetMapping
     public String showCart(Model model, Principal principal){
         Customer c = customerService.getOne(principal.getName());
-        List<Cart> cart = cartService.getAllByCustomer(c);
-        model.addAttribute("cart", cart);
+//        model.addAttribute("productsOfCart", cartService.getAllByCustomer(c));
+
         return "cart";
     }
     
