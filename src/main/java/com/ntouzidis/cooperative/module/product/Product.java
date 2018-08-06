@@ -1,14 +1,19 @@
 package com.ntouzidis.cooperative.module.product;
 
 import com.ntouzidis.cooperative.module.cart.Cart;
+import com.ntouzidis.cooperative.module.cart.CartProduct;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "product")
+@NaturalIdCache
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Product implements Serializable {
 
     @Id
@@ -19,6 +24,7 @@ public class Product implements Serializable {
     @Column(name = "category")
     private String category;
 
+    @NaturalId
     @Column(name = "name")
     private String name;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
@@ -35,8 +41,12 @@ public class Product implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(mappedBy = "products")
-    private Set<Cart> carts = new HashSet<>();
+//    @OneToMany(
+//            mappedBy = "product",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true
+//    )
+//    private List<CartProduct> carts = new ArrayList<>();
 
     public Product() {
     }
@@ -104,13 +114,29 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    public Set<Cart> getCarts() {
-        return carts;
+//    public List<CartProduct> getCarts() {
+//        return carts;
+//    }
+//
+//    public void setCarts(List<CartProduct> carts) {
+//        this.carts = carts;
+//    }
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name);
     }
 
-    public void setCarts(Set<Cart> carts) {
-        this.carts = carts;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
+
 
     @Override
     public String toString() {
@@ -121,6 +147,7 @@ public class Product implements Serializable {
                 ", priceShop=" + priceShop +
                 ", priceBuy=" + priceBuy +
                 ", quantity=" + quantity +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

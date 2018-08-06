@@ -3,9 +3,7 @@ package com.ntouzidis.cooperative.module.cart;
 import com.ntouzidis.cooperative.module.customer.Customer;
 import com.ntouzidis.cooperative.module.product.Product;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.persistence.*;
 
 @Entity
@@ -13,27 +11,21 @@ import javax.persistence.*;
 public class Cart implements Serializable {
 
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "cart_product",
-            joinColumns = @JoinColumn(name = "cart_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
+    @OneToMany(
+            mappedBy = "cart",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private Set<Product> products = new HashSet<>();
+    private List<CartProduct> products = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private Customer customer;
 
     public Cart() {}
-
-    public Cart(Customer customer, Product product, Integer quantity) {
-
-    }
 
     public Integer getId() {
         return id;
@@ -43,11 +35,11 @@ public class Cart implements Serializable {
         this.id = id;
     }
 
-    public Set<Product> getProducts() {
+    public List<CartProduct> getProducts() {
         return products;
     }
 
-    public void setProducts(Set<Product> products) {
+    public void setProducts(List<CartProduct> products) {
         this.products = products;
     }
 
@@ -57,5 +49,52 @@ public class Cart implements Serializable {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+
+    public void addProduct(Product product) {
+        CartProduct cartProduct = new CartProduct(this, product);
+        products.add(cartProduct);
+//        product.getCarts().add(cartProduct);
+    }
+
+    public void removeProduct(Product tag) {
+        for (Iterator<CartProduct> iterator = products.iterator();
+             iterator.hasNext(); ) {
+            CartProduct cartProduct = iterator.next();
+
+            if (cartProduct.getCart().equals(this) &&
+                    cartProduct.getProduct().equals(tag)) {
+                iterator.remove();
+//                cartProduct.getProduct().getCarts().remove(cartProduct);
+                cartProduct.setCart(null);
+                cartProduct.setCart(null);
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Cart cart = (Cart) o;
+        return Objects.equals(id, cart.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", products=" + products +
+                ", customer=" + customer +
+                '}';
     }
 }

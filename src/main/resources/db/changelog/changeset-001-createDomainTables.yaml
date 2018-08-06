@@ -144,6 +144,7 @@ databaseChangeLog:
                     foreignKeyName: fk_cart1_customer
                     references: customer(id)
                     nullable: false
+                    unique: true
 
         - createTable:
             tableName: offer
@@ -249,3 +250,26 @@ databaseChangeLog:
                   name: dateofc
                   type: DATETIME
                   defaultValue: null
+
+        - createTable:
+            tableName: cart_product
+            columns:
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: cart_id
+                  type: int
+                  constraints:
+                    foreignKeyName: cart_product_ibfk_1
+                    references: cart(customer_id)
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: int
+                  constraints:
+                    foreignKeyName: cart_product_2
+                    references: product(id)
+                    nullable: false

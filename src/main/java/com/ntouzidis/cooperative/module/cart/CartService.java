@@ -8,9 +8,13 @@ import java.util.Set;
 
 public interface CartService {
 
-    Set<Product> getAllByCustomer(int id);
+    Cart findByCustomerId(int customerId);
+
+    List<CartProduct> getAllByCustomer(int id);
 
     List<Cart> getAllSortedAndOrdered(String smb, String omb);
 
-    Cart saveCart(Cart newCartProduct);
+    void addProduct(int cartId, int productId);
+
+    void saveCart(Cart cart);
 }
