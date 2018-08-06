@@ -49,7 +49,7 @@
                                 <br/>
                             </security:authorize>
                             <security:authorize access="hasRole('ADMIN')">
-                                <h5><a href="${pageContext.request.contextPath}/email/send">Send Mail</a></h5>
+                                <h5><a href="${pageContext.request.contextPath}/email/new">Send Mail</a></h5>
                                 <br/>
                             </security:authorize>
                         </div>  

@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/order/**").denyAll()
 //                .antMatchers("/order/**").hasRole("CUSTOMER")
                 .antMatchers("/cart/**").hasRole("CUSTOMER")
+                .antMatchers("/email/**").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/login")
