@@ -49,7 +49,7 @@
                         </c:url>
                         <div data-price="987" class="item">
                             <a href="${buyLink}" >
-                                <img src="${pageContext.request.contextPath}/images/${tempProduct.name}.jpeg" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/${tempProduct.name}.png'" alt="kati" class="img-item">
+                            <img src="${pageContext.request.contextPath}/images/${tempProduct.name}.jpeg" onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/${tempProduct.name}.png'" alt="kati" class="img-item">
                                 <div class="info">
                                     <p class="description" style="text-align: center">${tempProduct.name}<br/></p>
                                 </div>

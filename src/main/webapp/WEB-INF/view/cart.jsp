@@ -23,14 +23,14 @@
                     <th>Price</th>
                     <th>Action</th>
                 </tr>
-                <c:forEach var="temp" items="${cart}">
+                <c:forEach var="temp" items="${productsOfCart}">
                     <c:url var="updateLink" value="/management-panel/updateProduct">
                         <c:param name="productId" value="${temp.id}" />
                     </c:url>
                     <tr>
-                        <td>${temp.product.name}</td>
-                        <td>${temp.quantity}</td>
-                        <td>${temp.product.priceShop}</td>
+                        <td>${temp.name}</td>
+                        <%--<td>${temp.quantity}</td>--%>
+                        <%--<td>${temp.product.priceShop}</td>--%>
                         <td>
                         <a href="${updateLink}">Update</a>
                                                     |

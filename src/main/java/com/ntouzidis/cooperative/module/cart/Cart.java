@@ -3,44 +3,29 @@ package com.ntouzidis.cooperative.module.cart;
 import com.ntouzidis.cooperative.module.customer.Customer;
 import com.ntouzidis.cooperative.module.product.Product;
 import java.io.Serializable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.util.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "cart")
 public class Cart implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer")
+    @OneToMany(
+            mappedBy = "cart",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<CartProduct> products = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     private Customer customer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product")
-    private Product product;
-
-    @Column(name = "quantity")
-    private Integer quantity;
-
-    public Cart() {
-    }
-
-    public Cart(Customer customer, Product product, Integer quantity) {
-        this.customer = customer;
-        this.product = product;
-        this.quantity = quantity;
-    }
+    public Cart() {}
 
     public Integer getId() {
         return id;
@@ -48,6 +33,14 @@ public class Cart implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public List<CartProduct> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<CartProduct> products) {
+        this.products = products;
     }
 
     public Customer getCustomer() {
@@ -58,29 +51,50 @@ public class Cart implements Serializable {
         this.customer = customer;
     }
 
-    public Product getProduct() {
-        return product;
+
+    public void addProduct(Product product) {
+        CartProduct cartProduct = new CartProduct(this, product);
+        products.add(cartProduct);
+//        product.getCarts().add(cartProduct);
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void removeProduct(Product tag) {
+        for (Iterator<CartProduct> iterator = products.iterator();
+             iterator.hasNext(); ) {
+            CartProduct cartProduct = iterator.next();
+
+            if (cartProduct.getCart().equals(this) &&
+                    cartProduct.getProduct().equals(tag)) {
+                iterator.remove();
+//                cartProduct.getProduct().getCarts().remove(cartProduct);
+                cartProduct.setCart(null);
+                cartProduct.setCart(null);
+            }
+        }
     }
 
-    public Integer getQuantity() {
-        return quantity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Cart cart = (Cart) o;
+        return Objects.equals(id, cart.id);
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "Cart{" +
                 "id=" + id +
+                ", products=" + products +
                 ", customer=" + customer +
-                ", product=" + product +
-                ", quantity=" + quantity +
                 '}';
     }
 }

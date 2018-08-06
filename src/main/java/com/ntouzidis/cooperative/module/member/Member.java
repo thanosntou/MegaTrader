@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -22,34 +23,39 @@ public class Member implements Serializable{
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @NotNull(message=" is required")
+    @Size(min=3, max=50, message="3 to 50 characters")
+    @Column(name="username")
+    private String username;
 
-    @NotNull(message="is required")
-    @Size(min=1, message="at least 1 character")
-    @Column(name = "last_name")
-    private String lastName;
-
-    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @NotNull(message=" is required")
+    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Column(name = "email")
     private String email;
 
+    @NotNull(message=" is required")
+    @Size(min=3, max=50, message="3 to 50 characters")
+    @Column(name = "first_name")
+    private String firstName;
+
+    @NotNull(message=" is required")
+    @Size(min=3, max=50, message="3 to 50 characters")
+    @Column(name = "last_name")
+    private String lastName;
+
+    @NotNull(message=" is required")
+    @Size(min=5, max = 5, message="ssn must be 5 numbers")
     @Column(name="ssn")
     private String ssn;
 
     @Column(name="verified")
     private Integer verified;
 
-    @Column(name="username")
-    private String username;
-
     @OneToMany(mappedBy="member")
     private List<Offer> offers;
 
-    
-    //Constructors
-    public Member() {
-    }
+
+    public Member() {}
     
     
     public Integer getId() {
@@ -115,7 +121,18 @@ public class Member implements Serializable{
     public void setOffers(List<Offer> offers) {
         this.offers = offers;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", ssn='" + ssn + '\'' +
+                ", verified=" + verified +
+                ", offers=" + offers +
+                '}';
+    }
 }

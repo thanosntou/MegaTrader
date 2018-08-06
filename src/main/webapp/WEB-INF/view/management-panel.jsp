@@ -48,6 +48,10 @@
                                 <h5>Your Sales profit:<br/><span style="color: red">${personalProfit} <i class="fas fa-euro-sign"></i></span></h5>
                                 <br/>
                             </security:authorize>
+                            <security:authorize access="hasRole('ADMIN')">
+                                <h5><a href="${pageContext.request.contextPath}/email/send">Send Mail</a></h5>
+                                <br/>
+                            </security:authorize>
                         </div>  
                     </aside>
                 </div>

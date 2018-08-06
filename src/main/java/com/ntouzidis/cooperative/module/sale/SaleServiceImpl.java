@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,8 +26,8 @@ public class SaleServiceImpl implements SaleService {
 
     //TODO: implement the paying logic
     @Override
-    public void orderWholeCart(List<Cart> cart) {
-        cartRepository.deleteInBatch(cart);
+    public void orderWholeCart(Cart cart) {
+        cart.setProducts(Collections.emptyList());
 
     }
 }

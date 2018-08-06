@@ -7,6 +7,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +18,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 
 import javax.servlet.DispatcherType;
 import javax.sql.DataSource;
+import java.util.Properties;
 
 
 @Configuration
@@ -41,7 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/offers/**").hasRole("MEMBER")
-                .antMatchers("/order/**").hasRole("CUSTOMER")
+                .antMatchers("/order/**").denyAll()
+//                .antMatchers("/order/**").hasRole("CUSTOMER")
                 .antMatchers("/cart/**").hasRole("CUSTOMER")
                 .and()
                 .formLogin()
@@ -77,6 +81,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean(name = "javamelodySessionListener")
     public ServletListenerRegistrationBean<SessionListener> sessionListener() {
         return new ServletListenerRegistrationBean<>(new SessionListener());
+    }
+
+    @Bean
+    public JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
+
+        mailSender.setUsername("thanosntouzidis@gmail.com");
+        mailSender.setPassword("jxfgbvnycnifbund");
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
     }
 
 //    @Bean

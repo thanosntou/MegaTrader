@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.customer;
 
+import com.ntouzidis.cooperative.module.cart.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer save(Customer c) {
         return customerRepository.saveAndFlush(c);
+    }
+
+    @Override
+    public Cart getCart(String username) {
+        return null;
     }
 
 

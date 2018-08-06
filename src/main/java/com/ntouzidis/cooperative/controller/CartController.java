@@ -32,8 +32,8 @@ public class CartController {
     @GetMapping
     public String showCart(Model model, Principal principal){
         Customer c = customerService.getOne(principal.getName());
-        List<Cart> cart = cartService.getAllByCustomer(c);
-        model.addAttribute("cart", cart);
+        model.addAttribute("productsOfCart", cartService.getAllByCustomer(c.getId()));
+
         return "cart";
     }
     
@@ -43,10 +43,10 @@ public class CartController {
                             Principal principal,
                             RedirectAttributes ra){
         
-        Product p = productService.getById(id);
+//        Product p = productService.getById(id);
         Customer c = customerService.getOne(principal.getName());
-        Cart newCartProduct = new Cart(c, p ,theQuantity);
-        cartService.saveCart(newCartProduct);
+
+        cartService.addProduct(c.getId(), id);
 
         ra.addFlashAttribute("messageFromCart", "Product added to cart successfully.");
         return "redirect:/shop";

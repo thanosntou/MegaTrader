@@ -3,8 +3,8 @@ package com.ntouzidis.cooperative.controller;
 import com.ntouzidis.cooperative.module.member.MemberService;
 import com.ntouzidis.cooperative.module.offer.Offer;
 import com.ntouzidis.cooperative.module.offer.OfferService;
-import com.ntouzidis.cooperative.module.product.Product;
 import com.ntouzidis.cooperative.module.product.ProductService;
+import com.ntouzidis.cooperative.module.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +27,7 @@ public class OfferController {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private ProductService productService;
+    private ProductService ProductService;
     @Autowired
     private OfferService offerService;
     
@@ -40,7 +40,7 @@ public class OfferController {
 
                     @Override
                     public void setAsText(String text) {
-                    Product product = productService.getById(Integer.parseInt(text));
+                    Product product = ProductService.getById(Integer.parseInt(text));
                     setValue(product);
                     }
 
@@ -52,7 +52,7 @@ public class OfferController {
     @GetMapping("/new-offer")
     public String showDetailsOfferForm(Model model){
         model.addAttribute("offer", new Offer());
-        model.addAttribute("products", productService.getAllSortedAndOrdered("name", "asc"));
+        model.addAttribute("products", ProductService.getAllSortedAndOrdered("name", "asc"));
         return "offer-form";
     }
     

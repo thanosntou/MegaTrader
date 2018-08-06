@@ -1,5 +1,7 @@
 package com.ntouzidis.cooperative.controller;
 
+import java.io.IOException;
+import java.nio.file.*;
 import java.security.Principal;
 import java.util.List;
 import com.ntouzidis.cooperative.module.admin.AdminService;
@@ -8,17 +10,21 @@ import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.MemberService;
 import com.ntouzidis.cooperative.module.offer.OfferService;
 import com.ntouzidis.cooperative.module.payment.PaymentService;
-import com.ntouzidis.cooperative.module.product.Product;
 import com.ntouzidis.cooperative.module.product.ProductService;
+import com.ntouzidis.cooperative.module.product.Product;
 import com.ntouzidis.cooperative.module.sale.SaleService;
+import liquibase.util.file.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import javax.servlet.http.HttpServletRequest;
+
+import javax.imageio.ImageIO;
 import javax.validation.Valid;
+
 
 @Controller
 @RequestMapping("/management-panel")
@@ -31,7 +37,7 @@ public class ManagementPanelController {
     @Autowired
     private AdminService adminService;
     @Autowired
-    private ProductService productService;
+    private ProductService ProductService;
     @Autowired
     private CategoryService categoryService;
     @Autowired
@@ -41,12 +47,15 @@ public class ManagementPanelController {
     @Autowired
     private PaymentService paymentService;
 
+    @Value("${images.upload.folder}")
+    private String imagesfolder;
+
     @GetMapping(value = {"", "/"})
     public String showProducts(@RequestParam(name="sortBy", defaultValue = "name") String sb,
                                @RequestParam(name="orderBy", defaultValue = "asc") String ob,
                                Model model, Principal principal) {
 
-        List<Product> products = productService.getAllSortedAndOrdered(sb, ob);
+        List<Product> products = ProductService.getAllSortedAndOrdered(sb, ob);
         model.addAttribute("businessEntity", "products");
         model.addAttribute("businessList", products);
         model.addAttribute(
@@ -67,7 +76,7 @@ public class ManagementPanelController {
         List<?> tabContent = null;
 
         if (tab.equals("products")) {
-            tabContent = productService.getAllSortedAndOrdered((sb.equals("username")?"name":sb), ob);
+            tabContent = ProductService.getAllSortedAndOrdered((sb.equals("username")?"name":sb), ob);
         } else if (tab.equals("customers")) {
             tabContent = customerService.getSortedAndOrdered(sb, ob);
         } else if (tab.equals("members")) {
@@ -100,7 +109,7 @@ public class ManagementPanelController {
 
     @GetMapping("/updateProduct")
     public String updateProduct(@RequestParam("productId") int id, Model theModel) {
-        theModel.addAttribute("product", productService.getById(id));
+        theModel.addAttribute("product", ProductService.getById(id));
         theModel.addAttribute("theCategories", categoryService.getAllSortedAndOrdered("name", "asc"));
 	    return "product-form";
     }
@@ -108,33 +117,24 @@ public class ManagementPanelController {
     @PostMapping("/save-product")
     public String submit(
             @Valid @ModelAttribute("product") Product theProduct,
-            @RequestParam(required=false,name="myfile") MultipartFile file, ModelMap model,
-            HttpServletRequest request) {
+            @RequestParam(required=false,name="myfile") MultipartFile file) throws IOException {
 
-        model.addAttribute("file", file);
-        productService.saveOrUpdate(theProduct);
+        ProductService.saveOrUpdate(theProduct);
 
-        //TODO: fix the upload file part
-//        try {
-//            byte[] bytes = file.getBytes();
-//            String s = request.getContextPath();
-//            String s2 = (request.getContextPath() + "/resources/static/images/" + file.getOriginalFilename());
-//            model.addAttribute("info", s);
-//            model.addAttribute("info2", s2);
-//            Path path = Paths.get("//home//athan//Desktop//cooperativeeshop//src//main//webapp//resources//images//" + file.getOriginalFilename());
-//            Files.write(path, bytes);
-//        } catch (IOException e) {
-//            System.out.println("file to bytes failed");
-//            e.printStackTrace();
-//        }
+        //TODO: need refactoring here, move logic
+        if (!file.isEmpty() && ImageIO.read(file.getInputStream()) != null) {
+            Path pathFile = Paths.get("src/main/resources/static/images/" + theProduct.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
+            Files.write(pathFile, file.getBytes(), StandardOpenOption.CREATE);
+        }
+
         return "redirect:/management-panel";
     }
 
     //TODO: maybe change to delete requests, but have to figure out jstl delete reqs...
     @GetMapping("/deleteProduct")
     public String deleteProduct(@RequestParam("productId") int theId) {
-	productService.delete(theId);
-	return "redirect:/management-panel/products";
+	    ProductService.delete(theId);
+	    return "redirect:/management-panel/products";
     }
 
 //    @GetMapping("/updateCustomer")

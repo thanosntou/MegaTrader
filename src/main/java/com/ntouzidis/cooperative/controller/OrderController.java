@@ -41,7 +41,7 @@ public class OrderController {
 
     @PostMapping("/checkout")
     public String checkout(Principal principal){
-        saleService.orderWholeCart(cartService.getAllByCustomer(customerService.getOne(principal.getName())));
+        saleService.orderWholeCart(customerService.getCart(principal.getName()));
         return "redirect:/shop";
     }
 }
