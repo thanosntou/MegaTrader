@@ -44,7 +44,7 @@
                             <!-- User name -->
                             <form:label path="username">Username *</form:label><form:errors path="username" cssClass="error" />
                             <div style="margin-bottom: 25px" class="input-group">
-				            <span class="input-group-addon"><i class="fas fa-address-card"></i></span>
+				                <span class="input-group-addon"><i class="fas fa-address-card"></i></span>
                                 <form:input path="username" placeholder="username" class="form-control" />
                             </div>
 
