@@ -12,34 +12,69 @@
     <title>Dashboard</title>
 </head>
 <body>
-<div id="all" class="container-fluid">
+<div id="all" class="container-fluid" style="width: 110%">
 
     <%--wallstreetbar--%>
-    <div class="row">
-        <div class="col-sm-12" id="wsbar">
-            <%@include file="wallstreet-navbar.jsp" %>
-        </div>
-    </div>
+    <%--<div class="row">--%>
+        <%--<div class="col-sm-12" id="wsbar">--%>
+            <%--<%@include file="wallstreet-navbar.jsp" %>--%>
+        <%--</div>--%>
+    <%--</div>--%>
 
     <%-- menu--%>
-    <div class="row" id="dash-nav" style="margin-top: 1%; height: 5vh; background-color: #2e3f4d;" >
-        <div class="col-sm-2" id="brand">
+    <%--<div class="row" id="dash-nav" style="margin-top: 1%; height: 5vh; background-color: #2e3f4d;" >--%>
+        <%--<div class="col-sm-2" id="brand">--%>
 
-        </div>
-        <div class="col-sm-10" id="menu">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/trade">Trade</a>
-            <%--<form:form action="${pageContext.request.contextPath}/logout" method="POST">--%>
-                <%--<input type="submit" class="btn btn-outline-dark" value="Logout"/>--%>
-            <%--</form:form>--%>
-        </div>
-    </div>
+        <%--</div>--%>
+        <%--<div class="col-sm-10" id="menu">--%>
+            <%--<a class="navbar-brand" href="${pageContext.request.contextPath}/trade">Trade</a>--%>
+            <%--&lt;%&ndash;<form:form action="${pageContext.request.contextPath}/logout" method="POST">&ndash;%&gt;--%>
+                <%--&lt;%&ndash;<input type="submit" class="btn btn-outline-dark" value="Logout"/>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</form:form>&ndash;%&gt;--%>
+        <%--</div>--%>
+    <%--</div>--%>
 
     <%--main content--%>
-    <div style="height: 75vh;" class="row">
+    <div style="height: 90vh;" class="row">
+
+        <%--// side bar--%>
         <div class="col-sm-2" style="background-color: #3b5264">
+            <div class="row" style="height: 15vh;">
+                <div class="card" style="width: 18rem; background-color: inherit; border: none">
+                    <div class="card-body" style="color: white;">
+                        <h5 class="card-title">Welcome, ...</h5>
+                        <br>
+
+                        <%--<a href="#" class="card-link">Card link</a>--%>
+                            <form:form action="${pageContext.request.contextPath}/logout" method="POST">
+                                <input type="submit" class="btn btn-outline-danger" value="Logout"/>
+                            </form:form>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <br>
+                <hr style="width: 100%; border: none; height: 1px; color: #333; background-color: #333; ">
+                <br>
+
+                    <div class="col-sm-12">
+                        <div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
+                            <a class="nav-link active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true">Dashboard</a>
+                            <a class="nav-link" id="v-pills-th-tab" data-toggle="pill" href="#v-pills-th" role="tab" aria-controls="v-pills-th" aria-selected="false">Transaction History</a>
+                            <a class="nav-link" id="v-pills-wallet-tab" data-toggle="pill" href="#v-pills-wallet" role="tab" aria-controls="v-pills-wallet" aria-selected="false">Wallet</a>
+                            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
+                            <security:authorize access="hasAnyRole('ADMIN', 'MEMBER')">
+                                <a class="nav-link" id="v-pills-trades-tab" data-toggle="pill" href="#v-pills-trades" role="tab" aria-controls="v-pills-trades" aria-selected="false">Trades</a>
+                            </security:authorize>
+                        </div>
+                    </div>
 
 
+
+            </div>
         </div>
+
         <div class="col-sm-10">
             <div class="card text-center" style="height: 100%">
                 <div class="card-header">
@@ -56,6 +91,15 @@
                     </ul>
                 </div>
                 <div class="card-body">
+                    <div class="col-12">
+                    <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">Account Dashboard</div>
+                    <div class="tab-pane fade" id="v-pills-th" role="tabpanel" aria-labelledby="v-pills-th-tab">Transaction History</div>
+                    <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">Wallet</div>
+                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Settings</div>
+                    <div class="tab-pane fade" id="v-pills-trades" role="tabpanel" aria-labelledby="v-pills-trades-tab">Settings</div>
+                    </div>
+                    </div>
                     <%--<h5 class="card-title">Special title treatment</h5>--%>
                     <%--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>--%>
                     <%--<a href="#" class="btn btn-primary">Go somewhere</a>--%>
@@ -65,6 +109,7 @@
     </div>
 
 </div>
+
 <div id="myfooter" class="card text-white">
     <%--<img class="card-img" src=".../100px270/#55595c:#373a3c/text:Card image" alt="Card image">--%>
     <div class="card-img-overlay">
