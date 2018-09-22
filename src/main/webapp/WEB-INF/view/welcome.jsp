@@ -20,11 +20,13 @@
     <nav class="navbar navbar-inverse navbar-fixed-top"id="it">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span> 
-                </button>
+                <c:if test="${not empty pageContext.request.userPrincipal}">
+                    <button type="button" href="${pageContext.request.contextPath}/management-panel/" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </c:if>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
