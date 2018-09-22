@@ -60,25 +60,20 @@
                 <div class="col-sm-10">
                     <div class="inbox-head">
                           <h3>MANAGEMENT PANEL</h3>
-                          <form action="#" class="pull-right position">
-                              <div class="input-append">
-                                  <input type="text" class="sr-input" placeholder="Search Mail">
-                                  <button class="btn" type="button">Search<i class="fa fa-search"></i></button>
-                              </div>
-                          </form>
                     </div>
-
 
                     <hr style="border: none; color: #333; height: 2px; background-color: #333;">
                               
                     <!-- Page components -->
 
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel" role="button">Products</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/customers?sortBy=username&orderBy=asc" role="button">Customers</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/members?sortBy=username&orderBy=asc" role="button">Members</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/offers?sortBy=product.id&orderBy=asc" role="button">Offers</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/sales?sortBy=dateofc&orderBy=desc" role="button">Sales</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/payments?sortBy=date&orderBy=desc" role="button">Payments</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Bitcoin</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Cardano</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Bitcoin Cash</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">EOS Token</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Ethereum</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Litecoin</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Tron</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Ripple</a>
 
 
 

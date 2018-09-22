@@ -20,18 +20,18 @@
     <nav class="navbar navbar-inverse navbar-fixed-top"id="it">
         <div class="container">
             <div class="navbar-header">
-                <c:if test="${not empty pageContext.request.userPrincipal}">
-                    <button type="button" href="${pageContext.request.contextPath}/management-panel/" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                </c:if>
+                <button type="button"  class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class="nav navbar-nav">
-                    <li class=" active"><button class="btn btn-outline-success and-all-other-classes" style="margin-top: 9px; margin-right: 100px; margin-left: -100px; background-color: #888; color: #303030;font-weight: 900;"><a href="#myPage" style="background-color:inherit;color: #303030">MegaTrader</a></button></li>
-                </ul>
+                <c:if test="${not empty pageContext.request.userPrincipal}">
+                    <ul class="nav navbar-nav">
+                        <li class=" active"><button class="btn btn-outline-success and-all-other-classes" style="margin-top: 9px; margin-right: 100px; margin-left: -100px; background-color: #888; color: #303030;font-weight: 900;"><a href="${pageContext.request.contextPath}/management-panel/" style="background-color:inherit;color: #303030">MegaTrader</a></button></li>
+                    </ul>
+                </c:if>
                 <ul class="nav navbar-nav navbar-right">
                 <c:if test="${empty pageContext.request.userPrincipal}">
                     <li><a href="${pageContext.request.contextPath}/register/showRegistrationFormOption"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
