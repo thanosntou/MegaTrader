@@ -1,7 +1,7 @@
 databaseChangeLog:
   - preConditions:
     - runningAs:
-        username: wdmmhaaznlyvvf
+        username: postgres
 
   - include:
       file: changeset-001-createDomainTables.yaml
