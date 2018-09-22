@@ -5,16 +5,22 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-    <head>
+<head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">        
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/management-panel.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-        <title>Management Panel</title>
-    </head>
-    <body>
-        <div class="container-fluid">
-            <div class="row">
+        <title>Trade Panel</title>
+</head>
+<body>
+
+    <div class="container-fluid">
+
+        <div id="wsbar" class="row">
+            <%@include file="wallstreet-navbar.jsp" %>
+        </div>
+
+            <div id="main-comp" class="row">
 
             <!--------------------------- Side Menu----------------------------- -->
                 <div class="col-sm-2" id="side-menu">
@@ -32,8 +38,14 @@
                                 <input type="submit" class="btn btn-outline-dark" value="Logout"/>
                             </form:form>
                             <br>
+                            <a class="navbar-brand" href="${pageContext.request.contextPath}/dashboard">Dashboard</a>
+                            <br>
+                            <br>
+                            <br>
                             <h5><a href="">Buy</a></h5>
+                            <br>
                             <h5><a href="">Sell</a></h5>
+                            <br>
                             <%--<security:authorize access="hasRole('MEMBER')">--%>
                                 <%--<h5><a href="${pageContext.request.contextPath}/offers/new-offer">New Offer</a></h5><br/>--%>
                             <%--</security:authorize>--%>
@@ -56,9 +68,9 @@
                 </div>
                             
                 <!--------------------------- Main Menu----------------------------- -->
-                <div class="col-sm-10">
+                <div id="content-comp" class="col-sm-10">
                     <div class="inbox-head">
-                          <h3>MANAGEMENT PANEL</h3>
+                          <h3>TRADE PANEL</h3>
                     </div>
 
                     <hr style="border: none; color: #333; height: 2px; background-color: #333;">

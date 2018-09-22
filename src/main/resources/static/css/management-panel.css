@@ -2,6 +2,14 @@ html, body{
     font-size: 100%;
 }
 
+#main-comp{
+    margin-top: 1%;
+}
+
+#content-comp{
+    margin-top: 1%;
+}
+
 #side-menu{
     background-color: lightgray;
 }

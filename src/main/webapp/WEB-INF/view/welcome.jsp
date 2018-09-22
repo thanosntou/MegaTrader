@@ -29,7 +29,7 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <c:if test="${not empty pageContext.request.userPrincipal}">
                     <ul class="nav navbar-nav">
-                        <li class=" active"><button class="btn btn-outline-success and-all-other-classes" style="margin-top: 9px; margin-right: 100px; margin-left: -100px; background-color: #888; color: #303030;font-weight: 900;"><a href="${pageContext.request.contextPath}/trade/" style="background-color:inherit;color: #303030">MegaTrader</a></button></li>
+                        <li class=" active"><button class="btn btn-outline-success and-all-other-classes" style="margin-top: 9px; margin-right: 100px; margin-left: -100px; background-color: #888; color: #303030;font-weight: 900;"><a href="${pageContext.request.contextPath}/dashboard" style="background-color:inherit;color: #303030">MegaTrader</a></button></li>
                     </ul>
                 </c:if>
                 <ul class="nav navbar-nav navbar-right">

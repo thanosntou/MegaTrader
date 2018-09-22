@@ -1,0 +1,17 @@
+#all{
+    /*height: 100vh;*/
+}/*#wsbar{*/
+    /*position: absolute;*/
+/*}*/
+
+/*#bar{*/
+    /*position: absolute;*/
+/*}*/
+
+
+#myfooter{
+    margin-left: -10px;
+    margin-right: -10px;
+    height: 20vh;
+    background-color: #2e3f4d;
+}
