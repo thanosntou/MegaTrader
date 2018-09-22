@@ -46,14 +46,14 @@
     </nav>
 
 <div class="jumbotron text-center">
-    <div class="container"><br><br><br><br><br>
-        <h1 style="color: #090"><strong>BioUnion</strong></h1>
-        <hr style="width: 5%; border: none; height: 1px; background-color: #3C3D41; "><br/>
-        <form:form action="${pageContext.request.contextPath}/shop" method="GET" >
-            <input type="submit" class="btn btn-dark" value="Enter the E-Shop" />
-        </form:form>
-        
-    </div>
+    <%--<div class="container"><br><br><br><br><br>--%>
+        <%--<h1 style="color: #090"><strong>BioUnion</strong></h1>--%>
+        <%--<hr style="width: 5%; border: none; height: 1px; background-color: #3C3D41; "><br/>--%>
+        <%--<form:form action="${pageContext.request.contextPath}/shop" method="GET" >--%>
+            <%--<input type="submit" class="btn btn-dark" value="Enter the E-Shop" />--%>
+        <%--</form:form>--%>
+        <%----%>
+    <%--</div>--%>
 </div>
 
 <footer class="container-fluid text-center">
