@@ -25,33 +25,32 @@
                                 <span>Email:<a href="#"> ${user.email}</a></span><br/>
                                 <span>Username:<a href="#"> ${user.username}</a></span><br/><br/>
                             </div>
-                            <div>
-                              <h5><a href="${pageContext.request.contextPath}/shop">Back to Shop</a></h5>
-                            </div><br/>
+                            <%--<div>--%>
+                              <%--<h5><a href="${pageContext.request.contextPath}/shop">Back to Shop</a></h5>--%>
+                            <%--</div><br/>--%>
                             <form:form action="${pageContext.request.contextPath}/logout" method="POST">
                                 <input type="submit" class="btn btn-outline-dark" value="Logout"/>
                             </form:form>
                             <br>
-                            <h5><a href="${pageContext.request.contextPath}/management-panel/new-product">New Product</a></h5>
-                            <h5><a href="${pageContext.request.contextPath}/register/customerRegistrationForm">New Customer</a></h5>
-                            <h5><a href="${pageContext.request.contextPath}/register/memberRegistrationForm">New Member</a></h5><br/>
-                            <security:authorize access="hasRole('MEMBER')">
-                                <h5><a href="${pageContext.request.contextPath}/offers/new-offer">New Offer</a></h5><br/>
-                            </security:authorize>
+                            <h5><a href="">Buy</a></h5>
+                            <h5><a href="">Sell</a></h5>
+                            <%--<security:authorize access="hasRole('MEMBER')">--%>
+                                <%--<h5><a href="${pageContext.request.contextPath}/offers/new-offer">New Offer</a></h5><br/>--%>
+                            <%--</security:authorize>--%>
                             <h5>Total sales:<br/><span style="color: red">${sumSales} <i class="fas fa-euro-sign"></i></span></h5>
                             <br/>
-                            <h5>Admin Sales profit:<br/><span style="color: red">${adminProfit} <i class="fas fa-euro-sign"></i></span></h5>
+                            <h5>Profit<br/><span style="color: red">${adminProfit} <i class="fas fa-euro-sign"></i></span></h5>
                             <br/>
-                            <h5>Members Sales profit:<br/><span style="color: red">${membersProfit} <i class="fas fa-euro-sign"></i></span></h5>
+                            <h5>Customers<br/><span style="color: red">${membersProfit} <i class="fas fa-euro-sign"></i></span></h5>
                             <br/>
                             <security:authorize access="hasRole('MEMBER')">
                                 <h5>Your Sales profit:<br/><span style="color: red">${personalProfit} <i class="fas fa-euro-sign"></i></span></h5>
                                 <br/>
                             </security:authorize>
-                            <security:authorize access="hasRole('ADMIN')">
-                                <h5><a href="${pageContext.request.contextPath}/email/new">Send Mail</a></h5>
-                                <br/>
-                            </security:authorize>
+                            <%--<security:authorize access="hasRole('ADMIN')">--%>
+                                <%--<h5><a href="${pageContext.request.contextPath}/email/new">Send Mail</a></h5>--%>
+                                <%--<br/>--%>
+                            <%--</security:authorize>--%>
                         </div>  
                     </aside>
                 </div>
@@ -66,14 +65,14 @@
                               
                     <!-- Page components -->
 
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Bitcoin</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Cardano</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Bitcoin Cash</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">EOS Token</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Ethereum</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Litecoin</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Tron</a>
-                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/management-panel/" role="button">Ripple</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/XBT" role="button">Bitcoin</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/ADA" role="button">Cardano</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/BCH" role="button">Bitcoin Cash</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/EOS" role="button">EOS Token</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/ETH" role="button">Ethereum</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/LTC" role="button">Litecoin</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/TRX" role="button">Tron</a>
+                    <a class="btn btn-primary" href="${pageContext.request.contextPath}/trade/XRP" role="button">Ripple</a>
 
 
 

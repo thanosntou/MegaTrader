@@ -27,7 +27,7 @@ import javax.validation.Valid;
 
 
 @Controller
-@RequestMapping("/management-panel")
+@RequestMapping("/trade")
 public class ManagementPanelController {
 
     @Autowired
@@ -56,7 +56,7 @@ public class ManagementPanelController {
                                Model model, Principal principal) {
 
         List<Product> products = ProductService.getAllSortedAndOrdered(sb, ob);
-        model.addAttribute("businessEntity", "products");
+//        model.addAttribute("businessEntity", "products");
         model.addAttribute("businessList", products);
         model.addAttribute(
                 "user",
