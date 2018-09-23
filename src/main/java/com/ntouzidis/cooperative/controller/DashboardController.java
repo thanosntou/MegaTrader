@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.common;
+package com.ntouzidis.cooperative.controller;
 
 import com.ntouzidis.cooperative.module.admin.AdminService;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
@@ -36,6 +36,8 @@ public class DashboardController {
 
         if (user != null)
             model.addAttribute("user", user);
+
+        model.addAttribute("activeTraders", memberService.getAllSortedAndOrdered("username", "asc"));
 
         return "dashboard";
     }
