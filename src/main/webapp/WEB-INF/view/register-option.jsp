@@ -16,7 +16,7 @@
         <div class="container">
         <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse"></button>
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/">BioUnion</a>
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/">MegaTrader</a>
         </div> 
         </div>
         </nav>
@@ -51,7 +51,7 @@
                 
                     <li>
                     <input type="radio" id="member" name="selector" value="member">
-                    <label for="member">Member</label>
+                    <label for="member">Trader</label>
                     <div class="check"><div class="inside"></div></div>
                     </li>
                 </ul>

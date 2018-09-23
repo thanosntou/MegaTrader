@@ -1,11 +1,11 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+c<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
     <head>
-      <title>Bio-Union</title>
+      <title>MegaTrader</title>
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!--       -->
       
@@ -21,7 +21,7 @@
         
         <div class="card h-100">
             <div class="card-header w-100">
-                Sign Up as a Member
+                Sign Up as a Trader
             </div>
             <div class="card-body">
                 <div class="row">

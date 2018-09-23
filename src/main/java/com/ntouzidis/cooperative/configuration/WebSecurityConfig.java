@@ -39,8 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/welcome/**").permitAll()
-//                .antMatchers("/trade/**").hasAnyRole("MEMBER", "ADMIN")
-//                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
+//                .antMatchers("/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
+                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
                 .antMatchers("/shop/**").permitAll()
                 .antMatchers("/resources/**").permitAll()
                 .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().accessDeniedPage("/access-denied");
 
-//                http.formLogin().defaultSuccessUrl("/customer/list", true);
+                http.formLogin().defaultSuccessUrl("/dashboard", true);
     }
 
     @Bean

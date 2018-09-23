@@ -22,11 +22,6 @@ public class ShopController {
     @Autowired
     private CategoryService categoryService;
     
-    @RequestMapping("/")
-    public String showWelcomePage(){
-        return "welcome";
-    }
-    
     @GetMapping("/shop")
     public String showShop(Model model){
         List<Product> products = ProductService.findAll();
