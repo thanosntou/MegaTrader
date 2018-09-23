@@ -61,14 +61,14 @@
 
                     <div class="col-sm-12">
                         <div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-                            <a class="nav-link active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="fas fa-columns"></i> Dashboard</a>
+                                <a class="nav-link active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="fas fa-columns"></i> Dashboard</a>
                             <a class="nav-link" id="v-pills-traders-tab" data-toggle="pill" href="#v-pills-traders" role="tab" aria-controls="v-pills-traders" aria-selected="false"><i class="fas fa-chart-line"></i> Invest with Traders</a>
                             <a class="nav-link" id="v-pills-portofolio-tab" data-toggle="pill" href="#v-pills-portofolio" role="tab" aria-controls="v-pills-portofolio" aria-selected="false"><i class="fas fa-briefcase"></i> Portofolio</a>
                             <a class="nav-link" id="v-pills-th-tab" data-toggle="pill" href="#v-pills-th" role="tab" aria-controls="v-pills-th" aria-selected="false"><i class="fas fa-history"></i> Transaction History</a>
                             <a class="nav-link" id="v-pills-wallet-tab" data-toggle="pill" href="#v-pills-wallet" role="tab" aria-controls="v-pills-wallet" aria-selected="false"><i class="far fa-credit-card"></i> Wallet</a>
                             <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cogs"></i> Settings</a>
                             <security:authorize access="hasAnyRole('ADMIN', 'MEMBER')">
-                                <a class="nav-link" id="v-pills-trades-tab" data-toggle="pill" href="#v-pills-trades" role="tab" aria-controls="v-pills-trades" aria-selected="false"><i class="fas fa-exchange-alt"></i> Trade</a>
+                                <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/trade" role="button" aria-controls="v-pills-trades" aria-selected="false"><i class="fas fa-exchange-alt"></i> Trade</a>
                             </security:authorize>
                         </div>
                     </div>
@@ -81,15 +81,17 @@
 
             <%-- main bar --%>
         <div class="col-sm-10">
-            <div class="card text-center" style="height: 100%">
+            <div class="card" style="height: 100%">
                 <div class="card-header">
                     <div class="card-header">
-                        <span style="position: relative; right: 690px; opacity: 0.7;">Bitcoin Syndicate</span>
+                        <%--<span style="position: relative; right: 690px; opacity: 0.7;">Bitcoin Syndicate</span>--%>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="col-12">
                     <div class="tab-content" id="v-pills-tabContent">
+
+                        <%-- dashboard --%>
                     <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
                         <div class="row" style="margin: 20px 0px">
                             <h2>Account Dashboard</h2>
@@ -98,7 +100,7 @@
                             <div class="col-sm-6">
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Bitmex Balance</li>
+                                        <li class="list-group-item">Bitmex Balance: ${availableMargin}</li>
                                         <li class="list-group-item">Earned</li>
                                         <li class="list-group-item">Wallet Balance</li>
                                     </ul>
@@ -115,10 +117,6 @@
                             </div>
 
                         </div>
-
-
-
-
 
                     </div>
 
@@ -156,6 +154,24 @@
 
                     <div class="tab-pane fade" id="v-pills-portofolio" role="tabpanel" aria-labelledby="v-pills-portofolio-tab">
                         <h3>Portofolio</h3>
+                        <br>
+
+                            <c:forEach var="temp" items="${activeTraders}">
+                                <%--<c:url var="disableLink" value="/management-panel/updateProduct">--%>
+                                <%--<c:param name="productId" value="${temp.id}" />--%>
+                                <%--</c:url>--%>
+                                <div class="row">
+                                    <div class="card text-center" style="max-width: 100%; min-width: 100%; margin-bottom: 20px">
+                                        <h5 class="card-header">Featured</h5>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Special title treatment</h5>
+                                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </c:forEach>
 
 
                     </div>
@@ -165,15 +181,25 @@
                     </div>
                     <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">
                         <h3>Wallet</h3>
+                        <br>
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Balance: </h5>
+                            </div>
+                            <div class="card-body">
+                                <a href="#" class="card-link">Deposit</a>
+                                <a href="#" class="card-link">Withdraw</a>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                         <h3>Settings</h3>
                     </div>
 
-                    <div class="tab-pane fade" id="v-pills-trades" role="tabpanel" aria-labelledby="v-pills-trades-tab">
-                        <h3>Settings</h3>
-                    </div>
+                    <%--<div class="tab-pane fade" id="v-pills-trades" role="tabpanel" aria-labelledby="v-pills-trades-tab">--%>
+                        <%--<h3>Settings</h3>--%>
+                    <%--</div>--%>
 
                     </div>
 
