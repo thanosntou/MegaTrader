@@ -38,10 +38,10 @@ c<%@page contentType="text/html" pageEncoding="UTF-8"%>
                                 </div>
                             </div>
                             
-                            <!-- User id -->        
+                            <!-- user id -->
                             <form:hidden path="id" />
                                     
-                            <!-- User name -->
+                            <!-- user name -->
                             <form:label path="username">Username *</form:label><form:errors path="username" cssClass="error" />
                             <div style="margin-bottom: 25px" class="input-group">
 				                <span class="input-group-addon"><i class="fas fa-address-card"></i></span>

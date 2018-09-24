@@ -98,7 +98,7 @@ public class RegistrationController {
 
         // check the database if user already exists
         if (doesUserExist(theCustomer.getUsername())) {
-            theModel.addAttribute("registrationError", "User name already exists.");
+            theModel.addAttribute("registrationError", "user name already exists.");
             return "registration-form-customer";
         }
 
@@ -139,7 +139,7 @@ public class RegistrationController {
         }
 
 	    if (doesUserExist(member.getUsername())) {
-            theModel.addAttribute("registrationError", "User name already exists.");
+            theModel.addAttribute("registrationError", "user name already exists.");
             return "registration-form-member";
         }
 
