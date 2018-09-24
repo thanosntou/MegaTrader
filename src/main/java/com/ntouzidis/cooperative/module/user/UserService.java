@@ -16,9 +16,9 @@ public class UserService {
     private UserDetailsManager userDetailsManager;
 
 
-    public User create() {
-        User user = new User();
-        userDetailsManager.createUser();
-    }
+//    public User create() {
+//        User user = new User();
+//        userDetailsManager.createUser();
+//    }
 
 }
