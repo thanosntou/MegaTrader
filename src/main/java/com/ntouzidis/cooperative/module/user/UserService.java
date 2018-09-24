@@ -1,6 +1,5 @@
 package com.ntouzidis.cooperative.module.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,42 +14,56 @@ import java.util.List;
 @Service
 public class UserService {
 
+    private final UserDetailsManager userDetailsManager;
+    private final UserRepository userRepository;
+    private final AuthorityService authorityService;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    private final UserDetailsManager userDetailsManager;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserDetailsManager userDetailsManager) {
+    public UserService(UserDetailsManager userDetailsManager, UserRepository userRepository, AuthorityRepository authorityRepository, AuthorityService authorityRepository1, AuthorityService authorityService) {
         this.userDetailsManager = userDetailsManager;
+        this.userRepository = userRepository;
+        this.authorityService = authorityService;
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
+    @Transactional
+    public User createCustomer(String username, String password) {
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_CUSTOMER");
+        String encodedPassword = passwordEncoder.encode(password);
 
-//    @Transactional
-//    public User create() {
-//        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN");
-//        String encodedPassword = passwordEncoder.encode("kobines");
-//        User user = new User("enso", encodedPassword, authorities);
-//        user.setCreate_date(LocalDate.now());
-////        ((User)user).setCreate_day(LocalDate.now());
-//        if (!userDetailsManager.userExists(user.getUsername()))
-////            userDetailsManager.createUser(user);
-//            userRepository.save(user);
-//
-//        return user;
-//    }
+        return createUSer(username, encodedPassword, authorities);
+    }
 
-    public void saveKeys(String username, String apiKey, String apiSecret) {
+    @Transactional
+    public User createTrader(String username, String password) {
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_TRADER");
+        String encodedPassword = passwordEncoder.encode(password);
+
+        return createUSer(username, encodedPassword, authorities);
+    }
+
+    void saveKeys(String username, String apiKey, String apiSecret) {
         User principal = userRepository.findByUsername(username);
         principal.setApiKey(apiKey);
         principal.setApiSecret(apiSecret);
         userRepository.save(principal);
+    }
+
+
+    private User createUSer(String username, String encodedPassword, List<GrantedAuthority> authorities) {
+        User user = new User(username, encodedPassword, authorities);
+        user.setCreate_date(LocalDate.now());
+
+        if (!userDetailsManager.userExists(username)) {
+            userRepository.save(user);
+            authorityService.createAuthorities(username, authorities);
+        }
+
+        return user;
     }
 
 }

@@ -11,6 +11,7 @@ import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.Member;
 import com.ntouzidis.cooperative.module.member.MemberService;
 import com.ntouzidis.cooperative.module.user.User;
+import com.ntouzidis.cooperative.module.user.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -47,6 +48,8 @@ public class RegistrationController {
     private MemberService memberService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private UserService userService;
     
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
@@ -86,14 +89,14 @@ public class RegistrationController {
             return "registration-form-customer";
         }
 
-        //TODO: don't remember the purpose of this if (maybe to change a registered customer his pass?)
-        if (theCustomer.getId() != null && pass.equals(confirmPass)) {
-            if (principal instanceof UserDetails) {
-                changePassword(principal, pass);
-            }
-            customerService.save(theCustomer);
-            return "redirect:/management-panel";
-        }
+//        //TODO: don't remember the purpose of this if (maybe to change a registered customer his pass?)
+//        if (theCustomer.getId() != null && pass.equals(confirmPass)) {
+//            if (principal instanceof UserDetails) {
+//                changePassword(principal, pass);
+//            }
+//            customerService.save(theCustomer);
+//            return "redirect:/management-panel";
+//        }
 
         // check the database if user already exists
         if (doesUserExist(theCustomer.getUsername())) {
@@ -101,16 +104,7 @@ public class RegistrationController {
             return "registration-form-customer";
         }
 
-        //	 encrypt the password
-        String encodedPassword = passwordEncoder.encode(pass);
-        encodedPassword = "{bcrypt}" + encodedPassword;
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_CUSTOMER");
-        User tempUser = new User(theCustomer.getUsername(), encodedPassword, authorities);
-        userDetailsManager.createUser(tempUser);
-        Cart cart = new Cart();
-        cart.setCustomer(theCustomer);
-        customerService.save(theCustomer);
-        cartService.saveCart(cart);
+        userService.createCustomer(theCustomer.getUsername(), pass);
 
         return "redirect:/";
     }
@@ -129,26 +123,20 @@ public class RegistrationController {
             return "registration-form-member";
         }
 
-        if (member.getId() != null && pass.equals(confirmPass)){
-            if (principal instanceof UserDetails) {
-                changePassword(principal, pass);
-            }
-            memberService.save(member);
-            return "redirect:/management-panel";
-        }
+//        if (member.getId() != null && pass.equals(confirmPass)){
+//            if (principal instanceof UserDetails) {
+//                changePassword(principal, pass);
+//            }
+//            memberService.save(member);
+//            return "redirect:/management-panel";
+//        }
 
 	    if (doesUserExist(member.getUsername())) {
             theModel.addAttribute("registrationError", "user name already exists.");
             return "registration-form-member";
         }
 
-	    // encrypt the password
-        String encodedPassword = passwordEncoder.encode(pass);
-        encodedPassword = "{bcrypt}" + encodedPassword;
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_MEMBER");
-        User tempUser = new User(member.getUsername(), encodedPassword, authorities);
-        userDetailsManager.createUser(tempUser);
-        memberService.save(member);
+        userService.createTrader(member.getUsername(), pass);
 
         return "redirect:/";
     }

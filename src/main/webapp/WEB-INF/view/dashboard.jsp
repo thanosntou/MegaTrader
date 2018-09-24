@@ -101,15 +101,15 @@
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">Bitmex Balance: ${walletBalance}</li>
-                                        <li class="list-group-item">Earned</li>
-                                        <li class="list-group-item">Wallet Balance</li>
+                                        <li class="list-group-item">Earned: ${profit}</li>
+                                        <li class="list-group-item">Wallet Balance: ${balance}</li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Active Balance for Orders</li>
+                                        <li class="list-group-item">Active Balance for Orders: ${availableMargin}</li>
                                         <li class="list-group-item">Total Trades</li>
 
                                     </ul>

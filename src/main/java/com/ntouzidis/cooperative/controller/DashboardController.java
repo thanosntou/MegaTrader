@@ -1,12 +1,14 @@
 package com.ntouzidis.cooperative.controller;
 
 import com.ntouzidis.cooperative.module.admin.AdminService;
+import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.MemberService;
 import com.ntouzidis.cooperative.module.user.User;
 import com.ntouzidis.cooperative.module.user.UserService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -36,6 +38,8 @@ public class DashboardController {
     private CustomerService customerService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private BitmexService bitmexService;
 
     @GetMapping(value = {"", "/"})
     public String getDashboard(Model model, Principal principal) {
@@ -48,83 +52,72 @@ public class DashboardController {
             if (user == null) user = customerService.getOne(username);
         }
 
-        if (user != null) model.addAttribute("user", user);
-
-        String res = requestUserDetails(principal.getName());
-
-        String walletBalance = null;
-        int indexcount = 0;
-        if(res != null) {
-            indexcount = res.indexOf("walletBalance");
-            walletBalance = res.substring(indexcount+15, indexcount+21);
-        }
-
-
-
+        model.addAttribute("user", user);
         model.addAttribute("activeTraders", memberService.getAllSortedAndOrdered("username", "asc"));
-        model.addAttribute("walletBalance", walletBalance);
-//        model.addAttribute("user", userService.create());
-
+        model.addAttribute("walletBalance", bitmexService.getWalletBalance(principal.getName()));
+        model.addAttribute("availableMargin", bitmexService.getAvailableMargin(principal.getName()));
+        model.addAttribute("profit", userService.findByUsername(principal.getName()).getApiKey());
+        model.addAttribute("balance", userService.findByUsername(principal.getName()).getApiSecret());
 
         return "dashboard";
     }
 
-    private String requestUserDetails(String username) {
-        User principal = userService.findByUsername(username);
-
-        String apikey = principal.getApiKey();
-        String apiSecret = principal.getApiSecret();
-        String expires = String.valueOf(1600883067);
-        String verb = "GET";
-        String path = "/api/v1/user/margin";
-        String data = "";
-
-        String signature = null;
-
-        try {
-            signature = calculateSignature(apiSecret, verb, path, expires, data);
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.set("api-expires", expires);
-        headers.set("api-key", apikey);
-        headers.set("api-signature", signature);
-
-        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-
-        try {
-            ResponseEntity<?> res = restTemplate.exchange("https://www.bitmex.com" + path, HttpMethod.GET, entity, String.class);
-            return res.getBody().toString();
-        } catch (HttpClientErrorException ex){
-
-        }
-
-        return null;
-
-    }
-
-    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
-        String message = verb + path + expires + data;
-
-        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-        SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
-        sha256_HMAC.init(secret_key);
-
-        String resu1 = Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes("UTF-8")));
-
-        String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes("UTF-8")));
-
-        return resu1;
-    }
+//    private String requestUserDetails(String username) {
+//        User principal = userService.findByUsername(username);
+//
+//        String apikey = principal.getApiKey();
+//        String apiSecret = principal.getApiSecret();
+//        String expires = String.valueOf(1600883067);
+//        String verb = "GET";
+//        String path = "/api/v1/user/margin";
+//        String data = "";
+//
+//        String signature = null;
+//
+//        try {
+//            signature = calculateSignature(apiSecret, verb, path, expires, data);
+//
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (InvalidKeyException e) {
+//            e.printStackTrace();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+//        headers.set("api-expires", expires);
+//        headers.set("api-key", apikey);
+//        headers.set("api-signature", signature);
+//
+//        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+//
+//        try {
+//            ResponseEntity<?> res = restTemplate.exchange("https://www.bitmex.com" + path, HttpMethod.GET, entity, String.class);
+//            return res.getBody().toString();
+//        } catch (HttpClientErrorException ex){
+//
+//        }
+//
+//        return null;
+//
+//    }
+//
+//    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+//        String message = verb + path + expires + data;
+//
+//        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+//        SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
+//        sha256_HMAC.init(secret_key);
+//
+//        String resu1 = Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes("UTF-8")));
+//
+//        String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes("UTF-8")));
+//
+//        return resu1;
+//    }
 
     private static String toHexString(byte[] bytes) {
         Formatter formatter = new Formatter();
