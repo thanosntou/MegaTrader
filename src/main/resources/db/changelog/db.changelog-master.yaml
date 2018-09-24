@@ -21,3 +21,10 @@ databaseChangeLog:
   - include:
       file: changeset-006-createAddressTable.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-007-add_create_date_to_user.yaml
+      relativeToChangelogFile: true
+  - include:
+          file: changeset-008-add_apikey_to_user.yaml
+          relativeToChangelogFile: true
+

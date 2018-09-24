@@ -43,7 +43,7 @@
                 <div class="card" style="width: 18rem; background-color: inherit; border: none">
                     <div class="card-body" style="color: white; margin-top: 1%">
                         <h5 class="card-title"><i class="fas fa-user"></i> Welcome, ${user.username}</h5>
-                        <h6>${user.email}</h6>
+                        <%--<h6>${user.email}</h6>--%>
                         <br>
 
                         <%--<a href="#" class="card-link">Card link</a>--%>
@@ -100,7 +100,7 @@
                             <div class="col-sm-6">
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Bitmex Balance: ${availableMargin}</li>
+                                        <li class="list-group-item">Bitmex Balance: ${walletBalance}</li>
                                         <li class="list-group-item">Earned</li>
                                         <li class="list-group-item">Wallet Balance</li>
                                     </ul>
@@ -195,6 +195,12 @@
 
                     <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                         <h3>Settings</h3>
+                        <br>
+                        <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST" >
+                            API Key<input type="text" name="apikey" value="${product.id}" /><br>
+                            API Secret <input type="text" name="apisecret" value="${product.id}" /><br>
+                            <input type="submit" value="Save" />
+                        </form:form>
                     </div>
 
                     <%--<div class="tab-pane fade" id="v-pills-trades" role="tabpanel" aria-labelledby="v-pills-trades-tab">--%>

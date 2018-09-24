@@ -3,6 +3,8 @@ package com.ntouzidis.cooperative.controller;
 import com.ntouzidis.cooperative.module.admin.AdminService;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.MemberService;
+import com.ntouzidis.cooperative.module.user.User;
+import com.ntouzidis.cooperative.module.user.UserService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -31,6 +34,8 @@ public class DashboardController {
     private AdminService adminService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping(value = {"", "/"})
     public String getDashboard(Model model, Principal principal) {
@@ -45,17 +50,30 @@ public class DashboardController {
 
         if (user != null) model.addAttribute("user", user);
 
-        String res = requestUserDetails();
+        String res = requestUserDetails(principal.getName());
+
+        String walletBalance = null;
+        int indexcount = 0;
+        if(res != null) {
+            indexcount = res.indexOf("walletBalance");
+            walletBalance = res.substring(indexcount+15, indexcount+21);
+        }
+
+
 
         model.addAttribute("activeTraders", memberService.getAllSortedAndOrdered("username", "asc"));
-        model.addAttribute("availableMargin", res.substring(712, 718));
+        model.addAttribute("walletBalance", walletBalance);
+//        model.addAttribute("user", userService.create());
+
 
         return "dashboard";
     }
 
-    private String requestUserDetails() {
-        String apikey = "iTBM9g7AHRZz0emT0avsjnLn";
-        String apiSecret = "zN_zQHoyxZxnSdPrPCeJUFstZMKuIVA8PWBMsHvkTamXMLD6";
+    private String requestUserDetails(String username) {
+        User principal = userService.findByUsername(username);
+
+        String apikey = principal.getApiKey();
+        String apiSecret = principal.getApiSecret();
         String expires = String.valueOf(1600883067);
         String verb = "GET";
         String path = "/api/v1/user/margin";
@@ -83,9 +101,14 @@ public class DashboardController {
 
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
-        ResponseEntity<?> res = restTemplate.exchange("https://www.bitmex.com" + path, HttpMethod.GET, entity, String.class);
+        try {
+            ResponseEntity<?> res = restTemplate.exchange("https://www.bitmex.com" + path, HttpMethod.GET, entity, String.class);
+            return res.getBody().toString();
+        } catch (HttpClientErrorException ex){
 
-        return res.getBody().toString();
+        }
+
+        return null;
 
     }
 

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-add_apikey_to_user
+      author: ntouzidis
+      changes:
+      - addColumn:
+          columns:
+          - column:
+              name: apikey
+              type: varchar(255)
+          - column:
+              name: apisecret
+              type: varchar(255)
+          tableName: users

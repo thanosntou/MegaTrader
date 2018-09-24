@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-add_create_date_to_user
+      author: ntouzidis
+      changes:
+      - addColumn:
+          columns:
+          - column:
+              name: create_date
+              type: DATE
+          tableName: users
