@@ -18,8 +18,8 @@ public class UserController {
 
 
     @PostMapping(value = "/apikey")
-    public String saveApiKeys(@RequestParam(name="apikey") String apiKey,
-                              @RequestParam(name="apisecret") String apiSecret,
+    public String saveApiKeys(@RequestParam(name="apikey", required=false) String apiKey,
+                              @RequestParam(name="apisecret", required=false) String apiSecret,
                               Principal p) {
 
         userService.saveKeys(p.getName(), apiKey, apiSecret);

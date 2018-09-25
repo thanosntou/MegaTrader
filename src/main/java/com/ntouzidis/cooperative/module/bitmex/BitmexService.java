@@ -18,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class BitmexService implements IBitmexService {
@@ -29,6 +31,19 @@ public class BitmexService implements IBitmexService {
         this.userService = userService;
     }
 
+    @Override
+    public Map<String, Object> getBitmexInfo(String username) {
+        String res = requestUserDetails(username);
+
+        Map<String, String> info = new HashMap<>();
+        if(res != null) {
+            JSONObject jsonObj = new JSONObject(res);
+            return jsonObj.toMap();
+        }
+
+
+        return null;
+    }
 
     @Override
     public String getWalletBalance(String username) {
@@ -44,12 +59,10 @@ public class BitmexService implements IBitmexService {
     @Override
     public String getAvailableMargin(String username) {
         String res = requestUserDetails(username);
+        if(res == null) return null;
+        JSONObject jsonObj = new JSONObject(res);
 
-        if(res != null) {
-            JSONObject jsonObj = new JSONObject(res);
-            return jsonObj.optString("availableMargin");
-        }
-        return null;
+        return jsonObj.optString("availableMargin");
     }
 
     private String requestUserDetails(String username) {

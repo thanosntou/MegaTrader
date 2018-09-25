@@ -4,27 +4,15 @@ import com.ntouzidis.cooperative.module.admin.AdminService;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.MemberService;
-import com.ntouzidis.cooperative.module.user.User;
 import com.ntouzidis.cooperative.module.user.UserService;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.Formatter;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -45,19 +33,23 @@ public class DashboardController {
     public String getDashboard(Model model, Principal principal) {
         Object user = null;
 
-        if (principal != null) {
-            String username = principal.getName();
-            user = adminService.getByUsername(username);
-            if (user == null) user = memberService.getByUsername(username);
-            if (user == null) user = customerService.getOne(username);
-        }
+        if (principal != null) user = userService.findByUsername(principal.getName());
+
+        Map<String, Object> bitmexinfo = bitmexService.getBitmexInfo(principal.getName());
+
+        String walletBalance = bitmexinfo.get("walletBalance").toString();
+        String availableMargin = bitmexinfo.get("availableMargin").toString();
+        String activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
 
         model.addAttribute("user", user);
         model.addAttribute("activeTraders", memberService.getAllSortedAndOrdered("username", "asc"));
-        model.addAttribute("walletBalance", bitmexService.getWalletBalance(principal.getName()));
-        model.addAttribute("availableMargin", bitmexService.getAvailableMargin(principal.getName()));
-        model.addAttribute("profit", userService.findByUsername(principal.getName()).getApiKey());
-        model.addAttribute("balance", userService.findByUsername(principal.getName()).getApiSecret());
+        model.addAttribute("walletBalance", walletBalance);
+        model.addAttribute("balance", walletBalance);
+        model.addAttribute("earned", "0");
+        model.addAttribute("availableMargin", availableMargin);
+        model.addAttribute("activeBalance",activeBalance );
+        model.addAttribute("apiKey", userService.findByUsername(principal.getName()).getApiKey());
+        model.addAttribute("apiSecret", userService.findByUsername(principal.getName()).getApiSecret());
 
         return "dashboard";
     }

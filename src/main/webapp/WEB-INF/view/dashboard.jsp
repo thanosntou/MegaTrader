@@ -94,14 +94,14 @@
                         <%-- dashboard --%>
                     <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
                         <div class="row" style="margin: 20px 0px">
-                            <h2>Account Dashboard</h2>
+                            <h2>Account Dashboard <a href="${pageContext.request.contextPath}/dashboard"><i class="fas fa-sync" class="button"></i></a></h2>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">Bitmex Balance: ${walletBalance}</li>
-                                        <li class="list-group-item">Earned: ${profit}</li>
+                                        <li class="list-group-item">Earned: ${earned}</li>
                                         <li class="list-group-item">Wallet Balance: ${balance}</li>
                                     </ul>
                                 </div>
@@ -110,7 +110,7 @@
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">Active Balance for Orders: ${availableMargin}</li>
-                                        <li class="list-group-item">Total Trades</li>
+                                        <li class="list-group-item">Active on orders: ${activeBalance}</li>
 
                                     </ul>
                                 </div>
@@ -196,6 +196,11 @@
                     <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                         <h3>Settings</h3>
                         <br>
+                        <br>
+                        API Key: ${apiKey}<br>
+                        API Secret: ${apiSecret}<br>
+                        <br>
+                        <h3>Edit Keys</h3>
                         <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST" >
                             API Key<input type="text" name="apikey" value="${product.id}" /><br>
                             API Secret <input type="text" name="apisecret" value="${product.id}" /><br>

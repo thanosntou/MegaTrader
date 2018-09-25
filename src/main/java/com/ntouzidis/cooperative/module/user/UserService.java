@@ -46,10 +46,12 @@ public class UserService {
         return createUSer(username, encodedPassword, authorities);
     }
 
+    @Transactional
     void saveKeys(String username, String apiKey, String apiSecret) {
         User principal = userRepository.findByUsername(username);
-        principal.setApiKey(apiKey);
-        principal.setApiSecret(apiSecret);
+        if (apiKey != null) principal.setApiKey(apiKey);
+        if (apiSecret != null) principal.setApiSecret(apiSecret);
+
         userRepository.save(principal);
     }
 
