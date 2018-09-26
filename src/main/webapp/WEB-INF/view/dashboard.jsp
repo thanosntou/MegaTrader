@@ -96,6 +96,20 @@
                         <div class="row" style="margin: 20px 0px">
                             <h2>Account Dashboard <a href="${pageContext.request.contextPath}/dashboard"><i class="fas fa-sync" class="button"></i></a></h2>
                         </div>
+                        <br>
+                        <form:form action="${pageContext.request.contextPath}/dashboard" method="GET" id="clientView">
+                            Client:
+                            <select name="client" form="clientView">
+                                <option value="bitmex" selected disabled hidden>Choose here</option>
+                                <option value="bitmex">Bitmex</option>
+                                <option value="testnet">Bitmex Testnet</option>
+                            </select>
+                            <input type="submit" value="View" />
+                        </form:form>
+                        <br>
+                        <br>
+                        <h4>Current client: ${currentClient}</h4>
+                        <br>
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="card" style="width: 18rem;">
@@ -197,15 +211,19 @@
                         <h3>Settings</h3>
                         <br>
                         <br>
+                        <h4>${currentClient} keys</h4>
                         API Key: ${apiKey}<br>
                         API Secret: ${apiSecret}<br>
                         <br>
                         <h3>Edit Keys</h3>
-                        <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST" >
-                            API Key<input type="text" name="apikey" value="${product.id}" /><br>
-                            API Secret <input type="text" name="apisecret" value="${product.id}" /><br>
+                        Bitmex
+                        <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST" id="bitmexkeys">
+                            API Key<input type="text" name="apikey" /><br>
+                            API Secret <input type="text" name="apisecret" /><br>
                             <input type="submit" value="Save" />
                         </form:form>
+                        <br>
+
                     </div>
 
                     <%--<div class="tab-pane fade" id="v-pills-trades" role="tabpanel" aria-labelledby="v-pills-trades-tab">--%>

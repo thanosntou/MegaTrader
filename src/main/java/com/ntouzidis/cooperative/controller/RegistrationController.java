@@ -1,22 +1,17 @@
 package com.ntouzidis.cooperative.controller;
 
 import java.security.Principal;
-import java.util.List;
 import javax.validation.Valid;
 
-import com.ntouzidis.cooperative.module.cart.Cart;
 import com.ntouzidis.cooperative.module.cart.CartService;
 import com.ntouzidis.cooperative.module.customer.Customer;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.Member;
 import com.ntouzidis.cooperative.module.member.MemberService;
-import com.ntouzidis.cooperative.module.user.User;
 import com.ntouzidis.cooperative.module.user.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

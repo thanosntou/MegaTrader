@@ -32,8 +32,17 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public Map<String, Object> getBitmexInfo(String username) {
-        String res = requestUserDetails(username);
+    public Map<String, Object> getBitmexInfo(String username, String client) {
+        String baseUrl = null;
+
+        if (client != null) {
+            if (client.equalsIgnoreCase("bitmex"))
+                baseUrl = "https://www.bitmex.com";
+            if(client.equalsIgnoreCase("testnet"))
+                baseUrl = "https://testnet.bitmex.com";
+        }
+
+        String res = requestUserDetails(username, baseUrl);
 
         Map<String, String> info = new HashMap<>();
         if(res != null) {
@@ -41,33 +50,13 @@ public class BitmexService implements IBitmexService {
             return jsonObj.toMap();
         }
 
-
         return null;
     }
 
-    @Override
-    public String getWalletBalance(String username) {
-        String res = requestUserDetails(username);
-
-        if(res != null) {
-            JSONObject jsonObj = new JSONObject(res);
-            return jsonObj.optString("walletBalance");
-        }
-        return null;
-    }
-
-    @Override
-    public String getAvailableMargin(String username) {
-        String res = requestUserDetails(username);
-        if(res == null) return null;
-        JSONObject jsonObj = new JSONObject(res);
-
-        return jsonObj.optString("availableMargin");
-    }
-
-    private String requestUserDetails(String username) {
+    private String requestUserDetails(String username, String client) {
         User principal = userService.findByUsername(username);
 
+        String baseUrl = client;
         String apikey = principal.getApiKey();
         String apiSecret = principal.getApiSecret();
         String expires = String.valueOf(1600883067);
@@ -94,7 +83,7 @@ public class BitmexService implements IBitmexService {
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
         try {
-            ResponseEntity<?> res = restTemplate.exchange("https://www.bitmex.com" + path, HttpMethod.GET, entity, String.class);
+            ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity, String.class);
             return res.getBody().toString();
         } catch (HttpClientErrorException ex){
 

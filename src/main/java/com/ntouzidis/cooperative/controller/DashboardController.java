@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.security.Principal;
 import java.util.Formatter;
 import java.util.Map;
@@ -30,12 +32,14 @@ public class DashboardController {
     private BitmexService bitmexService;
 
     @GetMapping(value = {"", "/"})
-    public String getDashboard(Model model, Principal principal) {
+    public String getDashboard(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
+                               Model model, Principal principal) {
+
         Object user = null;
 
         if (principal != null) user = userService.findByUsername(principal.getName());
 
-        Map<String, Object> bitmexinfo = bitmexService.getBitmexInfo(principal.getName());
+        Map<String, Object> bitmexinfo = bitmexService.getBitmexInfo(principal.getName(), client);
 
         String walletBalance = null;
         String availableMargin = null;
@@ -57,6 +61,7 @@ public class DashboardController {
         model.addAttribute("activeBalance",activeBalance );
         model.addAttribute("apiKey", userService.findByUsername(principal.getName()).getApiKey());
         model.addAttribute("apiSecret", userService.findByUsername(principal.getName()).getApiSecret());
+        model.addAttribute("currentClient", client);
 
         return "dashboard";
     }
