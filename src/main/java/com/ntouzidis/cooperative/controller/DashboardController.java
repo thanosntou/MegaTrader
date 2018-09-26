@@ -37,9 +37,16 @@ public class DashboardController {
 
         Map<String, Object> bitmexinfo = bitmexService.getBitmexInfo(principal.getName());
 
-        String walletBalance = bitmexinfo.get("walletBalance").toString();
-        String availableMargin = bitmexinfo.get("availableMargin").toString();
-        String activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
+        String walletBalance = null;
+        String availableMargin = null;
+        String activeBalance = null;
+
+        if (bitmexinfo != null) {
+            walletBalance = (String)bitmexinfo.get("walletBalance");
+            availableMargin = bitmexinfo.get("availableMargin").toString();
+            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
+        }
+
 
         model.addAttribute("user", user);
         model.addAttribute("activeTraders", memberService.getAllSortedAndOrdered("username", "asc"));
