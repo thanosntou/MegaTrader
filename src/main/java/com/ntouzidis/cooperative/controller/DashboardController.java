@@ -42,7 +42,7 @@ public class DashboardController {
         String activeBalance = null;
 
         if (bitmexinfo != null) {
-            walletBalance = (String)bitmexinfo.get("walletBalance");
+            walletBalance = bitmexinfo.get("walletBalance").toString();
             availableMargin = bitmexinfo.get("availableMargin").toString();
             activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
         }
