@@ -116,6 +116,15 @@ public class BitmexService implements IBitmexService {
 
     }
 
+    public void post_Position_Leverage(String username, String client, String data) {
+        Preconditions.checkNotNull(username, "username");
+        Preconditions.checkNotNull(client, "base url");
+
+        String baseUrl = calculateBaseUrl(client);
+
+        requestPOST(username, baseUrl, ENDPOINT_POSITION_LEVERAGE, data);
+    }
+
     private String request(String username, String baseUrl, String path, String verb, String data) {
         User principal = userService.findByUsername(username);
 

@@ -10,4 +10,6 @@ public interface IBitmexService {
     List get_Order_Order(String username, String client);
 
     Map<String, Object> post_Order_Order(String username, String client, String data);
+
+    void post_Position_Leverage(String username, String client, String data);
 }

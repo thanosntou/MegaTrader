@@ -180,7 +180,7 @@
 
                             </div>
                             <div class="col-sm-1">
-                                <input type="submit" onclick="alert('Order placed successfully!')" value="Place Order" /><br>
+                                <input type="submit" value="Place Order" /><br>
                             </div>
                         </div>
 
@@ -263,7 +263,7 @@
 
                             </div>
                             <div class="col-sm-1">
-                                <input type="submit" onclick="alert('Order placed successfully!')" value="Place Order" /><br>
+                                <input type="submit" value="Place Order" /><br>
                             </div>
                         </div>
 
@@ -353,7 +353,7 @@
 
                             </div>
                             <div class="col-sm-1">
-                                <input type="submit" onclick="alert('Order placed successfully!')" value="Place Order" /><br>
+                                <input type="submit" value="Place Order" /><br>
                             </div>
                         </div>
                         <input type="text" name="execInst" value="Close,LastPrice" hidden /><br><br>

@@ -101,7 +101,7 @@ public class ManagementPanelController {
         if (stopPx != null) dataOrder += "&stopPx=" + stopPx;
 
 
-//        bitmexService.setLeverage(principal.getName(), client, dataLeverage);
+        bitmexService.post_Position_Leverage(principal.getName(), client, dataLeverage);
 
         bitmexService.post_Order_Order(principal.getName(), client, dataOrder);
 
