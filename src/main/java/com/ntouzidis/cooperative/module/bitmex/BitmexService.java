@@ -6,11 +6,8 @@ import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -168,6 +165,7 @@ public class BitmexService implements IBitmexService {
 
         return null;
     }
+
     private String requestPOST(String username, String baseUrl, String path, String data) {
         User principal = userService.findByUsername(username);
 

@@ -120,7 +120,8 @@ public class User implements UserDetails {
         return create_date;
     }
 
-    public void setCreate_date(LocalDate create_day) {
-        this.create_date = create_day;
+    public void setCreate_date() {
+        if (this.create_date == null)
+            this.create_date = LocalDate.now();
     }
 }

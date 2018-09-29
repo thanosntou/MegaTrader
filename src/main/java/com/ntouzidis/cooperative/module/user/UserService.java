@@ -58,7 +58,7 @@ public class UserService {
 
     private User createUSer(String username, String encodedPassword, List<GrantedAuthority> authorities) {
         User user = new User(username, encodedPassword, authorities);
-        user.setCreate_date(LocalDate.now());
+        user.setCreate_date();
 
         if (!userDetailsManager.userExists(username)) {
             userRepository.save(user);

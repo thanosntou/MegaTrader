@@ -165,7 +165,7 @@
                                 Limit Price
                             </div>
                             <div class="col-sm-1">
-                                <input type="number" name="price"/>
+                                <input type="number" step="${priceStep}" name="price"/>
                             </div>
                         </div>
                         <br>
@@ -322,7 +322,7 @@
                                 Stop Price
                             </div>
                             <div class="col-sm-1">
-                                <input type="number" name="stopPx"/>
+                                <input type="number" step="${priceStep}" name="stopPx"/>
                             </div>
                         </div>
                         <br>
