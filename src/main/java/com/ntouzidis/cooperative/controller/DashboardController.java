@@ -44,15 +44,15 @@ public class DashboardController {
         Map<String, Object> bitmexUserWalletGet = new HashMap<>();
 //        List bitmexOrderOrderGet = new ArrayList<>();
 
-//        bitmexUserWalletGet = bitmexService.get_User_Margin(principal.getName(), client);
+        bitmexUserWalletGet = bitmexService.get_User_Margin(principal.getName(), client);
 //        bitmexOrderOrderGet = bitmexService.get_Order_Order(principal.getName(), client);
 
 
-//        if (bitmexUserWalletGet != null) {
-//            walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
-//            availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
-//            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
-//        }
+        if (bitmexUserWalletGet != null) {
+            walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
+            availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
+            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
+        }
 
 //        if (bitmexUserWalletGet != null && bitmexUserWalletGet.size() > 1) {
 //            System.out.println(bitmexOrderOrderGet.toString());

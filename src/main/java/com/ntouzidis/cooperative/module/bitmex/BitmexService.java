@@ -131,21 +131,15 @@ public class BitmexService implements IBitmexService {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 //            headers.set("X-Requested-With", "XMLHttpRequest");
             headers.set("api-expires", expires);
             headers.set("api-key", apikey);
             headers.set("api-signature", signature);
 
-            HttpMethod method = null;
-            if (verb.equals("GET")) method = HttpMethod.GET;
-            if (verb.equals("POST")) method = HttpMethod.POST;
-            if (verb.equals("PUT")) method = HttpMethod.PUT;
-            if (verb.equals("DELETE")) method = HttpMethod.DELETE;
-
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
-            ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity, String.class);
+            ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity, String.class);
             return Objects.requireNonNull(res.getBody()).toString();
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {

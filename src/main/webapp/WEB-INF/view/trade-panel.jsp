@@ -61,8 +61,12 @@
                 <hr style="width: 100%; border: none; height: 1px; color: #333; background-color: #333; ">
                 <br>
 
+
                     <div class="col-sm-12">
                         <div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
+                            <form:form action="${pageContext.request.contextPath}/dashboard" method="POST">
+                                <input type="submit" class="btn btn-outline-info" value="Dashboard"/>
+                            </form:form>
                                 <%--<a class="nav-link active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="fas fa-columns"></i> Dashboard</a>--%>
                             <%--<a class="nav-link" id="v-pills-traders-tab" data-toggle="pill" href="#v-pills-traders" role="tab" aria-controls="v-pills-traders" aria-selected="false"><i class="fas fa-chart-line"></i> Invest with Traders</a>--%>
                             <%--<a class="nav-link" id="v-pills-portofolio-tab" data-toggle="pill" href="#v-pills-portofolio" role="tab" aria-controls="v-pills-portofolio" aria-selected="false"><i class="fas fa-briefcase"></i> Portofolio</a>--%>
