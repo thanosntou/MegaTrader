@@ -30,6 +30,7 @@ public class BitmexService implements IBitmexService {
 
     private static String ENDPOINT_ORDER = "/api/v1/order";
 
+    private static String ENDPOINT_POSITION = "/api/v1/position";
     private static String ENDPOINT_POSITION_LEVERAGE = "/api/v1/position/leverage";
 
     private static String ENDPOINT_USER_MARGIN = "/api/v1/user/margin";
@@ -39,29 +40,12 @@ public class BitmexService implements IBitmexService {
     private static String PUT = "PUT";
     private static String DELETE = "DELETE";
 
-    @Autowired
     private final UserService userService;
 
     public BitmexService(UserService userService) {
         this.userService = userService;
     }
 
-    public List setLeverage(String username, String client, String data) {
-        Preconditions.checkNotNull(username, "username");
-        Preconditions.checkNotNull(client, "base url");
-
-        String baseUrl = calculateBaseUrl(client);
-
-        String res = request(username, baseUrl, ENDPOINT_POSITION_LEVERAGE, POST, data);
-
-        if(res != null) {
-            JSONArray jsonObj = new JSONArray(res);
-            return jsonObj.toList();
-        }
-
-        return null;
-
-    }
 
     public Map<String, Object> get_User_Margin(String username, String client) {
         Preconditions.checkNotNull(username, "username");
@@ -70,7 +54,7 @@ public class BitmexService implements IBitmexService {
         String baseUrl = calculateBaseUrl(client);
         String data = "";
 
-        String res = request(username, baseUrl, ENDPOINT_USER_MARGIN, GET, data);
+        String res = requestGET(username, baseUrl, ENDPOINT_USER_MARGIN, data);
 
         if(res != null) {
             JSONObject jsonObj = new JSONObject(res);
@@ -88,7 +72,7 @@ public class BitmexService implements IBitmexService {
         String baseUrl = calculateBaseUrl(client);
         String data = "";
 
-        String res = request(username, baseUrl, ENDPOINT_ORDER, GET, data);
+        String res = requestGET(username, baseUrl, ENDPOINT_ORDER, data);
 
         if(res != null) {
             JSONArray jsonObj = new JSONArray(res);
@@ -116,6 +100,32 @@ public class BitmexService implements IBitmexService {
 
     }
 
+    public List<Map<String, Object>> get_Position_Leverage(String username, String client, String data) {
+        Preconditions.checkNotNull(username, "username");
+        Preconditions.checkNotNull(client, "base url");
+
+        String baseUrl = calculateBaseUrl(client);
+
+        String res = requestGET(username, baseUrl, ENDPOINT_POSITION, data);
+
+        List<Map<String, Object>> myMapList = new ArrayList<>();
+
+        if(res != null) {
+            JSONArray jsonArray = new JSONArray(res);
+
+            List<Object> list = jsonArray.toList();
+
+            for(Object m: list){
+                JSONObject jsonObj = new JSONObject(m);
+                myMapList.add(jsonObj.toMap());
+            }
+
+            return myMapList;
+        }
+
+        return null;
+    }
+
     public void post_Position_Leverage(String username, String client, String data) {
         Preconditions.checkNotNull(username, "username");
         Preconditions.checkNotNull(client, "base url");
@@ -125,12 +135,13 @@ public class BitmexService implements IBitmexService {
         requestPOST(username, baseUrl, ENDPOINT_POSITION_LEVERAGE, data);
     }
 
-    private String request(String username, String baseUrl, String path, String verb, String data) {
+    private String requestGET(String username, String baseUrl, String path, String data) {
         User principal = userService.findByUsername(username);
 
         String apikey = principal.getApiKey();
         String apiSecret = principal.getApiSecret();
         String expires = String.valueOf(1600883067);
+        String verb = "GET";
 
         String signature = null;
 

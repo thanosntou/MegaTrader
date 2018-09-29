@@ -33,7 +33,7 @@ import javax.validation.Valid;
 
 
 @Controller
-@RequestMapping("/trade")
+@RequestMapping("/oldtrade")
 public class ManagementPanelController {
 
     @Autowired

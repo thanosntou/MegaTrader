@@ -11,5 +11,7 @@ public interface IBitmexService {
 
     Map<String, Object> post_Order_Order(String username, String client, String data);
 
+    List<Map<String, Object>> get_Position_Leverage(String username, String client, String data);
+
     void post_Position_Leverage(String username, String client, String data);
 }
