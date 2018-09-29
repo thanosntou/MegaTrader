@@ -127,7 +127,7 @@
                             <div class="col-sm-1">
                                 <select name="symbol">
                                     <option value="XBTUSD">XBTUSD</option>
-                                    <option value="ETHUSDi">ETHUSD</option>
+                                    <option value="ETHUSD">ETHUSD</option>
                                     <option value="ADAZ18">ADAZ18</option>
                                     <option value="BCHZ18">BCHZ18</option>
                                     <option value="LTCZ18">LTCZ18</option>
@@ -218,7 +218,7 @@
                             <div class="col-sm-1">
                                 <select name="symbol">
                                     <option value="XBTUSD">XBTUSD</option>
-                                    <option value="ETHUSDi">ETHUSD</option>
+                                    <option value="ETHUSD">ETHUSD</option>
                                     <option value="ADAZ18">ADAZ18</option>
                                     <option value="BCHZ18">BCHZ18</option>
                                     <option value="LTCZ18">LTCZ18</option>
@@ -300,7 +300,7 @@
                             <div class="col-sm-1">
                                 <select name="symbol">
                                     <option value="XBTUSD">XBTUSD</option>
-                                    <option value="ETHUSDi">ETHUSD</option>
+                                    <option value="ETHUSD">ETHUSD</option>
                                     <option value="ADAZ18">ADAZ18</option>
                                     <option value="BCHZ18">BCHZ18</option>
                                     <option value="LTCZ18">LTCZ18</option>
