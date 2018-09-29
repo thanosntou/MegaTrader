@@ -192,6 +192,7 @@
 
                     <div class="tab-pane fade" id="v-pills-th" role="tabpanel" aria-labelledby="v-pills-th-tab">
                         <h3>Transaction History</h3>
+                        <%--${order_get}--%>
                     </div>
                     <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">
                         <h3>Wallet</h3>

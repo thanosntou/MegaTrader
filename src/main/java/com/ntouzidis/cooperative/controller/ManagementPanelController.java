@@ -3,8 +3,12 @@ package com.ntouzidis.cooperative.controller;
 import java.io.IOException;
 import java.nio.file.*;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.ntouzidis.cooperative.module.admin.AdminService;
+import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.category.CategoryService;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.MemberService;
@@ -13,6 +17,8 @@ import com.ntouzidis.cooperative.module.payment.PaymentService;
 import com.ntouzidis.cooperative.module.product.ProductService;
 import com.ntouzidis.cooperative.module.product.Product;
 import com.ntouzidis.cooperative.module.sale.SaleService;
+import com.ntouzidis.cooperative.module.user.User;
+import com.ntouzidis.cooperative.module.user.UserService;
 import liquibase.util.file.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +39,8 @@ public class ManagementPanelController {
     @Autowired
     private CustomerService customerService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private MemberService memberService;
     @Autowired
     private AdminService adminService;
@@ -46,25 +54,61 @@ public class ManagementPanelController {
     private OfferService offerService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private BitmexService bitmexService;
 
     @Value("${images.upload.folder}")
     private String imagesfolder;
 
     @GetMapping(value = {"", "/"})
-    public String showProducts(@RequestParam(name="sortBy", defaultValue = "name") String sb,
-                               @RequestParam(name="orderBy", defaultValue = "asc") String ob,
-                               Model model, Principal principal) {
+    public String showProducts(Model model, Principal principal) {
 
-        List<Product> products = ProductService.getAllSortedAndOrdered(sb, ob);
-//        model.addAttribute("businessEntity", "products");
-        model.addAttribute("businessList", products);
-        model.addAttribute(
-                "user",
-                (principal.getName().equalsIgnoreCase("athan")
-                        ?adminService.getByUsername(principal.getName())
-                        :memberService.getByUsername(principal.getName()))
-        );
-        return "management-panel";
+//        User user = userService.findByUsername(principal.getName());
+
+//        model.addAttribute("user", user);
+//        model.addAttribute("activeTraders", memberService.getAllSortedAndOrdered("username", "asc"));
+//        model.addAttribute("walletBalance", walletBalance);
+////        model.addAttribute("order_get", bitmexOrderOrderGet.toString());
+
+        return "trade-panel";
+    }
+
+    @PostMapping(value = "/order")
+    public String postOrder(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
+                            @RequestParam(name="symbol") String symbol,
+                            @RequestParam(name="side") String side,
+                            @RequestParam(name="ordType") String ordType,
+                            @RequestParam(name="orderQty") String orderQty,
+                            @RequestParam(name="price", required=false) String price,
+                            @RequestParam(name="execInst", required=false) String execInst,
+                            @RequestParam(name="stopPx", required = false) String stopPx,
+                            @RequestParam(name="leverage", required = false) String leverage,
+                            Model model, Principal principal) {
+
+        User user = userService.findByUsername(principal.getName());
+
+        String dataLeverage = "";
+        if (symbol != null) dataLeverage += "symbol=" + symbol;
+        if (side != null) dataLeverage += "&leverage=" + leverage;
+
+        String dataOrder = "";
+        if (symbol != null) dataOrder += "symbol=" + symbol;
+        if (side != null) dataOrder += "&side=" + side;
+        if (ordType != null) dataOrder += "&ordType=" + ordType;
+        if (orderQty != null) dataOrder += "&orderQty=" + orderQty;
+        if (price != null) dataOrder += "&price=" + price;
+        if (execInst != null) dataOrder += "&execInst=" + execInst;
+        if (stopPx != null) dataOrder += "&stopPx=" + stopPx;
+
+
+//        bitmexService.setLeverage(principal.getName(), client, dataLeverage);
+
+        bitmexService.post_Order_Order(principal.getName(), client, dataOrder);
+
+        model.addAttribute("user", user);
+        model.addAttribute("user", principal.getName());
+
+        return "trade-panel";
     }
 
     @GetMapping(value = {"/{tab}"})

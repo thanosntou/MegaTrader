@@ -243,7 +243,7 @@
                             <c:url var="newCustomerLink" value="/register/showRegistrationForm">
                                 <c:param name="selector" value="customer" />
                             </c:url>
-                        
+
                                 <thead class="thead bg-info">
                                     <tr>
                                         <th scope="col">Id<a href="${sortCustomersByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortCustomersDescByIdLink}"><i class="fas fa-chevron-down"></i></a></th>

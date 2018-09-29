@@ -4,6 +4,7 @@ import com.ntouzidis.cooperative.module.admin.AdminService;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.customer.CustomerService;
 import com.ntouzidis.cooperative.module.member.MemberService;
+import com.ntouzidis.cooperative.module.user.User;
 import com.ntouzidis.cooperative.module.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.Formatter;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -35,21 +35,28 @@ public class DashboardController {
     public String getDashboard(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
                                Model model, Principal principal) {
 
-        Object user = null;
-
-        if (principal != null) user = userService.findByUsername(principal.getName());
-
-        Map<String, Object> bitmexinfo = bitmexService.getBitmexInfo(principal.getName(), client);
+        User user = userService.findByUsername(principal.getName());
 
         String walletBalance = null;
         String availableMargin = null;
         String activeBalance = null;
 
-        if (bitmexinfo != null) {
-            walletBalance = bitmexinfo.get("walletBalance").toString();
-            availableMargin = bitmexinfo.get("availableMargin").toString();
-            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
-        }
+        Map<String, Object> bitmexUserWalletGet = new HashMap<>();
+//        List bitmexOrderOrderGet = new ArrayList<>();
+
+//        bitmexUserWalletGet = bitmexService.get_User_Margin(principal.getName(), client);
+//        bitmexOrderOrderGet = bitmexService.get_Order_Order(principal.getName(), client);
+
+
+//        if (bitmexUserWalletGet != null) {
+//            walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
+//            availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
+//            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
+//        }
+
+//        if (bitmexUserWalletGet != null && bitmexUserWalletGet.size() > 1) {
+//            System.out.println(bitmexOrderOrderGet.toString());
+//        }
 
 
         model.addAttribute("user", user);
@@ -62,6 +69,7 @@ public class DashboardController {
         model.addAttribute("apiKey", userService.findByUsername(principal.getName()).getApiKey());
         model.addAttribute("apiSecret", userService.findByUsername(principal.getName()).getApiSecret());
         model.addAttribute("currentClient", client);
+//        model.addAttribute("order_get", bitmexOrderOrderGet.toString());
 
         return "dashboard";
     }
