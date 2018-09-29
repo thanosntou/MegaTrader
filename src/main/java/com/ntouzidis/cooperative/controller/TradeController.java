@@ -72,7 +72,7 @@ public class TradeController {
 
 
 
-        model.addAttribute("user", user);
+        model.addAttribute("usernamePrincipal", user.getUsername());
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
 

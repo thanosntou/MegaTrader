@@ -44,7 +44,7 @@
             <div class="row" style="height: 18vh;">
                 <div class="card" style="width: 18rem; background-color: inherit; border: none">
                     <div class="card-body" style="color: white; margin-top: 1%">
-                        <h5 class="card-title"><i class="fas fa-user"></i> Welcome, ${user.username} </h5>
+                        <h5 class="card-title"><i class="fas fa-user"></i> Welcome, ${usernamePrincipal} </h5>
                         <%--<h6>${user.email}</h6>--%>
                         <br>
 
