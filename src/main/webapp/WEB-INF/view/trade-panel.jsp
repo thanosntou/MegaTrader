@@ -137,8 +137,8 @@
                             </div>
                             <div class="col-sm-1">
                                 <select name="client">
-                                    <option value="bitmex">Bitmex</option>
                                     <option value="testnet">Testnet</option>
+                                    <option value="bitmex">Bitmex</option>
                                 </select>
                             </div>
                         </div>
@@ -220,8 +220,8 @@
                             </div>
                             <div class="col-sm-1">
                                 <select name="client">
-                                    <option value="bitmex">Bitmex</option>
                                     <option value="testnet">Testnet</option>
+                                    <option value="bitmex">Bitmex</option>
                                 </select>
                             </div>
                         </div>
@@ -294,8 +294,8 @@
                             </div>
                             <div class="col-sm-1">
                                 <select name="client">
-                                    <option value="bitmex">Bitmex</option>
                                     <option value="testnet">Testnet</option>
+                                    <option value="bitmex">Bitmex</option>
                                 </select>
                             </div>
                         </div>
