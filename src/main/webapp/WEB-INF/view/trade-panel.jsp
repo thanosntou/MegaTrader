@@ -64,7 +64,7 @@
 
                     <div class="col-sm-12">
                         <div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-                            <form:form action="${pageContext.request.contextPath}/dashboard" method="POST">
+                            <form:form action="${pageContext.request.contextPath}/dashboard" method="GET">
                                 <input type="submit" class="btn btn-outline-info" value="Dashboard"/>
                             </form:form>
                                 <%--<a class="nav-link active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="fas fa-columns"></i> Dashboard</a>--%>
