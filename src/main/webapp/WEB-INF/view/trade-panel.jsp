@@ -366,7 +366,7 @@
                 <table class="table table-hover table-sm"><br/>
                     <tbody>
                     <c:forEach var="tempMap" items="${positions}">
-                        <c:if test="${tempMap['ordStatus'] == 'New'}" >
+                        <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
                         <tr>
                             <th scope="row">${tempMap['symbol']}</th>
                             <td>${tempMap['size']}</td>
@@ -381,7 +381,7 @@
                             <td>${tempMap['avgPx']}</td>
 
                             </tr>
-                        </c:if>
+                        <%--</c:if>--%>
                         
                     </c:forEach>
                     </tbody>
