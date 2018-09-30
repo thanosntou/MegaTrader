@@ -360,8 +360,40 @@
                     </form:form>
                 </div>
             </div>
+            <br>
+            <div>
+                <h4>-- Positions --</h4>
+                <table class="table table-hover table-sm"><br/>
+                    <tbody>
+                    <c:forEach var="tempMap" items="${positions}">
+                        <c:if test="${tempMap['ordStatus'] == 'New'}" >
+                        <tr>
+                            <th scope="row">${tempMap['symbol']}</th>
+                            <td>${tempMap['size']}</td>
+                            <td>${tempMap['price']}</td>
+                            <td>${tempMap['ordType']}</td>
+                            <td>${tempMap['orderStatus']}</td>
+                            <td>${tempMap['orderQty']}</td>
+                            <td>${tempMap['currency']}</td>
+                            <td>${tempMap['ordStatus']}</td>
+                            <td>${tempMap['transactTime']}</td>
+                            <td>${tempMap['cumQty']}</td>
+                            <td>${tempMap['avgPx']}</td>
+
+                            </tr>
+                        </c:if>
+                        
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
         </div>
-</div>
+
+    </div>
+
+
+
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

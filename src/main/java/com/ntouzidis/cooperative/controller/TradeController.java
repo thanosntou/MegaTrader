@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/trade")
@@ -29,6 +31,8 @@ public class TradeController {
                                Model model, Principal principal) {
 
         User user = userService.findByUsername(principal.getName());
+
+        List<Map<String, Object>> positions= bitmexService.get_Order_Order(principal.getName(), "testnet");
 
         String maxLeverage = "0";
         String priceStep = "1";
@@ -80,10 +84,13 @@ public class TradeController {
             maxLeverage = "100";
         }
 
+        setInfos(symbol, maxLeverage, priceStep);
+
         model.addAttribute("usernamePrincipal", user.getUsername());
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
         model.addAttribute("priceStep", priceStep);
+        model.addAttribute("positions", positions);
 
         return "trade-panel";
     }
@@ -124,5 +131,9 @@ public class TradeController {
         model.addAttribute("user", principal.getName());
 
         return "redirect:/trade/"+symbol;
+    }
+
+    private void setInfos(String symbol, String maxLeverage, String priceStep) {
+
     }
 }

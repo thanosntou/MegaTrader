@@ -62,18 +62,27 @@ public class BitmexService implements IBitmexService {
 
     }
 
-    public List get_Order_Order(String username, String client) {
+    public List<Map<String, Object>> get_Order_Order(String username, String client) {
         Preconditions.checkNotNull(username, "username");
         Preconditions.checkNotNull(client, "base url");
 
         String baseUrl = calculateBaseUrl(client);
         String data = "";
+        String path = ENDPOINT_ORDER + "?reverse=true";
 
-        String res = requestGET(username, baseUrl, ENDPOINT_ORDER, data);
+        String res = requestGET(username, baseUrl, path, data);
+
+        List<Map<String, Object>> myMapList = new ArrayList<>();
 
         if(res != null) {
-            JSONArray jsonObj = new JSONArray(res);
-            return jsonObj.toList();
+            JSONArray jsonArray = new JSONArray(res);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject tempObj = jsonArray.getJSONObject(i);
+                myMapList.add(tempObj.toMap());
+            }
+
+            return myMapList;
         }
 
         return null;
