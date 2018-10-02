@@ -444,7 +444,7 @@
                         <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
                         <tr>
                             <th scope="row">${tempMap['symbol']}</th>
-                            <td>${tempMap['commission']}</td>
+                            <%--<td>${tempMap['commission']}</td>--%>
                             <td>${tempMap['leverage']}</td>
                             <td>${tempMap['isOpen']}</td>
                             <%--<td>${tempMap['rebalancedPnl']}</td>--%>
