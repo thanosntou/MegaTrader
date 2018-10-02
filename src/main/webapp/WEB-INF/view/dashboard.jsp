@@ -131,6 +131,37 @@
                             </div>
 
                         </div>
+                        <br><br>
+                        <div class="row">
+                            <table class="table table-hover table-sm">
+                                <tbody>
+                                <c:forEach var="tempMap" items="${positions}">
+                                    <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                                    <tr>
+                                        <th scope="row">${tempMap['symbol']}</th>
+                                        <td>${tempMap['commission']}</td>
+                                        <td>${tempMap['initMarginReq']}</td>
+                                        <td>${tempMap['maintMarginReq']}</td>
+                                        <td>${tempMap['leverage']}</td>
+                                        <td>${tempMap['prevClosePrice']}</td>
+                                        <td>${tempMap['openingComm']}</td>
+                                        <td>${tempMap['execBuyQty']}</td>
+                                        <td>${tempMap['execBuyCost']}</td>
+                                        <td>${tempMap['execSellQty']}</td>
+                                        <td>${tempMap['execSellCost']}</td>
+                                        <td>${tempMap['execQty']}</td>
+                                        <td>${tempMap['execComm']}</td>
+                                        <td>${tempMap['execBuyCost']}</td>
+                                        <td>${tempMap['execSellQty']}</td>
+                                        <td>${tempMap['execSellCost']}</td>
+
+                                    </tr>
+                                    <%--</c:if>--%>
+
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
 
@@ -169,6 +200,14 @@
                     <div class="tab-pane fade" id="v-pills-portofolio" role="tabpanel" aria-labelledby="v-pills-portofolio-tab">
                         <h3>Portofolio</h3>
                         <br>
+                        <div>
+                            <a class="donate-with-crypto"
+                               href="https://commerce.coinbase.com/checkout/6da189f179bc31">
+                                <span>Donate with Crypto</span>
+                            </a>
+                            <script src="https://commerce.coinbase.com/v1/checkout.js">
+                            </script>
+                        </div>
 
                             <c:forEach var="temp" items="${activeTraders}">
                                 <%--<c:url var="disableLink" value="/management-panel/updateProduct">--%>
@@ -192,7 +231,30 @@
 
                     <div class="tab-pane fade" id="v-pills-th" role="tabpanel" aria-labelledby="v-pills-th-tab">
                         <h3>Transaction History</h3>
-                        <%--${order_get}--%>
+                            <table class="table table-hover table-sm">
+                                <tbody>
+                                <c:forEach var="tempMap" items="${oldOrders}">
+                                    <c:if test="${tempMap['ordStatus'] == 'Filled' or tempMap['ordStatus'] == 'Close'}" >
+                                    <tr>
+                                        <th scope="row">${tempMap['symbol']}</th>
+                                        <td>${tempMap['size']}</td>
+                                        <td>${tempMap['price']}</td>
+                                        <td>${tempMap['ordType']}</td>
+                                        <td>${tempMap['orderStatus']}</td>
+                                        <td>${tempMap['orderQty']}</td>
+                                        <td>${tempMap['currency']}</td>
+                                        <td>${tempMap['ordStatus']}</td>
+                                        <td>${tempMap['transactTime']}</td>
+                                        <td>${tempMap['cumQty']}</td>
+                                        <td>${tempMap['avgPx']}</td>
+
+                                    </tr>
+                                    </c:if>
+
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">
                         <h3>Wallet</h3>

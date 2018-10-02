@@ -362,10 +362,10 @@
             </div>
             <br>
             <div>
-                <h4>-- Positions --</h4>
-                <table class="table table-hover table-sm"><br/>
+                <h4>-- Active Orders --</h4>
+                <table class="table table-hover table-sm">
                     <tbody>
-                    <c:forEach var="tempMap" items="${positions}">
+                    <c:forEach var="tempMap" items="${openOrders}">
                         <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
                         <tr>
                             <th scope="row">${tempMap['symbol']}</th>
@@ -380,13 +380,46 @@
                             <td>${tempMap['cumQty']}</td>
                             <td>${tempMap['avgPx']}</td>
 
+                        </tr>
+                        <%--</c:if>--%>
+
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <div>
+                <h4>-- Positions --</h4>
+                <table class="table table-hover table-sm">
+                    <tbody>
+                    <c:forEach var="tempMap" items="${positions}">
+                        <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                        <tr>
+                            <th scope="row">${tempMap['symbol']}</th>
+                            <td>${tempMap['commission']}</td>
+                            <td>${tempMap['initMarginReq']}</td>
+                            <td>${tempMap['maintMarginReq']}</td>
+                            <td>${tempMap['leverage']}</td>
+                            <td>${tempMap['prevClosePrice']}</td>
+                            <td>${tempMap['openingComm']}</td>
+                            <td>${tempMap['execBuyQty']}</td>
+                            <td>${tempMap['execBuyCost']}</td>
+                            <td>${tempMap['execSellQty']}</td>
+                            <td>${tempMap['execSellCost']}</td>
+                            <td>${tempMap['execQty']}</td>
+                            <td>${tempMap['execComm']}</td>
+                            <td>${tempMap['execBuyCost']}</td>
+                            <td>${tempMap['execSellQty']}</td>
+                            <td>${tempMap['execSellCost']}</td>
+
                             </tr>
                         <%--</c:if>--%>
                         
                     </c:forEach>
                     </tbody>
                 </table>
-            </div>
+            </div><br>
+
         </div>
 
     </div>

@@ -32,7 +32,9 @@ public class TradeController {
 
         User user = userService.findByUsername(principal.getName());
 
-        List<Map<String, Object>> positions= bitmexService.get_Order_Order(principal.getName(), "testnet");
+//        List<Map<String, Object>> orders= bitmexService.get_Order_Order_Open(principal.getName(), "testnet");
+        List<Map<String, Object>> positions = bitmexService.get_Position(principal.getName(),"testnet");
+        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order_Open(principal.getName(),"testnet");
 
         String maxLeverage = "0";
         String priceStep = "1";
@@ -84,12 +86,11 @@ public class TradeController {
             maxLeverage = "100";
         }
 
-        setInfos(symbol, maxLeverage, priceStep);
-
         model.addAttribute("usernamePrincipal", user.getUsername());
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
         model.addAttribute("priceStep", priceStep);
+        model.addAttribute("openOrders", openOrders);
         model.addAttribute("positions", positions);
 
         return "trade-panel";

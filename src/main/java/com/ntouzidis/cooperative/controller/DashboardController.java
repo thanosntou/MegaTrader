@@ -32,9 +32,9 @@ public class DashboardController {
         String availableMargin = null;
         String activeBalance = null;
 
-        Map<String, Object> bitmexUserWalletGet;
-
-        bitmexUserWalletGet = bitmexService.get_User_Margin(principal.getName(), client);
+        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(principal.getName(), "testnet");
+        List<Map<String, Object>> oldOrders = bitmexService.get_Order_Order(principal.getName(), "testnet");
+        List<Map<String, Object>> positions = bitmexService.get_Position(principal.getName(), "testnet");
 
         if (bitmexUserWalletGet != null) {
             walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
@@ -51,7 +51,10 @@ public class DashboardController {
         model.addAttribute("activeBalance",activeBalance );
         model.addAttribute("apiKey", userService.findByUsername(principal.getName()).getApiKey());
         model.addAttribute("apiSecret", userService.findByUsername(principal.getName()).getApiSecret());
-        model.addAttribute("currentClient", client);
+        model.addAttribute("currentClient", "testnet");
+        model.addAttribute("oldOrders", oldOrders);
+//        model.addAttribute("openOrders", openOrders);
+        model.addAttribute("positions", positions);
 
         return "dashboard";
     }
