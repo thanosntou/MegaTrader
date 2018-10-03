@@ -399,7 +399,7 @@
                         <%--<th scope="col">openingQty</th>--%>
                         <th scope="col">openingCost</th>
                         <th scope="col">unrealisedPnl</th>
-                        <%--<th scope="col">execQty</th>--%>
+                        <th scope="col">execQty</th>
                         <th scope="col">execCost</th>
                         <th scope="col">currentQty</th>
                         <th scope="col">currentCost</th>
@@ -453,8 +453,8 @@
                             <%--<td>${tempMap['openingQty']}</td>--%>
                             <td>${tempMap['openingCost']}</td>
                             <td>${tempMap['unrealisedPnl']}</td>
-                            <%--<td>${tempMap['execQty']}</td>--%>
-                            <%--<td>${tempMap['execCost']}</td>--%>
+                            <td>${tempMap['execQty']}</td>
+                            <td>${tempMap['execCost']}</td>
                             <td>${tempMap['currentQty']}</td>
                             <td>${tempMap['currentCost']}</td>
                             <td>${tempMap['currentComm']}</td>
