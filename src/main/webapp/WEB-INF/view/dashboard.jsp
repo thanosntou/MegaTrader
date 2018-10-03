@@ -60,12 +60,15 @@
                 <br>
 
                     <div class="col-sm-12">
+
                         <div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-                                <a class="nav-link active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="fas fa-columns"></i> Dashboard</a>
+                            <a class="nav-link" id="v-pills-news-tab" data-toggle="pill" href="#v-pills-news" role="tab" aria-controls="v-pills-news" aria-selected="false"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
+                            <a class="nav-link active" id="v-pills-dashboard-tab" data-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true"><i class="fas fa-columns"></i> Dashboard</a>
                             <a class="nav-link" id="v-pills-traders-tab" data-toggle="pill" href="#v-pills-traders" role="tab" aria-controls="v-pills-traders" aria-selected="false"><i class="fas fa-chart-line"></i> Invest with Traders</a>
                             <a class="nav-link" id="v-pills-portofolio-tab" data-toggle="pill" href="#v-pills-portofolio" role="tab" aria-controls="v-pills-portofolio" aria-selected="false"><i class="fas fa-briefcase"></i> Portofolio</a>
                             <a class="nav-link" id="v-pills-th-tab" data-toggle="pill" href="#v-pills-th" role="tab" aria-controls="v-pills-th" aria-selected="false"><i class="fas fa-history"></i> Transaction History</a>
-                            <a class="nav-link" id="v-pills-wallet-tab" data-toggle="pill" href="#v-pills-wallet" role="tab" aria-controls="v-pills-wallet" aria-selected="false"><i class="far fa-credit-card"></i> Wallet</a>
+                            <a class="nav-link" id="v-pills-wallet-tab" data-toggle="pill" href="#v-pills-wallet" role="tab" aria-controls="v-pills-wallet" aria-selected="false"><i class="fas fa-wallet"></i> Wallet</a>
+                            <a class="nav-link" id="v-pills-payments-tab" data-toggle="pill" href="#v-pills-payments" role="tab" aria-controls="v-pills-payments" aria-selected="false"><i class="fas fa-credit-card"></i> Payments</a>
                             <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cogs"></i> Settings</a>
                             <security:authorize access="hasAnyRole('ADMIN', 'MEMBER')">
                                 <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/trade" role="button" aria-controls="v-pills-trades" aria-selected="false"><i class="fas fa-exchange-alt"></i> Trade</a>
@@ -90,6 +93,14 @@
                 <div class="card-body">
                     <div class="col-12">
                     <div class="tab-content" id="v-pills-tabContent">
+
+                        <%-------------------------------------------------------------- News -----------------------------------------------------------------------%>
+                        <div class="tab-pane fade" id="v-pills-news" role="tabpanel" aria-labelledby="v-pills-news-tab">
+                            <h3>News</h3>
+                            <br>
+                            <br>
+
+                        </div>
 
                         <%-- dashboard --%>
                     <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
@@ -229,6 +240,7 @@
 
                     </div>
 
+                 <%-------------------------------------------------------------- Transaction History -----------------------------------------------------------------------%>
                     <div class="tab-pane fade" id="v-pills-th" role="tabpanel" aria-labelledby="v-pills-th-tab">
                         <h3>Transaction History</h3>
                             <table class="table table-hover table-sm">
@@ -255,7 +267,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+
                     <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">
                         <h3>Wallet</h3>
                         <br>
@@ -270,7 +282,26 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                        <%-------------------------------------------------------------- Wallet -----------------------------------------------------------------------%>
+                        <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">
+                            <h3>Wallet</h3>
+                            <br>
+                            <br>
+
+
+                        </div>
+
+                        <%-------------------------------------------------------------- Payments -----------------------------------------------------------------------%>
+                        <div class="tab-pane fade" id="v-pills-payments" role="tabpanel" aria-labelledby="v-pills-payments-tab">
+                            <h3>Payments</h3>
+                            <br>
+                            <br>
+
+
+                        </div>
+
+                        <%-------------------------------------------------------------- Settings -----------------------------------------------------------------------%>
+                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
                         <h3>Settings</h3>
                         <br>
                         <br>

@@ -5,3 +5,7 @@
     color: white;
 }
 
+.fa-newspaper-o{
+    font-family: FontAwesome;
+    content:"\f1ea";
+}
