@@ -35,6 +35,7 @@ public class DashboardController {
         Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(principal.getName(), "testnet");
         List<Map<String, Object>> oldOrders = bitmexService.get_Order_Order(principal.getName(), "testnet");
         List<Map<String, Object>> positions = bitmexService.get_Position(principal.getName(), "testnet");
+        List<Map<String, Object>> announcements = bitmexService.get_Announcements(principal.getName(), "testnet");
 
         if (bitmexUserWalletGet != null) {
             walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
@@ -55,6 +56,7 @@ public class DashboardController {
         model.addAttribute("oldOrders", oldOrders);
 //        model.addAttribute("openOrders", openOrders);
         model.addAttribute("positions", positions);
+        model.addAttribute("announcements", announcements);
 
         return "dashboard";
     }

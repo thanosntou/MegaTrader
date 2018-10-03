@@ -5,6 +5,8 @@ import java.util.Map;
 
 public interface IBitmexService {
 
+    List<Map<String, Object>> get_Announcements(String username, String client);
+
     Map<String, Object> get_User_Margin(String username, String client);
 
     List<Map<String, Object>> get_Order_Order_Open(String username, String client);

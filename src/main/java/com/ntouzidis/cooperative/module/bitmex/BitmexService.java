@@ -26,11 +26,10 @@ public class BitmexService implements IBitmexService {
     private static String BITMEX_BASE_URL = "https://www.bitmex.com";
     private static String TESTNET_BASE_URL = "https://testnet.bitmex.com";
 
+    private static String ENDPOINT_ANNOUNCEMENT = "/api/v1/announcement";
     private static String ENDPOINT_ORDER = "/api/v1/order";
-
     private static String ENDPOINT_POSITION = "/api/v1/position";
     private static String ENDPOINT_POSITION_LEVERAGE = "/api/v1/position/leverage";
-
     private static String ENDPOINT_USER_MARGIN = "/api/v1/user/margin";
 
     private static String GET = "GET";
@@ -42,6 +41,16 @@ public class BitmexService implements IBitmexService {
 
     public BitmexService(UserService userService) {
         this.userService = userService;
+    }
+
+    public List<Map<String, Object>> get_Announcements(String username, String client) {
+        checkPreconditions(username, client);
+
+        String baseUrl = calculateBaseUrl(client);
+        String res = requestGET(username, baseUrl, ENDPOINT_ANNOUNCEMENT, "");
+
+        return getMapList(res);
+
     }
 
 
@@ -125,12 +134,10 @@ public class BitmexService implements IBitmexService {
         String apikey = principal.getApiKey();
         String apiSecret = principal.getApiSecret();
         String expires = String.valueOf(1600883067);
-        String verb = "GET";
-
-        String signature = null;
+        String signature;
 
         try {
-            signature = calculateSignature(apiSecret, verb, path, expires, data);
+            signature = calculateSignature(apiSecret, GET, path, expires, data);
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();

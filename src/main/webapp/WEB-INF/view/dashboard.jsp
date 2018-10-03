@@ -12,8 +12,7 @@
     <title>Dashboard</title>
 </head>
 <body>
-<div id="all" class="container-fluid" style="width: 100%">
-
+<div id="all" class="container-fluid">
     <%--wallstreetbar--%>
     <%--<div class="row">--%>
         <%--<div class="col-sm-12" id="wsbar">--%>
@@ -35,7 +34,7 @@
     <%--</div>--%>
 
     <%--main content--%>
-    <div style="height: 100vh;" class="row">
+    <div style="min-height: 100vh;" class="row">
 
         <%--// side bar--%>
         <div class="col-sm-2" style="background-color: #3b5264">
@@ -96,9 +95,32 @@
 
                         <%-------------------------------------------------------------- News -----------------------------------------------------------------------%>
                         <div class="tab-pane fade" id="v-pills-news" role="tabpanel" aria-labelledby="v-pills-news-tab">
-                            <h3>News</h3>
+                            <div class="row">
+                                <h3>News</h3>
+                            </div>
                             <br>
-                            <br>
+
+                                    <c:forEach var="tempMap" items="${announcements}">
+                                        <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                                        <div class="row" style="font-size: 1.4rem">
+                                            Title: ${tempMap['title']}
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            ${tempMap['content']}
+                                        </div>
+                                        <div class="row">
+                                            Date: ${tempMap['date']}
+                                        </div>
+                                        <div class="row">
+                                            <a href="${tempMap['link']}">${tempMap['link']}</a>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <%--</c:if>--%>
+
+                                    </c:forEach>
+
 
                         </div>
 
@@ -333,8 +355,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
