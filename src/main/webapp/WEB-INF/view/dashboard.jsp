@@ -234,9 +234,8 @@
                         <h3>Portofolio</h3>
                         <br>
                         <div>
-                            <a class="donate-with-crypto"
-                               href="https://commerce.coinbase.com/checkout/6da189f179bc31">
-                                <span>Donate with Crypto</span>
+                            <a class="donate-with-crypto" href="https://commerce.coinbase.com/checkout/18942dc4-8e2c-485e-a44a-c10f4d35170a">
+                                <span><i class="fab fa-bitcoin"></i> Deposit</span>
                             </a>
                             <script src="https://commerce.coinbase.com/v1/checkout.js">
                             </script>
