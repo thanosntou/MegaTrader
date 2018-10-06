@@ -233,13 +233,7 @@
                     <div class="tab-pane fade" id="v-pills-portofolio" role="tabpanel" aria-labelledby="v-pills-portofolio-tab">
                         <h3>Portofolio</h3>
                         <br>
-                        <div>
-                            <a class="donate-with-crypto" href="https://commerce.coinbase.com/checkout/18942dc4-8e2c-485e-a44a-c10f4d35170a">
-                                <span><i class="fab fa-bitcoin"></i> Deposit</span>
-                            </a>
-                            <script src="https://commerce.coinbase.com/v1/checkout.js">
-                            </script>
-                        </div>
+
 
                             <c:forEach var="temp" items="${activeTraders}">
                                 <%--<c:url var="disableLink" value="/management-panel/updateProduct">--%>
@@ -288,28 +282,27 @@
                                 </tbody>
                             </table>
                         </div>
-
-                    <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">
-                        <h3>Wallet</h3>
-                        <br>
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">Balance: </h5>
-                            </div>
-                            <div class="card-body">
-                                <a href="#" class="card-link">Deposit</a>
-                                <a href="#" class="card-link">Withdraw</a>
-                            </div>
-                        </div>
-                    </div>
-
-                        <%-------------------------------------------------------------- Wallet -----------------------------------------------------------------------%>
+                         <%-------------------------------------------------------------- Wallet -----------------------------------------------------------------------%>
                         <div class="tab-pane fade" id="v-pills-wallet" role="tabpanel" aria-labelledby="v-pills-wallet-tab">
                             <h3>Wallet</h3>
                             <br>
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Balance: </h5>
+                                </div>
+                                <div class="card-body">
+                                    <a href="#" class="card-link">Deposit</a>
+                                    <a href="#" class="card-link">Withdraw</a>
+                                </div>
+                            </div>
                             <br>
-
-
+                            <div>
+                                <a class="donate-with-crypto" href="https://commerce.coinbase.com/checkout/18942dc4-8e2c-485e-a44a-c10f4d35170a">
+                                    <span><i class="fab fa-bitcoin"></i> Deposit</span>
+                                </a>
+                                <script src="https://commerce.coinbase.com/v1/checkout.js">
+                                </script>
+                            </div>
                         </div>
 
                         <%-------------------------------------------------------------- Payments -----------------------------------------------------------------------%>
