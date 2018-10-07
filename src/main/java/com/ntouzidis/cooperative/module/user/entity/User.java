@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Collection;
 
@@ -22,6 +24,11 @@ public class User implements UserDetails {
     @Column(name="password")
     private String password;
 
+    @NotNull(message=" is required")
+    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Column(name="email")
+    private String email;
+
     @Column(name="create_date")
     private LocalDate create_date;
 
@@ -31,7 +38,7 @@ public class User implements UserDetails {
     @Column(name="apisecret")
     private String apiSecret;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="wallet_id")
     private Wallet wallet;
 
@@ -60,39 +67,6 @@ public class User implements UserDetails {
 //        this.credentialsNonExpired = credentialsNonExpired;
 //        this.accountNonLocked = accountNonLocked;
 //        this.authorities = Collections.unmodifiableSet(sortAuthorities(authorities));
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setCreate_date() {
-        if (this.create_date == null)
-            this.create_date = LocalDate.now();
-    }
-
-    public void setCreate_date(LocalDate create_date) {
-        this.create_date = create_date;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    public String getApiSecret() {
-        return apiSecret;
-    }
-
-    public void setApiSecret(String apiSecret) {
-        this.apiSecret = apiSecret;
     }
 
     @Override
@@ -130,6 +104,14 @@ public class User implements UserDetails {
         return true;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -138,8 +120,36 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public LocalDate getCreate_date() {
         return create_date;
+    }
+
+    public void setCreate_date() {
+        this.create_date = LocalDate.now();
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getApiSecret() {
+        return apiSecret;
+    }
+
+    public void setApiSecret(String apiSecret) {
+        this.apiSecret = apiSecret;
     }
 
     public Wallet getWallet() {

@@ -19,9 +19,15 @@ databaseChangeLog:
                         unique: true
             - column:
                   name: password
-                  type: varchar(75)
+                  type: varchar(100)
                   constraints:
                     nullable: false
+            - column:
+                name: email
+                type: varchar(255)
+                constraints:
+                  nullable: false
+                  unique: true
             - column:
                   name: enabled
                   type: boolean
@@ -30,7 +36,7 @@ databaseChangeLog:
                 name: wallet_id
                 type: int
                 constraints:
-                  foreignKeyName: fk_user1_wallet
+                  foreignKeyName: fk_users1_wallet
                   references: wallet(id)
       - createIndex:
               columns:
@@ -40,3 +46,11 @@ databaseChangeLog:
               indexName: idx_username
               tableName: users
               unique: true
+      - createIndex:
+          columns:
+          - column:
+              name: email
+              type: varchar(255)
+          indexName: idx_email
+          tableName: users
+          unique: true

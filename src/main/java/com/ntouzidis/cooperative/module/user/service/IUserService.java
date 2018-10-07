@@ -8,8 +8,8 @@ public interface IUserService {
 
     Optional<User> findByUsername(String username);
 
-    User createCustomer(String username, String password);
+    User createCustomer(User user, String password);
 
-    User createTrader(String username, String password);
+    User createTrader(User user, String password);
 
 }

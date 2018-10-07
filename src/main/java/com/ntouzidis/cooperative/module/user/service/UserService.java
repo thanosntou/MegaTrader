@@ -38,19 +38,13 @@ public class UserService implements IUserService{
 
     @Override
     @Transactional
-    public User createCustomer(String username, String password) {
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_CUSTOMER");
-        String encodedPassword = passwordEncoder.encode(password);
-
-        return createUSer(username, encodedPassword, authorities);
+    public User createCustomer(User user, String password) {
+        return createUSer(user, password, AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
     }
 
     @Transactional
-    public User createTrader(String username, String password) {
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_TRADER");
-        String encodedPassword = passwordEncoder.encode(password);
-
-        return createUSer(username, encodedPassword, authorities);
+    public User createTrader(User user, String password) {
+        return createUSer(user, password, AuthorityUtils.createAuthorityList("ROLE_TRADER"));
     }
 
     @Transactional
@@ -62,22 +56,22 @@ public class UserService implements IUserService{
         userRepository.save(principal);
     }
 
+    private User createUSer(User user, String password, List<GrantedAuthority> authorities) {
+        User userDetails = new User(user.getUsername(), passwordEncoder.encode(password), authorities);
 
-    private User createUSer(String username, String encodedPassword, List<GrantedAuthority> authorities) {
-        User user = new User(username, encodedPassword, authorities);
         Wallet wallet = new Wallet();
         wallet.setBalance(0L);
 
-        user.setCreate_date();
-        user.setWallet(wallet);
+        userDetails.setEmail(user.getEmail());
+        userDetails.setCreate_date();
+        userDetails.setWallet(wallet);
 
-        if (!userDetailsManager.userExists(username)) {
-            walletRepository.save(wallet);
-            userRepository.save(user);
-            authorityService.createAuthorities(username, authorities);
+        if (!userDetailsManager.userExists(userDetails.getUsername())) {
+            userRepository.save(userDetails);
+            authorityService.createAuthorities(userDetails.getUsername(), authorities);
         }
 
-        return user;
+        return userDetails;
     }
 
 }

@@ -71,28 +71,28 @@ c<%@page contentType="text/html" pageEncoding="UTF-8"%>
                                 <form:input path="email" placeholder="email" class="form-control" />      
                             </div>
                                                 
-                            <!-- first name -->
-                            <form:label path="firstName">First name *</form:label><form:errors path="firstName" cssClass="error" />
-                            <div style="margin-bottom: 25px" class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil "></i></span> 
-                                <form:input path="firstName" placeholder="first name" class="form-control" />     
-                            </div> 
-        
-                            <!-- last name -->
-                            <form:label path="lastName">Last name *</form:label><form:errors path="lastName" cssClass="error" />
-                            <div style="margin-bottom: 25px" class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil "></i></span> 
-                                <form:input path="lastName" placeholder="last name" class="form-control" />     
-                            </div>
-                                        
-                                                
-                            <!-- hidden ssn -->
-                            <form:label path="ssn">Ssn *</form:label><form:errors path="ssn" cssClass="error" />
-                            <div style="margin-bottom: 25px" class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil "></i></span> 
-                                <form:input path="ssn" placeholder="ssn" class="form-control" />
-                                        
-                            </div>
+                            <%--<!-- first name -->--%>
+                            <%--<form:label path="firstName">First name *</form:label><form:errors path="firstName" cssClass="error" />--%>
+                            <%--<div style="margin-bottom: 25px" class="input-group">--%>
+                                <%--<span class="input-group-addon"><i class="glyphicon glyphicon-pencil "></i></span> --%>
+                                <%--<form:input path="firstName" placeholder="first name" class="form-control" />     --%>
+                            <%--</div> --%>
+        <%----%>
+                            <%--<!-- last name -->--%>
+                            <%--<form:label path="lastName">Last name *</form:label><form:errors path="lastName" cssClass="error" />--%>
+                            <%--<div style="margin-bottom: 25px" class="input-group">--%>
+                                <%--<span class="input-group-addon"><i class="glyphicon glyphicon-pencil "></i></span> --%>
+                                <%--<form:input path="lastName" placeholder="last name" class="form-control" />     --%>
+                            <%--</div>--%>
+                                        <%----%>
+                                                <%----%>
+                            <%--<!-- hidden ssn -->--%>
+                            <%--<form:label path="ssn">Ssn *</form:label><form:errors path="ssn" cssClass="error" />--%>
+                            <%--<div style="margin-bottom: 25px" class="input-group">--%>
+                                <%--<span class="input-group-addon"><i class="glyphicon glyphicon-pencil "></i></span> --%>
+                                <%--<form:input path="ssn" placeholder="ssn" class="form-control" />--%>
+                                        <%----%>
+                            <%--</div>--%>
 
                                     <!-- Register Button -->
                             <div style="margin-top: 10px" class="form-group">						

@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 007-add_create_date_to_user
+      id: 007-add_create_date_to_users
       author: ntouzidis
       changes:
       - addColumn:

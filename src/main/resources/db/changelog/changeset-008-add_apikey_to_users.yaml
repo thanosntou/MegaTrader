@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 008-add_apikey_to_user
+      id: 008-add_apikey_to_users
       author: ntouzidis
       changes:
       - addColumn:

@@ -20,8 +20,12 @@ databaseChangeLog:
                         value: athan
                 - column:
                         name: password
-                        type: varchar(75)
+                        type: varchar(100)
                         value: '{bcrypt}$2a$04$wQpCWG/5679VUJxWjo6feuDcjrbV.k5CcOKlp7MXFHkQDtRxR4bia'
+                - column:
+                    name: email
+                    type: varchar(255)
+                    value: thanosntouzidis@gmail.com
                 - column:
                         name: enabled
                         type: boolean
