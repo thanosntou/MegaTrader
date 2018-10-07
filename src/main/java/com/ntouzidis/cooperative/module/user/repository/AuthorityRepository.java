@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.user;
+package com.ntouzidis.cooperative.module.user.authority;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

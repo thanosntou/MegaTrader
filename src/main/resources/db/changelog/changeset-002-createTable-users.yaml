@@ -1,22 +1,42 @@
 databaseChangeLog:
-  - changeSet:
+- changeSet:
       id: 002-createTable-users
       author: ntouzidis
       changes:
-        - createTable:
+      - createTable:
             tableName: users
             columns:
-              - column:
+            - column:
+                  name: id
+                  type: serial
+                  constraints:
+                        primaryKey: true
+            - column:
                   name: username
                   type: varchar(50)
                   constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
+                        nullable: false
+                        unique: true
+            - column:
                   name: password
                   type: varchar(75)
                   constraints:
                     nullable: false
-              - column:
+            - column:
                   name: enabled
                   type: boolean
+                  defaultValueBoolean: true
+            - column:
+                name: wallet_id
+                type: int
+                constraints:
+                  foreignKeyName: fk_user1_wallet
+                  references: wallet(id)
+      - createIndex:
+              columns:
+              - column:
+                      name: username
+                      type: varchar(50)
+              indexName: idx_username
+              tableName: users
+              unique: true

@@ -1,14 +1,6 @@
-package com.ntouzidis.cooperative.controller;
+package com.ntouzidis.cooperative.module.user;
 
-import java.security.Principal;
-import javax.validation.Valid;
-
-import com.ntouzidis.cooperative.module.cart.CartService;
-import com.ntouzidis.cooperative.module.customer.Customer;
-import com.ntouzidis.cooperative.module.customer.CustomerService;
-import com.ntouzidis.cooperative.module.member.Member;
-import com.ntouzidis.cooperative.module.member.MemberService;
-import com.ntouzidis.cooperative.module.user.UserService;
+import com.ntouzidis.cooperative.module.user.service.IUserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -20,31 +12,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
     
-    private final static org.slf4j.Logger logger =  
-            LoggerFactory.getLogger(RegistrationController.class);
-    
+    private final static org.slf4j.Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+
     @Autowired
     private UserDetailsManager userDetailsManager;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
-    private CustomerService customerService;
-    @Autowired
-    private MemberService memberService;
-    @Autowired
-    private CartService cartService;
-    @Autowired
-    private UserService userService;
+    private IUserService userService;
+
+    public RegistrationController() {
+    }
     
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
@@ -62,10 +47,10 @@ public class RegistrationController {
         if (option == null){
             return "redirect:/register/showRegistrationFormOption";}
         if (option.equals("customer")){
-            theModel.addAttribute("customer", new Customer());
+//            theModel.addAttribute("customer", new Customer());
             return "registration-form-customer";
         }else if (option.equals("member")){
-            theModel.addAttribute("member", new Member());
+
             return "registration-form-member";
         }
 	return "access-denied";	
@@ -73,7 +58,7 @@ public class RegistrationController {
 
     @PostMapping("/customerRegistrationForm")
     public String processRegistrationForm(
-				@Valid @ModelAttribute("customer") Customer theCustomer,
+//				@Valid @ModelAttribute("customer") Customer theCustomer,
 				BindingResult theBindingResult,
 				@RequestParam(required=false,name="pass") String pass,
                 @RequestParam(required=false,name="confirmPass") String confirmPass,
@@ -94,47 +79,46 @@ public class RegistrationController {
 //        }
 
         // check the database if user already exists
-        if (doesUserExist(theCustomer.getUsername())) {
-            theModel.addAttribute("registrationError", "user name already exists.");
-            return "registration-form-customer";
-        }
-
-        userService.createCustomer(theCustomer.getUsername(), pass);
-
-        return "redirect:/";
-    }
-
-    @PostMapping("/memberRegistrationForm")
-    public String memberRegistrationForm(
-				@Valid @ModelAttribute("member") Member member,
-                                BindingResult theBindingResult,
-                                @RequestParam(required=false,name="pass") String pass,
-                                @RequestParam(required=false,name="confirmPass") String confirmPass,
-				Model theModel,
-                                Principal principal) {
-
-        if (theBindingResult.hasErrors() || pass == null || pass.length() < 5 || !pass.equals(confirmPass)){
-            theModel.addAttribute("lathos", "Invalid password");
-            return "registration-form-member";
-        }
-
-//        if (member.getId() != null && pass.equals(confirmPass)){
-//            if (principal instanceof UserDetails) {
-//                changePassword(principal, pass);
-//            }
-//            memberService.save(member);
-//            return "redirect:/management-panel";
+//        if (doesUserExist(theCustomer.getUsername())) {
+//            theModel.addAttribute("registrationError", "user name already exists.");
+//            return "registration-form-customer";
 //        }
-
-	    if (doesUserExist(member.getUsername())) {
-            theModel.addAttribute("registrationError", "user name already exists.");
-            return "registration-form-member";
-        }
-
-        userService.createTrader(member.getUsername(), pass);
+//
+//        userService.createCustomer(theCustomer.getUsername(), pass);
 
         return "redirect:/";
     }
+
+//    @PostMapping("/memberRegistrationForm")
+//    public String memberRegistrationForm(
+//				@Valid @ModelAttribute("member") Member member
+//                                BindingResult theBindingResult,
+//                                @RequestParam(required=false,name="pass") String pass,
+//                                @RequestParam(required=false,name="confirmPass") String confirmPass,
+//				Model theModel,
+//                                Principal principal) {
+//
+//        if (theBindingResult.hasErrors() || pass == null || pass.length() < 5 || !pass.equals(confirmPass)){
+//            theModel.addAttribute("lathos", "Invalid password");
+//            return "registration-form-member";
+//        }
+//
+////        if (member.getId() != null && pass.equals(confirmPass)){
+////            if (principal instanceof UserDetails) {
+////                changePassword(principal, pass);
+////            }
+////            memberService.save(member);
+////            return "redirect:/management-panel";
+////        }
+//
+//	    if (doesUserExist(member.getUsername())) {
+//            theModel.addAttribute("registrationError", "user name already exists.");
+//            return "registration-form-member";
+//        }
+//        userService.createTrader(member.getUsername(), pass);
+//
+//        return "redirect:/";
+//    }
 
     private void changePassword(Principal principal, String pass) {
         String username = ((UserDetails) principal).getUsername();
@@ -142,14 +126,6 @@ public class RegistrationController {
         String encodedPassword = passwordEncoder.encode(pass);
         encodedPassword = "{bcrypt}" + encodedPassword;
         userDetailsManager.changePassword(password, encodedPassword);
-    }
-    
-    @GetMapping("/memberUpdateForm")
-    public String memberUpdate(@RequestParam("memberId") int id, Model theModel) {
-	    Member member = memberService.get(id);
-	    theModel.addAttribute("member", member);
-
-	    return "registration-form-member";
     }
     
     

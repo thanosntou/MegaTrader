@@ -1,19 +1,8 @@
 package com.ntouzidis.cooperative.module.payment;
 
-import com.ntouzidis.cooperative.module.member.Member;
-import com.ntouzidis.cooperative.module.sale.Sale;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "payment")
@@ -24,14 +13,6 @@ public class Payment implements Serializable{
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="sale")
-    private Sale sale;
-
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="member")
-    private Member member;
-
     @Column(name="amount")
     private Double amount;
 
@@ -41,9 +22,7 @@ public class Payment implements Serializable{
     public Payment() {
     }
 
-    public Payment(Sale sale, Member member, Double amount) {
-        this.sale = sale;
-        this.member = member;
+    public Payment(Double amount) {
         this.amount = amount;
         this.date = LocalDateTime.now();
     }
@@ -55,22 +34,6 @@ public class Payment implements Serializable{
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Sale getSale() {
-        return sale;
-    }
-
-    public void setSale(Sale sale) {
-        this.sale = sale;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
 
     public Double getAmount() {

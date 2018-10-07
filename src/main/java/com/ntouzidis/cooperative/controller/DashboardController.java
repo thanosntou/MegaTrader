@@ -1,9 +1,8 @@
 package com.ntouzidis.cooperative.controller;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
-import com.ntouzidis.cooperative.module.member.MemberService;
-import com.ntouzidis.cooperative.module.user.User;
-import com.ntouzidis.cooperative.module.user.UserService;
+import com.ntouzidis.cooperative.module.user.entity.User;
+import com.ntouzidis.cooperative.module.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,21 +11,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    @Autowired private MemberService memberService;
-    @Autowired private UserService userService;
+    @Autowired private IUserService userService;
     @Autowired private BitmexService bitmexService;
 
     @GetMapping(value = {"", "/"})
     public String getDashboard(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
                                Model model, Principal principal) {
 
-        User user = userService.findByUsername(principal.getName());
+        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
         String walletBalance = null;
         String availableMargin = null;
@@ -44,14 +44,13 @@ public class DashboardController {
         }
 
         model.addAttribute("user", user);
-        model.addAttribute("activeTraders", memberService.getAllSortedAndOrdered("username", "asc"));
         model.addAttribute("walletBalance", walletBalance);
         model.addAttribute("balance", walletBalance);
         model.addAttribute("earned", "0");
         model.addAttribute("availableMargin", availableMargin);
         model.addAttribute("activeBalance",activeBalance );
-        model.addAttribute("apiKey", userService.findByUsername(principal.getName()).getApiKey());
-        model.addAttribute("apiSecret", userService.findByUsername(principal.getName()).getApiSecret());
+        model.addAttribute("apiKey", user.getApiKey());
+        model.addAttribute("apiSecret", user.getApiSecret());
         model.addAttribute("currentClient", "testnet");
         model.addAttribute("oldOrders", oldOrders);
 //        model.addAttribute("openOrders", openOrders);

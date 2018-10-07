@@ -1,5 +1,7 @@
-package com.ntouzidis.cooperative.module.user;
+package com.ntouzidis.cooperative.module.user.service;
 
+import com.ntouzidis.cooperative.module.user.authority.Authority;
+import com.ntouzidis.cooperative.module.user.authority.AuthorityRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 

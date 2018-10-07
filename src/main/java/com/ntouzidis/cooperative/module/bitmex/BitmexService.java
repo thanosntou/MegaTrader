@@ -1,7 +1,8 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
-import com.ntouzidis.cooperative.module.user.User;
-import com.ntouzidis.cooperative.module.user.UserService;
+import com.ntouzidis.cooperative.module.user.entity.User;
+import com.ntouzidis.cooperative.module.user.service.IUserService;
+import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,7 +38,7 @@ public class BitmexService implements IBitmexService {
     private static String PUT = "PUT";
     private static String DELETE = "DELETE";
 
-    private final UserService userService;
+    private final IUserService userService;
 
     public BitmexService(UserService userService) {
         this.userService = userService;
@@ -83,7 +84,10 @@ public class BitmexService implements IBitmexService {
         checkPreconditions(username, client);
 
         List<Map<String, Object>> myMapList = get_Order_Order(username, client);
-        List<Map<String, Object>> filteredMapList = myMapList.stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
+        List<Map<String, Object>> filteredMapList = null;
+        if (myMapList != null)
+            filteredMapList = myMapList.stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
+
         return filteredMapList;
 
     }
@@ -129,10 +133,10 @@ public class BitmexService implements IBitmexService {
     }
 
     private String requestGET(String username, String baseUrl, String path, String data) {
-        User principal = userService.findByUsername(username);
+        User user = userService.findByUsername(username).orElseThrow(RuntimeException::new);
 
-        String apikey = principal.getApiKey();
-        String apiSecret = principal.getApiSecret();
+        String apikey = user.getApiKey();
+        String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
         String signature;
 
@@ -153,7 +157,7 @@ public class BitmexService implements IBitmexService {
             ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity, String.class);
             return Objects.requireNonNull(res.getBody()).toString();
 
-        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException | IllegalArgumentException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
@@ -237,11 +241,11 @@ public class BitmexService implements IBitmexService {
 //    }
 
     private String requestPOST(String username, String baseUrl, String path, String data) {
-        User principal = userService.findByUsername(username);
+        User user = userService.findByUsername(username).orElseThrow(RuntimeException::new);
 
         String verb = "POST";
-        String apikey = principal.getApiKey();
-        String apiSecret = principal.getApiSecret();
+        String apikey = user.getApiKey();
+        String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
 
         String signature = null;
@@ -266,14 +270,14 @@ public class BitmexService implements IBitmexService {
             ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity, String.class);
             return Objects.requireNonNull(res.getBody()).toString();
 
-        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data) throws NoSuchAlgorithmException, InvalidKeyException, IllegalArgumentException, UnsupportedEncodingException {
         Preconditions.checkNotNull(apiSecret, "API Secret");
         Preconditions.checkNotNull(verb, "request method");
         Preconditions.checkNotNull(path, "bitmex path");

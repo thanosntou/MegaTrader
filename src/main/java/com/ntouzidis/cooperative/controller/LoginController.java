@@ -1,6 +1,5 @@
 package com.ntouzidis.cooperative.controller;
 
-import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -13,7 +12,7 @@ public class LoginController {
     }
     
     @GetMapping("/login")
-    public String showMyWelcomePage(HttpSession session){
+    public String showMyWelcomePage(){
         return "welcome";
     }
     

@@ -1,5 +1,7 @@
 package com.ntouzidis.cooperative.module.user;
 
+import com.ntouzidis.cooperative.module.user.authority.AuthorityRepository;
+import com.ntouzidis.cooperative.module.user.service.AuthorityService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,7 +10,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service

@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.user;
+package com.ntouzidis.cooperative.module.user.authority;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

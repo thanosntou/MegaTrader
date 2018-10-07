@@ -1,8 +1,8 @@
 package com.ntouzidis.cooperative.controller;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
-import com.ntouzidis.cooperative.module.user.User;
-import com.ntouzidis.cooperative.module.user.UserService;
+import com.ntouzidis.cooperative.module.user.entity.User;
+import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +30,7 @@ public class TradeController {
 //                               @RequestParam(name="client", required=false, defaultValue = "testnet") String client,
                                Model model, Principal principal) {
 
-        User user = userService.findByUsername(principal.getName());
+        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
 //        List<Map<String, Object>> orders= bitmexService.get_Order_Order_Open(principal.getName(), "testnet");
         List<Map<String, Object>> positions = bitmexService.get_Position(principal.getName(),"testnet");
@@ -108,7 +108,7 @@ public class TradeController {
                             @RequestParam(name="leverage", required = false) String leverage,
                             Model model, Principal principal) {
 
-        User user = userService.findByUsername(principal.getName());
+        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
         String dataLeverage = "";
         if (symbol != null) dataLeverage += "symbol=" + symbol;

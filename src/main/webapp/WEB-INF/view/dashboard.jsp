@@ -156,6 +156,7 @@
                             <div class="col-sm-6">
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">Balance: ${user.wallet.balance}</li>
                                         <li class="list-group-item">Active Balance for Orders: ${availableMargin}</li>
                                         <li class="list-group-item">Active on orders: ${activeBalance}</li>
 
