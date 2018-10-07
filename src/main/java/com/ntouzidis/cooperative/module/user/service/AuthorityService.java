@@ -1,14 +1,14 @@
 package com.ntouzidis.cooperative.module.user.service;
 
-import com.ntouzidis.cooperative.module.user.authority.Authority;
-import com.ntouzidis.cooperative.module.user.authority.AuthorityRepository;
+import com.ntouzidis.cooperative.module.user.entity.Authority;
+import com.ntouzidis.cooperative.module.user.repository.AuthorityRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AuthorityService implements IAuthorityService {
+public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
 

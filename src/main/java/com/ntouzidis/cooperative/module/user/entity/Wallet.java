@@ -1,6 +1,5 @@
-package com.ntouzidis.cooperative.module.user.wallet;
+package com.ntouzidis.cooperative.module.user.entity;
 
-import com.ntouzidis.cooperative.module.user.User;
 import javax.persistence.*;
 
 @Entity
@@ -8,15 +7,12 @@ import javax.persistence.*;
 public class Wallet {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    private User user;
-
-
-    @Column(name="username")
-    private Integer balance;
+    @Column(name="balance")
+    private Long balance;
 
     public Wallet() {}
 
@@ -28,19 +24,11 @@ public class Wallet {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getBalance() {
+    public Long getBalance() {
         return balance;
     }
 
-    public void setBalance(Integer balance) {
+    public void setBalance(Long balance) {
         this.balance = balance;
     }
 }

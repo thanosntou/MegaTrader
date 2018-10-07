@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.user.authority;
+package com.ntouzidis.cooperative.module.user.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +19,7 @@ public class Authority implements Serializable {
 
     public Authority() {}
 
-    Authority(String username, String authority) {
+    public Authority(String username, String authority) {
         this.username = username;
         this.authority = authority;
     }

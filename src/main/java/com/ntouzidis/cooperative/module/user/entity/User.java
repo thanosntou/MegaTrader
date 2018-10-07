@@ -1,17 +1,39 @@
-package com.ntouzidis.cooperative.module.user;
+package com.ntouzidis.cooperative.module.user.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name="username")
+    private String username;
+
+    @Column(name="password")
+    private String password;
+
+    @Column(name="create_date")
+    private LocalDate create_date;
+
+    @Column(name="apikey")
+    private String apiKey;
+
+    @Column(name="apisecret")
+    private String apiSecret;
+
+    @OneToOne
+    @JoinColumn(name="wallet_id")
+    private Wallet wallet;
 
     public User() {
 
@@ -40,22 +62,22 @@ public class User implements UserDetails {
 //        this.authorities = Collections.unmodifiableSet(sortAuthorities(authorities));
     }
 
-    @Id
-    @Column(name = "username")
-    private String username;
+    public Integer getId() {
+        return id;
+    }
 
-    @Column(name = "password")
-    private String password;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-    @Column(name = "create_date")
-    private LocalDate create_date;
+    public void setCreate_date() {
+        if (this.create_date == null)
+            this.create_date = LocalDate.now();
+    }
 
-    @Column(name = "apikey")
-    private String apiKey;
-
-    @Column(name = "apisecret")
-    private String apiSecret;
-
+    public void setCreate_date(LocalDate create_date) {
+        this.create_date = create_date;
+    }
 
     public String getApiKey() {
         return apiKey;
@@ -120,8 +142,11 @@ public class User implements UserDetails {
         return create_date;
     }
 
-    public void setCreate_date() {
-        if (this.create_date == null)
-            this.create_date = LocalDate.now();
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 }
