@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class CustomerToTraderLink {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
