@@ -229,18 +229,11 @@
                                         <input type="hidden" value="${personalTrader.id}" name="traderId"/>
                                         <input type="submit" class="btn btn-outline-primary" value="Uncopy"/>
                                     </form:form>
-                                    </c:if>
-
-
+                                    
                                 </div>
+                                </c:if>
                             </div>
 
-                            <%--<form:form action="${pageContext.request.contextPath}/user/link" method="POST">--%>
-                                <%--<input type="hidden" value="${personalTrader.id}" name="traderId"/>--%>
-                                <%--<c:if test="${empty personalTrader}">--%>
-                                    <%--<input type="submit" class="btn btn-outline-primary" value="Copy"/>--%>
-                                <%--</c:if>--%>
-                            <%--</form:form>--%>
                         </div>
                         <br>
                         <br>
