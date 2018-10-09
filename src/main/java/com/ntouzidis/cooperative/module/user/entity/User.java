@@ -3,26 +3,18 @@ package com.ntouzidis.cooperative.module.user.entity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Collection;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users") // used 'users' instead of 'user' because of spring security default queries. leave it!!
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Integer id;
 
@@ -141,7 +133,8 @@ public class User implements UserDetails {
     }
 
     public void setCreate_date() {
-        this.create_date = LocalDate.now();
+        if (this.create_date == null)
+            this.create_date = LocalDate.now();
     }
 
     public String getApiKey() {

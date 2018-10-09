@@ -16,6 +16,10 @@ public class AuthorityService {
         this.authorityRepository = authorityRepository;
     }
 
+    public Authority findAuthorities(String username) {
+        return authorityRepository.findById(username).orElseThrow(RuntimeException::new);
+    }
+
 
     public void createAuthorities(String username, List<GrantedAuthority> authorities) {
         for (GrantedAuthority x: authorities){

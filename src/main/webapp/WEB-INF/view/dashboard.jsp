@@ -121,10 +121,9 @@
 
                                     </c:forEach>
 
-
                         </div>
 
-                        <%-- dashboard --%>
+                    <%---------------------------------------------------------------- dashboard ---------------------------------------------------------------------%>
                     <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
                         <div class="row" style="margin: 20px 0px">
                             <h2>Account Dashboard <a href="${pageContext.request.contextPath}/dashboard"><i class="fas fa-sync" class="button"></i></a></h2>
@@ -199,22 +198,24 @@
 
                     </div>
 
-                        <%-- invest with traders section --%>
+                        <%----------------------------------------------- invest with traders section ----------------------------------------------------------%>
                     <div class="tab-pane fade" id="v-pills-traders" role="tabpanel" aria-labelledby="v-pills-traders-tab">
                         <h3>Invest with Traders</h3>
                         <br>
-                        <div class="card-deck">
-                        <c:forEach var="temp" items="${activeTraders}">
-                            <%--<c:url var="disableLink" value="/management-panel/updateProduct">--%>
-                                <%--<c:param name="productId" value="${temp.id}" />--%>
-                            <%--</c:url>--%>
+                        <br>
+                        <div class="row">
+                            <h4>Personal Trader</h4>
+                        </div>
+                        <div class="row">
                             <div class="card" style="max-width: 16rem; min-width: 16rem; margin-bottom: 20px">
+
+                                <c:if test="${not empty personalTrader}">
                                 <div class="card-body row">
                                     <div class="col-sm-6">
                                         <img class="card-img-top" src="${pageContext.request.contextPath}/images/t1.jpg" alt="Card image cap">
                                     </div>
                                     <div class="col-sm-6">
-                                        <h5 class="card-title">${temp.username}</h5>
+                                        <h5 class="card-title">${personalTrader.username}</h5>
                                         <p class="card-text">The best trader in da hood</p>
                                     </div>
                                 </div>
@@ -223,8 +224,65 @@
                                     <li class="list-group-item">Followed by</li>
                                 </ul>
                                 <div class="card-body">
-                                    <a href="#" class="btn btn-primary">Copy</a>
+
+                                    <form:form action="${pageContext.request.contextPath}/user/unlink" method="POST">
+                                        <input type="hidden" value="${personalTrader.id}" name="traderId"/>
+                                        <input type="submit" class="btn btn-outline-primary" value="Uncopy"/>
+                                    </form:form>
+                                    </c:if>
+
+
                                 </div>
+                            </div>
+
+                            <%--<form:form action="${pageContext.request.contextPath}/user/link" method="POST">--%>
+                                <%--<input type="hidden" value="${personalTrader.id}" name="traderId"/>--%>
+                                <%--<c:if test="${empty personalTrader}">--%>
+                                    <%--<input type="submit" class="btn btn-outline-primary" value="Copy"/>--%>
+                                <%--</c:if>--%>
+                            <%--</form:form>--%>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row">
+                            <h4>Other Traders</h4>
+                        </div>
+                        <br>
+                        <div class="card-deck">
+                        <c:forEach var="temp" items="${activeTraders}">
+                            <%--<c:url var="disableLink" value="/management-panel/updateProduct">--%>
+                                <%--<c:param name="productId" value="${temp.id}" />--%>
+                            <%--</c:url>--%>
+                            <div class="card" style="max-width: 16rem; min-width: 16rem; margin-bottom: 20px">
+
+
+                                    <div class="card-body row">
+                                        <div class="col-sm-6">
+                                            <img class="card-img-top" src="${pageContext.request.contextPath}/images/t1.jpg" alt="Card image cap">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <h5 class="card-title">${temp.username}</h5>
+                                            <p class="card-text">The best trader in da hood</p>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">Profit last week</li>
+                                        <li class="list-group-item">Followed by</li>
+                                    </ul>
+                                    <div class="card-body">
+                                        <form:form action="${pageContext.request.contextPath}/user/link" method="POST">
+                                            <input type="hidden" value="${temp.id}" name="traderId"/>
+                                            <c:if test="${empty personalTrader}">
+                                                <input type="submit" class="btn btn-outline-primary" value="Copy"/>
+                                            </c:if>
+                                        </form:form>
+
+                                        <%--<form:form action="${pageContext.request.contextPath}/user/unlink" method="POST">--%>
+                                            <%--<c:if test="${not empty personalTrader}">--%>
+                                                <%--<input type="submit" class="btn btn-outline-primary" value="Copy"/>--%>
+                                            <%--</c:if>--%>
+                                        <%--</form:form>--%>
+                                    </div>
                             </div>
                         </c:forEach>
                         </div>
@@ -317,27 +375,70 @@
 
                         <%-------------------------------------------------------------- Settings -----------------------------------------------------------------------%>
                         <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
-                        <h3>Settings</h3>
-                        <br>
-                        <br>
-                        <h4>${currentClient} keys</h4>
-                        API Key: ${apiKey}<br>
-                        API Secret: ${apiSecret}<br>
-                        <br>
-                        <h3>Edit Keys</h3>
-                        Bitmex
-                        <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST" id="bitmexkeys">
-                            API Key<input type="text" name="apikey" /><br>
-                            API Secret <input type="text" name="apisecret" /><br>
-                            <input type="submit" value="Save" />
-                        </form:form>
-                        <br>
+                            <div class="row">
+                                <h3>Settings</h3>
+                            </div>
+                            <br>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    API Key:
+                                </div>
+                                <div class="col-sm-11">
+                                    ${apiKey}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    API Secret:
+                                </div>
+                                <div class="col-sm-11">
+                                    ${apiSecret}
+                                </div>
+                            </div>
 
-                    </div>
+                            <br>
+                            <div class="row">
+                                <h4>Edit Keys</h4>
+                            </div>
+                            <div class="row">
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST" id="bitmexkeys">
 
-                    <%--<div class="tab-pane fade" id="v-pills-trades" role="tabpanel" aria-labelledby="v-pills-trades-tab">--%>
-                        <%--<h3>Settings</h3>--%>
-                    <%--</div>--%>
+                                        <%--<div class="row">--%>
+                                            <%--<div class="col-sm-1">--%>
+                                                <%--API Key: ${apiKey}--%>
+                                            <%--</div>--%>
+                                            <%--<div class="col-sm-1">--%>
+                                                <%--API Secret: ${apiSecret}--%>
+                                            <%--</div>--%>
+                                        <%--</div>--%>
+
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                API Key:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="apikey"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                API Secret:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="apisecret"/>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <input type="submit" value="Save" />
+                                    </form:form>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
 
                     </div>
 
