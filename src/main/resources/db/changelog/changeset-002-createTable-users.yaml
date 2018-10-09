@@ -54,3 +54,8 @@ databaseChangeLog:
           indexName: idx_email
           tableName: users
           unique: true
+
+      - alterSequence:
+          incrementBy: 1
+          minValue: 2
+          sequenceName: users_id_seq
