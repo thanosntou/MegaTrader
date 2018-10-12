@@ -69,7 +69,7 @@
                             <a class="nav-link" id="v-pills-wallet-tab" data-toggle="pill" href="#v-pills-wallet" role="tab" aria-controls="v-pills-wallet" aria-selected="false"><i class="fas fa-wallet"></i> Wallet</a>
                             <a class="nav-link" id="v-pills-payments-tab" data-toggle="pill" href="#v-pills-payments" role="tab" aria-controls="v-pills-payments" aria-selected="false"><i class="fas fa-credit-card"></i> Payments</a>
                             <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false"><i class="fas fa-cogs"></i> Settings</a>
-                            <security:authorize access="hasAnyRole('ADMIN', 'MEMBER')">
+                            <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
                                 <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/trade" role="button" aria-controls="v-pills-trades" aria-selected="false"><i class="fas fa-exchange-alt"></i> Trade</a>
                             </security:authorize>
                         </div>
@@ -155,7 +155,7 @@
                             <div class="col-sm-6">
                                 <div class="card" style="width: 18rem;">
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Balance: ${user.wallet.balance}</li>
+                                        <li class="list-group-item">Balance: ${user.wallet.balance / 100000000} BTC</li>
                                         <li class="list-group-item">Active Balance for Orders: ${availableMargin}</li>
                                         <li class="list-group-item">Active on orders: ${activeBalance}</li>
 

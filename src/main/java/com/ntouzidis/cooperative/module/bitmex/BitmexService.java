@@ -1,7 +1,6 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
 import com.ntouzidis.cooperative.module.user.entity.User;
-import com.ntouzidis.cooperative.module.user.service.IUserService;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
@@ -38,7 +37,7 @@ public class BitmexService implements IBitmexService {
     private static String PUT = "PUT";
     private static String DELETE = "DELETE";
 
-    private final IUserService userService;
+    private final UserService userService;
 
     public BitmexService(UserService userService) {
         this.userService = userService;

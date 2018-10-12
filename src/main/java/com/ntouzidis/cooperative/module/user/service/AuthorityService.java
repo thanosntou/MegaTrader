@@ -16,12 +16,11 @@ public class AuthorityService {
         this.authorityRepository = authorityRepository;
     }
 
-    public Authority findAuthorities(String username) {
+    Authority findAuthority(String username) {
         return authorityRepository.findById(username).orElseThrow(RuntimeException::new);
     }
 
-
-    public void createAuthorities(String username, List<GrantedAuthority> authorities) {
+    void createAuthorities(String username, List<GrantedAuthority> authorities) {
         for (GrantedAuthority x: authorities){
             authorityRepository.save(new Authority(username, x.getAuthority()));
         }

@@ -1,23 +1,20 @@
 package com.ntouzidis.cooperative.configuration;
 
-import net.bull.javamelody.MonitoringFilter;
-import net.bull.javamelody.SessionListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.servlet.DispatcherType;
-import javax.sql.DataSource;
 import java.util.Properties;
 
 
@@ -26,13 +23,64 @@ import java.util.Properties;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private DataSource securityDataSource;
+    @Qualifier("userDetailsService")
+    UserDetailsService userDetailsService;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // use jdbc authentication ... oh yeah!!!
-        auth.jdbcAuthentication().dataSource(securityDataSource);
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authProvider());
+//        auth.jdbcAuthentication().dataSource(securityDataSource);
+//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // use jdbc authentication ... oh yeah!!!
+//        auth.jdbcAuthentication().dataSource(securityDataSource);
+//        auth.userDetailsService(userDetailsService);
+//    }
+
+//     @Bean
+//    public UserDetailsManager userDetailsManager() {
+//        CustomUserDetailsManager detailsManager = new CustomUserDetailsManager();
+////        jdbcUserDetailsManager.setDataSource(securityDataSource);
+////        jdbcUserDetailsManager.setEnableAuthorities(true);
+//        return detailsManager;
+//    }
+
+
+
+//    @Bean
+//    public Authentication authentication() throws Exception {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials());
+//    }
+//
+//    @Bean(name="authenticationManager")
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+//
+//    // Expose the UserDetailsService as a Bean
+//    @Bean
+//    @Override
+//    public UserDetailsService userDetailsServiceBean() throws Exception {
+//        return super.userDetailsServiceBean();
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -63,28 +111,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 http.formLogin().defaultSuccessUrl("/dashboard", true);
     }
 
-    @Bean
-    public UserDetailsManager userDetailsManager() {
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager();
-        jdbcUserDetailsManager.setDataSource(securityDataSource);
-        return jdbcUserDetailsManager;
-    }
 
-    @Bean(name = "javamelodyFilter")
-    public FilterRegistrationBean<MonitoringFilter> javamelodyFilterBean() {
-        FilterRegistrationBean<MonitoringFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new MonitoringFilter());
-        registration.addUrlPatterns("/*");
-        registration.setName("javamelodyFilter");
-        registration.setAsyncSupported(true);
-        registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
-        return registration;
-    }
 
-    @Bean(name = "javamelodySessionListener")
-    public ServletListenerRegistrationBean<SessionListener> sessionListener() {
-        return new ServletListenerRegistrationBean<>(new SessionListener());
-    }
+//    @Bean(name = "javamelodyFilter")
+//    public FilterRegistrationBean<MonitoringFilter> javamelodyFilterBean() {
+//        FilterRegistrationBean<MonitoringFilter> registration = new FilterRegistrationBean<>();
+//        registration.setFilter(new MonitoringFilter());
+//        registration.addUrlPatterns("/*");
+//        registration.setName("javamelodyFilter");
+//        registration.setAsyncSupported(true);
+//        registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
+//        return registration;
+//    }
+
+//    @Bean(name = "javamelodySessionListener")
+//    public ServletListenerRegistrationBean<SessionListener> sessionListener() {
+//        return new ServletListenerRegistrationBean<>(new SessionListener());
+//    }
 
     @Bean
     public JavaMailSender getJavaMailSender() {

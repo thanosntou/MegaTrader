@@ -1,16 +1,17 @@
 package com.ntouzidis.cooperative.controller;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
-import com.ntouzidis.cooperative.module.user.service.IUserService;
+import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
@@ -19,26 +20,28 @@ import java.util.Map;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    @Autowired private IUserService userService;
+    @Autowired private UserService userService;
     @Autowired private BitmexService bitmexService;
 
     @GetMapping(value = {"", "/"})
     public String getDashboard(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
-                               Model model, Principal principal) {
+                               Model model, Authentication authentication) {
 
-        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
         String walletBalance = null;
         String availableMargin = null;
         String activeBalance = null;
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(principal.getName(), "testnet");
-        List<Map<String, Object>> oldOrders = bitmexService.get_Order_Order(principal.getName(), "testnet");
-        List<Map<String, Object>> positions = bitmexService.get_Position(principal.getName(), "testnet");
-        List<Map<String, Object>> announcements = bitmexService.get_Announcements(principal.getName(), "testnet");
+        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user.getUsername(), "testnet");
+        List<Map<String, Object>> oldOrders = bitmexService.get_Order_Order(user.getUsername(), "testnet");
+        List<Map<String, Object>> positions = bitmexService.get_Position(user.getUsername(), "testnet");
+        List<Map<String, Object>> announcements = bitmexService.get_Announcements(user.getUsername(), "testnet");
 
         List<User> activeTraders = userService.getTraders();
-        User personalTrader = userService.getPersonalTrader(principal.getName());
+        User personalTrader = userService.getPersonalTrader(user.getUsername());
 
         if (bitmexUserWalletGet != null) {
             walletBalance = bitmexUserWalletGet.get("walletBalance").toString();

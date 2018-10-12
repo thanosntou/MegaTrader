@@ -1,24 +1,18 @@
 package com.ntouzidis.cooperative.module.user;
 
 import com.ntouzidis.cooperative.module.user.entity.User;
-import com.ntouzidis.cooperative.module.user.service.IUserService;
+import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -29,11 +23,10 @@ public class RegistrationController {
     
     private final static org.slf4j.Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
-    @Autowired
-    private UserDetailsManager userDetailsManager;
+
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
-    private IUserService userService;
+    private UserService userService;
 
     public RegistrationController() {
     }
@@ -84,10 +77,10 @@ public class RegistrationController {
         }
 
 //         check the database if user already exists
-        if (doesUserExist(theCustomer.getUsername())) {
-            theModel.addAttribute("registrationError", "user name already exists.");
-            return "registration-form-customer";
-        }
+//        if (doesUserExist(theCustomer.getUsername())) {
+//            theModel.addAttribute("registrationError", "user name already exists.");
+//            return "registration-form-customer";
+//        }
 
         userService.createCustomer(theCustomer, pass);
 
@@ -114,10 +107,10 @@ public class RegistrationController {
             return "redirect:/management-panel";
         }
 
-	    if (doesUserExist(trader.getUsername())) {
-            theModel.addAttribute("registrationError", "user name already exists.");
-            return "registration-form-member";
-        }
+//	    if (doesUserExist(trader.getUsername())) {
+//            theModel.addAttribute("registrationError", "user name already exists.");
+//            return "registration-form-member";
+//        }
 
         userService.createTrader(trader, pass);
 
@@ -129,12 +122,12 @@ public class RegistrationController {
         String password = ((UserDetails) principal).getPassword();
         String encodedPassword = passwordEncoder.encode(pass);
         encodedPassword = "{bcrypt}" + encodedPassword;
-        userDetailsManager.changePassword(password, encodedPassword);
+
     }
 	
-    private boolean doesUserExist(String userName) {
-	    // check the database if the user already exists
-	    return userDetailsManager.userExists(userName);
-    }
+//    private boolean doesUserExist(String userName) {
+//	    // check the database if the user already exists
+//	    return userDetailsManager.userExists(userName);
+//    }
 
 }

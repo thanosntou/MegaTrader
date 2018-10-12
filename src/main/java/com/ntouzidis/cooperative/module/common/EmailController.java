@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.controller;
+package com.ntouzidis.cooperative.module.common;
 
 import com.ntouzidis.cooperative.module.mail.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
