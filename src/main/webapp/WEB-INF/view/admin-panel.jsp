@@ -60,7 +60,7 @@
 
             <%-----------------------------------------main bar---------------------------------------------------------------%>
                 <div class="col-sm-10">
-                    <div class="card" style="height: 100%">
+                    <div class="card" style="height: 100%; margin-top: 15px">
 
                         <div class="card-header">
                             <div class="card-header">

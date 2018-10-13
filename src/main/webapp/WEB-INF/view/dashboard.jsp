@@ -86,7 +86,7 @@
 
             <%-- main bar --%>
         <div class="col-sm-10">
-            <div class="card" style="height: 100%">
+            <div class="card" style="height: 100%; margin-top: 15px">
                 <div class="card-header">
                     <div class="card-header">
                         <%--<span style="position: relative; right: 690px; opacity: 0.7;">Bitcoin Syndicate</span>--%>
@@ -103,24 +103,28 @@
                                 <h3>News</h3>
                             </div>
                             <br>
-
                                     <c:forEach var="tempMap" items="${announcements}">
-                                        <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
-                                        <div class="row" style="font-size: 1.4rem">
-                                            Title: ${tempMap['title']}
+                                        <div class="card" style="margin: 20px; padding: 20px">
+                                            <div class="card-body">
+                                                    <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                                                <div class="row" style="font-size: 1.4rem">
+                                                    Title: ${tempMap['title']}
+                                                </div>
+                                                <br>
+                                                <div class="row">
+                                                        ${tempMap['content']}
+                                                </div>
+                                                <div class="row">
+                                                    Date: ${tempMap['date']}
+                                                </div>
+                                                <div class="row">
+                                                    <a href="${tempMap['link']}">${tempMap['link']}</a>
+                                                </div>
+                                                <br>
+                                                <br>
+                                            </div>
                                         </div>
-                                        <br>
-                                        <div class="row">
-                                            ${tempMap['content']}
-                                        </div>
-                                        <div class="row">
-                                            Date: ${tempMap['date']}
-                                        </div>
-                                        <div class="row">
-                                            <a href="${tempMap['link']}">${tempMap['link']}</a>
-                                        </div>
-                                        <br>
-                                        <br>
+
                                         <%--</c:if>--%>
 
                                     </c:forEach>
