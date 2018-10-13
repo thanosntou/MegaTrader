@@ -18,9 +18,9 @@
                 </li>
                 
                     
-                <li class="nav-item">
-                  <a class="nav-link" href="${pageContext.request.contextPath}/shop">E-Shop</a>
-                </li>
+                <%--<li class="nav-item">--%>
+                  <%--<a class="nav-link" href="${pageContext.request.contextPath}/shop">E-Shop</a>--%>
+                <%--</li>--%>
                 <security:authorize access="hasAnyRole('ADMIN', 'MEMBER')">
                     <li class="nav-item active">
                         <a class="nav-link" href="${pageContext.request.contextPath}/management-panel">Management Panel <span class="sr-only">(current)</span></a>

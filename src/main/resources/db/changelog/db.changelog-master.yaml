@@ -12,9 +12,6 @@ databaseChangeLog:
   - include:
       file: changeset-003-createTable-authorities.yaml
       relativeToChangelogFile: true
-#  - include:
-#      file: changeset-005-insertAdmin.yaml
-#      relativeToChangelogFile: true
   - include:
       file: changeset-007-add_create_date_to_users.yaml
       relativeToChangelogFile: true
@@ -24,5 +21,9 @@ databaseChangeLog:
   - include:
       file: changeset-009-createTable-customer_to_trader.yaml
       relativeToChangelogFile: true
-
-
+  - include:
+      file: changeset-010-createTable-deposit.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset-011-createTable-login.yaml
+      relativeToChangelogFile: true

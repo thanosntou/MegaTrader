@@ -72,6 +72,9 @@
                             <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
                                 <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/trade" role="button" aria-controls="v-pills-trades" aria-selected="false"><i class="fas fa-exchange-alt"></i> Trade</a>
                             </security:authorize>
+                            <security:authorize access="hasRole('ADMIN')">
+                                <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/admin" role="button" aria-controls="v-pills-admin" aria-selected="false"><i class="fas fa-exchange-alt"></i> Admin Panel</a>
+                            </security:authorize>
                         </div>
                     </div>
 
@@ -89,6 +92,7 @@
                         <%--<span style="position: relative; right: 690px; opacity: 0.7;">Bitcoin Syndicate</span>--%>
                     </div>
                 </div>
+
                 <div class="card-body">
                     <div class="col-12">
                     <div class="tab-content" id="v-pills-tabContent">
