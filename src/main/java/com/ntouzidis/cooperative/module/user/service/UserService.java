@@ -14,10 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("userDetailsService")
@@ -46,9 +43,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getTraders() {
-        return userRepository.findAll().stream()
-                .filter(i -> authorityService.findAuthority(i.getUsername()).getAuthority().equals("ROLE_TRADER)"))
-                .collect(Collectors.toList());
+        return  userRepository.findAll().stream().filter(authorityService::isTrader).collect(Collectors.toList());
     }
 
     public User getPersonalTrader(String username) {
