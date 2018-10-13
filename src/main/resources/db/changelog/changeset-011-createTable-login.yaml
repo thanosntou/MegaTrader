@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011-createTable-login
+      author: ntouzidis
+      changes:
+      - createTable:
+          tableName: login
+          columns:
+          - column:
+              name: id
+              type: serial
+              constraints:
+                primaryKey: true
+          - column:
+              name: USER_ID
+              type: int
+              constraints:
+                nullable: false
+                foreignKeyName: fk_deposit_user
+                references: users(id)
+          - column:
+              name: CREATE_DATE
+              type: DATE

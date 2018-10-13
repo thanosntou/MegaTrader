@@ -1,0 +1,20 @@
+html, body{
+    font-size: 100%;
+}
+
+#main-comp{
+    margin-top: 1%;
+}
+
+#content-comp{
+    margin-top: 1%;
+}
+
+#side-menu{
+    background-color: lightgray;
+}
+
+.fa-chevron-up{
+    margin-left:10px ;
+    margin-right: 3px;
+}

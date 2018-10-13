@@ -1,0 +1,275 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-createDomainTables
+      author: ntouzidis
+      changes:
+
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: category
+                  type: varchar(50)
+                  defaultValue: null
+                  constraints:
+                    foreignKeyName: fk_prod1_categ
+                    references: categories(name)
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  defaultValue: null
+              - column:
+                  name: name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: price_buy
+                  type: double
+                  defaultValueNumeric: 0
+              - column:
+                  name: price_shop
+                  type: double
+                  defaultValueNumeric: 0
+              - column:
+                  name: quantity
+                  type: int
+                  defaultValueNumeric: 0
+
+        - createTable:
+            tableName: member
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: email
+                  type: varchar(255)
+                  defaultValue: null
+              - column:
+                  name: ssn
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: verified
+                  type: int
+                  defaultValueNumeric: 0
+
+        - createTable:
+            tableName: admin
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: email
+                  type: varchar(255)
+                  defaultValue: null
+
+        - createTable:
+            tableName: customer
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  defaultValue: null
+              - column:
+                  name: email
+                  type: varchar(255)
+                  defaultValue: null
+
+        - createTable:
+            tableName: cart
+            columns:
+              - column:
+                  name: customer_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_cart1_customer
+                    references: customer(id)
+                    nullable: false
+                    unique: true
+
+        - createTable:
+            tableName: offer
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: product
+                  type: int
+                  constraints:
+                    foreignKeyName: offers_ibfk_1
+                    references: product(id)
+                    nullable: false
+              - column:
+                  name: member
+                  type: int
+                  constraints:
+                    foreignKeyName: offers_ibfk_2
+                    references: member(id)
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: active
+                  type: int
+                  defaultValueNumeric: 0
+
+        - createTable:
+            tableName: sale
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: product
+                  type: int
+                  constraints:
+                    foreignKeyName: sales_ibfk_1
+                    references: product(id)
+                    nullable: false
+              - column:
+                  name: customer
+                  type: int
+                  constraints:
+                    foreignKeyName: sales_ibfk_2
+                    references: customer(id)
+                    nullable: false
+              - column:
+                  name: price
+                  type: double
+                  defaultValueNumeric: 0
+              - column:
+                  name: quantity
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: paid
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: completed
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: dateofc
+                  type: DATETIME
+                  defaultValue: null
+
+        - createTable:
+            tableName: payment
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: sale
+                  type: int
+                  constraints:
+                    foreignKeyName: payment_ibfk_1
+                    references: sale(id)
+                    nullable: false
+              - column:
+                  name: member
+                  type: int
+                  constraints:
+                    foreignKeyName: payment_ibfk_2
+                    references: member(id)
+                    nullable: false
+              - column:
+                  name: amount
+                  type: double
+                  defaultValueNumeric: 0
+              - column:
+                  name: dateofc
+                  type: DATETIME
+                  defaultValue: null
+
+        - createTable:
+            tableName: cart_product
+            columns:
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: cart_id
+                  type: int
+                  constraints:
+                    foreignKeyName: cart_product_ibfk_1
+                    references: cart(customer_id)
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: int
+                  constraints:
+                    foreignKeyName: cart_product_2
+                    references: product(id)
+                    nullable: false

@@ -1,0 +1,63 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.main {
+    margin: 50px; /* Same as the width of the sidenav */
+    font-size: 18px; /* Increased text to enable scrolling */
+}
+
+/*ITEMS!!!*/
+img {
+    width: 120px; 
+    height: 120px;
+    margin-top: 10px;
+    margin-bottom: 13px;
+    vertical-align: top;
+    position: relative;
+    left: 50px;
+    
+}
+
+.items  {
+/*    width: 850px;*/
+    margin: 5px;
+    display: inline-block;
+}
+ .item {
+     border-style: groove;
+    vertical-align: top;
+    width: 220px; 
+    height: 220px; 
+    margin: 8px;
+    background:#FEFEFE; 
+    display: inline-block;
+    border-radius: 3px;
+    box-shadow:0 0 8px rgba(0, 0, 0, 0.06);
+ }
+
+h3 {
+    text-align: center;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 1em;
+}
+
+h5 {
+    position: relative;
+    bottom: 10px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.description {
+    margin: 0;
+    text-align: center;
+    font-size: 18px;
+/*    font-style: italic;*/
+    color: darkblue;
+    font-family: sans-serif;
+}
+
+
