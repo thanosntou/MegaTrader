@@ -6,12 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 
-public interface AuthorityRepository extends JpaRepository<Authority, String>, IAuthorityHibernateRepository {
+public interface AuthorityRepository extends JpaRepository<Authority, String> {
 
     List<Authority> findAllByUsername(String username);
-
-//    @Override
-//    List bringAllByUsername(String username);
 
     Authority findByUsernameAndAuthority(String username, String authority);
 
