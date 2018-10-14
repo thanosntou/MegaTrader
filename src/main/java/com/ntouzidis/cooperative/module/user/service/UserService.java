@@ -1,75 +1,89 @@
 package com.ntouzidis.cooperative.module.user.service;
 
-import com.ntouzidis.cooperative.module.user.entity.*;
-import com.ntouzidis.cooperative.module.user.repository.AuthorityRepository;
+import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
+import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
+import com.ntouzidis.cooperative.module.user.entity.User;
+import com.ntouzidis.cooperative.module.user.entity.Wallet;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("userDetailsService")
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final AuthorityRepository authorityRepository;
     private final AuthorityService authorityService;
     private final CustomerToTraderLinkRepository customerToTraderLinkRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       AuthorityRepository authorityRepository,
-                       AuthorityService authorityService, CustomerToTraderLinkRepository customerToTraderLinkRepository,
+                       AuthorityService authorityService,
+                       CustomerToTraderLinkRepository customerToTraderLinkRepository,
                        PasswordEncoder passwordEncoder) {
-
         this.userRepository = userRepository;
-        this.authorityRepository = authorityRepository;
         this.authorityService = authorityService;
         this.customerToTraderLinkRepository = customerToTraderLinkRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public Optional<User> findByUsername(String username) {
-        return Optional.of(userRepository.findByUsername(username));
+        return Optional.ofNullable(userRepository.findByUsername(username));
+    }
+
+    private Optional<User> findCustomer(String username) {
+        return Optional.ofNullable(userRepository.findByUsername(username)).filter(this::isCustomer);
+    }
+
+    private Optional<User> findTrader(String username) {
+        return Optional.ofNullable(userRepository.findByUsername(username)).filter(this::isTrader);
+    }
+
+    public Optional<User> getPersonalTrader(String username) {
+        User user = findByUsername(username).orElseThrow(() -> new RuntimeException("customer not found"));
+        return Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).map(CustomerToTraderLink::getTrader);
     }
 
     public List<User> getTraders() {
         return  userRepository.findAll().stream().filter(authorityService::isTrader).collect(Collectors.toList());
     }
 
-    public User getPersonalTrader(String username) {
-        User user = findByUsername(username).orElseThrow(() -> new RuntimeException("user not found"));
-
-        CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
-
-        if (link !=null)
-            return link.getTrader();
-
-        return null;
+    public Set<GrantedAuthority> getUserAuthorities(String username) {
+        return authorityService.getAuthorities(username);
     }
 
     public void linkTrader(User user, int traderId) {
         CustomerToTraderLink link = new CustomerToTraderLink();
         link.setCustomer(user);
-        link.setTrader(userRepository.findById(traderId).orElseThrow(RuntimeException::new));
+        link.setTrader(findTrader(user.getUsername()).orElseThrow(() -> new RuntimeException("trader user not found")));
         link.setCreate_date();
 
         customerToTraderLinkRepository.save(link);
     }
 
-    public void unlinkTrader(User user, int traderId) {
+    public void unlinkTrader(User user) {
         CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
 
         customerToTraderLinkRepository.delete(link);
+    }
+
+    public boolean isCustomer(User user) {
+        return authorityService.isCustomer(user);
+    }
+
+    public boolean isTrader(User user) {
+        return authorityService.isTrader(user);
     }
 
     @Transactional
@@ -94,16 +108,10 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly=true)
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User domainUser = userRepository.findByUsername(username);
 
-        Set<GrantedAuthority> authorities = new HashSet<>();
+        Set<GrantedAuthority> auth = authorityService.getAuthorities(username);
 
-        authorityRepository.findAuthoritiesByUsername(username)
-                .stream()
-                .map(Authority::getAuthority)
-                .forEach(i -> authorities.add(new SimpleGrantedAuthority(i)));
-
-        return new CustomUserDetails(domainUser, authorities);
+        return new CustomUserDetails(userRepository.findByUsername(username), auth);
     }
 
     private User createUSer(User userDetails, String password, List<GrantedAuthority> authorities) {

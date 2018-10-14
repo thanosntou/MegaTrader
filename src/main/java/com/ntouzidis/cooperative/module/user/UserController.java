@@ -32,12 +32,11 @@ public class UserController {
     }
 
     @PostMapping(value = "/unlink")
-    public String unlinkTrader(@RequestParam(name = "traderId") int traderId,
-                             Model model, Principal principal) {
+    public String unlinkTrader(Model model, Principal principal) {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
-        userService.unlinkTrader(user, traderId);
+        userService.unlinkTrader(user);
 
         return "redirect:/dashboard";
     }

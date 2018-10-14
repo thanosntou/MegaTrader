@@ -7,6 +7,11 @@ databaseChangeLog:
             tableName: authorities
             columns:
               - column:
+                    name: id
+                    type: serial
+                    constraints:
+                          primaryKey: true
+              - column:
                   name: username
                   type: varchar(50)
                   constraints:

@@ -41,7 +41,7 @@ public class DashboardController {
         List<Map<String, Object>> announcements = bitmexService.get_Announcements(user.getUsername(), "testnet");
 
         List<User> activeTraders = userService.getTraders();
-        User personalTrader = userService.getPersonalTrader(user.getUsername());
+        User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);
 
         if (bitmexUserWalletGet != null) {
             walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
