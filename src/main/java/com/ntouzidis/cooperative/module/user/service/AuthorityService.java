@@ -4,10 +4,13 @@ import com.ntouzidis.cooperative.module.user.entity.Authority;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.repository.AuthorityRepository;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorityService {
@@ -18,8 +21,8 @@ public class AuthorityService {
         this.authorityRepository = authorityRepository;
     }
 
-    Authority findAuthority(String username) {
-        return authorityRepository.findById(username).orElseThrow(RuntimeException::new);
+    Set<GrantedAuthority> getAuthorities(String username) {
+        return authorityRepository.findAllByUsername(username).stream().map(auth -> new SimpleGrantedAuthority(auth.getAuthority())).collect(Collectors.toSet());
     }
 
     void createAuthorities(String username, List<GrantedAuthority> authorities) {

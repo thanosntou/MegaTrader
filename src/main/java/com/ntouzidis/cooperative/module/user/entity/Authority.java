@@ -1,9 +1,6 @@
 package com.ntouzidis.cooperative.module.user.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -11,6 +8,10 @@ import java.io.Serializable;
 public class Authority implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
+    private Integer id;
+
     @Column(name = "username")
     private String username;
 
@@ -22,6 +23,14 @@ public class Authority implements Serializable {
     public Authority(String username, String authority) {
         this.username = username;
         this.authority = authority;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getUsername() {
