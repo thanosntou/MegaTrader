@@ -35,10 +35,10 @@ public class DashboardController {
         String availableMargin = null;
         String activeBalance = null;
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user.getUsername(), "testnet");
-        List<Map<String, Object>> oldOrders = bitmexService.get_Order_Order(user.getUsername(), "testnet");
-        List<Map<String, Object>> positions = bitmexService.get_Position(user.getUsername(), "testnet");
-        List<Map<String, Object>> announcements = bitmexService.get_Announcements(user.getUsername(), "testnet");
+        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user, "testnet");
+        List<Map<String, Object>> oldOrders = bitmexService.get_Order_Order(user, "testnet");
+        List<Map<String, Object>> positions = bitmexService.get_Position(user, "testnet");
+        List<Map<String, Object>> announcements = bitmexService.get_Announcements(user, "testnet");
 
         List<User> activeTraders = userService.getTraders();
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);

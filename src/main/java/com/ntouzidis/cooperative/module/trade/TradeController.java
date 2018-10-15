@@ -1,6 +1,8 @@
-package com.ntouzidis.cooperative.controller;
+package com.ntouzidis.cooperative.module.trade;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
+import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ public class TradeController {
 
     @Autowired private UserService userService;
     @Autowired private BitmexService bitmexService;
+    @Autowired private TradeService tradeService;
 
     @GetMapping(value = {"", "/"})
     public String showDefault() {
@@ -33,8 +36,8 @@ public class TradeController {
         User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
 //        List<Map<String, Object>> orders= bitmexService.get_Order_Order_Open(principal.getName(), "testnet");
-        List<Map<String, Object>> positions = bitmexService.get_Position(principal.getName(),"testnet");
-        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order_Open(principal.getName(),"testnet");
+        List<Map<String, Object>> positions = bitmexService.get_Position(user,"testnet");
+        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order_Open(user,"testnet");
 
         String maxLeverage = "0";
         String priceStep = "1";
@@ -108,27 +111,18 @@ public class TradeController {
                             @RequestParam(name="leverage", required = false) String leverage,
                             Model model, Principal principal) {
 
-        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
+        User trader = userService.findTrader(principal.getName()).orElseThrow(RuntimeException::new);
 
-        String dataLeverage = "";
-        if (symbol != null) dataLeverage += "symbol=" + symbol;
-        if (side != null) dataLeverage += "&leverage=" + leverage;
+        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
 
-        String dataOrder = "";
-        if (symbol != null) dataOrder += "symbol=" + symbol;
-        if (side != null) dataOrder += "&side=" + side;
-        if (ordType != null) dataOrder += "&ordType=" + ordType;
-        if (orderQty != null) dataOrder += "&orderQty=" + orderQty;
-        if (price != null) dataOrder += "&price=" + price;
-        if (execInst != null) dataOrder += "&execInst=" + execInst;
-        if (stopPx != null) dataOrder += "&stopPx=" + stopPx;
+        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
+                .withSide(side).withOrderType(ordType).withOrderQty(orderQty)
+                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
 
 
-        bitmexService.post_Position_Leverage(principal.getName(), client, dataLeverage);
+        tradeService.placeOrderForCustomers(trader.getUsername(), dataLeverageBuilder, dataOrderBuilder);
 
-        bitmexService.post_Order_Order(principal.getName(), client, dataOrder);
-
-        model.addAttribute("user", user);
+        model.addAttribute("user", trader);
         model.addAttribute("user", principal.getName());
 
         return "redirect:/trade/"+symbol;

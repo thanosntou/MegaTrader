@@ -1,12 +1,9 @@
 package com.ntouzidis.cooperative.module.user.entity;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.Collection;
 
 @Entity
 @Table(name = "users") // used 'users' instead of 'user' because of spring security default queries. leave it!!
@@ -41,17 +38,19 @@ public class User {
     @JoinColumn(name="wallet_id")
     private Wallet wallet;
 
+    @Column(name = "fixed_qty")
+    private Long fixedQty;
+
     public User() {
     }
 
-    public User(String username, String password,
-                Collection<? extends GrantedAuthority> authorities) {
-        this(username, password, true, true, true, true, authorities);
+    public User(String username, String password) {
+        this(username, password, true, true, true, true);
     }
 
     public User(String username, String password, boolean enabled,
                 boolean accountNonExpired, boolean credentialsNonExpired,
-                boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+                boolean accountNonLocked) {
 
         if (((username == null) || "".equals(username)) || (password == null)) {
             throw new IllegalArgumentException(
@@ -128,4 +127,15 @@ public class User {
         this.wallet = wallet;
     }
 
+    public void setCreate_date(LocalDate create_date) {
+        this.create_date = create_date;
+    }
+
+    public Long getFixedQty() {
+        return fixedQty;
+    }
+
+    public void setFixedQty(Long fixedQty) {
+        this.fixedQty = fixedQty;
+    }
 }

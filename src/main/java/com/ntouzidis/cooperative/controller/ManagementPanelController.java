@@ -56,23 +56,23 @@ public class ManagementPanelController {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
-        String dataLeverage = "";
-        if (symbol != null) dataLeverage += "symbol=" + symbol;
-        if (side != null) dataLeverage += "&leverage=" + leverage;
-
-        String dataOrder = "";
-        if (symbol != null) dataOrder += "symbol=" + symbol;
-        if (side != null) dataOrder += "&side=" + side;
-        if (ordType != null) dataOrder += "&ordType=" + ordType;
-        if (orderQty != null) dataOrder += "&orderQty=" + orderQty;
-        if (price != null) dataOrder += "&price=" + price;
-        if (execInst != null) dataOrder += "&execInst=" + execInst;
-        if (stopPx != null) dataOrder += "&stopPx=" + stopPx;
-
-
-        bitmexService.post_Position_Leverage(principal.getName(), client, dataLeverage);
-
-        bitmexService.post_Order_Order(principal.getName(), client, dataOrder);
+//        String dataLeverage = "";
+//        if (symbol != null) dataLeverage += "symbol=" + symbol;
+//        if (side != null) dataLeverage += "&leverage=" + leverage;
+//
+//        String dataOrder = "";
+//        if (symbol != null) dataOrder += "symbol=" + symbol;
+//        if (side != null) dataOrder += "&side=" + side;
+//        if (ordType != null) dataOrder += "&ordType=" + ordType;
+//        if (orderQty != null) dataOrder += "&orderQty=" + orderQty;
+//        if (price != null) dataOrder += "&price=" + price;
+//        if (execInst != null) dataOrder += "&execInst=" + execInst;
+//        if (stopPx != null) dataOrder += "&stopPx=" + stopPx;
+//
+//
+//        bitmexService.post_Position_Leverage(user, client, dataLeverage);
+//
+//        bitmexService.post_Order_Order(user, client, dataOrder);
 
         model.addAttribute("user", user);
         model.addAttribute("user", principal.getName());

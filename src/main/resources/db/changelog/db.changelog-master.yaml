@@ -27,3 +27,6 @@ databaseChangeLog:
   - include:
       file: changeset-011-createTable-login.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-012-add-fixedQty-to-users.yaml
+      relativeToChangelogFile: true

@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012-add-fixedQty-to-users
+      author: ntouzidis
+      changes:
+      - addColumn:
+          tableName: users
+          columns:
+          - column:
+              name: fixed_qty
+              type: bigint
+              defaultValueNumeric: 0

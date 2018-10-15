@@ -1,5 +1,7 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
+import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
+import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.codec.binary.Hex;
@@ -43,46 +45,40 @@ public class BitmexService implements IBitmexService {
         this.userService = userService;
     }
 
-    public List<Map<String, Object>> get_Announcements(String username, String client) {
-        checkPreconditions(username, client);
+    public List<Map<String, Object>> get_Announcements(User user, String client) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
-        String baseUrl = calculateBaseUrl(client);
-        String res = requestGET(username, baseUrl, ENDPOINT_ANNOUNCEMENT, "");
+        String res = requestGET(user, calculateBaseUrl(client), ENDPOINT_ANNOUNCEMENT, "");
 
         return getMapList(res);
 
     }
 
 
-    public Map<String, Object> get_User_Margin(String username, String client) {
-        checkPreconditions(username, client);
+    public Map<String, Object> get_User_Margin(User user, String client) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
-        String baseUrl = calculateBaseUrl(client);
-        String data = "";
-
-        String res = requestGET(username, baseUrl, ENDPOINT_USER_MARGIN, data);
+        String res = requestGET(user, calculateBaseUrl(client), ENDPOINT_USER_MARGIN, "");
 
         return getMap(res);
 
     }
 
-    public List<Map<String, Object>> get_Order_Order(String username, String client) {
-        checkPreconditions(username, client);
+    public List<Map<String, Object>> get_Order_Order(User user, String client) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
-        String baseUrl = calculateBaseUrl(client);
-        String data = "";
         String path = ENDPOINT_ORDER + "?reverse=true";
 
-        String res = requestGET(username, baseUrl, path, data);
+        String res = requestGET(user, calculateBaseUrl(client), path, "");
 
         return getMapList(res);
 
     }
 
-    public List<Map<String, Object>> get_Order_Order_Open(String username, String client) {
-        checkPreconditions(username, client);
+    public List<Map<String, Object>> get_Order_Order_Open(User user, String client) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
-        List<Map<String, Object>> myMapList = get_Order_Order(username, client);
+        List<Map<String, Object>> myMapList = get_Order_Order(user, client);
         List<Map<String, Object>> filteredMapList = null;
         if (myMapList != null)
             filteredMapList = myMapList.stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
@@ -91,11 +87,10 @@ public class BitmexService implements IBitmexService {
 
     }
 
-    public Map<String, Object> post_Order_Order(String username, String client, String data) {
-        checkPreconditions(username, client);
+    public Map<String, Object> post_Order_Order(User user, String client, DataPostOrderBuilder dataOrder) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
-        String baseUrl = calculateBaseUrl(client);
-        String res = requestPOST(username, baseUrl, ENDPOINT_ORDER, data);
+        String res = requestPOST(user, calculateBaseUrl(client), ENDPOINT_ORDER, dataOrder.withOrderQty(user.getFixedQty().toString()).get());
 
         if(res != null) {
             JSONObject jsonObj = new JSONObject(res);
@@ -105,35 +100,29 @@ public class BitmexService implements IBitmexService {
         return null;
     }
 
-    public List<Map<String, Object>> get_Position(String username, String client) {
-        checkPreconditions(username, client);
+    public List<Map<String, Object>> get_Position(User user, String client) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
-        String baseUrl = calculateBaseUrl(client);
-        String res = requestGET(username, baseUrl, ENDPOINT_POSITION, "");
-
-        return getMapList(res);
-    }
-
-    public List<Map<String, Object>> get_Position_Leverage(String username, String client, String data) {
-        checkPreconditions(username, client);
-
-        String baseUrl = calculateBaseUrl(client);
-        String res = requestGET(username, baseUrl, ENDPOINT_POSITION_LEVERAGE, data);
+        String res = requestGET(user, calculateBaseUrl(client), ENDPOINT_POSITION, "");
 
         return getMapList(res);
     }
 
-    public void post_Position_Leverage(String username, String client, String data) {
-        checkPreconditions(username, client);
+    public List<Map<String, Object>> get_Position_Leverage(User user, String client, String data) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
-        String baseUrl = calculateBaseUrl(client);
+        String res = requestGET(user, calculateBaseUrl(client), ENDPOINT_POSITION_LEVERAGE, data);
 
-        requestPOST(username, baseUrl, ENDPOINT_POSITION_LEVERAGE, data);
+        return getMapList(res);
     }
 
-    private String requestGET(String username, String baseUrl, String path, String data) {
-        User user = userService.findByUsername(username).orElseThrow(RuntimeException::new);
+    public void post_Position_Leverage(User user, String client, DataPostLeverage dataLeverage) {
+        Preconditions.checkNotNull(user, "user cannot be null");
 
+        requestPOST(user, calculateBaseUrl(client), ENDPOINT_POSITION_LEVERAGE, dataLeverage.get());
+    }
+
+    private String requestGET(User user, String baseUrl, String path, String data) {
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
@@ -239,9 +228,7 @@ public class BitmexService implements IBitmexService {
 //        return null;
 //    }
 
-    private String requestPOST(String username, String baseUrl, String path, String data) {
-        User user = userService.findByUsername(username).orElseThrow(RuntimeException::new);
-
+    private String requestPOST(User user, String baseUrl, String path, String data) {
         String verb = "POST";
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
@@ -267,6 +254,7 @@ public class BitmexService implements IBitmexService {
             HttpEntity<String> entity = new HttpEntity<>(data, headers);
 
             ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity, String.class);
+
             return Objects.requireNonNull(res.getBody()).toString();
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | IllegalArgumentException | UnsupportedEncodingException e) {
@@ -326,10 +314,5 @@ public class BitmexService implements IBitmexService {
             return myMapList;
         }
         return null;
-    }
-
-    private void checkPreconditions(String username, String client) {
-        Preconditions.checkNotNull(username, "username");
-        Preconditions.checkNotNull(client, "base url");
     }
 }
