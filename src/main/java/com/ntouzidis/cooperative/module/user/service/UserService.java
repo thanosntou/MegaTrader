@@ -42,17 +42,22 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(userRepository.findByUsername(username));
     }
 
-    private Optional<User> findCustomer(String username) {
+    public Optional<User> findCustomer(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username)).filter(this::isCustomer);
     }
 
-    private Optional<User> findTrader(String username) {
+    public Optional<User> findTrader(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username)).filter(this::isTrader);
     }
 
     public Optional<User> getPersonalTrader(String username) {
         User user = findByUsername(username).orElseThrow(() -> new RuntimeException("customer not found"));
         return Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).map(CustomerToTraderLink::getTrader);
+    }
+
+    public List<CustomerToTraderLink> getPersonalCustomers(String traderUsername) {
+        User trader = findTrader(traderUsername).orElseThrow(() -> new RuntimeException("trader not found"));
+        return customerToTraderLinkRepository.findAllByTrader(trader);
     }
 
     public List<User> getTraders() {
@@ -66,7 +71,8 @@ public class UserService implements UserDetailsService {
     public void linkTrader(User user, int traderId) {
         CustomerToTraderLink link = new CustomerToTraderLink();
         link.setCustomer(user);
-        link.setTrader(findTrader(user.getUsername()).orElseThrow(() -> new RuntimeException("trader user not found")));
+        link.setTrader(findTrader(userRepository.findById(traderId).orElseThrow(RuntimeException::new).getUsername()).orElse(null));
+//        link.setTrader(userRepository.findById(traderId).orElseThrow(() -> new RuntimeException("trader not found")));
         link.setCreate_date();
 
         customerToTraderLinkRepository.save(link);
@@ -76,6 +82,12 @@ public class UserService implements UserDetailsService {
         CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
 
         customerToTraderLinkRepository.delete(link);
+    }
+
+    public void setFixedQty(String username, Long qty) {
+        User user = userRepository.findByUsername(username);
+        user.setFixedQty(qty);
+        userRepository.save(user);
     }
 
     public boolean isCustomer(User user) {
@@ -108,17 +120,15 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly=true)
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        Set<GrantedAuthority> auth = authorityService.getAuthorities(username);
-
-        return new CustomUserDetails(userRepository.findByUsername(username), auth);
+        return Optional.of(new CustomUserDetails(userRepository.findByUsername(username), authorityService.getAuthorities(username)))
+                .orElseThrow(() -> new RuntimeException("user not found"));
     }
 
     private User createUSer(User userDetails, String password, List<GrantedAuthority> authorities) {
         boolean con = usernameExists(userDetails.getUsername());
         Preconditions.checkArgument(!con, "username exists");
 
-        User user = new User(userDetails.getUsername(), passwordEncoder.encode(password), authorities);
+        User user = new User(userDetails.getUsername(), passwordEncoder.encode(password));
 
         Wallet wallet = new Wallet();
         wallet.setBalance(0L);

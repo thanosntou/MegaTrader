@@ -52,4 +52,13 @@ public class UserController {
         return "redirect:/dashboard";
     }
 
+    @PostMapping(value = "/fixedQty")
+    public String setFixedQty(@RequestParam(name="fixedQty", required=false) Long qty,
+                              Principal principal) {
+
+        userService.setFixedQty(principal.getName(), qty);
+
+        return "redirect:/dashboard";
+    }
+
 }

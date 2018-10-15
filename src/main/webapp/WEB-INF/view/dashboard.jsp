@@ -439,6 +439,25 @@
                                 </div>
                             </div>
                             <br>
+                            <div class="row">
+                                <h4>Fixed Qty Order</h4>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST" id="bitmexkeys">
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                               Fixed Order Qty:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <input type="submit" value="Save" />
+                                    </form:form>
+                                </div>
+                            <br>
                         </div>
 
                     </div>

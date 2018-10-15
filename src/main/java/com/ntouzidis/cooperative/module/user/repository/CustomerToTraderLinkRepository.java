@@ -4,9 +4,13 @@ import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface CustomerToTraderLinkRepository extends JpaRepository<CustomerToTraderLink, Integer> {
 
-    CustomerToTraderLink findByCustomer(User user);
+    CustomerToTraderLink findByCustomer(User customer);
+
+    List<CustomerToTraderLink> findAllByTrader(User trader);
 
 //    @Modifying
 //    @Query("update Offer o set o.active=:status where id=:id")
