@@ -143,6 +143,7 @@ public class BitmexService implements IBitmexService {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity, String.class);
+
             return Objects.requireNonNull(res.getBody()).toString();
 
         } catch (NoSuchAlgorithmException | IllegalArgumentException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {
