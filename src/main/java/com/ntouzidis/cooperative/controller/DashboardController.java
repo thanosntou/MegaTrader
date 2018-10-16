@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -36,7 +37,19 @@ public class DashboardController {
         String activeBalance = null;
 
         Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user, "testnet");
-        List<Map<String, Object>> oldOrders = bitmexService.get_Order_Order(user, "testnet");
+
+
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user, "testnet");
+
+        List<Map<String, Object>> closedOrders = null;
+        List<Map<String, Object>> filledOrders = null;
+        List<Map<String, Object>> cancelledOrders = null;
+        if (allOrders != null) {
+            closedOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("Close")).collect(Collectors.toList());
+            filledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Filled")).collect(Collectors.toList());
+            cancelledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Canceled")).collect(Collectors.toList());
+        }
+
         List<Map<String, Object>> positions = bitmexService.get_Position(user, "testnet");
         List<Map<String, Object>> announcements = bitmexService.get_Announcements(user, "testnet");
 
@@ -59,7 +72,9 @@ public class DashboardController {
         model.addAttribute("apiKey", user.getApiKey());
         model.addAttribute("apiSecret", user.getApiSecret());
         model.addAttribute("currentClient", "testnet");
-        model.addAttribute("oldOrders", oldOrders);
+        model.addAttribute("closedOrders", closedOrders);
+        model.addAttribute("filledOrders", filledOrders);
+        model.addAttribute("cancelledOrders", cancelledOrders);
 //        model.addAttribute("openOrders", openOrders);
         model.addAttribute("positions", positions);
         model.addAttribute("announcements", announcements);
