@@ -39,7 +39,25 @@ public class User {
     private Wallet wallet;
 
     @Column(name = "fixed_qty")
-    private Long fixedQty;
+    private Long fixedQtyXBTUSD;
+    @Column(name = "fixed_qty_xbtjpy")
+    private Long fixedQtyXBTJPY;
+    @Column(name = "fixed_qty_adaz18")
+    private Long fixedQtyADAZ18;
+    @Column(name = "fixed_qty_bchz18")
+    private Long fixedQtyBCHZ18;
+    @Column(name = "fixed_qty_eosz18")
+    private Long fixedQtyEOSZ18;
+    @Column(name = "fixed_qty_ethusd")
+    private Long fixedQtyETHUSD;
+    @Column(name = "fixed_qty_ltc1818")
+    private Long fixedQtyLTCZ18;
+    @Column(name = "fixed_qty_trxz18")
+    private Long fixedQtyTRXZ18;
+    @Column(name = "fixed_qty_xrpz18")
+    private Long fixedQtyXRPZ18;
+    @Column(name = "fixed_qty_xbtkrw")
+    private Long fixedQtyXBTKRW;
 
     public User() {
     }
@@ -131,11 +149,91 @@ public class User {
         this.create_date = create_date;
     }
 
-    public Long getFixedQty() {
-        return fixedQty;
+    public Long getFixedQtyXBTUSD() {
+        return fixedQtyXBTUSD;
     }
 
-    public void setFixedQty(Long fixedQty) {
-        this.fixedQty = fixedQty;
+    public void setFixedQtyXBTUSD(Long fixedQtyXBTUSD) {
+        this.fixedQtyXBTUSD = fixedQtyXBTUSD;
+    }
+
+//    public Long getFixedQtyBCHZ18() {
+//        return fixedQtyBCHZ18;
+//    }
+//
+//    public void setFixedQtyBCHZ18(Long fixedQtyBCHZ18) {
+//        this.fixedQtyBCHZ18 = fixedQtyBCHZ18;
+//    }
+
+    public Long getFixedQtyEOSZ18() {
+        return fixedQtyEOSZ18;
+    }
+
+    public void setFixedQtyEOSZ18(Long fixedQtyEOSZ18) {
+        this.fixedQtyEOSZ18 = fixedQtyEOSZ18;
+    }
+
+    public Long getFixedQtyETHUSD() {
+        return fixedQtyETHUSD;
+    }
+
+    public void setFixedQtyETHUSD(Long fixedQtyETHUSD) {
+        this.fixedQtyETHUSD = fixedQtyETHUSD;
+    }
+
+    public Long getFixedQtyLTCZ18() {
+        return fixedQtyLTCZ18;
+    }
+
+    public void setFixedQtyLTCZ18(Long fixedQtyLTCZ18) {
+        this.fixedQtyLTCZ18 = fixedQtyLTCZ18;
+    }
+
+    public Long getFixedQtyXBTJPY() {
+        return fixedQtyXBTJPY;
+    }
+
+    public void setFixedQtyXBTJPY(Long fixedQtyXBTJPY) {
+        this.fixedQtyXBTJPY = fixedQtyXBTJPY;
+    }
+
+    public Long getFixedQtyADAZ18() {
+        return fixedQtyADAZ18;
+    }
+
+    public void setFixedQtyADAZ18(Long fixedQtyADAZ18) {
+        this.fixedQtyADAZ18 = fixedQtyADAZ18;
+    }
+
+    public Long getFixedQtyBCHZ18() {
+        return fixedQtyBCHZ18;
+    }
+
+    public void setFixedQtyBCHZ18(Long fixedQtyBCHZ18) {
+        this.fixedQtyBCHZ18 = fixedQtyBCHZ18;
+    }
+
+    public Long getFixedQtyTRXZ18() {
+        return fixedQtyTRXZ18;
+    }
+
+    public void setFixedQtyTRXZ18(Long fixedQtyTRXZ18) {
+        this.fixedQtyTRXZ18 = fixedQtyTRXZ18;
+    }
+
+    public Long getFixedQtyXRPZ18() {
+        return fixedQtyXRPZ18;
+    }
+
+    public void setFixedQtyXRPZ18(Long fixedQtyXRPZ18) {
+        this.fixedQtyXRPZ18 = fixedQtyXRPZ18;
+    }
+
+    public Long getFixedQtyXBTKRW() {
+        return fixedQtyXBTKRW;
+    }
+
+    public void setFixedQtyXBTKRW(Long fixedQtyXBTKRW) {
+        this.fixedQtyXBTKRW = fixedQtyXBTKRW;
     }
 }

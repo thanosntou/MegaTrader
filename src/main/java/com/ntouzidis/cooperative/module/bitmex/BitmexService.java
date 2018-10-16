@@ -90,7 +90,7 @@ public class BitmexService implements IBitmexService {
     public Map<String, Object> post_Order_Order(User user, String client, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestPOST(user, calculateBaseUrl(client), ENDPOINT_ORDER, dataOrder.withOrderQty(user.getFixedQty().toString()).get());
+        String res = requestPOST(user, calculateBaseUrl(client), ENDPOINT_ORDER, dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get());
 
         if(res != null) {
             JSONObject jsonObj = new JSONObject(res);
@@ -313,6 +313,21 @@ public class BitmexService implements IBitmexService {
             }
             return myMapList;
         }
+        return null;
+    }
+
+    private String calculateFixedQtyForSymbol(User user, String symbol) {
+        if (symbol.equals("symbol=XBTUSD")) return user.getFixedQtyXBTUSD().toString();
+        if (symbol.equals("symbol=XBTJPY")) return user.getFixedQtyXBTJPY().toString();
+        if (symbol.equals("symbol=ADAZ18")) return user.getFixedQtyADAZ18().toString();
+        if (symbol.equals("symbol=BCHZ18")) return user.getFixedQtyBCHZ18().toString();
+        if (symbol.equals("symbol=EOSZ18")) return user.getFixedQtyEOSZ18().toString();
+        if (symbol.equals("symbol=ETHUSD")) return user.getFixedQtyETHUSD().toString();
+        if (symbol.equals("symbol=LTCZ18")) return user.getFixedQtyLTCZ18().toString();
+        if (symbol.equals("symbol=TRXZ18")) return user.getFixedQtyTRXZ18().toString();
+        if (symbol.equals("symbol=XRPZ18")) return user.getFixedQtyXRPZ18().toString();
+        if (symbol.equals("symbol=XBTKRW")) return user.getFixedQtyXBTKRW().toString();
+
         return null;
     }
 }

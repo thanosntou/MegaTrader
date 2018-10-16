@@ -64,4 +64,8 @@ public class DataPostOrderBuilder {
                 Optional.ofNullable(stopPrice).orElse("");
     }
 
+    public String getSymbol() {
+        return this.symbol;
+    }
+
 }

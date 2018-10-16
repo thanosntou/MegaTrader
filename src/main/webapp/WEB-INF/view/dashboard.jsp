@@ -382,6 +382,41 @@
                             <br>
                             <br>
                             <div class="row">
+                                <h4>Fixed Qty</h4>
+                            </div>
+                            <br>
+                            <div class="row">
+                                XBTUSD: ${user.fixedQtyXBTUSD}
+                            </div>
+                            <div class="row">
+                                XBTJPY: ${user.fixedQtyXBTJPY}
+                            </div>
+                            <div class="row">
+                                ADAZ18: ${user.fixedQtyADAZ18}
+                            </div>
+                            <div class="row">
+                                BCHZ18: ${user.fixedQtyBCHZ18}
+                            </div>
+                            <div class="row">
+                                EOSZ18: ${user.fixedQtyEOSZ18}
+                            </div>
+                            <div class="row">
+                                ETHUSD: ${user.fixedQtyETHUSD}
+                            </div>
+                            <div class="row">
+                                LTCZ18: ${user.fixedQtyLTCZ18}
+                            </div>
+                            <div class="row">
+                                TRXZ18: ${user.fixedQtyTRXZ18}
+                            </div>
+                            <div class="row">
+                                XRPZ18: ${user.fixedQtyXRPZ18}
+                            </div>
+                            <div class="row">
+                                XBTKRW: ${user.fixedQtyXBTKRW}
+                            </div>
+
+                            <div class="row">
                                 <div class="col-sm-1">
                                     API Key:
                                 </div>
@@ -406,7 +441,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST" id="bitmexkeys">
+                                    <form:form action="${pageContext.request.contextPath}/user/apikey" method="POST">
 
                                         <%--<div class="row">--%>
                                             <%--<div class="col-sm-1">--%>
@@ -444,22 +479,184 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST" id="bitmexkeys">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="XBTUSD" name="symbol"/>
                                         <div class="row">
                                             <div class="col-sm-1">
-                                               Fixed Order Qty:
+                                               XBTUSD:
                                             </div>
                                             <div class="col-sm-11">
-                                                <input type="text" name="fixedQty"/>
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
                                             </div>
                                         </div>
                                         <br>
-                                        <input type="submit" value="Save" />
+
                                     </form:form>
                                 </div>
-                            <br>
-                        </div>
 
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="XBTJPY" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                XBTJPY:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </form:form>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="ADAZ18" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                ADAZ18:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </form:form>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="BCHZ18" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                BCHZ18:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+                                    </form:form>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="EOSZ18" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                EOSZ18:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </form:form>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="ETHUSD" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                ETHUSD:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </form:form>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="LTCZ18" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                LTCZ18:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </form:form>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="TRXZ18" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                TRXZ18:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </form:form>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="XRPZ18" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                XRPZ18:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </form:form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form:form action="${pageContext.request.contextPath}/user/fixedQty" method="POST">
+                                        <input type="hidden" value="XBTKRW" name="symbol"/>
+                                        <div class="row">
+                                            <div class="col-sm-1">
+                                                XBTKRW:
+                                            </div>
+                                            <div class="col-sm-11">
+                                                <input type="text" name="fixedQty"/> <input type="submit" value="Save" />
+                                            </div>
+                                        </div>
+                                        <br>
+
+                                    </form:form>
+                                </div>
+
+                            </div>
+
+                        </div>
                     </div>
 
                     </div>
