@@ -397,13 +397,13 @@
                         <%--<th scope="col">prevRealisedPnl</th>--%>
                         <%--<th scope="col">prevUnrealisedPnl</th>--%>
                         <%--<th scope="col">openingQty</th>--%>
-                        <th scope="col">openingCost</th>
+                        <%--<th scope="col">openingCost</th>--%>
                         <th scope="col">unrealisedPnl</th>
-                        <th scope="col">execQty</th>
+                        <%--<th scope="col">execQty</th>--%>
                         <th scope="col">execCost</th>
                         <th scope="col">currentQty</th>
                         <th scope="col">currentCost</th>
-                        <th scope="col">currentComm</th>
+                        <%--<th scope="col">currentComm</th>--%>
                         <%--<th scope="col">realisedCost</th>--%>
                         <th scope="col">unrealisedCost</th>
                         <%--<th scope="col">grossOpenCost</th>--%>
@@ -420,13 +420,13 @@
                         <th scope="col">unrealisedRoePcnt</th>
                         <%--<th scope="col">simpleQty</th>--%>
                         <%--<th scope="col">simpleCost</th>--%>
-                        <th scope="col">avgCostPrice</th>
-                        <th scope="col">avgEntryPrice</th>
+                        <%--<th scope="col">avgCostPrice</th>--%>
+                        <%--<th scope="col">avgEntryPrice</th>--%>
                         <%--<th scope="col">breakEvenPrice</th>--%>
                         <%--<th scope="col">marginCallPrice</th>--%>
                         <th scope="col">liquidationPrice</th>
-                        <th scope="col">timestamp</th>
-                        <th scope="col">lastPrice</th>
+                        <%--<th scope="col">timestamp</th>--%>
+                        <%--<th scope="col">lastPrice</th>--%>
                         <%--<th scope="col">lastValue</th>--%>
                         <%--<th scope="col">Id<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
                         <%--<th scope="col">Product Name<a href="${pageContext.request.contextPath}/management-panel"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByNameLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
@@ -451,13 +451,13 @@
                             <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
                             <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
                             <%--<td>${tempMap['openingQty']}</td>--%>
-                            <td>${tempMap['openingCost']}</td>
+                            <%--<td>${tempMap['openingCost']}</td>--%>
                             <td>${tempMap['unrealisedPnl']}</td>
-                            <td>${tempMap['execQty']}</td>
+                            <%--<td>${tempMap['execQty']}</td>--%>
                             <td>${tempMap['execCost']}</td>
                             <td>${tempMap['currentQty']}</td>
                             <td>${tempMap['currentCost']}</td>
-                            <td>${tempMap['currentComm']}</td>
+                            <%--<td>${tempMap['currentComm']}</td>--%>
                             <%--<td>${tempMap['realisedCost']}</td>--%>
                             <td>${tempMap['unrealisedCost']}</td>
                             <%--<td>${tempMap['grossOpenCost']}</td>--%>
@@ -474,13 +474,13 @@
                             <td>${tempMap['unrealisedRoePcnt']}</td>
                             <%--<td>${tempMap['simpleQty']}</td>--%>
                             <%--<td>${tempMap['simpleCost']}</td>--%>
-                            <td>${tempMap['avgCostPrice']}</td>
-                            <td>${tempMap['avgEntryPrice']}</td>
+                            <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                            <%--<td>${tempMap['avgEntryPrice']}</td>--%>
                             <%--<td>${tempMap['breakEvenPrice']}</td>--%>
                             <%--<td>${tempMap['marginCallPrice']}</td>--%>
                             <td>${tempMap['liquidationPrice']}</td>
-                            <td>${tempMap['timestamp']}</td>
-                            <td>${tempMap['lastPrice']}</td>
+                            <%--<td>${tempMap['timestamp']}</td>--%>
+                            <%--<td>${tempMap['lastPrice']}</td>--%>
                             <%--<td>${tempMap['lastValue']}</td>--%>
                         </tr>
                         <%--</c:if>--%>
