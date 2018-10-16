@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -45,9 +44,9 @@ public class DashboardController {
         List<Map<String, Object>> filledOrders = null;
         List<Map<String, Object>> cancelledOrders = null;
         if (allOrders != null) {
-            closedOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("Close")).collect(Collectors.toList());
-            filledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Filled")).collect(Collectors.toList());
-            cancelledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Canceled")).collect(Collectors.toList());
+//            closedOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("Close")).collect(Collectors.toList());
+//            filledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Filled")).collect(Collectors.toList());
+//            cancelledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Canceled")).collect(Collectors.toList());
         }
 
         List<Map<String, Object>> positions = bitmexService.get_Position(user, "testnet");
@@ -75,7 +74,7 @@ public class DashboardController {
         model.addAttribute("closedOrders", closedOrders);
         model.addAttribute("filledOrders", filledOrders);
         model.addAttribute("cancelledOrders", cancelledOrders);
-//        model.addAttribute("openOrders", openOrders);
+        model.addAttribute("allOrders", allOrders);
         model.addAttribute("positions", positions);
         model.addAttribute("announcements", announcements);
         model.addAttribute("activeTraders", activeTraders);
