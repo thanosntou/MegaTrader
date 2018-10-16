@@ -84,9 +84,19 @@ public class UserService implements UserDetailsService {
         customerToTraderLinkRepository.delete(link);
     }
 
-    public void setFixedQty(String username, Long qty) {
+    public void setFixedQty(String username, String symbol, Long qty) {
         User user = userRepository.findByUsername(username);
-        user.setFixedQty(qty);
+        if (symbol.equals("XBTUSD")) user.setFixedQtyXBTUSD(qty);
+        if (symbol.equals("XBTJPY")) user.setFixedQtyXBTJPY(qty);
+        if (symbol.equals("ADAZ18")) user.setFixedQtyADAZ18(qty);
+        if (symbol.equals("BCHZ18")) user.setFixedQtyBCHZ18(qty);
+        if (symbol.equals("EOSZ18")) user.setFixedQtyEOSZ18(qty);
+        if (symbol.equals("ETHUSD")) user.setFixedQtyETHUSD(qty);
+        if (symbol.equals("LTCZ18")) user.setFixedQtyLTCZ18(qty);
+        if (symbol.equals("TRXZ18")) user.setFixedQtyTRXZ18(qty);
+        if (symbol.equals("XRPZ18")) user.setFixedQtyXRPZ18(qty);
+        if (symbol.equals("XBTKRW")) user.setFixedQtyXBTKRW(qty);
+
         userRepository.save(user);
     }
 
@@ -136,6 +146,16 @@ public class UserService implements UserDetailsService {
         user.setEmail(userDetails.getEmail());
         user.setCreate_date();
         user.setWallet(wallet);
+        user.setFixedQtyXBTUSD(0L);
+        user.setFixedQtyXBTJPY(0L);
+        user.setFixedQtyADAZ18(0L);
+        user.setFixedQtyBCHZ18(0L);
+        user.setFixedQtyEOSZ18(0L);
+        user.setFixedQtyETHUSD(0L);
+        user.setFixedQtyLTCZ18(0L);
+        user.setFixedQtyTRXZ18(0L);
+        user.setFixedQtyXRPZ18(0L);
+        user.setFixedQtyXBTKRW(0L);
 
         userRepository.save(user);
 

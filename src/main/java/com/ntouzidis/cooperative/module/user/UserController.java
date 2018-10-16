@@ -54,9 +54,10 @@ public class UserController {
 
     @PostMapping(value = "/fixedQty")
     public String setFixedQty(@RequestParam(name="fixedQty", required=false) Long qty,
+                              @RequestParam(name="symbol", required=false) String symbol,
                               Principal principal) {
 
-        userService.setFixedQty(principal.getName(), qty);
+        userService.setFixedQty(principal.getName(), symbol, qty);
 
         return "redirect:/dashboard";
     }
