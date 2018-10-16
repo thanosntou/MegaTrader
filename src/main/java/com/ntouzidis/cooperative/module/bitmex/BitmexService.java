@@ -54,6 +54,18 @@ public class BitmexService implements IBitmexService {
 
     }
 
+//    public List<Map<String, Object>> getClosedOrders(User user, String client) {
+//        return get_Order_Order(user, client).stream()
+//                .filter(i -> i.get("ordStatus").equals("Close"))
+//                .collect(Collectors.toList());
+//    }
+//
+//    public List<Map<String, Object>> getFilledOrders(User user, String client) {
+//        return get_Order_Order(user, client).stream()
+//                .filter(i -> i.get("ordStatus").equals("Filled"))
+//                .collect(Collectors.toList());
+//    }
+
 
     public Map<String, Object> get_User_Margin(User user, String client) {
         Preconditions.checkNotNull(user, "user cannot be null");

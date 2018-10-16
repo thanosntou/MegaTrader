@@ -318,16 +318,91 @@
                  <%-------------------------------------------------------------- Transaction History -----------------------------------------------------------------------%>
                     <div class="tab-pane fade" id="v-pills-th" role="tabpanel" aria-labelledby="v-pills-th-tab">
                         <h3>Transaction History</h3>
+                        <%--<div class="row">--%>
+                            <%--<h4>Closed Orders</h4>--%>
+                            <%--<table class="table table-hover table-sm">--%>
+                                <%--<tbody>--%>
+                                <%--<c:forEach var="tempMap" items="${closedOrders}">--%>
+                                    <%--<c:if test="${tempMap['ordStatus'] == 'Filled' or tempMap['ordStatus'] == 'Close'}" >--%>
+                                        <%--<tr>--%>
+                                            <%--<th scope="row">${tempMap['symbol']}</th>--%>
+                                            <%--<td>${tempMap['side']}</td>--%>
+                                            <%--<td>${tempMap['price']}</td>--%>
+                                            <%--<td>${tempMap['ordType']}</td>--%>
+                                            <%--<td>${tempMap['orderStatus']}</td>--%>
+                                            <%--<td>${tempMap['orderQty']}</td>--%>
+                                            <%--<td>${tempMap['currency']}</td>--%>
+                                            <%--<td>${tempMap['ordStatus']}</td>--%>
+                                            <%--<td>${tempMap['transactTime']}</td>--%>
+                                            <%--<td>${tempMap['cumQty']}</td>--%>
+                                            <%--<td>${tempMap['avgPx']}</td>--%>
+
+                                        <%--</tr>--%>
+                                    <%--</c:if>--%>
+
+                                <%--</c:forEach>--%>
+                                <%--</tbody>--%>
+                            <%--</table>--%>
+                        <%--</div>--%>
+                        <br>
+                        <div class="row">
+                            <h4>Cancelled Orders</h4>
                             <table class="table table-hover table-sm">
+                                <thead class="thead bg-info">
+                                <tr>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">Side</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Order Type</th>
+                                    <th scope="col">order Qty</th>
+                                    <th scope="col">Currency</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col">Transaction</th>
+                                </tr>
+                                </thead>
                                 <tbody>
-                                <c:forEach var="tempMap" items="${oldOrders}">
-                                    <c:if test="${tempMap['ordStatus'] == 'Filled' or tempMap['ordStatus'] == 'Close'}" >
+                                <c:forEach var="tempMap" items="${cancelledOrders}">
+                                    <%--<c:if test="${tempMap['ordStatus'] == 'Filled' or tempMap['ordStatus'] == 'Close'}" >--%>
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+                                            <td>${tempMap['side']}</td>
+                                            <td>${tempMap['price']}</td>
+                                            <td>${tempMap['ordType']}</td>
+                                            <td>${tempMap['orderQty']}</td>
+                                            <td>${tempMap['currency']}</td>
+                                            <td>${tempMap['ordStatus']}</td>
+                                            <td>${tempMap['transactTime']}</td>
+                                        </tr>
+                                    <%--</c:if>--%>
+
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <h4>Filled Orders</h4>
+                            <table class="table table-hover table-sm">
+                                <thead class="thead bg-info">
+                                <tr>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">Side</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Order Type</th>
+                                    <th scope="col">order Qty</th>
+                                    <th scope="col">Currency</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col">Transaction</th>
+                                    <th scope="col">cumQty</th>
+                                    <th scope="col">averagePrice</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="tempMap" items="${filledOrders}">
                                     <tr>
                                         <th scope="row">${tempMap['symbol']}</th>
-                                        <td>${tempMap['size']}</td>
+                                        <td>${tempMap['side']}</td>
                                         <td>${tempMap['price']}</td>
                                         <td>${tempMap['ordType']}</td>
-                                        <td>${tempMap['orderStatus']}</td>
                                         <td>${tempMap['orderQty']}</td>
                                         <td>${tempMap['currency']}</td>
                                         <td>${tempMap['ordStatus']}</td>
@@ -336,7 +411,6 @@
                                         <td>${tempMap['avgPx']}</td>
 
                                     </tr>
-                                    </c:if>
 
                                 </c:forEach>
                                 </tbody>

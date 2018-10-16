@@ -421,7 +421,7 @@
                         <%--<th scope="col">simpleQty</th>--%>
                         <%--<th scope="col">simpleCost</th>--%>
                         <%--<th scope="col">avgCostPrice</th>--%>
-                        <%--<th scope="col">avgEntryPrice</th>--%>
+                        <th scope="col">avgEntryPrice</th>
                         <%--<th scope="col">breakEvenPrice</th>--%>
                         <%--<th scope="col">marginCallPrice</th>--%>
                         <th scope="col">liquidationPrice</th>
@@ -475,7 +475,7 @@
                             <%--<td>${tempMap['simpleQty']}</td>--%>
                             <%--<td>${tempMap['simpleCost']}</td>--%>
                             <%--<td>${tempMap['avgCostPrice']}</td>--%>
-                            <%--<td>${tempMap['avgEntryPrice']}</td>--%>
+                            <td>${tempMap['avgEntryPrice']}</td>
                             <%--<td>${tempMap['breakEvenPrice']}</td>--%>
                             <%--<td>${tempMap['marginCallPrice']}</td>--%>
                             <td>${tempMap['liquidationPrice']}</td>
