@@ -85,12 +85,13 @@
 
 
             <%-- main bar --%>
-        <div class="col-sm-10">
-            <div class="card" style="height: 100%; margin-top: 15px">
-                <div class="card-header">
-                    <div class="card-header">
-                        <%--<span style="position: relative; right: 690px; opacity: 0.7;">Bitcoin Syndicate</span>--%>
-                    </div>
+        <div class="col-sm-10" style="background-color: #bac9d6">
+            <div class="card" style="height: 100%; margin-top: 12px">
+                <div class="card-header" style="background-color: #eeeeee">
+                    <%--<div class="row">--%>
+                        <span style="position: relative; right: 690px;">Bitcoin Syndicate</span>
+                    <%--</div>--%>
+
                 </div>
 
                 <div class="card-body">
