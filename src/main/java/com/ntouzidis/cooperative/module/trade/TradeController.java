@@ -4,9 +4,11 @@ import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
 import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +40,10 @@ public class TradeController {
 
     @GetMapping("/{symbol}")
     public String showProducts(@PathVariable(name = "symbol") String symbol,
-                               Model model, Principal principal) {
+                               Model model, Authentication authentication) {
 
-        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
         List<Map<String, Object>> openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
