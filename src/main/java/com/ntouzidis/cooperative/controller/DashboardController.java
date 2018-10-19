@@ -1,6 +1,6 @@
 package com.ntouzidis.cooperative.controller;
 
-import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
@@ -20,41 +20,37 @@ import java.util.Map;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    @Autowired private UserService userService;
-    @Autowired private BitmexService bitmexService;
+    private final UserService userService;
+    private final IBitmexService bitmexService;
+
+    @Autowired
+    public DashboardController(UserService userService, IBitmexService bitmexService) {
+        this.userService = userService;
+        this.bitmexService = bitmexService;
+    }
 
     @GetMapping(value = {"", "/"})
     public String getDashboard(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
                                Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        String walletBalance = null;
-        String availableMargin = null;
-        String activeBalance = null;
+        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+        List<Map<String, Object>> positions = bitmexService.get_Position(user);
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user, "testnet");
-
-
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user, "testnet");
+//        List<User> activeTraders = userService.getTraders();
+//        User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);
 
         List<Map<String, Object>> closedOrders = null;
         List<Map<String, Object>> filledOrders = null;
         List<Map<String, Object>> cancelledOrders = null;
-        if (allOrders != null) {
-//            closedOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("Close")).collect(Collectors.toList());
-//            filledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Filled")).collect(Collectors.toList());
-//            cancelledOrders = allOrders.stream().filter(i -> i.get("ordStatus").toString().equals("Canceled")).collect(Collectors.toList());
-        }
+        String walletBalance = null;
+        String availableMargin = null;
+        String activeBalance = null;
 
-        List<Map<String, Object>> positions = bitmexService.get_Position(user, "testnet");
-        List<Map<String, Object>> announcements = bitmexService.get_Announcements(user, "testnet");
-
-        List<User> activeTraders = userService.getTraders();
-        User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);
-
+        //TODO not sure if .toString() is necessary. if not, remove null check
         if (bitmexUserWalletGet != null) {
             walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
             availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
@@ -62,7 +58,7 @@ public class DashboardController {
         }
 
         model.addAttribute("user", user);
-        model.addAttribute("personalTrader", personalTrader);
+
         model.addAttribute("walletBalance", walletBalance);
         model.addAttribute("balance", walletBalance);
         model.addAttribute("earned", "0");
@@ -76,8 +72,6 @@ public class DashboardController {
         model.addAttribute("cancelledOrders", cancelledOrders);
         model.addAttribute("allOrders", allOrders);
         model.addAttribute("positions", positions);
-        model.addAttribute("announcements", announcements);
-        model.addAttribute("activeTraders", activeTraders);
 
         return "dashboard";
     }

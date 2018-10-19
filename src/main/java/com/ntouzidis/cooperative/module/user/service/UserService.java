@@ -84,8 +84,7 @@ public class UserService implements UserDetailsService {
         customerToTraderLinkRepository.delete(link);
     }
 
-    public void setFixedQty(String username, String symbol, Long qty) {
-        User user = userRepository.findByUsername(username);
+    public void setFixedQty(User user, String symbol, Long qty) {
         if (symbol.equals("XBTUSD")) user.setFixedQtyXBTUSD(qty);
         if (symbol.equals("XBTJPY")) user.setFixedQtyXBTJPY(qty);
         if (symbol.equals("ADAZ18")) user.setFixedQtyADAZ18(qty);
@@ -119,12 +118,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void saveKeys(String username, String apiKey, String apiSecret) {
-        User principal = userRepository.findByUsername(username);
-        if (apiKey != null) principal.setApiKey(apiKey);
-        if (apiSecret != null) principal.setApiSecret(apiSecret);
+    public void saveKeys(User user, String apiKey, String apiSecret) {
+        if (apiKey != null) user.setApiKey(apiKey);
+        if (apiSecret != null) user.setApiSecret(apiSecret);
 
-        userRepository.save(principal);
+        userRepository.save(user);
     }
 
     @Transactional(readOnly=true)

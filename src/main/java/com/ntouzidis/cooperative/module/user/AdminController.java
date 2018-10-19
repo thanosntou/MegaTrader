@@ -6,7 +6,6 @@ import com.ntouzidis.cooperative.module.user.entity.Login;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.repository.DepositRepository;
 import com.ntouzidis.cooperative.module.user.repository.LoginRepository;
-import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,9 +20,14 @@ import java.util.List;
 @RequestMapping(value="/admin")
 public class AdminController {
 
-    @Autowired private LoginRepository loginRepository;
-    @Autowired private DepositRepository depositRepository;
-    @Autowired private UserService userService;
+    private final LoginRepository loginRepository;
+    private final DepositRepository depositRepository;
+
+    @Autowired
+    public AdminController(LoginRepository loginRepository, DepositRepository depositRepository) {
+        this.loginRepository = loginRepository;
+        this.depositRepository = depositRepository;
+    }
 
     @GetMapping(value={"", "/"})
     public String showAdminPanel(Authentication authentication,

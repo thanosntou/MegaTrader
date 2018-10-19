@@ -9,17 +9,17 @@ import java.util.Map;
 
 public interface IBitmexService {
 
-    List<Map<String, Object>> get_Announcements(User user, String client);
+    List<Map<String, Object>> get_Announcements(User user);
 
-    Map<String, Object> get_User_Margin(User user, String client);
+    Map<String, Object> get_User_Margin(User user);
 
-    List<Map<String, Object>> get_Order_Order_Open(User user, String client);
+    List<Map<String, Object>> get_Order_Order(User user);
 
-    Map<String, Object> post_Order_Order(User user, String client, DataPostOrderBuilder dataPostOrderBuilder);
+    Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataPostOrderBuilder);
 
-    List<Map<String, Object>> get_Position(User user, String client);
+    List<Map<String, Object>> get_Position(User user);
 
-    List<Map<String, Object>> get_Position_Leverage(User user, String client, String data);
+    List<Map<String, Object>> get_Position_Leverage(User user, String data);
 
-    void post_Position_Leverage(User user, String client, DataPostLeverage dataPostLeverage);
+    void post_Position_Leverage(User user, DataPostLeverage dataPostLeverage);
 }

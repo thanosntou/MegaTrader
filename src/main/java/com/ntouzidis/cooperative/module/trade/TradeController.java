@@ -1,6 +1,7 @@
 package com.ntouzidis.cooperative.module.trade;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
 import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -13,31 +14,36 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/trade")
 public class TradeController {
 
-    @Autowired private UserService userService;
-    @Autowired private BitmexService bitmexService;
-    @Autowired private TradeService tradeService;
+    private final UserService userService;
+    private final IBitmexService bitmexService;
+    private final TradeService tradeService;
+
+    @Autowired
+    public TradeController(UserService userService, BitmexService bitmexService, TradeService tradeService) {
+        this.userService = userService;
+        this.bitmexService = bitmexService;
+        this.tradeService = tradeService;
+    }
 
     @GetMapping(value = {"", "/"})
     public String showDefault() {
         return "redirect:/trade/XBTUSD";
     }
 
-
     @GetMapping("/{symbol}")
     public String showProducts(@PathVariable(name = "symbol") String symbol,
-//                               @RequestParam(name="client", required=false, defaultValue = "testnet") String client,
                                Model model, Principal principal) {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
-//        List<Map<String, Object>> orders= bitmexService.get_Order_Order_Open(principal.getName(), "testnet");
-        List<Map<String, Object>> positions = bitmexService.get_Position(user,"testnet");
-        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order_Open(user,"testnet");
+        List<Map<String, Object>> positions = bitmexService.get_Position(user);
+        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
 
         String maxLeverage = "0";
         String priceStep = "1";
