@@ -25,10 +25,8 @@ public class TradeService {
         List<CustomerToTraderLink> links = userService.getPersonalCustomers(traderUsername);
 
         links.forEach(link -> {
-            bitmexService.post_Position_Leverage(link.getCustomer(), "testnet", dataLeverage);
-            bitmexService.post_Order_Order(link.getCustomer(), "testnet", dataOrder);
+            bitmexService.post_Position_Leverage(link.getCustomer(), dataLeverage);
+            bitmexService.post_Order_Order(link.getCustomer(), dataOrder);
         });
     }
-
-
 }
