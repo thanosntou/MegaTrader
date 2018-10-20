@@ -38,9 +38,34 @@ public class UserController {
         List<Map<String, Object>> announcements = bitmexService.get_Announcements(user);
 
         model.addAttribute("user", user);
+        model.addAttribute("page", "news");
         model.addAttribute("announcements", announcements);
 
         return "news-panel";
+    }
+
+    @GetMapping("/tx")
+    public String showTxPage(Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
+
+        model.addAttribute("user", user);
+        model.addAttribute("page", "tx");
+
+        return "tx-panel";
+    }
+
+    @GetMapping("/wallet")
+    public String showWalletPage(Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
+
+        model.addAttribute("user", user);
+        model.addAttribute("page", "wallet");
+
+        return "wallet";
     }
 
     @GetMapping("/settings")
@@ -50,6 +75,7 @@ public class UserController {
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
         model.addAttribute("user", user);
+        model.addAttribute("page", "settings");
 
         return "settings-panel";
     }

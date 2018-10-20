@@ -14,45 +14,8 @@
 <body>
     <div id="all" class="container-fluid">
         <div style="min-height: 100vh;" class="row">
-            <%--// side bar--%>
-            <div class="col-sm-2" style="background-color: #3b5264">
-                <div class="row" style="height: 18vh;">
-                    <div class="card" style="width: 18rem; background-color: inherit; border: none">
-                        <div class="card-body" style="color: white; margin-top: 1%">
-                            <h5 class="card-title"><i class="fas fa-user"></i> Welcome, ${user.username}</h5>
-                            <%--<h6>${user.email}</h6>--%>
-                            <br>
 
-                            <%--<a href="#" class="card-link">Card link</a>--%>
-                            <form:form action="${pageContext.request.contextPath}/logout" method="POST">
-                                <input type="submit" class="btn btn-outline-info" value="Logout"/>
-                            </form:form>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <br>
-                    <hr style="width: 100%; border: none; height: 1px; color: #333; background-color: #333; ">
-                    <br>
-                    <div class="col-sm-12">
-                        <div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-                            <a class="nav-link active" id="v-pills-news-tab" href="${pageContext.request.contextPath}/user/news" role="tab" aria-controls="v-pills-news" aria-selected="true"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
-                            <a class="nav-link" id="v-pills-dashboard-tab" href="${pageContext.request.contextPath}/dashboard/" role="button"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                            <a class="nav-link" id="v-pills-copy-tab" href="${pageContext.request.contextPath}/copy/" role="tab"><i class="fas fa-chart-line"></i> Copy Trader</a>
-                            <a class="nav-link" id="v-pills-th-tab" data-toggle="pill" href="#v-pills-th" role="tab"><i class="fas fa-history"></i> Transaction History</a>
-                            <a class="nav-link" id="v-pills-wallet-tab" data-toggle="pill" href="#v-pills-wallet" role="tab"><i class="fas fa-wallet"></i> Wallet</a>
-                            <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab"><i class="fas fa-cogs"></i> Settings</a>
-                            <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
-                                <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/trade/" role="button"><i class="fas fa-exchange-alt"></i> Trade</a>
-                            </security:authorize>
-                            <security:authorize access="hasRole('ADMIN')">
-                                <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/admin/" role="button"><i class="fas fa-exchange-alt"></i> Admin Panel</a>
-                            </security:authorize>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <%@ include file="side-bar.jsp" %>
 
             <%-- main bar --%>
             <div class="col-sm-10" style="background-color: #bac9d6">
@@ -61,8 +24,8 @@
                         <span style="">Bitcoin Syndicate</span>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <h3>News</h3>
+                        <div class="row" style="margin: 20px 0px">
+                            <h2>News <a href="${pageContext.request.contextPath}/user/news"><i class="fas fa-sync" class="button"></i></a></h2>
                         </div>
                         <br>
                         <div class="row">

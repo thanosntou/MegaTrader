@@ -101,6 +101,7 @@ public class TradeController {
 //        model.addAttribute("priceStep", priceStep);
 //        model.addAttribute("openOrders", openOrders);
 //        model.addAttribute("positions", positions);
+        model.addAttribute("page", "trade");
 
         return "trade-panel2";
     }
