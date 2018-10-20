@@ -46,7 +46,9 @@ public class TradeController {
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(() -> new RuntimeException("user not found"));
 
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
-        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+        List<Map<String, Object>> openOrders = null;
+        if (allOrders != null) openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
 
         String maxLeverage = "0";
         String priceStep = "1";
