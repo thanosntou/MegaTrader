@@ -37,7 +37,7 @@ public class DashboardController {
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
         Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
 
 //        List<User> activeTraders = userService.getTraders();
@@ -71,7 +71,7 @@ public class DashboardController {
         model.addAttribute("closedOrders", closedOrders);
         model.addAttribute("filledOrders", filledOrders);
         model.addAttribute("cancelledOrders", cancelledOrders);
-        model.addAttribute("allOrders", allOrders);
+
         model.addAttribute("positions", positions);
 
         return "dashboard";

@@ -30,7 +30,43 @@
                     <div class="row" style="margin: 20px 0px">
                         <h2>Transaction History <a href="${pageContext.request.contextPath}/user/tx"><i class="fas fa-sync" class="button"></i></a></h2>
                     </div>
-
+                    <div class="row">
+                        <h3>All Orders</h3>
+                    </div>
+                    <div class="row">
+                        <table class="table table-hover table-sm">
+                            <thead class="thead bg-info">
+                                <tr>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">Side</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Order Type</th>
+                                    <th scope="col">order Qty</th>
+                                    <th scope="col">Currency</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col">Transaction</th>
+                                    <th scope="col">cumQty</th>
+                                    <th scope="col">averagePrice</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="tempMap" items="${allOrders}">
+                                    <tr>
+                                        <th scope="row">${tempMap['symbol']}</th>
+                                        <td>${tempMap['side']}</td>
+                                        <td>${tempMap['price']}</td>
+                                        <td>${tempMap['ordType']}</td>
+                                        <td>${tempMap['orderQty']}</td>
+                                        <td>${tempMap['currency']}</td>
+                                        <td>${tempMap['ordStatus']}</td>
+                                        <td>${tempMap['transactTime']}</td>
+                                        <td>${tempMap['cumQty']}</td>
+                                        <td>${tempMap['avgPx']}</td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -21,16 +21,33 @@
         <div class="col-sm-10" style="background-color: #bac9d6">
             <div class="card" style="height: 100%; margin-top: 12px">
                 <div class="card-header" style="background-color: #eeeeee">
-                    <%--<div class="row">--%>
                     <span style="">Bitcoin Syndicate</span>
-                    <%--</div>--%>
                 </div>
-
                 <div class="card-body">
                     <div class="row" style="margin: 20px 0px">
                         <h2>Wallet <a href="${pageContext.request.contextPath}/user/wallet"><i class="fas fa-sync" class="button"></i></a></h2>
                     </div>
-
+                    <div class="row">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Balance: </h5>
+                            </div>
+                            <div class="card-body">
+                                <a href="#" class="card-link">Deposit</a>
+                                <a href="#" class="card-link">Withdraw</a>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div>
+                            <a class="donate-with-crypto" href="https://commerce.coinbase.com/checkout/18942dc4-8e2c-485e-a44a-c10f4d35170a">
+                                <span><i class="fab fa-bitcoin"></i> Deposit</span>
+                            </a>
+                            <script src="https://commerce.coinbase.com/v1/checkout.js">
+                            </script>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
