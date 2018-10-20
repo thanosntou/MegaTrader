@@ -43,7 +43,7 @@ public class TradeController {
                                Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
+        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(() -> new RuntimeException("user not found"));
 
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
         List<Map<String, Object>> openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
@@ -105,7 +105,7 @@ public class TradeController {
         model.addAttribute("openOrders", openOrders);
         model.addAttribute("positions", positions);
 
-        return "trade-panel";
+        return "trade-panel2";
     }
 
     @PostMapping(value = "/order")
