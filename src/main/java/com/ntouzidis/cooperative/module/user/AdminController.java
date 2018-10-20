@@ -44,6 +44,7 @@ public class AdminController {
         model.addAttribute("logins", logins);
         model.addAttribute("deposits", deposits);
         model.addAttribute("user", user);
+        model.addAttribute("page", "admin");
 
         return "admin-panel";
     }

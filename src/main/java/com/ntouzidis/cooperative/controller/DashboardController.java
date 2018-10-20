@@ -57,6 +57,7 @@ public class DashboardController {
             activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
         }
 
+        model.addAttribute("page", "dashboard");
         model.addAttribute("user", user);
 
         model.addAttribute("walletBalance", walletBalance);

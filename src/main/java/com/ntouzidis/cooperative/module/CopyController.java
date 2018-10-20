@@ -29,6 +29,8 @@ public class CopyController {
         List<User> activeTraders = userService.getTraders();
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);
 
+        model.addAttribute("user", user);
+        model.addAttribute("page", "copy");
         model.addAttribute("activeTraders", activeTraders);
         model.addAttribute("personalTrader", personalTrader);
 

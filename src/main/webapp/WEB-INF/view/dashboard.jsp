@@ -15,46 +15,10 @@
     <div id="all" class="container-fluid">
         <%--main content--%>
         <div style="min-height: 100vh;" class="row">
-        <%--// side bar--%>
-            <div class="col-sm-2" style="background-color: #3b5264">
-                <div class="row" style="height: 18vh;">
-                    <div class="card" style="width: 18rem; background-color: inherit; border: none">
-                        <div class="card-body" style="color: white; margin-top: 1%">
-                            <h5 class="card-title"><i class="fas fa-user"></i> Welcome, ${user.username}</h5>
-                            <%--<h6>${user.email}</h6>--%>
-                            <br>
 
-                            <%--<a href="#" class="card-link">Card link</a>--%>
-                                <form:form action="${pageContext.request.contextPath}/logout" method="POST">
-                                    <input type="submit" class="btn btn-outline-info" value="Logout"/>
-                                </form:form>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <br>
-                    <hr style="width: 100%; border: none; height: 1px; color: #333; background-color: #333; ">
-                    <br>
-                    <div class="col-sm-12">
-                        <div class="nav flex-column nav-pills nav-fill" id="v-pills-tab" role="tablist" aria-orientation="vertical" >
-                            <a class="nav-link" id="v-pills-news-tab" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
-                            <a class="nav-link active" id="v-pills-dashboard-tab" href="${pageContext.request.contextPath}/dashboard/" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                            <a class="nav-link" id="v-pills-copy-tab" href="${pageContext.request.contextPath}/copy/" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
-                            <a class="nav-link" id="v-pills-th-tab" data-toggle="pill" href="#v-pills-th" role="tab"><i class="fas fa-history"></i> Transaction History</a>
-                            <a class="nav-link" id="v-pills-wallet-tab" data-toggle="pill" href="#v-pills-wallet" role="tab"><i class="fas fa-wallet"></i> Wallet</a>
-                            <a class="nav-link" id="v-pills-settings-tab" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
-                            <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
-                                <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/trade/" role="button"><i class="fas fa-exchange-alt"></i> Trade</a>
-                            </security:authorize>
-                            <security:authorize access="hasRole('ADMIN')">
-                                <a class="nav-link" id="v-pills-trades-tab" href="${pageContext.request.contextPath}/admin/" role="button"><i class="fas fa-exchange-alt"></i> Admin Panel</a>
-                            </security:authorize>
-                        </div>
-                     </div>
-                </div>
-            </div>
+            <%@ include file="side-bar.jsp" %>
 
-            <%------------------------------------------------- main bar -------------------------------------------------------------------------------%>
+            <%------------------------------------------------- main bar --------------------------------------------------------------------------------------------------%>
             <div class="col-sm-10" style="background-color: #bac9d6">
                 <div class="card" style="height: 100%; margin-top: 12px">
                     <div class="card-header" style="background-color: #eeeeee">
@@ -69,16 +33,16 @@
                                 <h2>Account Dashboard <a href="${pageContext.request.contextPath}/dashboard"><i class="fas fa-sync" class="button"></i></a></h2>
                             </div>
                             <br>
-                            <form:form action="${pageContext.request.contextPath}/dashboard" method="GET" id="clientView">
-                                Client:
-                                <select name="client" form="clientView">
-                                    <option value="bitmex" selected disabled hidden>Choose here</option>
-                                    <option value="bitmex">Bitmex</option>
-                                    <option value="testnet">Bitmex Testnet</option>
-                                </select>
-                                <input type="submit" value="View" />
-                            </form:form>
-                            <br>
+                            <%--<form:form action="${pageContext.request.contextPath}/dashboard" method="GET" id="clientView">--%>
+                                <%--Client:--%>
+                                <%--<select name="client" form="clientView">--%>
+                                    <%--<option value="bitmex" selected disabled hidden>Choose here</option>--%>
+                                    <%--<option value="bitmex">Bitmex</option>--%>
+                                    <%--<option value="testnet">Bitmex Testnet</option>--%>
+                                <%--</select>--%>
+                                <%--<input type="submit" value="View" />--%>
+                            <%--</form:form>--%>
+                            <%--<br>--%>
                             <br>
                             <h4>Current client: ${currentClient}</h4>
                             <br>
