@@ -50,8 +50,12 @@ public class UserController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+
         model.addAttribute("user", user);
         model.addAttribute("page", "tx");
+
+        model.addAttribute("allOrders", allOrders);
 
         return "tx-panel";
     }
