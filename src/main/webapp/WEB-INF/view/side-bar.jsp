@@ -27,7 +27,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link active" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard/" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/copy/" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/copy/" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -43,7 +45,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link active" href="${pageContext.request.contextPath}/dashboard" role="button"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -59,7 +63,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link active" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link active" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -75,7 +81,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link active" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -91,7 +99,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link active" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -107,7 +117,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link active" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -123,7 +135,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -139,7 +153,9 @@
                     <div class="nav flex-column nav-pills nav-fill" role="tablist" aria-orientation="vertical" >
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/news" role="button"><i class="fa fa-newspaper-o" style="content: 'f1ea';"><span class="icon">&#xf1ea;</span></i> News</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
-                        <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Copy Trader</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -149,6 +165,7 @@
                         <security:authorize access="hasRole('ADMIN')">
                             <a class="nav-link active" href="${pageContext.request.contextPath}/admin" role="button"><i class="fas fa-exchange-alt"></i> Admin Panel</a>
                         </security:authorize>
+
                     </div>
                 </c:when>
             </c:choose>
