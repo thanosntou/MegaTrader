@@ -4,6 +4,7 @@ import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
 import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,8 @@ public class TradeController {
     public String showProducts(@PathVariable(name = "symbol") String symbol,
                                Model model, Authentication authentication) {
 
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-//        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(() -> new RuntimeException("user not found"));
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(() -> new RuntimeException("user not found"));
 //
 //        List<Map<String, Object>> positions = bitmexService.get_Position(user);
 //        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
