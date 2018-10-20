@@ -60,32 +60,6 @@
                             </div>
                             <br>
                             <br>
-                            <%--<div class="row">--%>
-                                <%--<table class="table table-hover table-sm">--%>
-                                    <%--<tbody>--%>
-                                        <%--<c:forEach var="tempMap" items="${positions}">--%>
-                                            <%--<tr>--%>
-                                                <%--<th scope="row">${tempMap['symbol']}</th>--%>
-                                                <%--<td>${tempMap['commission']}</td>--%>
-                                                <%--<td>${tempMap['initMarginReq']}</td>--%>
-                                                <%--<td>${tempMap['maintMarginReq']}</td>--%>
-                                                <%--<td>${tempMap['leverage']}</td>--%>
-                                                <%--<td>${tempMap['prevClosePrice']}</td>--%>
-                                                <%--<td>${tempMap['openingComm']}</td>--%>
-                                                <%--<td>${tempMap['execBuyQty']}</td>--%>
-                                                <%--<td>${tempMap['execBuyCost']}</td>--%>
-                                                <%--<td>${tempMap['execSellQty']}</td>--%>
-                                                <%--<td>${tempMap['execSellCost']}</td>--%>
-                                                <%--<td>${tempMap['execQty']}</td>--%>
-                                                <%--<td>${tempMap['execComm']}</td>--%>
-                                                <%--<td>${tempMap['execBuyCost']}</td>--%>
-                                                <%--<td>${tempMap['execSellQty']}</td>--%>
-                                                <%--<td>${tempMap['execSellCost']}</td>--%>
-                                            <%--</tr>--%>
-                                        <%--</c:forEach>--%>
-                                    <%--</tbody>--%>
-                                <%--</table>--%>
-                            <%--</div>--%>
                         </div>
                     </div>
                 </div>
