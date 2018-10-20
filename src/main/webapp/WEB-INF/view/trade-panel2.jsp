@@ -30,6 +30,150 @@
                         <div class="row" style="margin: 20px 0px">
                             <h2>Trade Panel <a href="${pageContext.request.contextPath}/copy"><i class="fas fa-sync" class="button"></i></a></h2>
                         </div>
+                        <div class="row">
+                            <h3>-- Active Orders --</h3>
+                        </div>
+                        <div class="row">
+                            <table class="table table-hover table-sm">
+                                <thead class="thead bg-info">
+                                <tr>
+                                    <th scope="col">symbol</th>
+                                    <th scope="col">Side</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col">Order Type</th>
+                                    <th scope="col">Order Qty</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Stop Price</th>
+                                    <th scope="col">Transaction Time</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="tempMap" items="${openOrders}">
+                                    <tr>
+                                        <th scope="row">${tempMap['symbol']}</th>
+                                        <td>${tempMap['side']}</td>
+                                        <td>${tempMap['ordStatus']}</td>
+                                        <td>${tempMap['ordType']}</td>
+                                        <td>${tempMap['orderQty']}</td>
+                                        <td>${tempMap['price']}</td>
+                                        <td>${tempMap['stopPx']}</td>
+                                        <td>${tempMap['transactTime']}</td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <h3>-- Positions --</h3>
+                        </div>
+                        <div class="row">
+                            <table class="table table-hover table-sm">
+                                <thead class="thead bg-info">
+                                <tr>
+                                    <th scope="col">symbol</th>
+                                    <%--<th scope="col">commission</th>--%>
+                                    <th scope="col">leverage</th>
+                                    <th scope="col">isOpen</th>
+                                    <%--<th scope="col">rebalancedPnl</th>--%>
+                                    <%--<th scope="col">prevRealisedPnl</th>--%>
+                                    <%--<th scope="col">prevUnrealisedPnl</th>--%>
+                                    <%--<th scope="col">openingQty</th>--%>
+                                    <%--<th scope="col">openingCost</th>--%>
+                                    <th scope="col">unrealisedPnl</th>
+                                    <%--<th scope="col">execQty</th>--%>
+                                    <th scope="col">execCost</th>
+                                    <th scope="col">currentQty</th>
+                                    <th scope="col">currentCost</th>
+                                    <%--<th scope="col">currentComm</th>--%>
+                                    <%--<th scope="col">realisedCost</th>--%>
+                                    <th scope="col">unrealisedCost</th>
+                                    <%--<th scope="col">grossOpenCost</th>--%>
+                                    <%--<th scope="col">grossOpenPremium</th>--%>
+                                    <%--<th scope="col">grossExecCost</th>--%>
+                                    <th scope="col">markPrice</th>
+                                    <th scope="col">posMargin</th>
+                                    <th scope="col">maintMargin</th>
+                                    <th scope="col">realisedPnl</th>
+                                    <th scope="col">unrealisedGrossPnl</th>
+                                    <%--<th scope="col">unrealisedTax</th>--%>
+
+                                    <%--<th scope="col">unrealisedPnlPcnt</th>--%>
+                                    <th scope="col">unrealisedRoePcnt</th>
+                                    <%--<th scope="col">simpleQty</th>--%>
+                                    <%--<th scope="col">simpleCost</th>--%>
+                                    <%--<th scope="col">avgCostPrice</th>--%>
+                                    <th scope="col">avgEntryPrice</th>
+                                    <%--<th scope="col">breakEvenPrice</th>--%>
+                                    <%--<th scope="col">marginCallPrice</th>--%>
+                                    <th scope="col">liquidationPrice</th>
+                                    <th scope="col">timestamp</th>
+                                    <%--<th scope="col">lastPrice</th>--%>
+                                    <%--<th scope="col">lastValue</th>--%>
+                                    <%--<th scope="col">Id<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
+                                    <%--<th scope="col">Product Name<a href="${pageContext.request.contextPath}/management-panel"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByNameLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
+                                    <%--<th scope="col">Category<a href="${sortByCategoryLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByCategoryLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
+                                    <%--<th scope="col">Shop Price<a href="${sortByShopPriceLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByShopPriceLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
+                                    <%--<th scope="col">Buy Price<a href="${sortByBuyPriceLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByBuyPriceLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
+                                    <%--<th scope="col">Avail. Qty<a href="${sortByQtyLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByQtyLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
+                                    <%--<security:authorize access="hasRole('ADMIN')">--%>
+                                    <%--<th scope="col">Action</th>--%>
+                                    <%--</security:authorize>--%>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="tempMap" items="${positions}">
+                                    <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                                    <tr>
+                                        <th scope="row">${tempMap['symbol']}</th>
+                                            <%--<td>${tempMap['commission']}</td>--%>
+                                        <td>${tempMap['leverage']}</td>
+                                        <td>${tempMap['isOpen']}</td>
+                                            <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                            <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                            <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                            <%--<td>${tempMap['openingQty']}</td>--%>
+                                            <%--<td>${tempMap['openingCost']}</td>--%>
+                                        <td>${tempMap['unrealisedPnl']}</td>
+                                            <%--<td>${tempMap['execQty']}</td>--%>
+                                        <td>${tempMap['execCost']}</td>
+                                        <td>${tempMap['currentQty']}</td>
+                                        <td>${tempMap['currentCost']}</td>
+                                            <%--<td>${tempMap['currentComm']}</td>--%>
+                                            <%--<td>${tempMap['realisedCost']}</td>--%>
+                                        <td>${tempMap['unrealisedCost']}</td>
+                                            <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                            <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                            <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                        <td>${tempMap['markPrice']}</td>
+                                        <td>${tempMap['posMargin']}</td>
+                                        <td>${tempMap['maintMargin']}</td>
+                                        <td>${tempMap['realisedPnl']}</td>
+                                        <td>${tempMap['unrealisedGrossPnl']}</td>
+                                            <%--<td>${tempMap['unrealisedTax']}</td>--%>
+
+                                            <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                        <td>${tempMap['unrealisedRoePcnt']}</td>
+                                            <%--<td>${tempMap['simpleQty']}</td>--%>
+                                            <%--<td>${tempMap['simpleCost']}</td>--%>
+                                            <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                        <td>${tempMap['avgEntryPrice']}</td>
+                                            <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                            <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                        <td>${tempMap['liquidationPrice']}</td>
+                                            <td>${tempMap['timestamp']}</td>
+                                            <%--<td>${tempMap['lastPrice']}</td>--%>
+                                            <%--<td>${tempMap['lastValue']}</td>--%>
+                                    </tr>
+                                    <%--</c:if>--%>
+
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+
+                        </div>
 
                     </div>
                 </div>

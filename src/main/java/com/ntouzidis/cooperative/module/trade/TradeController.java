@@ -14,6 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/trade")
@@ -41,66 +44,67 @@ public class TradeController {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(() -> new RuntimeException("user not found"));
-//
-//        List<Map<String, Object>> positions = bitmexService.get_Position(user);
-//        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
-//
-//        String maxLeverage = "0";
-//        String priceStep = "1";
-//
-//        if (symbol.equals("XBTUSD")) {
-//            maxLeverage = "100";
-//            priceStep = "0.1";
-//        }
-//        if (symbol.equals("XBTJPY")) {
-//            maxLeverage = "100";
-//        }
-//
-//        if (symbol.equals("ADAZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.00000001";
-//        }
-//
-//        if (symbol.equals("BCHZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.0001";
-//        }
-//
-//        if (symbol.equals("EOSZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.0000001";
-//        }
-//
-//        if (symbol.equals("ETHUSD")) {
-//            maxLeverage = "50";
-//            priceStep = "0.01";
-//        }
-//
-//        if (symbol.equals("LTCZ18")) {
-//            maxLeverage = "33.3";
-//            priceStep = "0.00001";
-//        }
-//
-//        if (symbol.equals("TRXZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.00000001";
-//        }
-//
-//        if (symbol.equals("XRPZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.00000001";
-//        }
-//
-//        if (symbol.equals("XBTKRW")) {
-//            maxLeverage = "100";
-//        }
-//
-//        model.addAttribute("usernamePrincipal", user.getUsername());
-//        model.addAttribute("symbol", symbol);
-//        model.addAttribute("maxLeverage", maxLeverage);
-//        model.addAttribute("priceStep", priceStep);
-//        model.addAttribute("openOrders", openOrders);
-//        model.addAttribute("positions", positions);
+
+        List<Map<String, Object>> positions = bitmexService.get_Position(user);
+        List<Map<String, Object>> openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
+
+        String maxLeverage = "0";
+        String priceStep = "1";
+
+        if (symbol.equals("XBTUSD")) {
+            maxLeverage = "100";
+            priceStep = "0.1";
+        }
+        if (symbol.equals("XBTJPY")) {
+            maxLeverage = "100";
+        }
+
+        if (symbol.equals("ADAZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.00000001";
+        }
+
+        if (symbol.equals("BCHZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.0001";
+        }
+
+        if (symbol.equals("EOSZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.0000001";
+        }
+
+        if (symbol.equals("ETHUSD")) {
+            maxLeverage = "50";
+            priceStep = "0.01";
+        }
+
+        if (symbol.equals("LTCZ18")) {
+            maxLeverage = "33.3";
+            priceStep = "0.00001";
+        }
+
+        if (symbol.equals("TRXZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.00000001";
+        }
+
+        if (symbol.equals("XRPZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.00000001";
+        }
+
+        if (symbol.equals("XBTKRW")) {
+            maxLeverage = "100";
+        }
+
+        model.addAttribute("usernamePrincipal", user.getUsername());
+        model.addAttribute("symbol", symbol);
+        model.addAttribute("maxLeverage", maxLeverage);
+        model.addAttribute("priceStep", priceStep);
+        model.addAttribute("openOrders", openOrders);
+        model.addAttribute("positions", positions);
+
         model.addAttribute("page", "trade");
 
         return "trade-panel2";
