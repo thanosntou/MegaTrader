@@ -71,7 +71,7 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataOrder) {
+    public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
         String res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get());
@@ -80,7 +80,16 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public void delete_Order_Order(User user, DataDeleteOrderBuilder dataDeleteOrder) {
+    public Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataOrder) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        String res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.get());
+
+        return getMap(res);
+    }
+
+    @Override
+    public void cancelOrder(User user, DataDeleteOrderBuilder dataDeleteOrder) {
         requestDELETE(user, base_url, ENDPOINT_ORDER, dataDeleteOrder.get());
     }
 

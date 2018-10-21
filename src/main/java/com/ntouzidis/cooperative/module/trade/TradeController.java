@@ -3,10 +3,10 @@ package com.ntouzidis.cooperative.module.trade;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
-import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,13 +21,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/trade")
 public class TradeController {
 
-    private final UserService userService;
     private final IBitmexService bitmexService;
     private final TradeService tradeService;
 
     @Autowired
-    public TradeController(UserService userService, BitmexService bitmexService, TradeService tradeService) {
-        this.userService = userService;
+    public TradeController(BitmexService bitmexService, TradeService tradeService) {
         this.bitmexService = bitmexService;
         this.tradeService = tradeService;
     }
@@ -136,9 +134,7 @@ public class TradeController {
     }
 
     @PostMapping("/order/cancel")
-    public String cancelOrder(@RequestParam(name="orderID") String orderID,
-                              Model model, Authentication authentication) {
-
+    public String cancelOrder(@RequestParam(name="orderID") String orderID, Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
 
@@ -146,21 +142,55 @@ public class TradeController {
                 .withOrderID(orderID)
                 .withText("Cancel from Bitcoin Syndicate");
 
-        bitmexService.delete_Order_Order(user, dataDeleteOrderBuilder);
+        tradeService.cancelOrder(user, dataDeleteOrderBuilder);
 
         return "redirect:/trade";
     }
 
     @PostMapping("/order/cancelAll")
-    public String cancelOrder(Model model, Authentication authentication) {
-
+    public String cancelOrder(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
 
         DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
                 .withText("Canceled All from Bitcoin Syndicate");
 
-        bitmexService.cancelAllOrders(user, dataDeleteOrderBuilder);
+        tradeService.cancelAllOrders(user, dataDeleteOrderBuilder);
+
+        return "redirect:/trade";
+    }
+
+    @PostMapping("/position/market")
+    public String marketPosition(@RequestParam(name="symbol") String symbol, Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+                .withSymbol(symbol)
+                .withExecInst("Close")
+                .withOrderType("Market")
+                .withText("Position close from Bitcoin Syndicate");
+
+        tradeService.marketPosition(user, dataPostOrderBuilder);
+
+        return "redirect:/trade";
+    }
+
+    @PostMapping("/position/close")
+    public String closePosition(@RequestParam(name="symbol") String symbol,
+                                @RequestParam(name="limitPrice") String price,
+                                Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+                .withSymbol(symbol)
+                .withExecInst("Close")
+                .withOrderType("Limit")
+                .withPrice(price)
+                .withText("Porition close from Bitcoin Syndicate");
+
+        tradeService.closePosition(user, dataPostOrderBuilder);
 
         return "redirect:/trade";
     }

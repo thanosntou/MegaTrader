@@ -1,6 +1,7 @@
 package com.ntouzidis.cooperative.module.trade;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
@@ -41,7 +42,7 @@ public class TradeService {
             bitmexService.post_Position_Leverage(customer, dataLeverageBuilder);
 
             //            2. Market
-            bitmexService.post_Order_Order(customer, marketDataOrder);
+            bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
 
             if (sb.getStopLoss() != null) {
                 DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
@@ -70,6 +71,30 @@ public class TradeService {
                 bitmexService.post_Order_Order(customer, limitDataOrder);
             }
         });
+    }
+
+    void cancelOrder(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
+        List<User> followers = userService.getFollowers(trader);
+
+        followers.forEach(customer -> bitmexService.cancelOrder(customer, dataDeleteOrderBuilder));
+    }
+
+    void cancelAllOrders(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
+        List<User> followers = userService.getFollowers(trader);
+
+        followers.forEach(customer -> bitmexService.cancelAllOrders(customer, dataDeleteOrderBuilder));
+    }
+
+    void marketPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
+        List<User> followers = userService.getFollowers(trader);
+
+        followers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
+    }
+
+    void closePosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
+        List<User> followers = userService.getFollowers(trader);
+
+        followers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
     }
 
 }
