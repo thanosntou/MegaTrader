@@ -154,13 +154,21 @@
                         </div>
                         <br>
                         <div class="row">
-                            <h3>-- Positions --</h3>
+                            <h3>-- Open Positions --</h3>
                         </div>
                         <div class="row">
                             <table class="table table-hover table-sm">
                                 <thead class="thead bg-info">
                                 <tr>
-                                    <th scope="col">symbol</th>
+                                    <th scope="col">Symbol</th>
+                                    <th scope="col">Size</th>
+                                    <th scope="col">Entry Price</th>
+                                    <th scope="col">Mark Price</th>
+                                    <th scope="col">Liq. Price</th>
+                                    <th scope="col">Margin</th>
+                                    <th scope="col">Unrealised Pnl</th>
+                                    <th scope="col">Roe %</th>
+                                    <th scope="col">Realised Pnl</th>
                                     <%--<th scope="col">commission</th>--%>
                                     <th scope="col">leverage</th>
                                     <th scope="col">isOpen</th>
@@ -169,10 +177,8 @@
                                     <%--<th scope="col">prevUnrealisedPnl</th>--%>
                                     <%--<th scope="col">openingQty</th>--%>
                                     <%--<th scope="col">openingCost</th>--%>
-                                    <th scope="col">unrealisedPnl</th>
                                     <%--<th scope="col">execQty</th>--%>
                                     <th scope="col">execCost</th>
-                                    <th scope="col">currentQty</th>
                                     <th scope="col">currentCost</th>
                                     <%--<th scope="col">currentComm</th>--%>
                                     <%--<th scope="col">realisedCost</th>--%>
@@ -180,23 +186,16 @@
                                     <%--<th scope="col">grossOpenCost</th>--%>
                                     <%--<th scope="col">grossOpenPremium</th>--%>
                                     <%--<th scope="col">grossExecCost</th>--%>
-                                    <th scope="col">markPrice</th>
                                     <th scope="col">posMargin</th>
-                                    <th scope="col">maintMargin</th>
-                                    <th scope="col">realisedPnl</th>
-                                    <th scope="col">unrealisedGrossPnl</th>
+                                    <%--<th scope="col">unrealisedGrossPnl</th>--%>
                                     <%--<th scope="col">unrealisedTax</th>--%>
-
                                     <%--<th scope="col">unrealisedPnlPcnt</th>--%>
-                                    <th scope="col">unrealisedRoePcnt</th>
                                     <%--<th scope="col">simpleQty</th>--%>
                                     <%--<th scope="col">simpleCost</th>--%>
                                     <%--<th scope="col">avgCostPrice</th>--%>
-                                    <th scope="col">avgEntryPrice</th>
                                     <%--<th scope="col">breakEvenPrice</th>--%>
                                     <%--<th scope="col">marginCallPrice</th>--%>
-                                    <th scope="col">liquidationPrice</th>
-                                    <th scope="col">timestamp</th>
+                                    <%--<th scope="col">timestamp</th>--%>
                                     <%--<th scope="col">lastPrice</th>--%>
                                     <%--<th scope="col">lastValue</th>--%>
                                     <%--<th scope="col">Id<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"><i class="fas fa-chevron-down"></i></a></th>--%>
@@ -208,13 +207,37 @@
                                     <%--<security:authorize access="hasRole('ADMIN')">--%>
                                     <%--<th scope="col">Action</th>--%>
                                     <%--</security:authorize>--%>
+                                    <th scope="col">
+                                        <%--<c:if test="${activeOrders.size() > 1}">--%>
+                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
+                                                <%--&lt;%&ndash;<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>&ndash;%&gt;--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
+                                            <%--</form:form>--%>
+                                        <%--</c:if>--%>
+                                    </th>
+                                    <th scope="col">
+                                        <%--<c:if test="${activeOrders.size() > 1}">--%>
+                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
+                                                <%--&lt;%&ndash;<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>&ndash;%&gt;--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
+                                            <%--</form:form>--%>
+                                        <%--</c:if>--%>
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <c:forEach var="tempMap" items="${positions}">
-                                    <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                                    <c:if test="${tempMap['isOpen'] == 'true'}" >
                                     <tr>
                                         <th scope="row">${tempMap['symbol']}</th>
+                                        <td>${tempMap['currentQty']}</td>
+                                        <td>${tempMap['avgEntryPrice']}</td>
+                                        <td>${tempMap['markPrice']}</td>
+                                        <td>${tempMap['liquidationPrice']}</td>
+                                        <td>${tempMap['maintMargin']}</td>
+                                        <td>${tempMap['unrealisedPnl']}</td>
+                                        <td>${tempMap['unrealisedRoePcnt']}</td>
+                                        <td>${tempMap['realisedPnl']}</td>
                                             <%--<td>${tempMap['commission']}</td>--%>
                                         <td>${tempMap['leverage']}</td>
                                         <td>${tempMap['isOpen']}</td>
@@ -223,10 +246,8 @@
                                             <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
                                             <%--<td>${tempMap['openingQty']}</td>--%>
                                             <%--<td>${tempMap['openingCost']}</td>--%>
-                                        <td>${tempMap['unrealisedPnl']}</td>
                                             <%--<td>${tempMap['execQty']}</td>--%>
                                         <td>${tempMap['execCost']}</td>
-                                        <td>${tempMap['currentQty']}</td>
                                         <td>${tempMap['currentCost']}</td>
                                             <%--<td>${tempMap['currentComm']}</td>--%>
                                             <%--<td>${tempMap['realisedCost']}</td>--%>
@@ -234,27 +255,34 @@
                                             <%--<td>${tempMap['grossOpenCost']}</td>--%>
                                             <%--<td>${tempMap['grossOpenPremium']}</td>--%>
                                             <%--<td>${tempMap['grossExecCost']}</td>--%>
-                                        <td>${tempMap['markPrice']}</td>
                                         <td>${tempMap['posMargin']}</td>
-                                        <td>${tempMap['maintMargin']}</td>
-                                        <td>${tempMap['realisedPnl']}</td>
-                                        <td>${tempMap['unrealisedGrossPnl']}</td>
+                                        <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
                                             <%--<td>${tempMap['unrealisedTax']}</td>--%>
-
                                             <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
-                                        <td>${tempMap['unrealisedRoePcnt']}</td>
                                             <%--<td>${tempMap['simpleQty']}</td>--%>
                                             <%--<td>${tempMap['simpleCost']}</td>--%>
                                             <%--<td>${tempMap['avgCostPrice']}</td>--%>
-                                        <td>${tempMap['avgEntryPrice']}</td>
                                             <%--<td>${tempMap['breakEvenPrice']}</td>--%>
                                             <%--<td>${tempMap['marginCallPrice']}</td>--%>
-                                        <td>${tempMap['liquidationPrice']}</td>
-                                            <td>${tempMap['timestamp']}</td>
+                                            <%--<td>${tempMap['timestamp']}</td>--%>
                                             <%--<td>${tempMap['lastPrice']}</td>--%>
                                             <%--<td>${tempMap['lastValue']}</td>--%>
+                                        <td>
+                                            <form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">
+                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="number" step="0.5" name="limitPrice"/>
+                                                <input type="submit" class="btn btn-danger" value="Close"/>
+                                            </form:form>
+
+                                        </td>
+                                        <td>
+                                            <form:form action="${pageContext.request.contextPath}/trade/position/market" method="POST">
+                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="submit" class="btn btn-danger" value="Market"/>
+                                            </form:form>
+                                        </td>
                                     </tr>
-                                    <%--</c:if>--%>
+                                    </c:if>
 
                                 </c:forEach>
                                 </tbody>

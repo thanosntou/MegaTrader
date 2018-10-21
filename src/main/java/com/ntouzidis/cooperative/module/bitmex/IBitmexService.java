@@ -16,9 +16,11 @@ public interface IBitmexService {
 
     List<Map<String, Object>> get_Order_Order(User user);
 
+    Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder);
+
     Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataPostOrderBuilder);
 
-    void delete_Order_Order(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
+    void cancelOrder(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
 
     void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
 
