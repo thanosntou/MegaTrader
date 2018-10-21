@@ -55,7 +55,7 @@ public class TradeService {
                         .withText("Bitcoin Syndicate");
 
                 //            3. Stop Market
-                bitmexService.post_Order_Order(customer, stopMarketDataOrder);
+                bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
             }
 
             if (sb.getProfitTrigger() != null) {
@@ -68,7 +68,7 @@ public class TradeService {
                         .withText("Bitcoin Syndicate");
 
                 //            4. Limit
-                bitmexService.post_Order_Order(customer, limitDataOrder);
+                bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
             }
         });
     }
