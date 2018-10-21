@@ -122,7 +122,7 @@
                                         <th scope="col">
                                             <c:if test="${activeOrders.size() > 1}">
                                                 <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
-                                                    <%--<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>--%>
+                                                    <input type="hidden" name="symbol" value="${symbol}"/>
                                                     <input type="submit" class="btn btn-danger" value="Cancel All"/>
                                                 </form:form>
                                             </c:if>
@@ -143,7 +143,8 @@
                                         <td>${tempMap['transactTime']}</td>
                                         <td>
                                             <form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">
-                                                <input type="hidden" value="${tempMap['orderID']}" name="orderID"/>
+                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="orderID" value="${tempMap['orderID']}" />
                                                 <input type="submit" class="btn btn-danger" value="Cancel"/>
                                             </form:form>
                                         </td>
@@ -167,10 +168,10 @@
                                     <th scope="col">Liq. Price</th>
                                     <th scope="col">Margin</th>
                                     <th scope="col">Unrealised Pnl</th>
-                                    <th scope="col">Roe %</th>
+                                    <th scope="col">Roe%</th>
                                     <th scope="col">Realised Pnl</th>
                                     <%--<th scope="col">commission</th>--%>
-                                    <th scope="col">leverage</th>
+                                    <th scope="col">Leverage</th>
                                     <th scope="col">isOpen</th>
                                     <%--<th scope="col">rebalancedPnl</th>--%>
                                     <%--<th scope="col">prevRealisedPnl</th>--%>
@@ -178,15 +179,16 @@
                                     <%--<th scope="col">openingQty</th>--%>
                                     <%--<th scope="col">openingCost</th>--%>
                                     <%--<th scope="col">execQty</th>--%>
-                                    <th scope="col">execCost</th>
-                                    <th scope="col">currentCost</th>
+                                    <th scope="col">Exec Cost</th>
+                                    <th scope="col">Current Cost</th>
                                     <%--<th scope="col">currentComm</th>--%>
                                     <%--<th scope="col">realisedCost</th>--%>
-                                    <th scope="col">unrealisedCost</th>
+                                    <th scope="col">Unrealised Cost</th>
+
                                     <%--<th scope="col">grossOpenCost</th>--%>
                                     <%--<th scope="col">grossOpenPremium</th>--%>
                                     <%--<th scope="col">grossExecCost</th>--%>
-                                    <th scope="col">posMargin</th>
+                                    <th scope="col">Pos Margin</th>
                                     <%--<th scope="col">unrealisedGrossPnl</th>--%>
                                     <%--<th scope="col">unrealisedTax</th>--%>
                                     <%--<th scope="col">unrealisedPnlPcnt</th>--%>
@@ -236,7 +238,7 @@
                                         <td>${tempMap['liquidationPrice']}</td>
                                         <td>${tempMap['maintMargin']}</td>
                                         <td>${tempMap['unrealisedPnl']}</td>
-                                        <td>${tempMap['unrealisedRoePcnt']}</td>
+                                        <td>${tempMap['unrealisedRoePcnt'] * 100}%</td>
                                         <td>${tempMap['realisedPnl']}</td>
                                             <%--<td>${tempMap['commission']}</td>--%>
                                         <td>${tempMap['leverage']}</td>
