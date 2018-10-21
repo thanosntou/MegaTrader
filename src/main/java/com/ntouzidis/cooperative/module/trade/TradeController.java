@@ -134,7 +134,8 @@ public class TradeController {
     }
 
     @PostMapping("/order/cancel")
-    public String cancelOrder(@RequestParam(name="orderID") String orderID, Authentication authentication) {
+    public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
+                              @RequestParam(name="orderID") String orderID, Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
 
@@ -144,11 +145,12 @@ public class TradeController {
 
         tradeService.cancelOrder(user, dataDeleteOrderBuilder);
 
-        return "redirect:/trade";
+        return "redirect:/trade/" + symbol;
     }
 
     @PostMapping("/order/cancelAll")
-    public String cancelOrder(Authentication authentication) {
+    public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
+                              Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userDetails.getUser();
 
@@ -157,7 +159,7 @@ public class TradeController {
 
         tradeService.cancelAllOrders(user, dataDeleteOrderBuilder);
 
-        return "redirect:/trade";
+        return "redirect:/trade/" + symbol;
     }
 
     @PostMapping("/position/market")
@@ -173,7 +175,7 @@ public class TradeController {
 
         tradeService.marketPosition(user, dataPostOrderBuilder);
 
-        return "redirect:/trade";
+        return "redirect:/trade/" + symbol;
     }
 
     @PostMapping("/position/close")
@@ -192,7 +194,7 @@ public class TradeController {
 
         tradeService.closePosition(user, dataPostOrderBuilder);
 
-        return "redirect:/trade";
+        return "redirect:/trade/" + symbol;
     }
 
 //    @PostMapping(value = "/order")

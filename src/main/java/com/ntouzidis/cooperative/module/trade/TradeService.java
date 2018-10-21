@@ -31,15 +31,16 @@ public class TradeService {
                 .withLeverage(sb.getLeverage());
 
         followers.forEach(customer -> {
+
+            //            1. Set Leverage
+            bitmexService.post_Position_Leverage(customer, dataLeverageBuilder);
+
             DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
                     .withOrderType("Market")
                     .withSymbol(sb.getSymbol())
                     .withSide(sb.getSide())
                     .withOrderQty(customer.getFixedQtyADAZ18().toString())
                     .withText("Bitcoin Syndicate");
-
-            //            1. Set Leverage
-            bitmexService.post_Position_Leverage(customer, dataLeverageBuilder);
 
             //            2. Market
             bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);

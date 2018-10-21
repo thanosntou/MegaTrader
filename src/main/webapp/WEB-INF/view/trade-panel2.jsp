@@ -270,7 +270,7 @@
                                         <td>
                                             <form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">
                                                 <input type="hidden" name="symbol" value="${symbol}"/>
-                                                <input type="number" step="0.5" name="limitPrice"/>
+                                                <input type="number" name="limitPrice"/>
                                                 <input type="submit" class="btn btn-danger" value="Close"/>
                                             </form:form>
 
