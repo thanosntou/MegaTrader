@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
+import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -26,6 +27,7 @@ public class BitmexService implements IBitmexService {
 
     private static String ENDPOINT_ANNOUNCEMENT = "/api/v1/announcement";
     private static String ENDPOINT_ORDER = "/api/v1/order";
+    private static String ENDPOINT_ORDER_ALL = "/api/v1/order/all";
     private static String ENDPOINT_POSITION = "/api/v1/position";
     private static String ENDPOINT_POSITION_LEVERAGE = "/api/v1/position/leverage";
     private static String ENDPOINT_USER_MARGIN = "/api/v1/user/margin";
@@ -63,9 +65,7 @@ public class BitmexService implements IBitmexService {
     public List<Map<String, Object>> get_Order_Order(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String path = ENDPOINT_ORDER + "?reverse=true";
-
-        String res = requestGET(user, base_url, path, "");
+        String res = requestGET(user, base_url, ENDPOINT_ORDER + "?reverse=true", "");
 
         return getMapList(res);
     }
@@ -76,12 +76,19 @@ public class BitmexService implements IBitmexService {
 
         String res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get());
 
-        if (res == null) return null;
-
-        JSONObject jsonObj = new JSONObject(res);
-
-        return jsonObj.toMap();
+        return getMap(res);
     }
+
+    @Override
+    public void delete_Order_Order(User user, DataDeleteOrderBuilder dataDeleteOrder) {
+        requestDELETE(user, base_url, ENDPOINT_ORDER, dataDeleteOrder.get());
+    }
+
+    @Override
+    public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrder) {
+        requestDELETE(user, base_url, ENDPOINT_ORDER_ALL, dataDeleteOrder.get());
+    }
+
 
     @Override
     public List<Map<String, Object>> get_Position(User user) {
@@ -140,15 +147,13 @@ public class BitmexService implements IBitmexService {
     }
 
     private String requestPOST(User user, String baseUrl, String path, String data) {
-        String verb = "POST";
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
-
-        String signature = null;
+        String signature;
 
         try {
-            signature = calculateSignature(apiSecret, verb, path, expires, data);
+            signature = calculateSignature(apiSecret, POST, path, expires, data);
 
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -173,6 +178,35 @@ public class BitmexService implements IBitmexService {
         }
 
         return null;
+    }
+
+    private void requestDELETE(User user, String baseUrl, String path, String data) {
+        String apikey = user.getApiKey();
+        String apiSecret = user.getApiSecret();
+        String expires = String.valueOf(1600883067);
+        String signature;
+
+        try {
+            signature = calculateSignature(apiSecret, DELETE, path, expires, data);
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("api-expires", expires);
+            headers.set("api-key", apikey);
+            headers.set("api-signature", signature);
+
+            HttpEntity<String> entity = new HttpEntity<>(data, headers);
+
+            ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.DELETE, entity, String.class);
+
+            Objects.requireNonNull(res.getBody());
+
+        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | IllegalArgumentException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
 
 //    private String requestGET2(String username, String baseUrl, String path, String data) {

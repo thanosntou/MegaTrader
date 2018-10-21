@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
+import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -16,6 +17,10 @@ public interface IBitmexService {
     List<Map<String, Object>> get_Order_Order(User user);
 
     Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataPostOrderBuilder);
+
+    void delete_Order_Order(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
+
+    void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
 
     List<Map<String, Object>> get_Position(User user);
 
