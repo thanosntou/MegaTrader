@@ -40,6 +40,7 @@
                                     <th scope="col">Symbol</th>
                                     <th scope="col">Side</th>
                                     <th scope="col">Price</th>
+                                    <th scope="col">Stop Price</th>
                                     <th scope="col">Order Type</th>
                                     <th scope="col">order Qty</th>
                                     <th scope="col">Currency</th>
@@ -55,6 +56,7 @@
                                         <th scope="row">${tempMap['symbol']}</th>
                                         <td>${tempMap['side']}</td>
                                         <td>${tempMap['price']}</td>
+                                        <td>${tempMap['stopPx']}</td>
                                         <td>${tempMap['ordType']}</td>
                                         <td>${tempMap['orderQty']}</td>
                                         <td>${tempMap['currency']}</td>
