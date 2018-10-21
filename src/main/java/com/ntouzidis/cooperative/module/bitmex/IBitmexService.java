@@ -1,7 +1,7 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
+import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 
 import java.util.List;

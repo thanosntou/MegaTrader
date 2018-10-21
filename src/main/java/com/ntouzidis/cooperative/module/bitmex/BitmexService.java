@@ -1,7 +1,7 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
+import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
@@ -102,10 +102,10 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public void post_Position_Leverage(User user, DataPostLeverage dataLeverage) {
+    public void post_Position_Leverage(User user, DataPostLeverage dataLeverageBuilder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        requestPOST(user, base_url, ENDPOINT_POSITION_LEVERAGE, dataLeverage.get());
+        requestPOST(user, base_url, ENDPOINT_POSITION_LEVERAGE, dataLeverageBuilder.get());
     }
 
     private String requestGET(User user, String baseUrl, String path, String data) {

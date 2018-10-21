@@ -55,8 +55,7 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).map(CustomerToTraderLink::getTrader);
     }
 
-    public List<CustomerToTraderLink> getPersonalCustomers(String traderUsername) {
-        User trader = findTrader(traderUsername).orElseThrow(() -> new RuntimeException("trader not found"));
+    public List<CustomerToTraderLink> getPersonalCustomers(User trader) {
         return customerToTraderLinkRepository.findAllByTrader(trader);
     }
 
