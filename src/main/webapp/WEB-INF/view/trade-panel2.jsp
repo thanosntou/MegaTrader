@@ -21,31 +21,104 @@
             <div class="col-sm-10" style="background-color: #bac9d6">
                 <div class="card" style="height: 100%; margin-top: 12px">
                     <div class="card-header" style="background-color: #eeeeee">
-                        <%--<div class="row">--%>
                         <span style="">Bitcoin Syndicate</span>
-                        <%--</div>--%>
                     </div>
 
                     <div class="card-body">
+
                         <div class="row" style="margin: 20px 0px">
-                            <h2>Trade Panel <a href="${pageContext.request.contextPath}/copy"><i class="fas fa-sync" class="button"></i></a></h2>
+                            <h2>Trade Panel <a href="${pageContext.request.contextPath}/trade"><i class="fas fa-sync" class="button"></i></a></h2>
                         </div>
+
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/XBTUSD" role="button">Bitcoin</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/XBTJPY" role="button">Bitcoin / Yen</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/ADAZ18" role="button">Cardano</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/BCHZ18" role="button">Bitcoin Cash</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/EOSZ18" role="button">EOS Token</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/ETHUSD" role="button">Ethereum</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/LTCZ18" role="button">Litecoin</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/TRXZ18" role="button">Tron</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/XRPZ18" role="button">Ripple</a>
+                                <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/XBTKRW" role="button">Bitcoin / Won</a>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <%--signal line form--%>
+                        <form:form action="${pageContext.request.contextPath}/trade/signal" method="POST" oninput="x.value=parseInt(a.value)">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="row">
+                                        Contract
+                                    </div>
+                                    <div class="row">
+                                        <input type="text" name="symbol" value="${symbol}" disabled/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row">
+                                        Side
+                                    </div>
+                                    <div class="row">
+                                        <select name="side">
+                                            <option value="Buy">Long</option>
+                                            <option value="Sell">Short</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row">
+                                        Leverage
+                                    </div>
+                                    <div class="row">
+                                        <input type="range" id="a" name="leverage" value="0" min="0" max="${maxLeverage}"> <output name="x" for="a"></output>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row">
+                                        Stop Loss
+                                    </div>
+                                    <div class="row">
+                                        <input type="text" name="stopLoss" value=""/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="row">
+                                        Profit Trigger
+                                    </div>
+                                    <div class="row">
+                                        <input type="text" name="profitTrigger" value=""/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <br>
+                                    <div class="row">
+                                        <input type="submit" value="Create Signal" /><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </form:form>
+                        <br>
+                        <br>
+
                         <div class="row">
                             <h3>-- Active Orders --</h3>
                         </div>
                         <div class="row">
                             <table class="table table-hover table-sm">
                                 <thead class="thead bg-info">
-                                <tr>
-                                    <th scope="col">symbol</th>
-                                    <th scope="col">Side</th>
-                                    <th scope="col">Order Status</th>
-                                    <th scope="col">Order Type</th>
-                                    <th scope="col">Order Qty</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Stop Price</th>
-                                    <th scope="col">Transaction Time</th>
-                                </tr>
+                                    <tr>
+                                        <th scope="col">symbol</th>
+                                        <th scope="col">Side</th>
+                                        <th scope="col">Order Status</th>
+                                        <th scope="col">Order Type</th>
+                                        <th scope="col">Order Qty</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Stop Price</th>
+                                        <th scope="col">Transaction Time</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                 <c:forEach var="tempMap" items="${openOrders}">

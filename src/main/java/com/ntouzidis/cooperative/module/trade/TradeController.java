@@ -2,8 +2,7 @@ package com.ntouzidis.cooperative.module.trade;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -112,32 +110,56 @@ public class TradeController {
         return "trade-panel2";
     }
 
-    @PostMapping(value = "/order")
-    public String postOrder(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
-                            @RequestParam(name="symbol") String symbol,
-                            @RequestParam(name="side") String side,
-                            @RequestParam(name="ordType") String ordType,
-                            @RequestParam(name="orderQty") String orderQty,
-                            @RequestParam(name="price", required=false) String price,
-                            @RequestParam(name="execInst", required=false) String execInst,
-                            @RequestParam(name="stopPx", required = false) String stopPx,
-                            @RequestParam(name="leverage", required = false) String leverage,
-                            Model model, Principal principal) {
+    @PostMapping(value = "/signal")
+    public String createSignal(@RequestParam(name="symbol", required = false) String symbol,
+                               @RequestParam(name="side") String side,
+                               @RequestParam(name="leverage", required = false) String leverage,
+                               @RequestParam(name="stopLoss", required = false) String stopLoss,
+                               @RequestParam(name="profitTrigger", required = false) String profitTrigger,
+                               Model model, Authentication authentication) {
 
-        User trader = userService.findTrader(principal.getName()).orElseThrow(RuntimeException::new);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
+        if (symbol == null) symbol = "XBTUSD";
 
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
-                .withSide(side).withOrderType(ordType).withOrderQty(orderQty)
-                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
+        SignalBuilder signalBuilder = new SignalBuilder()
+                .withSymbol(symbol).withSide(side).withleverage(leverage)
+                .withStopLoss(stopLoss).withProfitTrigger(profitTrigger);
 
+        tradeService.createSignal(user, signalBuilder);
 
-        tradeService.placeOrderForCustomers(trader.getUsername(), dataLeverageBuilder, dataOrderBuilder);
+        model.addAttribute("user", user);
 
-        model.addAttribute("user", trader);
-        model.addAttribute("user", principal.getName());
-
-        return "redirect:/trade/"+symbol;
+        return "redirect:/trade/" + symbol;
     }
+
+//    @PostMapping(value = "/order")
+//    public String postOrder(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
+//                            @RequestParam(name="symbol") String symbol,
+//                            @RequestParam(name="side") String side,
+//                            @RequestParam(name="ordType") String ordType,
+//                            @RequestParam(name="orderQty") String orderQty,
+//                            @RequestParam(name="price", required=false) String price,
+//                            @RequestParam(name="execInst", required=false) String execInst,
+//                            @RequestParam(name="stopPx", required = false) String stopPx,
+//                            @RequestParam(name="leverage", required = false) String leverage,
+//                            Model model, Principal principal) {
+//
+//        User trader = userService.findTrader(principal.getName()).orElseThrow(RuntimeException::new);
+//
+//        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
+//
+//        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
+//                .withSide(side).withOrderType(ordType).withOrderQty(orderQty)
+//                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
+//
+//
+//        tradeService.placeOrderForCustomers(trader.getUsername(), dataLeverageBuilder, dataOrderBuilder);
+//
+//        model.addAttribute("user", trader);
+//        model.addAttribute("user", principal.getName());
+//
+//        return "redirect:/trade/"+symbol;
+//    }
 }

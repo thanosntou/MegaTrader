@@ -40,12 +40,6 @@ public class DashboardController {
 
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
 
-//        List<User> activeTraders = userService.getTraders();
-//        User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);
-
-        List<Map<String, Object>> closedOrders = null;
-        List<Map<String, Object>> filledOrders = null;
-        List<Map<String, Object>> cancelledOrders = null;
         String walletBalance = null;
         String availableMargin = null;
         String activeBalance = null;
@@ -68,9 +62,6 @@ public class DashboardController {
         model.addAttribute("apiKey", user.getApiKey());
         model.addAttribute("apiSecret", user.getApiSecret());
         model.addAttribute("currentClient", "testnet");
-        model.addAttribute("closedOrders", closedOrders);
-        model.addAttribute("filledOrders", filledOrders);
-        model.addAttribute("cancelledOrders", cancelledOrders);
 
         model.addAttribute("positions", positions);
 
