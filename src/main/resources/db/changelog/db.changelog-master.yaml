@@ -1,7 +1,7 @@
 databaseChangeLog:
   - preConditions:
     - runningAs:
-        username: postgres
+        username: vjnskmpjsxvrmd
 
   - include:
       file: changeset-001-createTable-wallet.yaml
