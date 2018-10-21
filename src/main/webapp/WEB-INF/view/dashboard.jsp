@@ -38,26 +38,67 @@
                             <br>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <div class="card" style="width: 18rem;">
+                                    <div class="card" style="width: 25rem;">
                                         <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Bitmex Balance: ${walletBalance}</li>
-                                            <li class="list-group-item">Earned: ${earned}</li>
-                                            <li class="list-group-item">Wallet Balance: ${balance}</li>
+                                            <li class="list-group-item">Balance: ${user.wallet.balance / 100000000} BTC</li>
+                                            <li class="list-group-item">Earned: ${earned / 100000000} BTC</li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <div class="card" style="width: 18rem;">
+                                    <div class="card" style="width: 25rem;">
                                         <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">Balance: ${user.wallet.balance / 100000000} BTC</li>
-                                            <li class="list-group-item">Active Balance for Orders: ${availableMargin}</li>
-                                            <li class="list-group-item">Active on orders: ${activeBalance}</li>
+                                            <li class="list-group-item">Bitmex Balance: ${walletBalance / 100000000} BTC</li>
+                                            <li class="list-group-item">Active Balance for Orders: ${availableMargin / 100000000} BTC</li>
+                                            <li class="list-group-item">Active on orders: ${activeBalance} (${activeBalance / 100000000} BTC)</li>
 
                                         </ul>
                                     </div>
                                 </div>
 
                             </div>
+                            <br>
+                            <div class="row">
+                                <h3>-- Followers --</h3>
+                            </div>
+                            <div class="row">
+                                <table class="table table-hover table-sm">
+                                    <thead class="thead bg-info">
+                                    <tr>
+                                        <th scope="col">User</th>
+                                        <th scope="col">Email</th>
+                                        <%--<th scope="col">Order Status</th>--%>
+                                        <%--<th scope="col">Order Type</th>--%>
+                                        <%--<th scope="col">Order Qty</th>--%>
+                                        <%--<th scope="col">Price</th>--%>
+                                        <%--<th scope="col">Stop Price</th>--%>
+                                        <%--<th scope="col">Transaction Time</th>--%>
+                                        <%--<th scope="col">--%>
+                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
+                                                <%--&lt;%&ndash;<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>&ndash;%&gt;--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
+                                            <%--</form:form>--%>
+                                        <%--</th>--%>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="temp" items="${followers}">
+                                        <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                                        <tr>
+                                            <th scope="row">${temp.username}</th>
+                                            <td>${temp.email}</td>
+                                            <%--<td>${temp.}</td>--%>
+                                            <%--<td>${temp['ordType']}</td>--%>
+                                            <%--<td>${temp['orderQty']}</td>--%>
+                                            <%--<td>${temp['price']}</td>--%>
+                                            <%--<td>${temp['stopPx']}</td>--%>
+                                            <%--<td>${temp['transactTime']}</td>--%>
+                                        </tr>
+                                        <%--</c:if>--%>
+
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
                             <br>
                             <br>
                         </div>

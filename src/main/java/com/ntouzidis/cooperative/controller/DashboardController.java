@@ -37,33 +37,31 @@ public class DashboardController {
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
         Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
-
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
+        List<User> followers = userService.getFollowers(user);
 
-        String walletBalance = null;
-        String availableMargin = null;
+        Object walletBalance = null;
+        Object availableMargin = null;
         String activeBalance = null;
 
-        //TODO not sure if .toString() is necessary. if not, remove null check
         if (bitmexUserWalletGet != null) {
-            walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
-            availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
-            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
+            walletBalance = bitmexUserWalletGet.get("walletBalance");
+            availableMargin = bitmexUserWalletGet.get("availableMargin");
+            activeBalance = String.valueOf(Integer.parseInt(walletBalance.toString()) - Integer.parseInt(availableMargin.toString()));
         }
 
-        model.addAttribute("page", "dashboard");
+
         model.addAttribute("user", user);
+        model.addAttribute("page", "dashboard");
+        model.addAttribute("currentClient", "testnet");
 
         model.addAttribute("walletBalance", walletBalance);
-        model.addAttribute("balance", walletBalance);
         model.addAttribute("earned", "0");
         model.addAttribute("availableMargin", availableMargin);
         model.addAttribute("activeBalance",activeBalance );
-        model.addAttribute("apiKey", user.getApiKey());
-        model.addAttribute("apiSecret", user.getApiSecret());
-        model.addAttribute("currentClient", "testnet");
 
         model.addAttribute("positions", positions);
+        model.addAttribute("followers", followers);
 
         return "dashboard";
     }
