@@ -2,6 +2,7 @@ package com.ntouzidis.cooperative.module.trade;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
+import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -41,12 +42,12 @@ public class TradeController {
                                Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(() -> new RuntimeException("user not found"));
+        User user = userDetails.getUser();
 
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
         List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
-        List<Map<String, Object>> openOrders = null;
-        if (allOrders != null) openOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
+        List<Map<String, Object>> activeOrders = null;
+        if (allOrders != null) activeOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
 
         String maxLeverage = "0";
         String priceStep = "1";
@@ -102,7 +103,7 @@ public class TradeController {
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
         model.addAttribute("priceStep", priceStep);
-        model.addAttribute("openOrders", openOrders);
+        model.addAttribute("activeOrders", activeOrders);
         model.addAttribute("positions", positions);
 
         model.addAttribute("page", "trade");
@@ -132,6 +133,36 @@ public class TradeController {
         model.addAttribute("user", user);
 
         return "redirect:/trade/" + symbol;
+    }
+
+    @PostMapping("/order/cancel")
+    public String cancelOrder(@RequestParam(name="orderID") String orderID,
+                              Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
+                .withOrderID(orderID)
+                .withText("Cancel from Bitcoin Syndicate");
+
+        bitmexService.delete_Order_Order(user, dataDeleteOrderBuilder);
+
+        return "redirect:/trade";
+    }
+
+    @PostMapping("/order/cancelAll")
+    public String cancelOrder(Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
+                .withText("Canceled All from Bitcoin Syndicate");
+
+        bitmexService.cancelAllOrders(user, dataDeleteOrderBuilder);
+
+        return "redirect:/trade";
     }
 
 //    @PostMapping(value = "/order")

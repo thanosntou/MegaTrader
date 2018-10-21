@@ -20,7 +20,7 @@
         
         <div class="card">
             <div class="card-header">
-                Sign Up as a Customer
+                Sign Up
             </div>
             <div class="card-body">
                 <div class="row">

@@ -54,7 +54,8 @@
                                         Contract
                                     </div>
                                     <div class="row">
-                                        <input type="text" name="symbol" value="${symbol}" disabled/>
+                                        <input type="hidden" name="symbol" value="${symbol}" >
+                                        <input type="text" value="${symbol}" disabled >
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -81,7 +82,7 @@
                                         Stop Loss
                                     </div>
                                     <div class="row">
-                                        <input type="text" name="stopLoss" value=""/>
+                                        <input type="text" name="stopLoss" >
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
@@ -89,13 +90,13 @@
                                         Profit Trigger
                                     </div>
                                     <div class="row">
-                                        <input type="text" name="profitTrigger" value=""/>
+                                        <input type="text" name="profitTrigger" >
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <br>
                                     <div class="row">
-                                        <input type="submit" value="Create Signal" /><br>
+                                        <input type="submit" value="Create Signal" ><br>
                                     </div>
                                 </div>
                             </div>
@@ -118,10 +119,16 @@
                                         <th scope="col">Price</th>
                                         <th scope="col">Stop Price</th>
                                         <th scope="col">Transaction Time</th>
+                                        <th scope="col">
+                                            <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
+                                                <%--<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>--%>
+                                                <input type="submit" class="btn btn-danger" value="Cancel"/>
+                                            </form:form>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="tempMap" items="${openOrders}">
+                                <c:forEach var="tempMap" items="${activeOrders}">
                                     <tr>
                                         <th scope="row">${tempMap['symbol']}</th>
                                         <td>${tempMap['side']}</td>
@@ -131,6 +138,12 @@
                                         <td>${tempMap['price']}</td>
                                         <td>${tempMap['stopPx']}</td>
                                         <td>${tempMap['transactTime']}</td>
+                                        <td>
+                                            <form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">
+                                                <input type="hidden" value="${tempMap['orderID']}" name="orderID"/>
+                                                <input type="submit" class="btn btn-danger" value="Cancel"/>
+                                            </form:form>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>
