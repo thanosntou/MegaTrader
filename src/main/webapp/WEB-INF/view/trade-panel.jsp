@@ -205,7 +205,7 @@
                     </form:form>
                 </div>
 
-                    <%------------------------------------------ LIMIT TAB ------------------------------------------------------------------------------- --%>
+                    <%------------------------------------------ Stop Market TAB ------------------------------------------------------------------------------- --%>
                     <div class="tab-pane fade" id="pills-stopMarket" role="tabpanel" aria-labelledby="pills-stopMarket-tab">
                     <form:form action="${pageContext.request.contextPath}/trade/order" method="POST" id="stop-form" oninput="x.value=parseInt(a3.value)">
                         <div class="row">
