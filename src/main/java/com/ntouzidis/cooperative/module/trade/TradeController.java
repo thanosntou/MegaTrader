@@ -190,7 +190,7 @@ public class TradeController {
                 .withExecInst("Close")
                 .withOrderType("Limit")
                 .withPrice(price)
-                .withText("Porition close from Bitcoin Syndicate");
+                .withText("Position close from Bitcoin Syndicate");
 
         tradeService.closePosition(user, dataPostOrderBuilder);
 
