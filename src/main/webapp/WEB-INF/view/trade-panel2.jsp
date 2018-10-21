@@ -122,7 +122,7 @@
                                         <th scope="col">
                                             <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
                                                 <%--<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>--%>
-                                                <input type="submit" class="btn btn-danger" value="Cancel"/>
+                                                <input type="submit" class="btn btn-danger" value="Cancel All"/>
                                             </form:form>
                                         </th>
                                     </tr>

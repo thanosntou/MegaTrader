@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/copy.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <title>Copy Panel</title>
+    <title>Follow a Trader</title>
 </head>
 <body>
 <div id="all" class="container-fluid">
@@ -28,7 +28,7 @@
 
                 <div class="card-body">
                     <div class="row" style="margin: 20px 0px">
-                        <h2>Copy a Trader <a href="${pageContext.request.contextPath}/copy"><i class="fas fa-sync" class="button"></i></a></h2>
+                        <h2>Follow a Trader <a href="${pageContext.request.contextPath}/copy"><i class="fas fa-sync" class="button"></i></a></h2>
                     </div>
                         <br>
                         <div class="row">
