@@ -6,18 +6,16 @@
     </head>
     <body>
         <div class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/">MegaTrader</a>
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/">Bitcoin Syndicate</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="${pageContext.request.contextPath}">Home</a>
-                </li>
-                
-                    
+                <%--<li class="nav-item">--%>
+                  <%--<a class="nav-link" href="${pageContext.request.contextPath}">Home</a>--%>
+                <%--</li>--%>
                 <%--<li class="nav-item">--%>
                   <%--<a class="nav-link" href="${pageContext.request.contextPath}/shop">E-Shop</a>--%>
                 <%--</li>--%>
@@ -36,7 +34,6 @@
 
                     <c:if test="${not empty pageContext.request.userPrincipal}">
                             <div class="btn-group dropleft" style="margin-right: 100px">
-<!--                                <button type="button" class="btn btn-secondary">Account</button>-->
                                 <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Account
                                 </button>

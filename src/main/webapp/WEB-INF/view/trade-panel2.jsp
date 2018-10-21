@@ -120,10 +120,13 @@
                                         <th scope="col">Stop Price</th>
                                         <th scope="col">Transaction Time</th>
                                         <th scope="col">
-                                            <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
-                                                <%--<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>--%>
-                                                <input type="submit" class="btn btn-danger" value="Cancel All"/>
-                                            </form:form>
+                                            <c:if test="${activeOrders.size() > 1}">
+                                                <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
+                                                    <%--<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>--%>
+                                                    <input type="submit" class="btn btn-danger" value="Cancel All"/>
+                                                </form:form>
+                                            </c:if>
+
                                         </th>
                                     </tr>
                                 </thead>
