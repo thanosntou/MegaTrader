@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module;
+package com.ntouzidis.cooperative.module.user;
 
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;

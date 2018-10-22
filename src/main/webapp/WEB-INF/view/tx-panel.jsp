@@ -2,6 +2,7 @@
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,19 +53,22 @@
                             </thead>
                             <tbody>
                                 <c:forEach var="tempMap" items="${allOrders}">
-                                    <tr>
-                                        <th scope="row">${tempMap['symbol']}</th>
-                                        <td>${tempMap['side']}</td>
-                                        <td>${tempMap['price']}</td>
-                                        <td>${tempMap['stopPx']}</td>
-                                        <td>${tempMap['ordType']}</td>
-                                        <td>${tempMap['orderQty']}</td>
-                                        <td>${tempMap['currency']}</td>
-                                        <td>${tempMap['ordStatus']}</td>
-                                        <td>${tempMap['transactTime']}</td>
-                                        <td>${tempMap['cumQty']}</td>
-                                        <td>${tempMap['avgPx']}</td>
-                                    </tr>
+                                    <c:if test="${fn:contains(tempMap['text'], 'Syndicate')}">
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+                                            <td>${tempMap['side']}</td>
+                                            <td>${tempMap['price']}</td>
+                                            <td>${tempMap['stopPx']}</td>
+                                            <td>${tempMap['ordType']}</td>
+                                            <td>${tempMap['orderQty']}</td>
+                                            <td>${tempMap['currency']}</td>
+                                            <td>${tempMap['ordStatus']}</td>
+                                            <td>${tempMap['transactTime']}</td>
+                                            <td>${tempMap['cumQty']}</td>
+                                            <td>${tempMap['avgPx']}</td>
+                                        </tr>
+                                    </c:if>
+
                                 </c:forEach>
                             </tbody>
                         </table>
