@@ -5,6 +5,14 @@
     color: white;
 }
 
+#manual-form{
+    background-color: #c4c4c4;
+}
+
+#signal-form{
+    background-color: #c4c4c4;
+}
+
 /*.nav-link{*/
     /*width: 100%;*/
     /*font-size: 1.2rem;*/

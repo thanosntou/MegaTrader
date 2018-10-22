@@ -23,17 +23,28 @@ public class TradeService {
         this.userService = userService;
     }
 
+    void placeOrderForCustomers(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
+        List<User> followers = userService.getFollowers(trader);
+
+        followers.forEach(customer -> {
+            bitmexService.post_Position_Leverage(customer, dataPostLeverage);
+
+            bitmexService.post_Order_Order(customer, dataPostOrder);
+        });
+
+    }
+
     void createSignal(User trader, SignalBuilder sb) {
         List<User> followers = userService.getFollowers(trader);
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
+        DataPostLeverage dataLeverage = new DataPostLeverage()
                 .withSymbol(sb.getSymbol())
                 .withLeverage(sb.getLeverage());
 
         followers.forEach(customer -> {
 
             //            1. Set Leverage
-            bitmexService.post_Position_Leverage(customer, dataLeverageBuilder);
+            bitmexService.post_Position_Leverage(customer, dataLeverage);
 
             DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
                     .withOrderType("Market")

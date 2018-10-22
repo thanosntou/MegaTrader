@@ -1,17 +1,16 @@
-package com.ntouzidis.cooperative.controller;
+package com.ntouzidis.cooperative.module.common;
 
 import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
-import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +30,9 @@ public class DashboardController {
 
     @GetMapping(value = {"", "/"})
     public String getDashboard(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
-                               Model model, Authentication authentication) {
+                               Model model, Principal principal) {
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
+        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
         Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
         List<Map<String, Object>> positions = bitmexService.get_Position(user);

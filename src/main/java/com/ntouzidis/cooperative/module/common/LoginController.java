@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.user;
+package com.ntouzidis.cooperative.module.common;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
