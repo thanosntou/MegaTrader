@@ -141,18 +141,17 @@
                                             <form:form action="${pageContext.request.contextPath}/trade/order" method="POST" id="limit-form" oninput="x.value=parseInt(aa.value)">
                                                 <div class="col-sm-12">
                                                     <input type="text" name="ordType" value="Limit" hidden /><br><br>
-                                                    <div class="row">
-                                                        <div class="col-sm">
-                                                            Client
-                                                        </div>
-                                                        <div class="col-sm">
-                                                            <select name="client">
-                                                                <option value="testnet">Testnet</option>
-                                                                <option value="bitmex">Bitmex</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <br>
+                                                    <%--<div class="row">--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--Client--%>
+                                                        <%--</div>--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--<select name="client">--%>
+                                                                <%--<option value="testnet">Testnet</option>--%>
+                                                                <%--<option value="bitmex">Bitmex</option>--%>
+                                                            <%--</select>--%>
+                                                        <%--</div>--%>
+                                                    <%--</div>--%>
                                                     <div class="row">
                                                         <div class="col-sm">
                                                             Contract
@@ -162,14 +161,14 @@
                                                         </div>
                                                     </div>
                                                     <br>
-                                                    <div class="row">
-                                                        <div class="col-sm">
-                                                            Quantity
-                                                        </div>
-                                                        <div class="col-sm">
-                                                            <input type="number" name="orderQty"/>
-                                                        </div>
-                                                    </div>
+                                                    <%--<div class="row">--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--Quantity--%>
+                                                        <%--</div>--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--<input type="number" name="orderQty"/>--%>
+                                                        <%--</div>--%>
+                                                    <%--</div>--%>
                                                     <div class="row">
                                                         <div class="col-sm">
                                                             Limit Price
@@ -215,24 +214,24 @@
                                         <div class="tab-pane fade" id="pills-market" role="tabpanel" aria-labelledby="pills-market-tab">
                                             <form:form action="${pageContext.request.contextPath}/trade/order" method="POST" id="market-form" oninput="x.value=parseInt(a2.value)">
                                                 <div class="col-sm-12">
-                                                    <div class="row">
-                                                        <div class="col-sm">
-                                                        </div>
-                                                        <div class="col-sm">
+                                                    <%--<div class="row">--%>
+                                                        <%--<div class="col-sm">--%>
+                                                        <%--</div>--%>
+                                                        <%--<div class="col-sm">--%>
                                                             <input type="text" name="ordType" value="Market" hidden /><br><br>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm">
-                                                            Client
-                                                        </div>
-                                                        <div class="col-sm">
-                                                            <select name="client">
-                                                                <option value="testnet">Testnet</option>
-                                                                <option value="bitmex">Bitmex</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+                                                        <%--</div>--%>
+                                                    <%--</div>--%>
+                                                    <%--<div class="row">--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--Client--%>
+                                                        <%--</div>--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--<select name="client">--%>
+                                                                <%--<option value="testnet">Testnet</option>--%>
+                                                                <%--<option value="bitmex">Bitmex</option>--%>
+                                                            <%--</select>--%>
+                                                        <%--</div>--%>
+                                                    <%--</div>--%>
                                                     <br>
                                                     <div class="row">
                                                         <div class="col-sm">
@@ -243,15 +242,15 @@
                                                         </div>
                                                     </div>
                                                     <br>
-                                                    <div class="row">
-                                                        <div class="col-sm">
-                                                            Quantity
-                                                        </div>
-                                                        <div class="col-sm">
-                                                            <input type="number" name="orderQty"/>
-                                                        </div>
-                                                    </div>
-                                                    <br>
+                                                    <%--<div class="row">--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--Quantity--%>
+                                                        <%--</div>--%>
+                                                        <%--<div class="col-sm">--%>
+                                                            <%--<input type="number" name="orderQty"/>--%>
+                                                        <%--</div>--%>
+                                                    <%--</div>--%>
+                                                    <%--<br>--%>
                                                     <div class="row">
                                                         <div class="col-sm">
                                                             Side
@@ -272,7 +271,6 @@
                                                             <input type="range" id="a2" name="leverage" value="0" min="0" max="${maxLeverage}"> <output name="x" for="a"></output>
                                                         </div>
                                                     </div>
-                                                    <br>
                                                     <div class="row">
                                                         <div class="col-sm">
                                                         </div>
@@ -297,18 +295,6 @@
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-sm">
-                                                                Client
-                                                            </div>
-                                                            <div class="col-sm">
-                                                                <select name="client">
-                                                                    <option value="testnet">Testnet</option>
-                                                                    <option value="bitmex">Bitmex</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <br>
-                                                        <div class="row">
-                                                            <div class="col-sm">
                                                                 Contract
                                                             </div>
                                                             <div class="col-sm">
@@ -316,14 +302,14 @@
                                                             </div>
                                                         </div>
                                                         <br>
-                                                        <div class="row">
-                                                            <div class="col-sm">
-                                                                Quantity
-                                                            </div>
-                                                            <div class="col-sm">
-                                                                <input type="number" name="orderQty"/>
-                                                            </div>
-                                                        </div>
+                                                        <%--<div class="row">--%>
+                                                            <%--<div class="col-sm">--%>
+                                                                <%--Quantity--%>
+                                                            <%--</div>--%>
+                                                            <%--<div class="col-sm">--%>
+                                                                <%--<input type="number" name="orderQty"/>--%>
+                                                            <%--</div>--%>
+                                                        <%--</div>--%>
                                                         <div class="row">
                                                             <div class="col-sm">
                                                                 Stop Price

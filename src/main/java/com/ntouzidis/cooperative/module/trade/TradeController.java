@@ -17,6 +17,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.lang.*;
 
 @Controller
 @RequestMapping("/trade")
@@ -202,6 +203,12 @@ public class TradeController {
 
         tradeService.marketPosition(user, dataPostOrderBuilder);
 
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return "redirect:/trade/" + symbol;
     }
 
@@ -225,11 +232,10 @@ public class TradeController {
     }
 
     @PostMapping(value = "/order")
-    public String postOrder(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
-                            @RequestParam(name="symbol") String symbol,
+    public String postOrder(@RequestParam(name="symbol") String symbol,
                             @RequestParam(name="side") String side,
                             @RequestParam(name="ordType") String ordType,
-                            @RequestParam(name="orderQty") String orderQty,
+                            @RequestParam(name="orderQty", required=false) String orderQty,
                             @RequestParam(name="price", required=false) String price,
                             @RequestParam(name="execInst", required=false) String execInst,
                             @RequestParam(name="stopPx", required = false) String stopPx,
