@@ -29,7 +29,7 @@ public class TradeService {
         followers.forEach(customer -> {
             bitmexService.post_Position_Leverage(customer, dataPostLeverage);
 
-            bitmexService.post_Order_Order(customer, dataPostOrder);
+            bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder);
         });
 
     }
