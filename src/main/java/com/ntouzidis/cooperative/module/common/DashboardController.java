@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -29,37 +30,37 @@ public class DashboardController {
     }
 
     @GetMapping(value = {"", "/"})
-    public String getDashboard(@RequestParam(name="client", required=false, defaultValue = "bitmex") String client,
-                               Model model, Principal principal) {
-
+    public String getDashboard(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
         Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
-        List<User> followers = userService.getFollowers(user);
 
+        List<Map<String, Object>> activeOrders = null;
+        List<Map<String, Object>> openPositions = null;
         Object walletBalance = null;
         Object availableMargin = null;
         String activeBalance = null;
+
 
         if (bitmexUserWalletGet != null) {
             walletBalance = bitmexUserWalletGet.get("walletBalance");
             availableMargin = bitmexUserWalletGet.get("availableMargin");
             activeBalance = String.valueOf(Integer.parseInt(walletBalance.toString()) - Integer.parseInt(availableMargin.toString()));
         }
-
+        if (allOrders != null) activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
+        if (positions != null) openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
 
         model.addAttribute("user", user);
         model.addAttribute("page", "dashboard");
         model.addAttribute("currentClient", "testnet");
-
         model.addAttribute("walletBalance", walletBalance);
         model.addAttribute("earned", "0");
         model.addAttribute("availableMargin", availableMargin);
         model.addAttribute("activeBalance",activeBalance );
-
-        model.addAttribute("positions", positions);
-        model.addAttribute("followers", followers);
+        model.addAttribute("openPositions", openPositions);
+        model.addAttribute("activeOrders", activeOrders);
 
         return "dashboard";
     }

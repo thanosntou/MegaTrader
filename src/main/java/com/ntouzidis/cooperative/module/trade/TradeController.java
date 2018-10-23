@@ -46,11 +46,12 @@ public class TradeController {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
         List<Map<String, Object>> positions = bitmexService.get_Position(user);
         List<User> followers = userService.getFollowers(user);
-        List<Map<String, Object>> activeOrders = null;
-        String currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
+
+        String currentLeverage = null;
+
+        if (positions != null) currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
 
         long sumXBTUSD = followers.stream().mapToLong(i -> i.getFixedQtyXBTUSD().intValue()).sum();
         long sumXBTJPY = followers.stream().mapToLong(i -> i.getFixedQtyXBTJPY().intValue()).sum();
@@ -62,8 +63,6 @@ public class TradeController {
         long sumTRXZ18 = followers.stream().mapToLong(i -> i.getFixedQtyTRXZ18().intValue()).sum();
         long sumXRPZ18 = followers.stream().mapToLong(i -> i.getFixedQtyXRPZ18().intValue()).sum();
         long sumXBTKRW = followers.stream().mapToLong(i -> i.getFixedQtyXBTKRW().intValue()).sum();
-
-        if (allOrders != null) activeOrders = bitmexService.get_Order_Order(user).stream().filter(map -> map.get("ordStatus").equals("New")).collect(Collectors.toList());
 
         String maxLeverage = "0";
         String priceStep = "1";
@@ -119,8 +118,6 @@ public class TradeController {
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
         model.addAttribute("priceStep", priceStep);
-        model.addAttribute("activeOrders", activeOrders);
-        model.addAttribute("positions", positions);
         model.addAttribute("followers", followers);
         model.addAttribute("sumXBTUSD", sumXBTUSD);
         model.addAttribute("sumXBTJPY", sumXBTJPY);
