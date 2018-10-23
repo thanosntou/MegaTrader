@@ -53,7 +53,6 @@
                                             <h3>Signal Form</h3>
                                         </div>
                                         <br>
-                                        <%--form--%>
                                         <div class="row">
                                             <form:form action="${pageContext.request.contextPath}/trade/signal" method="POST" oninput="x.value=parseInt(a.value)">
                                                 <div class="col-sm">
@@ -98,7 +97,8 @@
                                                             Leverage
                                                         </div>
                                                         <div class="col-sm">
-                                                            <input type="range" id="a" name="leverage" value="0" min="0" max="${maxLeverage}"> <output name="x" for="a"></output>
+                                                            <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                            <%--<output name="x" for="a"></output>--%>
                                                         </div>
                                                     </div>
                                                     <br>
@@ -154,14 +154,6 @@
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-sm">
-                                                                    Limit Price
-                                                                </div>
-                                                                <div class="col-sm">
-                                                                    <input type="number" step="${priceStep}" name="price"/>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm">
                                                                     Side
                                                                 </div>
                                                                 <div class="col-sm">
@@ -173,12 +165,22 @@
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-sm">
+                                                                    Limit Price
+                                                                </div>
+                                                                <div class="col-sm">
+                                                                    <input type="number" step="${priceStep}" name="price"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm">
                                                                     Leverage
                                                                 </div>
                                                                 <div class="col-sm">
-                                                                    <input type="range" id="aa" name="leverage" value="0" min="0" max="${maxLeverage}"> <output name="x" for="a"></output>
+                                                                    <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                    <%--<output name="x" for="a"></output>--%>
                                                                 </div>
                                                             </div>
+                                                            <br>
                                                             <div class="row">
                                                                 <div class="col-sm">
                                                                 </div>
@@ -219,9 +221,11 @@
                                                                     Leverage
                                                                 </div>
                                                                 <div class="col-sm">
-                                                                    <input type="range" id="a2" name="leverage" value="0" min="0" max="${maxLeverage}"> <output name="x" for="a"></output>
+                                                                    <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                    <%--<output name="x" for="a"></output>--%>
                                                                 </div>
                                                             </div>
+                                                            <br>
                                                             <div class="row">
                                                                 <div class="col-sm">
                                                                 </div>
@@ -254,14 +258,6 @@
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-sm">
-                                                                    Stop Price
-                                                                </div>
-                                                                <div class="col-sm">
-                                                                    <input type="number" step="${priceStep}" name="stopPx"/>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-sm">
                                                                     Side
                                                                 </div>
                                                                 <div class="col-sm">
@@ -273,12 +269,22 @@
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-sm">
+                                                                    Stop Price
+                                                                </div>
+                                                                <div class="col-sm">
+                                                                    <input type="number" step="${priceStep}" name="stopPx"/>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm">
                                                                     Leverage
                                                                 </div>
                                                                 <div class="col-sm">
-                                                                    <input type="range" id="a3" name="leverage" value="0" min="0" max="${maxLeverage}"> <output name="x" for="a"></output>
+                                                                    <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                    <%--<output name="x" for="a"></output>--%>
                                                                 </div>
                                                             </div>
+                                                            <br>
                                                             <div class="row">
                                                                 <div class="col-sm">
                                                                 </div>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.lang.*;
 
@@ -45,10 +46,11 @@ public class TradeController {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
-        List<Map<String, Object>> positions = bitmexService.get_Position(user);
         List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+        List<Map<String, Object>> positions = bitmexService.get_Position(user);
         List<User> followers = userService.getFollowers(user);
         List<Map<String, Object>> activeOrders = null;
+        String currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
 
         long sumXBTUSD = followers.stream().mapToLong(i -> i.getFixedQtyXBTUSD().intValue()).sum();
         long sumXBTJPY = followers.stream().mapToLong(i -> i.getFixedQtyXBTJPY().intValue()).sum();
@@ -130,6 +132,7 @@ public class TradeController {
         model.addAttribute("sumTRXZ18", sumTRXZ18);
         model.addAttribute("sumXRPZ18", sumXRPZ18);
         model.addAttribute("sumXBTKRW", sumXBTKRW);
+        model.addAttribute("currentLeverage", currentLeverage);
 
         model.addAttribute("page", "trade");
 
