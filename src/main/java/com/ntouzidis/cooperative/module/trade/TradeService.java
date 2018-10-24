@@ -9,7 +9,9 @@ import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TradeService {
@@ -107,6 +109,47 @@ public class TradeService {
         List<User> followers = userService.getFollowers(trader);
 
         followers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
+    }
+
+    public Map<String, String> calculateSumFixedQtys(List<User> followers) {
+        Map<String, String> sumFixedQtys = new HashMap<>();
+
+        long sumXBTUSD = 0;
+        long sumXBTJPY = 0;
+        long sumADAZ18 = 0;
+        long sumBCHZ18 = 0;
+        long sumEOSZ18 = 0;
+        long sumETHUSD = 0;
+        long sumLTCZ18 = 0;
+        long sumTRXZ18 = 0;
+        long sumXRPZ18 = 0;
+        long sumXBTKRW = 0;
+
+        for(User f: followers){
+            sumXBTUSD += f.getFixedQtyXBTUSD().intValue();
+            sumXBTJPY += f.getFixedQtyXBTJPY().intValue();
+            sumADAZ18 += f.getFixedQtyADAZ18().intValue();
+            sumBCHZ18 += f.getFixedQtyBCHZ18().intValue();
+            sumEOSZ18 += f.getFixedQtyEOSZ18().intValue();
+            sumETHUSD += f.getFixedQtyETHUSD().intValue();
+            sumLTCZ18 += f.getFixedQtyLTCZ18().intValue();
+            sumTRXZ18 += f.getFixedQtyTRXZ18().intValue();
+            sumXRPZ18 += f.getFixedQtyXRPZ18().intValue();
+            sumXBTKRW += f.getFixedQtyXBTKRW().intValue();
+        }
+
+        sumFixedQtys.put("sumXBTUSD", String.valueOf(sumXBTUSD));
+        sumFixedQtys.put("sumXBTJPY", String.valueOf(sumXBTJPY));
+        sumFixedQtys.put("sumADAZ18", String.valueOf(sumADAZ18));
+        sumFixedQtys.put("sumBCHZ18", String.valueOf(sumBCHZ18));
+        sumFixedQtys.put("sumEOSZ18", String.valueOf(sumEOSZ18));
+        sumFixedQtys.put("sumETHUSD", String.valueOf(sumETHUSD));
+        sumFixedQtys.put("sumLTCZ18", String.valueOf(sumLTCZ18));
+        sumFixedQtys.put("sumTRXZ18", String.valueOf(sumTRXZ18));
+        sumFixedQtys.put("sumXRPZ18", String.valueOf(sumXRPZ18));
+        sumFixedQtys.put("sumXBTKRW", String.valueOf(sumXBTKRW));
+
+        return sumFixedQtys;
     }
 
 }

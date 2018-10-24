@@ -352,16 +352,16 @@
                                 <tfoot class="tfoot bg-info">
                                     <tr>
                                         <th scope="col">Sum</th>
-                                        <th scope="col">${sumXBTUSD}</th>
-                                        <th scope="col">${sumXBTJPY}</th>
-                                        <th scope="col">${sumADAZ18}</th>
-                                        <th scope="col">${sumBCHZ18}</th>
-                                        <th scope="col">${sumEOSZ18}</th>
-                                        <th scope="col">${sumETHUSD}</th>
-                                        <th scope="col">${sumLTCZ18}</th>
-                                        <th scope="col">${sumTRXZ18}</th>
-                                        <th scope="col">${sumXRPZ18}</th>
-                                        <th scope="col">${sumXBTKRW}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumXBTUSD")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumXBTJPY")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumADAZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumBCHZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumEOSZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumETHUSD")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumLTCZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumTRXZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumXRPZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("sumXBTKRW")}</th>
                                     </tr>
                                 </tfoot>
                             </table>

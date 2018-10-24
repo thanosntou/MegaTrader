@@ -14,11 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicLong;
 import java.lang.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 @RequestMapping("/trade")
@@ -28,7 +29,6 @@ public class TradeController {
     private final UserService userService;
     private final TradeService tradeService;
 
-    @Autowired
     public TradeController(BitmexService bitmexService, UserService userService, TradeService tradeService) {
         this.bitmexService = bitmexService;
         this.userService = userService;
@@ -46,91 +46,30 @@ public class TradeController {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
-        List<Map<String, Object>> positions = bitmexService.get_Position(user);
         List<User> followers = userService.getFollowers(user);
+        List<Map<String, Object>> positions = bitmexService.get_Position(user);
 
+//      --------- Current Leverage --------------
         String currentLeverage = null;
-
         if (positions != null) currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
 
-        long sumXBTUSD = followers.stream().mapToLong(i -> i.getFixedQtyXBTUSD().intValue()).sum();
-        long sumXBTJPY = followers.stream().mapToLong(i -> i.getFixedQtyXBTJPY().intValue()).sum();
-        long sumADAZ18 = followers.stream().mapToLong(i -> i.getFixedQtyADAZ18().intValue()).sum();
-        long sumBCHZ18 = followers.stream().mapToLong(i -> i.getFixedQtyBCHZ18().intValue()).sum();
-        long sumEOSZ18 = followers.stream().mapToLong(i -> i.getFixedQtyEOSZ18().intValue()).sum();
-        long sumETHUSD = followers.stream().mapToLong(i -> i.getFixedQtyETHUSD().intValue()).sum();
-        long sumLTCZ18 = followers.stream().mapToLong(i -> i.getFixedQtyLTCZ18().intValue()).sum();
-        long sumTRXZ18 = followers.stream().mapToLong(i -> i.getFixedQtyTRXZ18().intValue()).sum();
-        long sumXRPZ18 = followers.stream().mapToLong(i -> i.getFixedQtyXRPZ18().intValue()).sum();
-        long sumXBTKRW = followers.stream().mapToLong(i -> i.getFixedQtyXBTKRW().intValue()).sum();
+//      --------------- Sum of Fixed Customer Qty --------------
+        Map<String, String> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
+//      --------------- maxLeverage and piceStep ---------------
         String maxLeverage = "0";
         String priceStep = "1";
-
-        if (symbol.equals("XBTUSD")) {
-            maxLeverage = "100";
-            priceStep = "0.1";
-        }
-        if (symbol.equals("XBTJPY")) {
-            maxLeverage = "100";
-        }
-
-        if (symbol.equals("ADAZ18")) {
-            maxLeverage = "20";
-            priceStep = "0.00000001";
-        }
-
-        if (symbol.equals("BCHZ18")) {
-            maxLeverage = "20";
-            priceStep = "0.0001";
-        }
-
-        if (symbol.equals("EOSZ18")) {
-            maxLeverage = "20";
-            priceStep = "0.0000001";
-        }
-
-        if (symbol.equals("ETHUSD")) {
-            maxLeverage = "50";
-            priceStep = "0.01";
-        }
-
-        if (symbol.equals("LTCZ18")) {
-            maxLeverage = "33.3";
-            priceStep = "0.00001";
-        }
-
-        if (symbol.equals("TRXZ18")) {
-            maxLeverage = "20";
-            priceStep = "0.00000001";
-        }
-
-        if (symbol.equals("XRPZ18")) {
-            maxLeverage = "20";
-            priceStep = "0.00000001";
-        }
-
-        if (symbol.equals("XBTKRW")) {
-            maxLeverage = "100";
-        }
+        Map<String, String> m = calculateMaxLeverageAndPriceStep(symbol, maxLeverage, priceStep);
+        maxLeverage = m.get("maxleverage");
+        priceStep = m.get("priceStep");
 
         model.addAttribute("user", user);
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
         model.addAttribute("priceStep", priceStep);
         model.addAttribute("followers", followers);
-        model.addAttribute("sumXBTUSD", sumXBTUSD);
-        model.addAttribute("sumXBTJPY", sumXBTJPY);
-        model.addAttribute("sumADAZ18", sumADAZ18);
-        model.addAttribute("sumBCHZ18", sumBCHZ18);
-        model.addAttribute("sumEOSZ18", sumEOSZ18);
-        model.addAttribute("sumETHUSD", sumETHUSD);
-        model.addAttribute("sumLTCZ18", sumLTCZ18);
-        model.addAttribute("sumTRXZ18", sumTRXZ18);
-        model.addAttribute("sumXRPZ18", sumXRPZ18);
-        model.addAttribute("sumXBTKRW", sumXBTKRW);
+        model.addAttribute("sumFixedQtys", sumFixedQtys);
         model.addAttribute("currentLeverage", currentLeverage);
-
         model.addAttribute("page", "trade");
 
         return "trade-panel2";
@@ -258,4 +197,60 @@ public class TradeController {
 
         return "redirect:/trade/"+symbol;
     }
+
+    private Map<String, String> calculateMaxLeverageAndPriceStep(String symbol, String maxLeverage, String priceStep) {
+        if (symbol.equals("XBTUSD")) {
+            maxLeverage = "100";
+            priceStep = "0.1";
+        }
+        if (symbol.equals("XBTJPY")) {
+            maxLeverage = "100";
+        }
+
+        if (symbol.equals("ADAZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.00000001";
+        }
+
+        if (symbol.equals("BCHZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.0001";
+        }
+
+        if (symbol.equals("EOSZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.0000001";
+        }
+
+        if (symbol.equals("ETHUSD")) {
+            maxLeverage = "50";
+            priceStep = "0.01";
+        }
+
+        if (symbol.equals("LTCZ18")) {
+            maxLeverage = "33.3";
+            priceStep = "0.00001";
+        }
+
+        if (symbol.equals("TRXZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.00000001";
+        }
+
+        if (symbol.equals("XRPZ18")) {
+            maxLeverage = "20";
+            priceStep = "0.00000001";
+        }
+
+        if (symbol.equals("XBTKRW")) {
+            maxLeverage = "100";
+        }
+
+        Map<String, String> myMap = new HashMap<>();
+        myMap.put("maxLeverage", maxLeverage);
+        myMap.put("priceStep", priceStep);
+
+        return myMap;
+    }
+
 }
