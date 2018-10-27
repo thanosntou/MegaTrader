@@ -24,6 +24,8 @@ public interface IBitmexService {
 
     void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
 
+    Map<String, Object> getSymbolPosition(User user, String symbol);
+
     List<Map<String, Object>> get_Position(User user);
 
     List<Map<String, Object>> get_Position_Leverage(User user, String data);

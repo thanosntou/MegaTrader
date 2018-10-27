@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
@@ -47,45 +48,45 @@ public class BitmexService implements IBitmexService {
     public List<Map<String, Object>> get_Announcements(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestGET(user, base_url, ENDPOINT_ANNOUNCEMENT, "");
+        Optional<String> res = requestGET(user, base_url, ENDPOINT_ANNOUNCEMENT, "");
 
-        return getMapList(res);
+        return getMapList(res.orElse(null));
     }
 
     @Override
     public Map<String, Object> get_User_Margin(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestGET(user, base_url, ENDPOINT_USER_MARGIN, "");
+        Optional<String> res = requestGET(user, base_url, ENDPOINT_USER_MARGIN, "");
 
-        return getMap(res);
+        return getMap(res.orElse(null));
     }
 
     @Override
     public List<Map<String, Object>> get_Order_Order(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestGET(user, base_url, ENDPOINT_ORDER + "?reverse=true", "");
+        Optional<String> res = requestGET(user, base_url, ENDPOINT_ORDER + "?reverse=true", "");
 
-        return getMapList(res);
+        return getMapList(res.orElse(null));
     }
 
     @Override
     public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get());
+        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get());
 
-        return getMap(res);
+        return getMap(res.orElse(null));
     }
 
     @Override
     public Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.get());
+        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.get());
 
-        return getMap(res);
+        return getMap(res.orElse(null));
     }
 
     @Override
@@ -98,23 +99,31 @@ public class BitmexService implements IBitmexService {
         requestDELETE(user, base_url, ENDPOINT_ORDER_ALL, dataDeleteOrder.get());
     }
 
+    @Override
+    public Map<String, Object> getSymbolPosition(User user, String symbol) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION, "");
+
+        return getMapList(res.orElse(null)).stream().filter(i -> i.get("symbol").equals(symbol)).findAny().orElse(null);
+    }
 
     @Override
     public List<Map<String, Object>> get_Position(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestGET(user, base_url, ENDPOINT_POSITION, "");
+        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION, "");
 
-        return getMapList(res);
+        return getMapList(res.orElse(null));
     }
 
     @Override
     public List<Map<String, Object>> get_Position_Leverage(User user, String data) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String res = requestGET(user, base_url, ENDPOINT_POSITION_LEVERAGE, data);
+        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION_LEVERAGE, data);
 
-        return getMapList(res);
+        return getMapList(res.orElse(null));
     }
 
     @Override
@@ -124,7 +133,7 @@ public class BitmexService implements IBitmexService {
         requestPOST(user, base_url, ENDPOINT_POSITION_LEVERAGE, dataLeverageBuilder.get());
     }
 
-    private String requestGET(User user, String baseUrl, String path, String data) {
+    private Optional<String> requestGET(User user, String baseUrl, String path, String data) {
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
@@ -146,16 +155,16 @@ public class BitmexService implements IBitmexService {
 
             ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity, String.class);
 
-            return Objects.requireNonNull(res.getBody()).toString();
+            return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
 
-        } catch (NoSuchAlgorithmException | IllegalArgumentException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException | IllegalArgumentException | InvalidKeyException | RestClientException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Optional.empty();
     }
 
-    private String requestPOST(User user, String baseUrl, String path, String data) {
+    private Optional<String> requestPOST(User user, String baseUrl, String path, String data) {
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
@@ -180,13 +189,13 @@ public class BitmexService implements IBitmexService {
 
             ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity, String.class);
 
-            return Objects.requireNonNull(res.getBody()).toString();
+            return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Optional.empty();
     }
 
     private void requestDELETE(User user, String baseUrl, String path, String data) {
@@ -294,7 +303,44 @@ public class BitmexService implements IBitmexService {
 //        return null;
 //    }
 
-    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data) throws NoSuchAlgorithmException, InvalidKeyException, IllegalArgumentException, UnsupportedEncodingException {
+    private String calculateFixedQtyForSymbol(User user, String symbol) {
+        if (symbol.equals("symbol=XBTUSD")) return user.getFixedQtyXBTUSD().toString();
+        if (symbol.equals("symbol=XBTJPY")) return user.getFixedQtyXBTJPY().toString();
+        if (symbol.equals("symbol=ADAZ18")) return user.getFixedQtyADAZ18().toString();
+        if (symbol.equals("symbol=BCHZ18")) return user.getFixedQtyBCHZ18().toString();
+        if (symbol.equals("symbol=EOSZ18")) return user.getFixedQtyEOSZ18().toString();
+        if (symbol.equals("symbol=ETHUSD")) return user.getFixedQtyETHUSD().toString();
+        if (symbol.equals("symbol=LTCZ18")) return user.getFixedQtyLTCZ18().toString();
+        if (symbol.equals("symbol=TRXZ18")) return user.getFixedQtyTRXZ18().toString();
+        if (symbol.equals("symbol=XRPZ18")) return user.getFixedQtyXRPZ18().toString();
+        if (symbol.equals("symbol=XBTKRW")) return user.getFixedQtyXBTKRW().toString();
+
+        return null;
+    }
+
+    private Map<String, Object> getMap(String responseBody) {
+        if(responseBody != null) {
+            JSONObject jsonObj = new JSONObject(responseBody);
+            return new HashMap<>(jsonObj.toMap());
+        }
+        return Collections.emptyMap();
+    }
+
+    private List<Map<String, Object>> getMapList(String responseBody) {
+        List<Map<String, Object>> myMapList = new ArrayList<>();
+        if(responseBody != null) {
+            JSONArray jsonArray = new JSONArray(responseBody);
+            myMapList = new ArrayList<>();
+            for(int i = 0; i < jsonArray.length(); i++){
+                JSONObject jsonObj = jsonArray.getJSONObject(i);
+                myMapList.add(jsonObj.toMap());
+            }
+        }
+        return myMapList;
+    }
+
+    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data)
+            throws NoSuchAlgorithmException, InvalidKeyException, IllegalArgumentException, UnsupportedEncodingException {
         Preconditions.checkNotNull(apiSecret, "API Secret");
         Preconditions.checkNotNull(verb, "request method");
         Preconditions.checkNotNull(path, "bitmex path");
@@ -312,40 +358,4 @@ public class BitmexService implements IBitmexService {
         return Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8)));
     }
 
-    private Map<String, Object> getMap(String responseBody) {
-        if(responseBody != null) {
-            JSONObject jsonObj = new JSONObject(responseBody);
-            return jsonObj.toMap();
-        }
-        return null;
-    }
-
-    private List<Map<String, Object>> getMapList(String responseBody) {
-        if(responseBody != null) {
-            JSONArray jsonArray = new JSONArray(responseBody);
-            List<Map<String, Object>> myMapList = new ArrayList<>();
-
-            for(int i = 0; i < jsonArray.length(); i++){
-                JSONObject jsonObj = jsonArray.getJSONObject(i);
-                myMapList.add(jsonObj.toMap());
-            }
-            return myMapList;
-        }
-        return null;
-    }
-
-    private String calculateFixedQtyForSymbol(User user, String symbol) {
-        if (symbol.equals("symbol=XBTUSD")) return user.getFixedQtyXBTUSD().toString();
-        if (symbol.equals("symbol=XBTJPY")) return user.getFixedQtyXBTJPY().toString();
-        if (symbol.equals("symbol=ADAZ18")) return user.getFixedQtyADAZ18().toString();
-        if (symbol.equals("symbol=BCHZ18")) return user.getFixedQtyBCHZ18().toString();
-        if (symbol.equals("symbol=EOSZ18")) return user.getFixedQtyEOSZ18().toString();
-        if (symbol.equals("symbol=ETHUSD")) return user.getFixedQtyETHUSD().toString();
-        if (symbol.equals("symbol=LTCZ18")) return user.getFixedQtyLTCZ18().toString();
-        if (symbol.equals("symbol=TRXZ18")) return user.getFixedQtyTRXZ18().toString();
-        if (symbol.equals("symbol=XRPZ18")) return user.getFixedQtyXRPZ18().toString();
-        if (symbol.equals("symbol=XBTKRW")) return user.getFixedQtyXBTKRW().toString();
-
-        return null;
-    }
 }

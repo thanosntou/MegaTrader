@@ -23,7 +23,6 @@ public class DashboardController {
     private final UserService userService;
     private final IBitmexService bitmexService;
 
-    @Autowired
     public DashboardController(UserService userService, IBitmexService bitmexService) {
         this.userService = userService;
         this.bitmexService = bitmexService;
@@ -33,26 +32,27 @@ public class DashboardController {
     public String getDashboard(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
-        List<Map<String, Object>> positions = bitmexService.get_Position(user);
-
-        List<Map<String, Object>> activeOrders = null;
-        List<Map<String, Object>> openPositions = null;
+        List<Map<String, Object>> activeOrders;
+        List<Map<String, Object>> openPositions;
         Object walletBalance = null;
         Object availableMargin = null;
         String activeBalance = null;
 
+        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+        List<Map<String, Object>> positions = bitmexService.get_Position(user);
 
-        if (bitmexUserWalletGet != null) {
+        if (!bitmexUserWalletGet.isEmpty()) {
             walletBalance = bitmexUserWalletGet.get("walletBalance");
             availableMargin = bitmexUserWalletGet.get("availableMargin");
             activeBalance = String.valueOf(Integer.parseInt(walletBalance.toString()) - Integer.parseInt(availableMargin.toString()));
         }
-        if (allOrders != null) activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
-        if (positions != null) openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
+
+        activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
+        openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
 
         model.addAttribute("user", user);
+//        model.addAttribute("symbol", user);
         model.addAttribute("page", "dashboard");
         model.addAttribute("currentClient", "testnet");
         model.addAttribute("walletBalance", walletBalance);
@@ -65,63 +65,6 @@ public class DashboardController {
         return "dashboard";
     }
 
-//    private String requestUserDetails(String username) {
-//        User principal = userService.findByUsername(username);
-//
-//        String apikey = principal.getApiKey();
-//        String apiSecret = principal.getApiSecret();
-//        String expires = String.valueOf(1600883067);
-//        String verb = "GET";
-//        String path = "/api/v1/user/margin";
-//        String data = "";
-//
-//        String signature = null;
-//
-//        try {
-//            signature = calculateSignature(apiSecret, verb, path, expires, data);
-//
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (InvalidKeyException e) {
-//            e.printStackTrace();
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//        headers.set("api-expires", expires);
-//        headers.set("api-key", apikey);
-//        headers.set("api-signature", signature);
-//
-//        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-//
-//        try {
-//            ResponseEntity<?> res = restTemplate.exchange("https://www.bitmex.com" + path, HttpMethod.GET, entity, String.class);
-//            return res.getBody().toString();
-//        } catch (HttpClientErrorException ex){
-//
-//        }
-//
-//        return null;
-//
-//    }
-//
-//    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
-//        String message = verb + path + expires + data;
-//
-//        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-//        SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
-//        sha256_HMAC.init(secret_key);
-//
-//        String resu1 = Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes("UTF-8")));
-//
-//        String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes("UTF-8")));
-//
-//        return resu1;
-//    }
-
     private static String toHexString(byte[] bytes) {
         Formatter formatter = new Formatter();
         for (byte b : bytes) {
@@ -129,7 +72,4 @@ public class DashboardController {
         }
         return formatter.toString();
     }
-
-
-
 }
