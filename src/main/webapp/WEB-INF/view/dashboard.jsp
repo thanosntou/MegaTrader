@@ -28,7 +28,6 @@
                     <div class="card-body">
                         <div class="col-12">
                         <%---------------------------------------------------------------- dashboard ---------------------------------------------------------------------%>
-                        <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
                             <div class="row" style="margin: 20px 0px">
                                 <h2>Account Dashboard <a href="${pageContext.request.contextPath}/dashboard"><i class="fas fa-sync" class="button"></i></a></h2>
                             </div>
@@ -73,14 +72,14 @@
                                         <th scope="col">Price</th>
                                         <th scope="col">Stop Price</th>
                                         <th scope="col">Transaction Time</th>
-                                        <th scope="col">
-                                            <c:if test="${activeOrders.size() > 1}">
-                                                <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
-                                                    <input type="hidden" name="symbol" value="${symbol}"/>
-                                                    <input type="submit" class="btn btn-danger" value="Cancel All"/>
-                                                </form:form>
-                                            </c:if>
-                                        </th>
+                                        <%--<th scope="col">--%>
+                                            <%--<c:if test="${activeOrders.size() > 1}">--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
+                                                    <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
+                                                    <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
+                                                <%--</form:form>--%>
+                                            <%--</c:if>--%>
+                                        <%--</th>--%>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -94,13 +93,13 @@
                                             <td>${tempMap['price']}</td>
                                             <td>${tempMap['stopPx']}</td>
                                             <td>${tempMap['transactTime']}</td>
-                                            <td>
-                                                <form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">
-                                                    <input type="hidden" name="symbol" value="${symbol}"/>
-                                                    <input type="hidden" name="orderID" value="${tempMap['orderID']}" />
-                                                    <input type="submit" class="btn btn-danger" value="Cancel"/>
-                                                </form:form>
-                                            </td>
+                                            <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">--%>
+                                                    <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
+                                                    <%--<input type="hidden" name="orderID" value="${tempMap['orderID']}" />--%>
+                                                    <%--<input type="submit" class="btn btn-danger" value="Cancel"/>--%>
+                                                <%--</form:form>--%>
+                                            <%--</td>--%>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
@@ -110,7 +109,7 @@
                             <div class="row">
                                 <h3>-- Open Positions --</h3>
                             </div>
-                            <div class="row">
+                            <div class="row" id="openPos">
                                 <table class="table table-hover table-sm">
                                     <thead class="thead bg-info">
                                     <tr>
@@ -170,14 +169,14 @@
                                         <%--</form:form>--%>
                                         <%--</c:if>--%>
                                         <%--</th>--%>
-                                        <th scope="col">
+                                        <%--<th scope="col">--%>
                                             <%--<c:if test="${activeOrders.size() > 1}">--%>
                                             <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
                                             <%--&lt;%&ndash;<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>&ndash;%&gt;--%>
                                             <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
                                             <%--</form:form>--%>
                                             <%--</c:if>--%>
-                                        </th>
+                                        <%--</th>--%>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -187,9 +186,9 @@
                                                 <th scope="row">${tempMap['symbol']}</th>
                                                 <td>${tempMap['currentQty']}</td>
                                                 <td>${tempMap['avgEntryPrice']}</td>
-                                                <td>${tempMap['markPrice']}</td>
+                                                <td id="markPriceTd"><span id="markPriceSpan">0</span></td>
                                                 <td>${tempMap['liquidationPrice']}</td>
-                                                <td>${tempMap['maintMargin']}</td>
+                                                <td id="maintMarginTd"><span id="maintMarginSpan">0</span></td>
                                                 <td>${tempMap['unrealisedPnl']}</td>
                                                 <td>${tempMap['unrealisedRoePcnt'] * 100}%</td>
                                                 <td>${tempMap['realisedPnl']}</td>
@@ -230,26 +229,69 @@
                                                     <%--</form:form>--%>
 
                                                     <%--</td>--%>
-                                                <td>
-                                                    <form:form action="${pageContext.request.contextPath}/trade/position/market" method="POST">
-                                                        <input type="hidden" name="symbol" value="${symbol}"/>
-                                                        <input type="submit" class="btn btn-danger" value="Market"/>
-                                                    </form:form>
-                                                </td>
+                                                <%--<td>--%>
+                                                    <%--<form:form action="${pageContext.request.contextPath}/trade/position/market" method="POST">--%>
+                                                        <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
+                                                        <%--<input type="submit" class="btn btn-danger" value="Market"/>--%>
+                                                    <%--</form:form>--%>
+                                                <%--</td>--%>
                                             </tr>
                                         <%--</c:if>--%>
                                     </c:forEach>
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <script>
+                <%--document.getElementById("variablePosition").innerText = ${openPositions.get()};--%>
+                var exampleSocket = new WebSocket("wss://testnet.bitmex.com/realtime");
+                exampleSocket.onopen = function () {
+                    exampleSocket.send("{\"op\": \"authKeyExpires\", \"args\": [\"obt_f-85F7m2Olfi9IIUUlTG\", 1600883067, \"71c2f5ff56dc905bb9ada3b6f20b950b19b7c30716e9af2160a3e27c78d1b2ee\"]}");
+                    exampleSocket.send("{\"op\": \"subscribe\", \"args\": [\"position:XBTUSD\"]}");
+                }
+                // console.log(exampleSocket.readyState);
+            </script>
+            <script>
+                exampleSocket.onmessage = function (event) {
+                    var msg = JSON.parse(event.data);
+
+                    if (document.getElementById("markPriceSpan") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTd").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTd").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpan").innerText = msg.data[0].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpan") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTd").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTd").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpan").innerText = msg.data[0].maintMargin;
+                    }
+
+
+                }
+            </script>
 </body>
 </html>

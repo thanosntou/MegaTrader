@@ -26,7 +26,7 @@ public class CooperativeApplicationTests {
         String verb = "GET";
         String path = "/realtime";
         String expires = String.valueOf(1600883067);
-        String data = "subscribe=order,orderBook:XBTUSD";
+//        String data = "subscribe=position,orderBook:XBTUSD";
 
         String message = verb + path + expires;
 

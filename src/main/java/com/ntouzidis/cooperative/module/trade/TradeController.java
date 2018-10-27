@@ -17,9 +17,11 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.lang.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/trade")
@@ -63,6 +65,11 @@ public class TradeController {
         maxLeverage = m.get("maxleverage");
         priceStep = m.get("priceStep");
 
+//      --------------------  sumPosition + any customer position (temporary)------------
+        double sumPosition = followers.stream().map(i -> bitmexService.getSymbolPosition(i, symbol)).filter(Objects::nonNull).mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString())).sum();
+        List<Map<String, Object>> openPositions = bitmexService.get_Position(user).stream().filter(i -> i.get("symbol").equals(symbol)).collect(Collectors.toList());
+
+
         model.addAttribute("user", user);
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
@@ -71,6 +78,8 @@ public class TradeController {
         model.addAttribute("sumFixedQtys", sumFixedQtys);
         model.addAttribute("currentLeverage", currentLeverage);
         model.addAttribute("page", "trade");
+        model.addAttribute("sumPosition", sumPosition);
+        model.addAttribute("openPositions", openPositions);
 
         return "trade-panel2";
     }

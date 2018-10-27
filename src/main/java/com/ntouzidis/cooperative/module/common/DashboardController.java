@@ -32,26 +32,27 @@ public class DashboardController {
     public String getDashboard(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
-        List<Map<String, Object>> positions = bitmexService.get_Position(user);
-
-        List<Map<String, Object>> activeOrders = null;
-        List<Map<String, Object>> openPositions = null;
+        List<Map<String, Object>> activeOrders;
+        List<Map<String, Object>> openPositions;
         Object walletBalance = null;
         Object availableMargin = null;
         String activeBalance = null;
 
+        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+        List<Map<String, Object>> positions = bitmexService.get_Position(user);
 
-        if (bitmexUserWalletGet != null) {
+        if (!bitmexUserWalletGet.isEmpty()) {
             walletBalance = bitmexUserWalletGet.get("walletBalance");
             availableMargin = bitmexUserWalletGet.get("availableMargin");
             activeBalance = String.valueOf(Integer.parseInt(walletBalance.toString()) - Integer.parseInt(availableMargin.toString()));
         }
-        if (allOrders != null) activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
-        if (positions != null) openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
+
+        activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
+        openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
 
         model.addAttribute("user", user);
+//        model.addAttribute("symbol", user);
         model.addAttribute("page", "dashboard");
         model.addAttribute("currentClient", "testnet");
         model.addAttribute("walletBalance", walletBalance);
