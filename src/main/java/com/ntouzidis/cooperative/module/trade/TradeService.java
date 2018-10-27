@@ -44,44 +44,44 @@ public class TradeService {
                 .withLeverage(sb.getLeverage());
 
         followers.forEach(customer -> {
-
             //            1. Set Leverage
             bitmexService.post_Position_Leverage(customer, dataLeverage);
 
+
+            //            2. Market
             DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
                     .withOrderType("Market")
                     .withSymbol(sb.getSymbol())
                     .withSide(sb.getSide())
-                    .withOrderQty(customer.getFixedQtyADAZ18().toString())
                     .withText("Bitcoin Syndicate");
 
-            //            2. Market
             bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
 
+
+            //            3. Stop Market
             if (sb.getStopLoss() != null) {
                 DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
                         .withOrderType("Stop")
                         .withSymbol(sb.getSymbol())
                         .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
-                        .withOrderQty(customer.getFixedQtyADAZ18().toString())
                         .withExecInst("Close,LastPrice")
                         .withStopPrice(sb.getStopLoss())
                         .withText("Bitcoin Syndicate");
 
-                //            3. Stop Market
+
                 bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
             }
 
+
+            //            4. Limit
             if (sb.getProfitTrigger() != null) {
                 DataPostOrderBuilder limitDataOrder = new DataPostOrderBuilder()
                         .withOrderType("Limit")
                         .withSymbol(sb.getSymbol())
                         .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
-                        .withOrderQty(customer.getFixedQtyADAZ18().toString())
                         .withPrice(sb.getProfitTrigger())
                         .withText("Bitcoin Syndicate");
 
-                //            4. Limit
                 bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
             }
         });
@@ -99,10 +99,10 @@ public class TradeService {
         followers.forEach(customer -> bitmexService.cancelAllOrders(customer, dataDeleteOrderBuilder));
     }
 
-    void marketPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
+    void positionAll(User trader, DataPostOrderBuilder dataPostOrderBuilder, int percentage) {
         List<User> followers = userService.getFollowers(trader);
 
-        followers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
+        followers.forEach(customer -> bitmexService.post_Order_Order_WithFixedsAndPercentage(customer, dataPostOrderBuilder, percentage));
     }
 
     void closePosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
@@ -111,7 +111,24 @@ public class TradeService {
         followers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
     }
 
-    public Map<String, String> calculateSumFixedQtys(List<User> followers) {
+//    private Long calculateFixedQtyForWantedSymbol(User user, String symbol) {
+//        Long wantedFixQty = 0L;
+//
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXBTUSD();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXBTJPY();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyADAZ18();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyBCHZ18();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyEOSZ18();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyETHUSD();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyLTCZ18();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyTRXZ18();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXRPZ18();
+//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXBTKRW();
+//
+//        return wantedFixQty;
+//    }
+
+    Map<String, String> calculateSumFixedQtys(List<User> followers) {
         Map<String, String> sumFixedQtys = new HashMap<>();
 
         long sumXBTUSD = 0;

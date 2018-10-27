@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BitmexService implements IBitmexService {
@@ -69,6 +70,23 @@ public class BitmexService implements IBitmexService {
         Optional<String> res = requestGET(user, base_url, ENDPOINT_ORDER + "?reverse=true", "");
 
         return getMapList(res.orElse(null));
+    }
+
+    @Override
+    public Map<String, Object> post_Order_Order_WithFixedsAndPercentage(User user, DataPostOrderBuilder dataOrder, int percentage) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        long qty = 0L;
+        Map<String, Object> getPosXBTUSD = get_Position(user).stream().filter(i -> i.get("symbol").equals(dataOrder.getSymbol())).findAny().orElse(Collections.emptyMap());
+
+        if (!getPosXBTUSD.isEmpty())
+            qty = Long.valueOf(getPosXBTUSD.get("currentQty").toString());
+
+        Long finalQty = qty * percentage / 100;
+
+        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.withOrderQty(finalQty.toString()).get());
+
+        return getMap(res.orElse(null));
     }
 
     @Override

@@ -139,9 +139,9 @@
                                         <%--tab-content--%>
                                         <div class="row">
                                             <div class="tab-content" id="pills-tabContent">
-                                                <%---------------------------------------------------limit ----------------------------------%>
+                                                <%---------------------------------------------------LIMIT ----------------------------------%>
                                                 <div class="tab-pane fade show active" id="pills-limit" role="tabpanel" aria-labelledby="pills-limit-tab">
-                                                    <form:form action="${pageContext.request.contextPath}/trade/order" method="POST" id="limit-form" oninput="x.value=parseInt(aa.value)">
+                                                    <form:form action="${pageContext.request.contextPath}/trade/orderAll" method="POST" id="limit-form" oninput="x.value=parseInt(aa.value)">
                                                         <div class="col-sm-12">
                                                             <input type="text" name="ordType" value="Limit" hidden />
                                                             <div class="row">
@@ -194,7 +194,7 @@
                                                 </div>
                                                 <%----------------------------------------------- MARKET TAB ------------------------------------------------------------------------------- --%>
                                                 <div class="tab-pane fade" id="pills-market" role="tabpanel" aria-labelledby="pills-market-tab">
-                                                    <form:form action="${pageContext.request.contextPath}/trade/order" method="POST" id="market-form" oninput="x.value=parseInt(a2.value)">
+                                                    <form:form action="${pageContext.request.contextPath}/trade/orderAll" method="POST" id="market-form" oninput="x.value=parseInt(a2.value)">
                                                         <div class="col-sm-12">
                                                             <input type="text" name="ordType" value="Market" hidden />
                                                             <div class="row">
@@ -239,7 +239,7 @@
                                                 </div>
                                                 <%------------------------------------------ STOP MARKET TAB ------------------------------------------------------------------------------- --%>
                                                 <div class="tab-pane fade" id="pills-stopMarket" role="tabpanel" aria-labelledby="pills-stopMarket-tab">
-                                                    <form:form action="${pageContext.request.contextPath}/trade/order" method="POST" id="stop-form" oninput="x.value=parseInt(a3.value)">
+                                                    <form:form action="${pageContext.request.contextPath}/trade/orderAll" method="POST" id="stop-form" oninput="x.value=parseInt(a3.value)">
                                                         <div class="col-sm-12">
                                                             <div class="row">
                                                                 <div class="col-sm">
@@ -304,56 +304,6 @@
                             </div>
                         </div>
                         <br>
-                        <%--&lt;%&ndash;active orders&ndash;%&gt;--%>
-                        <%--<div class="row">--%>
-                            <%--<h3>-- Active Orders --</h3>--%>
-                        <%--</div>--%>
-                        <%--<div class="row">--%>
-                            <%--<table class="table table-hover table-sm">--%>
-                                <%--<thead class="thead bg-info">--%>
-                                <%--<tr>--%>
-                                    <%--<th scope="col">symbol</th>--%>
-                                    <%--<th scope="col">Side</th>--%>
-                                    <%--<th scope="col">Order Status</th>--%>
-                                    <%--<th scope="col">Order Type</th>--%>
-                                    <%--<th scope="col">Order Qty</th>--%>
-                                    <%--<th scope="col">Price</th>--%>
-                                    <%--<th scope="col">Stop Price</th>--%>
-                                    <%--<th scope="col">Transaction Time</th>--%>
-                                    <%--<th scope="col">--%>
-                                        <%--<c:if test="${activeOrders.size() > 1}">--%>
-                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
-                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
-                                                <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
-                                            <%--</form:form>--%>
-                                        <%--</c:if>--%>
-                                    <%--</th>--%>
-                                <%--</tr>--%>
-                                <%--</thead>--%>
-                                <%--<tbody>--%>
-                                <%--<c:forEach var="tempMap" items="${activeOrders}">--%>
-                                    <%--<tr>--%>
-                                        <%--<th scope="row">${tempMap['symbol']}</th>--%>
-                                        <%--<td>${tempMap['side']}</td>--%>
-                                        <%--<td>${tempMap['ordStatus']}</td>--%>
-                                        <%--<td>${tempMap['ordType']}</td>--%>
-                                        <%--<td>${tempMap['orderQty']}</td>--%>
-                                        <%--<td>${tempMap['price']}</td>--%>
-                                        <%--<td>${tempMap['stopPx']}</td>--%>
-                                        <%--<td>${tempMap['transactTime']}</td>--%>
-                                        <%--<td>--%>
-                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">--%>
-                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
-                                                <%--<input type="hidden" name="orderID" value="${tempMap['orderID']}" />--%>
-                                                <%--<input type="submit" class="btn btn-danger" value="Cancel"/>--%>
-                                            <%--</form:form>--%>
-                                        <%--</td>--%>
-                                    <%--</tr>--%>
-                                <%--</c:forEach>--%>
-                                <%--</tbody>--%>
-                            <%--</table>--%>
-                        <%--</div>--%>
-                        <%--open positions--%>
                         <div class="row">
                             <h3>-- Open Positions --</h3>
                         </div>
@@ -372,7 +322,7 @@
                                     <th scope="col">Realised Pnl</th>
                                     <%--<th scope="col">commission</th>--%>
                                     <th scope="col">Leverage</th>
-                                    <th scope="col">isOpen</th>
+                                    <%--<th scope="col">isOpen</th>--%>
                                     <%--<th scope="col">rebalancedPnl</th>--%>
                                     <%--<th scope="col">prevRealisedPnl</th>--%>
                                     <%--<th scope="col">prevUnrealisedPnl</th>--%>
@@ -417,14 +367,10 @@
                                     <%--</form:form>--%>
                                     <%--</c:if>--%>
                                     <%--</th>--%>
-                                    <th scope="col">
-                                        <%--<c:if test="${activeOrders.size() > 1}">--%>
-                                        <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
-                                        <%--&lt;%&ndash;<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>&ndash;%&gt;--%>
-                                        <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
-                                        <%--</form:form>--%>
-                                        <%--</c:if>--%>
-                                    </th>
+                                    <th scope="col">Qty(%)</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -442,7 +388,7 @@
                                         <td>${tempMap['realisedPnl']}</td>
                                             <%--<td>${tempMap['commission']}</td>--%>
                                         <td>${tempMap['leverage']}</td>
-                                        <td>${tempMap['isOpen']}</td>
+                                        <%--<td>${tempMap['isOpen']}</td>--%>
                                             <%--<td>${tempMap['rebalancedPnl']}</td>--%>
                                             <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
                                             <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
@@ -477,10 +423,31 @@
                                             <%--</form:form>--%>
 
                                             <%--</td>--%>
+
                                         <td>
-                                            <form:form action="${pageContext.request.contextPath}/trade/position/market" method="POST">
+                                            <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
                                                 <input type="hidden" name="symbol" value="${symbol}"/>
-                                                <input type="submit" class="btn btn-danger" value="Market"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                        </td>
+                                        <td>
+                                                <input type="number" name="price" min="0"  value="0"/>
+                                        </td>
+                                        <td>
+                                            <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                        </td>
+                                        <td>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
                                             </form:form>
                                         </td>
                                     </tr>

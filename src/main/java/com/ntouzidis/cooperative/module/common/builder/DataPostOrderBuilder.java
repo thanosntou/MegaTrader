@@ -11,6 +11,7 @@ public class DataPostOrderBuilder {
     private String price;
     private String execInst;
     private String stopPrice;
+    private String percentage;
     private String text;
 
     public DataPostOrderBuilder withSymbol(String symbol) {
@@ -44,7 +45,7 @@ public class DataPostOrderBuilder {
     }
 
     public DataPostOrderBuilder withExecInst(String execInst) {
-        if (execInst != null)
+        if (execInst != null && orderType.equals("Market"))
             this.execInst = "&execInst=" + execInst;
         return this;
     }
@@ -66,14 +67,14 @@ public class DataPostOrderBuilder {
                 Optional.ofNullable(side).orElse("") +
                 Optional.ofNullable(orderType).orElse("") +
                 Optional.ofNullable(orderQty).orElse("") +
-                Optional.ofNullable(price).orElse("") +
+                (orderType.equals("Market") && execInst != null? Optional.ofNullable(price).orElse(""): "") +
                 Optional.ofNullable(execInst).orElse("") +
                 Optional.ofNullable(stopPrice).orElse("") +
                 Optional.ofNullable(text).orElse("");
     }
 
     public String getSymbol() {
-        return this.symbol;
+        return this.symbol.substring(7);
     }
 
 }
