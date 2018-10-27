@@ -53,7 +53,7 @@ public class TradeController {
 
 //      --------- Current Leverage --------------
         String currentLeverage = null;
-        if (positions != null) currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
+        if (!positions.isEmpty()) currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
 
 //      --------------- Sum of Fixed Customer Qty --------------
         Map<String, String> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
@@ -67,7 +67,7 @@ public class TradeController {
 
 //      --------------------  sumPosition + any customer position (temporary)------------
         double sumPosition = followers.stream().map(i -> bitmexService.getSymbolPosition(i, symbol)).filter(Objects::nonNull).mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString())).sum();
-        List<Map<String, Object>> openPositions = bitmexService.get_Position(user).stream().filter(i -> i.get("symbol").equals(symbol)).collect(Collectors.toList());
+        List<Map<String, Object>> openPositions = positions;
 
 
         model.addAttribute("user", user);
@@ -137,19 +137,25 @@ public class TradeController {
         return "redirect:/trade/" + symbol;
     }
 
-    @PostMapping("/position/market")
-    public String marketPosition(@RequestParam(name="symbol") String symbol,
-                                 Principal principal) {
+    @PostMapping("/positionAll")
+    public String positionAll(@RequestParam(name="symbol") String symbol,
+                              @RequestParam("orderType") String orderType,
+                              @RequestParam("side") String side,
+                              @RequestParam("percentage") int percentage,
+                              @RequestParam("price") String price,
+                              Principal principal) {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(symbol)
-                .withExecInst("Close")
-                .withOrderType("Market")
-                .withText("Position close from Bitcoin Syndicate");
+                .withSide(side)
+                .withOrderType(orderType)
+                .withText("Bitcoin Syndicate");
 
-        tradeService.marketPosition(user, dataPostOrderBuilder);
+        if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
+
+        tradeService.positionAll(user, dataPostOrderBuilder, percentage);
 
         try {
             Thread.sleep(500);
@@ -162,28 +168,31 @@ public class TradeController {
 
     @PostMapping("/position/close")
     public String closePosition(@RequestParam(name="symbol") String symbol,
-                                @RequestParam(name="limitPrice") String price,
-                                Principal principal) {
+                                 Principal principal) {
 
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(symbol)
                 .withExecInst("Close")
-                .withOrderType("Limit")
-                .withPrice(price)
+                .withOrderType("Market")
                 .withText("Position close from Bitcoin Syndicate");
 
         tradeService.closePosition(user, dataPostOrderBuilder);
 
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return "redirect:/trade/" + symbol;
     }
 
-    @PostMapping(value = "/order")
+    @PostMapping(value = "/orderAll")
     public String postOrder(@RequestParam(name="symbol") String symbol,
                             @RequestParam(name="side") String side,
                             @RequestParam(name="ordType") String ordType,
-                            @RequestParam(name="orderQty", required=false) String orderQty,
                             @RequestParam(name="price", required=false) String price,
                             @RequestParam(name="execInst", required=false) String execInst,
                             @RequestParam(name="stopPx", required = false) String stopPx,
@@ -195,7 +204,7 @@ public class TradeController {
         DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
 
         DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
-                .withSide(side).withOrderType(ordType).withOrderQty(orderQty)
+                .withSide(side).withOrderType(ordType)
                 .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
 
 

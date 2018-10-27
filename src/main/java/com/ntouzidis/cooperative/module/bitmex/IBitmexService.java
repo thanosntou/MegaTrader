@@ -16,6 +16,8 @@ public interface IBitmexService {
 
     List<Map<String, Object>> get_Order_Order(User user);
 
+    Map<String, Object> post_Order_Order_WithFixedsAndPercentage(User user, DataPostOrderBuilder dataOrder, int percentage);
+
     Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder);
 
     Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataPostOrderBuilder);
