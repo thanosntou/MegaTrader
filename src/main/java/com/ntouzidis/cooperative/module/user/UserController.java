@@ -2,7 +2,6 @@ package com.ntouzidis.cooperative.module.user;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
-import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -33,11 +32,10 @@ public class UserController {
     public String showNewsPage(Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        List<Map<String, Object>> announcements = bitmexService.get_Announcements(user);
+        List<Map<String, Object>> announcements = bitmexService.get_Announcements(userDetails.getUser());
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "news");
         model.addAttribute("announcements", announcements);
 
@@ -48,13 +46,11 @@ public class UserController {
     public String showTxPage(Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(userDetails.getUser());
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "tx");
-
         model.addAttribute("allOrders", allOrders);
 
         return "tx-panel";
@@ -64,9 +60,8 @@ public class UserController {
     public String showWalletPage(Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "wallet");
 
         return "wallet";
@@ -76,9 +71,8 @@ public class UserController {
     public String showSettingsPage(Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "settings");
 
         return "settings-panel";
@@ -89,9 +83,8 @@ public class UserController {
                              Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        userService.linkTrader(user, traderId);
+        userService.linkTrader(userDetails.getUser(), traderId);
 
         return "redirect:/copy";
     }
@@ -100,9 +93,8 @@ public class UserController {
     public String unlinkTrader(Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        userService.unlinkTrader(user);
+        userService.unlinkTrader(userDetails.getUser());
 
         return "redirect:/copy";
     }
@@ -113,9 +105,8 @@ public class UserController {
                               Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        userService.saveKeys(user, apiKey, apiSecret);
+        userService.saveKeys(userDetails.getUser(), apiKey, apiSecret);
 
         return "redirect:/dashboard";
     }
@@ -126,9 +117,8 @@ public class UserController {
                               Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        userService.setFixedQty(user, symbol, qty);
+        userService.setFixedQty(userDetails.getUser(), symbol, qty);
 
         return "redirect:/dashboard";
     }

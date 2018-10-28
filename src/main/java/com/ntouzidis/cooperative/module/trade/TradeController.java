@@ -6,9 +6,11 @@ import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,12 +46,13 @@ public class TradeController {
 
     @GetMapping("/{symbol}")
     public String showProducts(@PathVariable(name = "symbol") String symbol,
-                               Model model, Principal principal) {
+                               Model model, Authentication authentication) {
 
-        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
 
-        List<User> followers = userService.getFollowers(user);
-        List<Map<String, Object>> positions = bitmexService.get_Position(user);
+        List<User> followers = userService.getFollowers(trader);
+        List<Map<String, Object>> positions = bitmexService.get_Position(trader);
 
 //      --------- Current Leverage --------------
         String currentLeverage = null;
@@ -70,7 +73,7 @@ public class TradeController {
         List<Map<String, Object>> openPositions = positions;
 
 
-        model.addAttribute("user", user);
+        model.addAttribute("user", trader);
         model.addAttribute("symbol", symbol);
         model.addAttribute("maxLeverage", maxLeverage);
         model.addAttribute("priceStep", priceStep);
@@ -90,9 +93,10 @@ public class TradeController {
                                @RequestParam(name="leverage", required = false) String leverage,
                                @RequestParam(name="stopLoss", required = false) String stopLoss,
                                @RequestParam(name="profitTrigger", required = false) String profitTrigger,
-                               Model model, Principal principal) {
+                               Model model, Authentication authentication) {
 
-        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
 
         if (symbol == null) symbol = "XBTUSD";
 
@@ -100,106 +104,25 @@ public class TradeController {
                 .withSymbol(symbol).withSide(side).withleverage(leverage)
                 .withStopLoss(stopLoss).withProfitTrigger(profitTrigger);
 
-        tradeService.createSignal(user, signalBuilder);
+        tradeService.createSignal(trader, signalBuilder);
 
-        model.addAttribute("user", user);
-
-        return "redirect:/trade/" + symbol;
-    }
-
-    @PostMapping("/order/cancel")
-    public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
-                              @RequestParam(name="orderID") String orderID,
-                              Principal principal) {
-
-        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
-
-        DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                .withOrderID(orderID)
-                .withText("Cancel from Bitcoin Syndicate");
-
-        tradeService.cancelOrder(user, dataDeleteOrderBuilder);
-
-        return "redirect:/trade/" + symbol;
-    }
-
-    @PostMapping("/order/cancelAll")
-    public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
-                              Principal principal) {
-
-        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
-
-        DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                .withText("Canceled All from Bitcoin Syndicate");
-
-        tradeService.cancelAllOrders(user, dataDeleteOrderBuilder);
-
-        return "redirect:/trade/" + symbol;
-    }
-
-    @PostMapping("/positionAll")
-    public String positionAll(@RequestParam(name="symbol") String symbol,
-                              @RequestParam("orderType") String orderType,
-                              @RequestParam("side") String side,
-                              @RequestParam("percentage") int percentage,
-                              @RequestParam("price") String price,
-                              Principal principal) {
-
-        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
-
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(symbol)
-                .withSide(side)
-                .withOrderType(orderType)
-                .withText("Bitcoin Syndicate");
-
-        if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
-
-        tradeService.positionAll(user, dataPostOrderBuilder, percentage);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return "redirect:/trade/" + symbol;
-    }
-
-    @PostMapping("/position/close")
-    public String closePosition(@RequestParam(name="symbol") String symbol,
-                                 Principal principal) {
-
-        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
-
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(symbol)
-                .withExecInst("Close")
-                .withOrderType("Market")
-                .withText("Position close from Bitcoin Syndicate");
-
-        tradeService.closePosition(user, dataPostOrderBuilder);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        model.addAttribute("user", trader);
 
         return "redirect:/trade/" + symbol;
     }
 
     @PostMapping(value = "/orderAll")
-    public String postOrder(@RequestParam(name="symbol") String symbol,
-                            @RequestParam(name="side") String side,
-                            @RequestParam(name="ordType") String ordType,
-                            @RequestParam(name="price", required=false) String price,
-                            @RequestParam(name="execInst", required=false) String execInst,
-                            @RequestParam(name="stopPx", required = false) String stopPx,
-                            @RequestParam(name="leverage", required = false) String leverage,
-                            Model model, Principal principal) {
+    public String postOrderAll(@RequestParam(name="symbol") String symbol,
+                               @RequestParam(name="side") String side,
+                               @RequestParam(name="ordType") String ordType,
+                               @RequestParam(name="price", required=false) String price,
+                               @RequestParam(name="execInst", required=false) String execInst,
+                               @RequestParam(name="stopPx", required = false) String stopPx,
+                               @RequestParam(name="leverage", required = false) String leverage,
+                               Model model, Authentication authentication) {
 
-        User trader = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
 
         DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
 
@@ -207,13 +130,94 @@ public class TradeController {
                 .withSide(side).withOrderType(ordType)
                 .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
 
-
-        tradeService.placeOrderForCustomers(trader, dataLeverageBuilder, dataOrderBuilder);
+        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
 
         model.addAttribute("user", trader);
-        model.addAttribute("user", principal.getName());
 
         return "redirect:/trade/"+symbol;
+    }
+
+    @PostMapping("/positionAll")
+    public String setAllPosition(@RequestParam(name="symbol") String symbol,
+                                 @RequestParam("orderType") String orderType,
+                                 @RequestParam("side") String side,
+                                 @RequestParam("percentage") int percentage,
+                                 @RequestParam("price") String price,
+                                 Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
+
+        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+                .withSymbol(symbol)
+                .withOrderType(orderType)
+                .withSide(side);
+
+        if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
+
+        tradeService.positionAll(trader, dataPostOrderBuilder, percentage);
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/trade/" + symbol;
+    }
+
+    @PostMapping("/order/cancel")
+    public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
+                              @RequestParam(name="orderID") String orderID,
+                              Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
+
+        DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
+                .withOrderID(orderID);
+
+        tradeService.cancelOrder(trader, dataDeleteOrderBuilder);
+
+        return "redirect:/trade/" + symbol;
+    }
+
+    @PostMapping("/order/cancelAll")
+    public String cancelOrderAll(@RequestParam(name="symbol", required = false) String symbol,
+                                 Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
+
+        DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
+                .withSymbol(symbol);
+
+        tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
+
+        return "redirect:/trade/" + symbol;
+    }
+
+    @PostMapping("/position/closeAll")
+    public String closeAllPosition(@RequestParam(name="symbol") String symbol,
+                                 Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
+
+        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+                .withSymbol(symbol)
+                .withExecInst("Close")
+                .withOrderType("Market");
+
+        tradeService.closeAllPosition(trader, dataPostOrderBuilder);
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/trade/" + symbol;
     }
 
     private Map<String, String> calculateMaxLeverageAndPriceStep(String symbol, String maxLeverage, String priceStep) {

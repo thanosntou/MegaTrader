@@ -25,7 +25,7 @@ public class TradeService {
         this.userService = userService;
     }
 
-    void placeOrderForCustomers(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
+    void placeOrderAll(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
         List<User> followers = userService.getFollowers(trader);
 
         followers.forEach(customer -> {
@@ -105,7 +105,7 @@ public class TradeService {
         followers.forEach(customer -> bitmexService.post_Order_Order_WithFixedsAndPercentage(customer, dataPostOrderBuilder, percentage));
     }
 
-    void closePosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
+    void closeAllPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
         List<User> followers = userService.getFollowers(trader);
 
         followers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));

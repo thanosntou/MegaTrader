@@ -113,8 +113,8 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrder) {
-        requestDELETE(user, base_url, ENDPOINT_ORDER_ALL, dataDeleteOrder.get());
+    public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
+        requestDELETE(user, base_url, ENDPOINT_ORDER_ALL, dataDeleteOrderBuilder.get());
     }
 
     @Override
@@ -195,7 +195,7 @@ public class BitmexService implements IBitmexService {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//            headers.set("X-Requested-With", "XMLHttpRequest");
+            headers.set("X-Requested-With", "XMLHttpRequest");
             headers.set("api-expires", expires);
             headers.set("api-key", apikey);
             headers.set("api-signature", signature);
@@ -322,16 +322,16 @@ public class BitmexService implements IBitmexService {
 //    }
 
     private String calculateFixedQtyForSymbol(User user, String symbol) {
-        if (symbol.equals("symbol=XBTUSD")) return user.getFixedQtyXBTUSD().toString();
-        if (symbol.equals("symbol=XBTJPY")) return user.getFixedQtyXBTJPY().toString();
-        if (symbol.equals("symbol=ADAZ18")) return user.getFixedQtyADAZ18().toString();
-        if (symbol.equals("symbol=BCHZ18")) return user.getFixedQtyBCHZ18().toString();
-        if (symbol.equals("symbol=EOSZ18")) return user.getFixedQtyEOSZ18().toString();
-        if (symbol.equals("symbol=ETHUSD")) return user.getFixedQtyETHUSD().toString();
-        if (symbol.equals("symbol=LTCZ18")) return user.getFixedQtyLTCZ18().toString();
-        if (symbol.equals("symbol=TRXZ18")) return user.getFixedQtyTRXZ18().toString();
-        if (symbol.equals("symbol=XRPZ18")) return user.getFixedQtyXRPZ18().toString();
-        if (symbol.equals("symbol=XBTKRW")) return user.getFixedQtyXBTKRW().toString();
+        if (symbol.equals("XBTUSD")) return user.getFixedQtyXBTUSD().toString();
+        if (symbol.equals("XBTJPY")) return user.getFixedQtyXBTJPY().toString();
+        if (symbol.equals("ADAZ18")) return user.getFixedQtyADAZ18().toString();
+        if (symbol.equals("BCHZ18")) return user.getFixedQtyBCHZ18().toString();
+        if (symbol.equals("EOSZ18")) return user.getFixedQtyEOSZ18().toString();
+        if (symbol.equals("ETHUSD")) return user.getFixedQtyETHUSD().toString();
+        if (symbol.equals("LTCZ18")) return user.getFixedQtyLTCZ18().toString();
+        if (symbol.equals("TRXZ18")) return user.getFixedQtyTRXZ18().toString();
+        if (symbol.equals("XRPZ18")) return user.getFixedQtyXRPZ18().toString();
+        if (symbol.equals("XBTKRW")) return user.getFixedQtyXBTKRW().toString();
 
         return null;
     }

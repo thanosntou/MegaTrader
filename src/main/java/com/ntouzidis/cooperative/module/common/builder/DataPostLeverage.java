@@ -9,13 +9,13 @@ public class DataPostLeverage {
 
     public DataPostLeverage withSymbol(String symbol) {
         if (symbol != null)
-            this.symbol = "symbol=" + symbol;
+            this.symbol = "symbol=" + symbol + "&";
         return this;
     }
 
     public DataPostLeverage withLeverage(String leverage) {
         if (leverage != null)
-            this.leverage = "&leverage=" + leverage;
+            this.leverage = "leverage=" + leverage + "&";
         return this;
     }
 
