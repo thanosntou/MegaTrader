@@ -111,6 +111,32 @@ public class TradeController {
         return "redirect:/trade/" + symbol;
     }
 
+    @PostMapping(value = "/orderAll")
+    public String postOrderAll(@RequestParam(name="symbol") String symbol,
+                               @RequestParam(name="side") String side,
+                               @RequestParam(name="ordType") String ordType,
+                               @RequestParam(name="price", required=false) String price,
+                               @RequestParam(name="execInst", required=false) String execInst,
+                               @RequestParam(name="stopPx", required = false) String stopPx,
+                               @RequestParam(name="leverage", required = false) String leverage,
+                               Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User trader = userDetails.getUser();
+
+        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
+
+        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
+                .withSide(side).withOrderType(ordType)
+                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
+
+        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
+
+        model.addAttribute("user", trader);
+
+        return "redirect:/trade/"+symbol;
+    }
+
     @PostMapping("/positionAll")
     public String setAllPosition(@RequestParam(name="symbol") String symbol,
                                  @RequestParam("orderType") String orderType,
@@ -138,32 +164,6 @@ public class TradeController {
         }
 
         return "redirect:/trade/" + symbol;
-    }
-
-    @PostMapping(value = "/orderAll")
-    public String postOrderAll(@RequestParam(name="symbol") String symbol,
-                            @RequestParam(name="side") String side,
-                            @RequestParam(name="ordType") String ordType,
-                            @RequestParam(name="price", required=false) String price,
-                            @RequestParam(name="execInst", required=false) String execInst,
-                            @RequestParam(name="stopPx", required = false) String stopPx,
-                            @RequestParam(name="leverage", required = false) String leverage,
-                            Model model, Authentication authentication) {
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User trader = userDetails.getUser();
-
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
-
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
-                .withSide(side).withOrderType(ordType)
-                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
-
-        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
-
-        model.addAttribute("user", trader);
-
-        return "redirect:/trade/"+symbol;
     }
 
     @PostMapping("/order/cancel")
