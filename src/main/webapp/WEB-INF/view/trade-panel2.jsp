@@ -25,7 +25,7 @@
                     <div class="card-body">
                         <div class="row" style="margin: 20px 0px">
                             <h2>Trade Panel <a href="${pageContext.request.contextPath}/trade"><i class="fas fa-sync" class="button"></i></a></h2>
-                        </div><%--title--%>
+                        </div>
                         <div class="container-fluid" id="coinlist">
                             <div class="row" >
                                 <div class="col-sm-10">
@@ -50,7 +50,7 @@
                                     <div class="container-fluid" id="signal-form" style="min-height: 100%">
                                         <%--title--%>
                                         <div class="row">
-                                            <h3>Signal Form</h3>
+                                            <h3>Signal For All</h3>
                                         </div>
                                         <br>
                                         <div class="row">
@@ -120,7 +120,7 @@
                                     <div class="container-fluid" id="manual-form" style="min-height: 100%">
                                         <%--title--%>
                                         <div class="row">
-                                            <h3>Manual Form</h3>
+                                            <h3>Manual For All</h3>
                                         </div>
                                         <%-- limit market stop market bar --%>
                                         <div class="row">
@@ -475,6 +475,7 @@
                                     <th scope="col">TRXZ18</th>
                                     <th scope="col">XRPZ18</th>
                                     <th scope="col">XBTKRW</th>
+                                    <th scope="col"></th>
                                     <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
                                     <%--&lt;%&ndash;<input type="hidden" value="${tempMap['orderID']}" name="orderID"/>&ndash;%&gt;--%>
                                     <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
@@ -485,6 +486,26 @@
                                 <tbody>
                                 <c:forEach var="temp" items="${followers}">
                                     <%--<c:if test="${tempMap['ordStatus'] == 'New'}" >--%>
+                                    <div class="modal fade" id="followerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ...
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <tr>
                                         <th scope="row">${temp.username}</th>
                                         <td>${temp.fixedQtyXBTUSD}</td>
@@ -497,6 +518,11 @@
                                         <td>${temp.fixedQtyTRXZ18}</td>
                                         <td>${temp.fixedQtyXRPZ18}</td>
                                         <td>${temp.fixedQtyXBTKRW}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followerModal">
+                                                Manual
+                                            </button>
+                                        </td>
                                     </tr>
                                     <%--</c:if>--%>
                                 </c:forEach>
@@ -514,6 +540,7 @@
                                         <th scope="col">${sumFixedQtys.get("sumTRXZ18")}</th>
                                         <th scope="col">${sumFixedQtys.get("sumXRPZ18")}</th>
                                         <th scope="col">${sumFixedQtys.get("sumXBTKRW")}</th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </tfoot>
                             </table>
