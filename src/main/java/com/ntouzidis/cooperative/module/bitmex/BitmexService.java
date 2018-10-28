@@ -113,8 +113,8 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrder) {
-        requestDELETE(user, base_url, ENDPOINT_ORDER_ALL, dataDeleteOrder.get());
+    public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
+        requestDELETE(user, base_url, ENDPOINT_ORDER_ALL, dataDeleteOrderBuilder.get());
     }
 
     @Override
@@ -195,7 +195,7 @@ public class BitmexService implements IBitmexService {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//            headers.set("X-Requested-With", "XMLHttpRequest");
+            headers.set("X-Requested-With", "XMLHttpRequest");
             headers.set("api-expires", expires);
             headers.set("api-key", apikey);
             headers.set("api-signature", signature);
