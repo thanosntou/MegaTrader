@@ -15,7 +15,7 @@ public class DataPostLeverage {
 
     public DataPostLeverage withLeverage(String leverage) {
         if (leverage != null)
-            this.leverage = "leverage=" + leverage + "&";
+            this.leverage = "leverage=" + leverage;
         return this;
     }
 
