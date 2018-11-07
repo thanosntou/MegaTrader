@@ -7,11 +7,11 @@ import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import liquibase.util.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TradeService {
@@ -85,6 +85,21 @@ public class TradeService {
                 bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
             }
         });
+    }
+
+    public List<Map<String, Object>> getRandomActiveOrders(User trader) {
+        List<Map<String, Object>> randomAllOrders;
+
+        LinkedList<User> followers = new LinkedList<>(userService.getFollowers(trader));
+
+        for (User f: followers) {
+            randomAllOrders = bitmexService.get_Order_Order(f);
+
+            if (randomAllOrders != null)
+                return randomAllOrders;
+        }
+
+        return Collections.emptyList();
     }
 
     void cancelOrder(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {

@@ -26,6 +26,7 @@
                         <div class="row" style="margin: 20px 0px">
                             <h2>Trade Panel <a href="${pageContext.request.contextPath}/trade"><i class="fas fa-sync" class="button"></i></a></h2>
                         </div>
+                        <%-- coin list --%>
                         <div class="container-fluid" id="coinlist">
                             <div class="row" >
                                 <div class="col-sm-10">
@@ -41,9 +42,10 @@
                                     <a  class="btn btn-outline-primary" href="${pageContext.request.contextPath}/trade/XBTKRW" role="button">Bitcoin / Won</a>
                                 </div>
                             </div>
-                        </div><%-- coin list --%>
+                        </div>
                         <br>
-                        <div class="container-fluid" id="forms"><%-- forms --%>
+                        <%--forms--%>
+                        <div class="container-fluid" id="forms">
                             <div class="row">
                                 <%--signal form--%>
                                 <div class="col-sm">
@@ -302,17 +304,65 @@
                                             </div>
                                             <div class="col-sm">
                                                 <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
+                                                    <input type="hidden" name="symbol" value="${symbol}"/>
                                                     <input type="submit" class="btn btn-danger" value="Cancel All"/>
                                                 </form:form>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <br>
+                        <%--active orders--%>
+                        <div class="row">
+                            <h3>-- Active Orders --</h3>
+                        </div>
+                        <div class="row">
+                            <table class="table table-hover table-sm">
+                                <thead class="thead bg-info">
+                                <tr>
+                                    <th scope="col">symbol</th>
+                                    <th scope="col">Side</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col">Order Type</th>
+                                    <th scope="col">Order Qty</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Stop Price</th>
+                                    <th scope="col">Transaction Time</th>
+                                    <%--<th scope="col">--%>
+                                    <%--<c:if test="${activeOrders.size() > 1}">--%>
+                                    <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
+                                    <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
+                                    <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
+                                    <%--</form:form>--%>
+                                    <%--</c:if>--%>
+                                    <%--</th>--%>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="tempMap" items="${randomActiveOrders}">
+                                    <tr>
+                                        <th scope="row">${tempMap['symbol']}</th>
+                                        <td>${tempMap['side']}</td>
+                                        <td>${tempMap['ordStatus']}</td>
+                                        <td>${tempMap['ordType']}</td>
+                                        <td>${tempMap['orderQty']}</td>
+                                        <td>${tempMap['price']}</td>
+                                        <td>${tempMap['stopPx']}</td>
+                                        <td>${tempMap['transactTime']}</td>
+                                            <%--<td>--%>
+                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">--%>
+                                            <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
+                                            <%--<input type="hidden" name="orderID" value="${tempMap['orderID']}" />--%>
+                                            <%--<input type="submit" class="btn btn-danger" value="Cancel"/>--%>
+                                            <%--</form:form>--%>
+                                            <%--</td>--%>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
                         <%--open positions--%>
                         <div class="row">
                             <h3>-- Open Positions --</h3>
