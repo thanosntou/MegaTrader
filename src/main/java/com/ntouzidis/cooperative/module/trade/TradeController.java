@@ -9,6 +9,7 @@ import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -52,12 +53,6 @@ public class TradeController {
         User trader = userDetails.getUser();
 
         List<User> followers = userService.getFollowers(trader);
-        List<Map<String, Object>> positions = bitmexService.get_Position(trader);
-        List<Map<String, Object>> randomAllOrders = tradeService.getRandomActiveOrders(trader);
-
-//       Current Leverage
-        String currentLeverage = null;
-        if (!positions.isEmpty()) currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
 
 //       Sum of Fixed Customer Qty
         Map<String, String> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
@@ -72,9 +67,15 @@ public class TradeController {
 //        sumPosition + any customer position (temporary)
         double sumPosition = followers.stream().map(i -> bitmexService.getSymbolPosition(i, symbol)).filter(Objects::nonNull).mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString())).sum();
 
-//        active orders
-        List<Map<String, Object>> randomActiveOrders;
-        randomActiveOrders = randomAllOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
+//        random positions. for sure not empty
+        List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
+
+//       Current Leverage
+        String currentLeverage = String.valueOf(randomPositions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(0));
+
+//        random active orders. for sure not empty
+        List<Map<String, Object>> randomAllOrders = tradeService.getRandomActiveOrders(trader);
+        List<Map<String, Object>> randomActiveOrders = randomAllOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
 
         model.addAttribute("user", trader);
         model.addAttribute("symbol", symbol);
@@ -85,7 +86,7 @@ public class TradeController {
         model.addAttribute("currentLeverage", currentLeverage);
         model.addAttribute("page", "trade");
         model.addAttribute("sumPosition", sumPosition);
-        model.addAttribute("openPositions", positions);
+        model.addAttribute("randomPositions", randomPositions);
         model.addAttribute("randomActiveOrders", randomActiveOrders);
 
         return "trade-panel2";

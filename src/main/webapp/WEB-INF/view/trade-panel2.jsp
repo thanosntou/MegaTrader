@@ -434,7 +434,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="tempMap" items="${openPositions}">
+                                <c:forEach var="tempMap" items="${randomPositions}">
                                     <c:if test="${tempMap['isOpen'] == 'true'}" >
                                     <tr>
                                         <th scope="row">${tempMap['symbol']}</th>
