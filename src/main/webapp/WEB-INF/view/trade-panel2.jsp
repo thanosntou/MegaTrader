@@ -302,12 +302,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm">
-                                                <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
-                                                    <input type="hidden" name="symbol" value="${symbol}"/>
-                                                    <input type="submit" class="btn btn-danger" value="Cancel All"/>
-                                                </form:form>
-                                            </div>
+                                            <%--<div class="col-sm">--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                    <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
+                                                <%--</form:form>--%>
+                                            <%--</div>--%>
                                         </div>
                                     </div>
                                 </div>
@@ -330,14 +330,14 @@
                                     <th scope="col">Price</th>
                                     <th scope="col">Stop Price</th>
                                     <th scope="col">Transaction Time</th>
-                                    <%--<th scope="col">--%>
-                                    <%--<c:if test="${activeOrders.size() > 1}">--%>
-                                    <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
-                                    <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
-                                    <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
-                                    <%--</form:form>--%>
+                                    <th scope="col">
+                                    <%--<c:if test="${randomActiveOrders.size() > 1}">--%>
+                                    <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
+                                    <input type="hidden" name="symbol" value="${symbol}"/>
+                                    <input type="submit" class="btn btn-danger" value="Cancel All"/>
+                                    </form:form>
                                     <%--</c:if>--%>
-                                    <%--</th>--%>
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -351,13 +351,13 @@
                                         <td>${tempMap['price']}</td>
                                         <td>${tempMap['stopPx']}</td>
                                         <td>${tempMap['transactTime']}</td>
-                                            <%--<td>--%>
-                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">--%>
-                                            <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
-                                            <%--<input type="hidden" name="orderID" value="${tempMap['orderID']}" />--%>
-                                            <%--<input type="submit" class="btn btn-danger" value="Cancel"/>--%>
-                                            <%--</form:form>--%>
-                                            <%--</td>--%>
+                                            <td>
+                                            <form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">
+                                            <input type="hidden" name="symbol" value="${symbol}"/>
+                                            <input type="hidden" name="orderID" value="${tempMap['orderID']}" />
+                                            <input type="submit" class="btn btn-danger" value="Cancel"/>
+                                            </form:form>
+                                            </td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>
