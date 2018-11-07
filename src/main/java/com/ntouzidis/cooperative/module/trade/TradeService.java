@@ -7,11 +7,9 @@ import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
-import liquibase.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TradeService {
@@ -47,7 +45,6 @@ public class TradeService {
             //            1. Set Leverage
             bitmexService.post_Position_Leverage(customer, dataLeverage);
 
-
             //            2. Market
             DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
                     .withOrderType("Market")
@@ -68,10 +65,8 @@ public class TradeService {
                         .withStopPrice(sb.getStopLoss())
                         .withText("Bitcoin Syndicate");
 
-
                 bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
             }
-
 
             //            4. Limit
             if (sb.getProfitTrigger() != null) {
@@ -87,7 +82,7 @@ public class TradeService {
         });
     }
 
-    public List<Map<String, Object>> getRandomActiveOrders(User trader) {
+    List<Map<String, Object>> getRandomActiveOrders(User trader) {
         List<Map<String, Object>> randomAllOrders;
 
         LinkedList<User> followers = new LinkedList<>(userService.getFollowers(trader));
@@ -97,6 +92,21 @@ public class TradeService {
 
             if (randomAllOrders != null)
                 return randomAllOrders;
+        }
+
+        return Collections.emptyList();
+    }
+
+    List<Map<String, Object>> getRandomPositions(User trader) {
+        List<Map<String, Object>> randomPositions;
+
+        List<User> followers = userService.getFollowers(trader);
+
+        for (User f: followers) {
+            randomPositions = bitmexService.get_Position(f);
+
+            if (randomPositions != null)
+                return randomPositions;
         }
 
         return Collections.emptyList();
