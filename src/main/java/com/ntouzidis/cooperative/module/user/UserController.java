@@ -108,7 +108,7 @@ public class UserController {
 
         userService.saveKeys(userDetails.getUser(), apiKey, apiSecret);
 
-        return "redirect:/dashboard";
+        return "redirect:/user/settings";
     }
 
     @PostMapping(value = "/fixedQty")
@@ -120,7 +120,7 @@ public class UserController {
 
         userService.setFixedQty(userDetails.getUser(), symbol, qty);
 
-        return "redirect:/dashboard";
+        return "redirect:/user/settings";
     }
 
 }
