@@ -39,7 +39,8 @@ public class RegistrationController {
     
     @GetMapping("/showRegistrationFormOption")
     public String showMyLoginOptionsPage(Model theModel) {
-	return "register-option";	
+        theModel.addAttribute("customer", new User());
+	    return "registration-form-customer";
     }
     
     @GetMapping("/showRegistrationForm")

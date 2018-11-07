@@ -1,7 +1,8 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.bitmex.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
+import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 
 import java.util.List;
@@ -15,7 +16,17 @@ public interface IBitmexService {
 
     List<Map<String, Object>> get_Order_Order(User user);
 
+    Map<String, Object> post_Order_Order_WithFixedsAndPercentage(User user, DataPostOrderBuilder dataOrder, int percentage);
+
+    Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder);
+
     Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataPostOrderBuilder);
+
+    void cancelOrder(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
+
+    void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
+
+    Map<String, Object> getSymbolPosition(User user, String symbol);
 
     List<Map<String, Object>> get_Position(User user);
 

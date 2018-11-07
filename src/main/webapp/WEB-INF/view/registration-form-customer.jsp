@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-      <title>MegaTrader</title>
+      <title>Bitcoin Syndicate</title>
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!--      <link rel="stylesheet" href="/css/register-form-customer.css">    -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -20,7 +20,7 @@
         
         <div class="card">
             <div class="card-header">
-                Sign Up as a Customer
+                Sign Up
             </div>
             <div class="card-body">
                 <div class="row">

@@ -7,17 +7,18 @@ import com.ntouzidis.cooperative.module.user.entity.Wallet;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("userDetailsService")
@@ -55,9 +56,8 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).map(CustomerToTraderLink::getTrader);
     }
 
-    public List<CustomerToTraderLink> getPersonalCustomers(String traderUsername) {
-        User trader = findTrader(traderUsername).orElseThrow(() -> new RuntimeException("trader not found"));
-        return customerToTraderLinkRepository.findAllByTrader(trader);
+    public List<User> getFollowers(User trader) {
+        return customerToTraderLinkRepository.findAllByTrader(trader).stream().map(CustomerToTraderLink::getCustomer).collect(Collectors.toList());
     }
 
     public List<User> getTraders() {

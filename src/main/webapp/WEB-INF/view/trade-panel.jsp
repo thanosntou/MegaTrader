@@ -34,6 +34,7 @@
                 <br><br><br>
 
                 <%-- main bar --%>
+
                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="pills-limit-tab" data-toggle="pill" href="#pills-limit" role="tab" aria-controls="pills-limit" aria-selected="true">Limit</a>
@@ -205,7 +206,7 @@
                     </form:form>
                 </div>
 
-                    <%------------------------------------------ LIMIT TAB ------------------------------------------------------------------------------- --%>
+                    <%------------------------------------------ Stop Market TAB ------------------------------------------------------------------------------- --%>
                     <div class="tab-pane fade" id="pills-stopMarket" role="tabpanel" aria-labelledby="pills-stopMarket-tab">
                     <form:form action="${pageContext.request.contextPath}/trade/order" method="POST" id="stop-form" oninput="x.value=parseInt(a3.value)">
                         <div class="row">
