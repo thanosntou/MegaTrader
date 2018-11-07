@@ -53,25 +53,28 @@ public class TradeController {
 
         List<User> followers = userService.getFollowers(trader);
         List<Map<String, Object>> positions = bitmexService.get_Position(trader);
+        List<Map<String, Object>> randomAllOrders = tradeService.getRandomActiveOrders(trader);
 
-//      --------- Current Leverage --------------
+//       Current Leverage
         String currentLeverage = null;
         if (!positions.isEmpty()) currentLeverage = String.valueOf(positions.stream().filter(i -> i.get("symbol").equals(symbol)).map(i -> i.get("leverage")).findAny().orElse(null));
 
-//      --------------- Sum of Fixed Customer Qty --------------
+//       Sum of Fixed Customer Qty
         Map<String, String> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
-//      --------------- maxLeverage and piceStep ---------------
+//       maxLeverage and piceStep
         String maxLeverage = "0";
         String priceStep = "1";
         Map<String, String> m = calculateMaxLeverageAndPriceStep(symbol, maxLeverage, priceStep);
         maxLeverage = m.get("maxleverage");
         priceStep = m.get("priceStep");
 
-//      --------------------  sumPosition + any customer position (temporary)------------
+//        sumPosition + any customer position (temporary)
         double sumPosition = followers.stream().map(i -> bitmexService.getSymbolPosition(i, symbol)).filter(Objects::nonNull).mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString())).sum();
-        List<Map<String, Object>> openPositions = positions;
 
+//        active orders
+        List<Map<String, Object>> randomActiveOrders;
+        randomActiveOrders = randomAllOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
 
         model.addAttribute("user", trader);
         model.addAttribute("symbol", symbol);
@@ -82,7 +85,8 @@ public class TradeController {
         model.addAttribute("currentLeverage", currentLeverage);
         model.addAttribute("page", "trade");
         model.addAttribute("sumPosition", sumPosition);
-        model.addAttribute("openPositions", openPositions);
+        model.addAttribute("openPositions", positions);
+        model.addAttribute("randomActiveOrders", randomActiveOrders);
 
         return "trade-panel2";
     }
