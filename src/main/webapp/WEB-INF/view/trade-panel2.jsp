@@ -494,7 +494,7 @@
                                         <td id="markPriceTd"><span id="markPriceSpan">0</span></td>
                                         <td id="liquidationPriceTd"><span id="liquidationPriceSpan">${tempMap['liquidationPrice']}</span></td>
                                         <td id="maintMarginTd"><span id="maintMarginSpan">0</span></td>
-                                        <td>${tempMap['unrealisedPnl']}</td>
+                                        <td id="unrealisedPnlTd"><span id="unrealisedPnlSpan">${tempMap['unrealisedPnl']}</span></td>
                                         <td id="unrealisedRoePcntTd"><span id="unrealisedRoePcntSpan">${tempMap['unrealisedRoePcnt'] * 100}%</span></td>
 
                                         <td><span id="realisedPnl"> </span></td>
@@ -804,6 +804,19 @@
                     });
                 });
                 document.getElementById("unrealisedRoePcntSpan").innerText = msg.data[0].unrealisedRoePcnt * 100 + '%';
+            }
+
+            if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnl") != msg.data["0"].unrealisedPnl) {
+                $(function () {
+                    $("#unrealisedPnlTd").delay(150).animate({
+                        "background-color": "#ffeb79"
+                    }, 350, function () {
+                        $("#unrealisedPnlTd").animate({
+                            "background-color": "#fff"
+                        }, 200);
+                    });
+                });
+                document.getElementById("unrealisedPnlSpan").innerText = msg.data[0].unrealisedPnl;
             }
 
 
