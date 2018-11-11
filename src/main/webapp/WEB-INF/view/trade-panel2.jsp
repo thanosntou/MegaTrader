@@ -441,11 +441,16 @@
                                         <td>${sumPosition}</td>
                                         <td>${tempMap['avgEntryPrice']}</td>
                                         <td id="markPriceTd"><span id="markPriceSpan">0</span></td>
-                                        <td>${tempMap['liquidationPrice']}</td>
+                                        <td id="liquidationPriceTd"><span id="liquidationPriceSpan">${tempMap['liquidationPrice']}</span></td>
                                         <td id="maintMarginTd"><span id="maintMarginSpan">0</span></td>
                                         <td>${tempMap['unrealisedPnl']}</td>
-                                        <td>${tempMap['unrealisedRoePcnt'] * 100}%</td>
-                                        <td>${tempMap['realisedPnl']}</td>
+                                        <td id="unrealisedRoePcntTd"><span id="unrealisedRoePcntSpan">${tempMap['unrealisedRoePcnt'] * 100}%</span></td>
+
+                                        <td><span id="realisedPnl"> </span></td>
+                                        <script>
+                                            document.getElementById('realisedPnl').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8) ;
+                                        </script>
+
                                             <%--<td>${tempMap['commission']}</td>--%>
                                         <td>${tempMap['leverage']}</td>
                                         <%--<td>${tempMap['isOpen']}</td>--%>
@@ -455,15 +460,38 @@
                                             <%--<td>${tempMap['openingQty']}</td>--%>
                                             <%--<td>${tempMap['openingCost']}</td>--%>
                                             <%--<td>${tempMap['execQty']}</td>--%>
-                                        <td>${tempMap['execCost']}</td>
-                                        <td>${tempMap['currentCost']}</td>
+                                        <td><span id="execCost"> </span></td>
+                                        <script>
+                                            document.getElementById('execCost').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8) ;
+                                        </script>
+
+                                        <td><span id="currentCost"> </span></td>
+                                        <script>
+                                            document.getElementById('currentCost').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8) ;
+                                        </script>
                                             <%--<td>${tempMap['currentComm']}</td>--%>
                                             <%--<td>${tempMap['realisedCost']}</td>--%>
-                                        <td>${tempMap['unrealisedCost']}</td>
+                                        <td><span id="unrealisedCost"> </span></td>
+                                        <script>
+                                            document.getElementById('unrealisedCost').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8) ;
+                                        </script>
                                             <%--<td>${tempMap['grossOpenCost']}</td>--%>
                                             <%--<td>${tempMap['grossOpenPremium']}</td>--%>
                                             <%--<td>${tempMap['grossExecCost']}</td>--%>
-                                        <td>${tempMap['posMargin']}</td>
+                                        <%--<script>--%>
+                                            <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                            <%--}--%>
+                                        <%--</script>--%>
+                                        <td><span id="posMargin"> </span></td>
+                                        <script>
+                                            document.getElementById('posMargin').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                        </script>
                                             <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
                                             <%--<td>${tempMap['unrealisedTax']}</td>--%>
                                             <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
@@ -701,9 +729,53 @@
                 document.getElementById("maintMarginSpan").innerText = msg.data[0].maintMargin;
             }
 
+            if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPrice") != msg.data["0"].liquidationPrice) {
+                $(function () {
+                    $("#liquidationPriceTd").delay(150).animate({
+                        "background-color": "#ffeb79"
+                    }, 350, function () {
+                        $("#liquidationPriceTd").animate({
+                            "background-color": "#fff"
+                        }, 200);
+                    });
+                });
+                document.getElementById("liquidationPriceSpan").innerText = msg.data[0].liquidationPrice;
+            }
+
+            if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcnt") != msg.data["0"].unrealisedRoePcnt) {
+                $(function () {
+                    $("#unrealisedRoePcntTd").delay(150).animate({
+                        "background-color": "#ffeb79"
+                    }, 350, function () {
+                        $("#unrealisedRoePcntTd").animate({
+                            "background-color": "#fff"
+                        }, 200);
+                    });
+                });
+                document.getElementById("unrealisedRoePcntSpan").innerText = msg.data[0].unrealisedRoePcnt * 100 + '%';
+            }
+
 
         }
     </script>
+<%--<script>--%>
+    <%--function myFunc(){--%>
+        <%--var cb = document.getElementById('unrealCost');--%>
+        <%--// var label = document.getElementsByName('label206451')[0]; // Get the first one of index--%>
+        <%--// console.log(label);--%>
+        <%--// cb.addEventListener('load',function(evt){ // use change here. not neccessarily--%>
+        <%--// if(this.checked){--%>
+        <%--cb.innerHTML = (55553 / 100000000).toFixed(7);--%>
+
+        <%--// temp = temp / 100000000;--%>
+        <%--// label.value='Thanks'--%>
+        <%--// }else{--%>
+        <%--//     label.value='0'--%>
+        <%--// }--%>
+        <%--// },false);--%>
+    <%--}--%>
+
+<%--</script>--%>
 
 </body>
 </html>
