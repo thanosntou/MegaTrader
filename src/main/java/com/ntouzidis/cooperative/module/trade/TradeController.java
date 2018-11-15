@@ -65,7 +65,7 @@ public class TradeController {
         priceStep = m.get("priceStep");
 
 //        sumPosition + any customer position (temporary)
-        double sumPosition = followers.stream().map(i -> bitmexService.getSymbolPosition(i, symbol)).filter(Objects::nonNull).mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString())).sum();
+        double sumPositionXBTUSD = followers.stream().map(i -> bitmexService.getSymbolPosition(i, symbol)).filter(Objects::nonNull).mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString())).sum();
 
 //        random positions. for sure not empty
         List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
@@ -85,7 +85,7 @@ public class TradeController {
         model.addAttribute("sumFixedQtys", sumFixedQtys);
         model.addAttribute("currentLeverage", currentLeverage);
         model.addAttribute("page", "trade");
-        model.addAttribute("sumPosition", sumPosition);
+        model.addAttribute("sumPositionXBTUSD", sumPositionXBTUSD);
         model.addAttribute("randomPositions", randomPositions);
         model.addAttribute("randomActiveOrders", randomActiveOrders);
 
