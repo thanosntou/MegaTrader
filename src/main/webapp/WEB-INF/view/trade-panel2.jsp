@@ -99,7 +99,7 @@
                                                             Leverage
                                                         </div>
                                                         <div class="col-sm">
-                                                            <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                            <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                             <%--<output name="x" for="a"></output>--%>
                                                         </div>
                                                     </div>
@@ -136,17 +136,20 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link" id="pills-stopMarket-tab" data-toggle="pill" href="#pills-stopMarket" role="tab" aria-controls="pills-stopMarket" aria-selected="false">Stop Market</a>
                                                 </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="pills-stopLimit-tab" data-toggle="pill" href="#pills-stopLimit" role="tab" aria-controls="pills-stopLimit" aria-selected="false">Stop Limit</a>
+                                                </li>
                                             </ul>
                                         </div>
                                         <%--tab-content--%>
                                         <div class="row">
-                                            <div class="col-sm">
-                                                <div class="tab-content" id="pills-tabContent">
+                                            <div class="tab-content" id="pills-tabContent">
                                                     <%---------------------------------------------------LIMIT ----------------------------------%>
                                                     <div class="tab-pane fade show active" id="pills-limit" role="tabpanel" aria-labelledby="pills-limit-tab">
                                                         <form:form action="${pageContext.request.contextPath}/trade/orderAll" method="POST" id="limit-form" oninput="x.value=parseInt(aa.value)">
                                                             <div class="col-sm-12">
                                                                 <input type="text" name="ordType" value="Limit" hidden />
+                                                                <input type="text" name="symbol" value="${symbol}" hidden />
                                                                 <div class="row">
                                                                     <div class="col-sm">
                                                                         Contract
@@ -171,7 +174,7 @@
                                                                         Limit Price
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" step="${priceStep}" name="price"/>
+                                                                        <input type="number" step="${currentCoinPriceStep}" name="price"/>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -179,7 +182,7 @@
                                                                         Leverage
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                        <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                                             <%--<output name="x" for="a"></output>--%>
                                                                     </div>
                                                                 </div>
@@ -191,7 +194,6 @@
                                                                         <input type="submit" value="Place Order" />
                                                                     </div>
                                                                 </div>
-                                                                <input type="text" name="symbol" value="${symbol}" hidden />
                                                             </div>
                                                         </form:form>
                                                     </div>
@@ -200,6 +202,7 @@
                                                         <form:form action="${pageContext.request.contextPath}/trade/orderAll" method="POST" id="market-form" oninput="x.value=parseInt(a2.value)">
                                                             <div class="col-sm-12">
                                                                 <input type="text" name="ordType" value="Market" hidden />
+                                                                <input type="text" name="symbol" value="${symbol}" hidden />
                                                                 <div class="row">
                                                                     <div class="col-sm">
                                                                         Contract
@@ -224,7 +227,7 @@
                                                                         Leverage
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                        <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                                             <%--<output name="x" for="a"></output>--%>
                                                                     </div>
                                                                 </div>
@@ -236,7 +239,6 @@
                                                                         <input type="submit" value="Place Order" />
                                                                     </div>
                                                                 </div>
-                                                                <input type="text" name="symbol" value="${symbol}" hidden />
                                                             </div>
                                                         </form:form>
                                                     </div>
@@ -244,13 +246,9 @@
                                                     <div class="tab-pane fade" id="pills-stopMarket" role="tabpanel" aria-labelledby="pills-stopMarket-tab">
                                                         <form:form action="${pageContext.request.contextPath}/trade/orderAll" method="POST" id="stop-form" oninput="x.value=parseInt(a3.value)">
                                                             <div class="col-sm-12">
-                                                                <div class="row">
-                                                                    <div class="col-sm">
-                                                                    </div>
-                                                                    <div class="col-sm">
-                                                                        <input type="text" name="ordType" value="Stop" hidden />
-                                                                    </div>
-                                                                </div>
+                                                                <input type="text" name="symbol" value="${symbol}" hidden />
+                                                                <input type="text" name="execInst" value="Close,LastPrice" hidden />
+                                                                <input type="text" name="ordType" value="Stop" hidden />
                                                                 <div class="row">
                                                                     <div class="col-sm">
                                                                         Contract
@@ -275,7 +273,7 @@
                                                                         Stop Price
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" step="${priceStep}" name="stopPx"/>
+                                                                        <input type="number" step="${currentCoinPriceStep}" name="stopPx"/>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -283,7 +281,7 @@
                                                                         Leverage
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                        <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                                             <%--<output name="x" for="a"></output>--%>
                                                                     </div>
                                                                 </div>
@@ -295,20 +293,73 @@
                                                                         <input type="submit" value="Place Order" />
                                                                     </div>
                                                                 </div>
-                                                                <input type="text" name="symbol" value="${symbol}" hidden />
-                                                                <input type="text" name="execInst" value="Close,LastPrice" hidden />
                                                             </div>
                                                         </form:form>
                                                     </div>
+                                                    <%------------------------------------------ STOP LIMIT TAB ------------------------------------------------------------------------------- --%>
+                                                    <div class="tab-pane fade" id="pills-stopLimit" role="tabpanel" aria-labelledby="pills-stopLimit-tab">
+                                                            <form:form action="${pageContext.request.contextPath}/trade/orderAll" method="POST" id="stop-form" oninput="x.value=parseInt(a3.value)">
+                                                                <div class="col-sm-12">
+                                                                    <input type="text" name="symbol" value="${symbol}" hidden />
+                                                                    <input type="text" name="execInst" value="Close,LastPrice" hidden />
+                                                                    <input type="text" name="ordType" value="StopLimit" hidden />
+                                                                    <div class="row">
+                                                                        <div class="col-sm">
+                                                                            Contract
+                                                                        </div>
+                                                                        <div class="col-sm">
+                                                                            <input type="text" name="symbol" value="${symbol}" disabled/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-sm">
+                                                                            Side
+                                                                        </div>
+                                                                        <div class="col-sm">
+                                                                            <select name="side">
+                                                                                <option value="Buy">Buy</option>
+                                                                                <option value="Sell">Sell</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-sm">
+                                                                            Limit Price
+                                                                        </div>
+                                                                        <div class="col-sm">
+                                                                            <input type="number" step="${currentCoinPriceStep}" name="price"/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-sm">
+                                                                            Stop Price
+                                                                        </div>
+                                                                        <div class="col-sm">
+                                                                            <input type="number" step="${currentCoinPriceStep}" name="stopPx"/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-sm">
+                                                                            Leverage
+                                                                        </div>
+                                                                        <div class="col-sm">
+                                                                            <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
+                                                                                <%--<output name="x" for="a"></output>--%>
+                                                                        </div>
+                                                                    </div>
+                                                                    <br>
+                                                                    <div class="row">
+                                                                        <div class="col-sm">
+                                                                        </div>
+                                                                        <div class="col-sm">
+                                                                            <input type="submit" value="Place Order" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form:form>
+                                                        </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-sm">
-                                                <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
-                                                    <input type="hidden" name="symbol" value="${symbol}"/>
-                                                    <input type="submit" class="btn btn-danger" value="Cancel All"/>
-                                                </form:form>
-                                            </div>
-                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -318,26 +369,26 @@
                         <div class="row">
                             <h3>-- Active Orders --</h3>
                         </div>
-                        <div class="row">
-                            <table class="table table-hover table-sm">
+                        <div class="row" id="activeOrders">
+                            <table class="table table-hover table-sm ">
                                 <thead class="thead bg-info">
                                 <tr>
                                     <th scope="col">symbol</th>
                                     <th scope="col">Side</th>
                                     <th scope="col">Order Status</th>
                                     <th scope="col">Order Type</th>
-                                    <th scope="col">Order Qty</th>
+                                    <%--<th scope="col">Order Qty</th>--%>
                                     <th scope="col">Price</th>
                                     <th scope="col">Stop Price</th>
                                     <th scope="col">Transaction Time</th>
-                                    <%--<th scope="col">--%>
-                                    <%--<c:if test="${activeOrders.size() > 1}">--%>
-                                    <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">--%>
-                                    <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
-                                    <%--<input type="submit" class="btn btn-danger" value="Cancel All"/>--%>
-                                    <%--</form:form>--%>
+                                    <th scope="col">
+                                    <%--<c:if test="${randomActiveOrders.size() > 1}">--%>
+                                    <form:form action="${pageContext.request.contextPath}/trade/order/cancelAll" method="POST">
+                                    <input type="hidden" name="symbol" value="${symbol}"/>
+                                    <input type="submit" class="btn btn-danger" value="Cancel All"/>
+                                    </form:form>
                                     <%--</c:if>--%>
-                                    <%--</th>--%>
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -347,17 +398,17 @@
                                         <td>${tempMap['side']}</td>
                                         <td>${tempMap['ordStatus']}</td>
                                         <td>${tempMap['ordType']}</td>
-                                        <td>${tempMap['orderQty']}</td>
+                                        <%--<td>${tempMap['orderQty']}</td>--%>
                                         <td>${tempMap['price']}</td>
                                         <td>${tempMap['stopPx']}</td>
                                         <td>${tempMap['transactTime']}</td>
-                                            <%--<td>--%>
-                                            <%--<form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">--%>
-                                            <%--&lt;%&ndash;<input type="hidden" name="symbol" value="${symbol}"/>&ndash;%&gt;--%>
-                                            <%--<input type="hidden" name="orderID" value="${tempMap['orderID']}" />--%>
-                                            <%--<input type="submit" class="btn btn-danger" value="Cancel"/>--%>
-                                            <%--</form:form>--%>
-                                            <%--</td>--%>
+                                            <td>
+                                            <form:form action="${pageContext.request.contextPath}/trade/order/cancel" method="POST">
+                                            <input type="hidden" name="symbol" value="${symbol}"/>
+                                            <input type="hidden" name="orderID" value="${tempMap['orderID']}" />
+                                            <input type="submit" class="btn btn-danger" value="Cancel"/>
+                                            </form:form>
+                                            </td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>
@@ -435,19 +486,52 @@
                                 </thead>
                                 <tbody>
                                 <c:forEach var="tempMap" items="${randomPositions}">
-                                    <c:if test="${tempMap['isOpen'] == 'true'}" >
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'XBTUSD'}" >
                                     <tr>
                                         <th scope="row">${tempMap['symbol']}</th>
-                                        <td>${sumPosition}</td>
-                                        <td>${tempMap['avgEntryPrice']}</td>
-                                        <td id="markPriceTd"><span id="markPriceSpan">0</span></td>
-                                        <td>${tempMap['liquidationPrice']}</td>
-                                        <td id="maintMarginTd"><span id="maintMarginSpan">0</span></td>
-                                        <td>${tempMap['unrealisedPnl']}</td>
-                                        <td>${tempMap['unrealisedRoePcnt'] * 100}%</td>
-                                        <td>${tempMap['realisedPnl']}</td>
+
+                                        <td>${sumPositionXBTUSD}</td>
+
+                                        <td id="avgEntryPriceTdXBTUSD"><span id="avgEntryPriceSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('avgEntryPriceSpanXBTUSD').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                        </script>
+
+                                        <td id="markPriceTdXBTUSD"><span id="markPriceSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('markPriceSpanXBTUSD').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                        </script>
+
+                                        <td id="liquidationPriceTdXBTUSD"><span id="liquidationPriceSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('liquidationPriceSpanXBTUSD').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                        </script>
+
+                                        <td id="maintMarginTdXBTUSD"><span id="maintMarginSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('maintMarginSpanXBTUSD').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                        </script>
+
+                                        <td id="unrealisedPnlTdXBTUSD"><span id="unrealisedPnlSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('unrealisedPnlSpanXBTUSD').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                        </script>
+
+                                        <td id="unrealisedRoePcntTdXBTUSD"><span id="unrealisedRoePcntSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('unrealisedRoePcntSpanXBTUSD').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                        </script>
+
+                                        <td id="realisedPnlTdXBTUSD"><span id="realisedPnlSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('realisedPnlSpanXBTUSD').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                        </script>
+
                                             <%--<td>${tempMap['commission']}</td>--%>
-                                        <td>${tempMap['leverage']}</td>
+                                        <td id="leverageTdXBTUSD"><span id="leverageSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('leverageSpanXBTUSD').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                        </script>
                                         <%--<td>${tempMap['isOpen']}</td>--%>
                                             <%--<td>${tempMap['rebalancedPnl']}</td>--%>
                                             <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
@@ -455,15 +539,39 @@
                                             <%--<td>${tempMap['openingQty']}</td>--%>
                                             <%--<td>${tempMap['openingCost']}</td>--%>
                                             <%--<td>${tempMap['execQty']}</td>--%>
-                                        <td>${tempMap['execCost']}</td>
-                                        <td>${tempMap['currentCost']}</td>
+
+                                        <td id="execCostTdXBTUSD"><span id="execCostSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('execCostSpanXBTUSD').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                        </script>
+
+                                        <td id="currentCostTdXBTUSD"><span id="currentCostSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('currentCostSpanXBTUSD').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                        </script>
                                             <%--<td>${tempMap['currentComm']}</td>--%>
                                             <%--<td>${tempMap['realisedCost']}</td>--%>
-                                        <td>${tempMap['unrealisedCost']}</td>
+                                        <td id="unrealisedCostTdXBTUSD"><span id="unrealisedCostSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('unrealisedCostSpanXBTUSD').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                        </script>
                                             <%--<td>${tempMap['grossOpenCost']}</td>--%>
                                             <%--<td>${tempMap['grossOpenPremium']}</td>--%>
                                             <%--<td>${tempMap['grossExecCost']}</td>--%>
-                                        <td>${tempMap['posMargin']}</td>
+                                        <%--<script>--%>
+                                            <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                            <%--}--%>
+                                        <%--</script>--%>
+                                        <td id="posMarginTdXBTUSD"><span id="posMarginSpanXBTUSD"></span></td>
+                                        <script>
+                                            document.getElementById('posMarginSpanXBTUSD').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                        </script>
                                             <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
                                             <%--<td>${tempMap['unrealisedTax']}</td>--%>
                                             <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
@@ -486,7 +594,7 @@
 
                                         <td>
                                             <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="XBTUSD"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -499,25 +607,1110 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                         </td>
                                         <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepXBTUSD']}" min="0"  value="0"/>
                                         </td>
                                         <td>
-                                            <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
-
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
                                         </td>
                                         <td>
-                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
                                             </form:form>
                                         </td>
                                     </tr>
                                     </c:if>
                                 </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'XBTJPY'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionXBTJPY}</td>
+
+                                            <td id="avgEntryPriceTdXBTJPY"><span id="avgEntryPriceSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanXBTJPY').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdXBTJPY"><span id="markPriceSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanXBTJPY').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdXBTJPY"><span id="liquidationPriceSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanXBTJPY').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdXBTJPY"><span id="maintMarginSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanXBTJPY').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdXBTJPY"><span id="unrealisedPnlSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanXBTJPY').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdXBTJPY"><span id="unrealisedRoePcntSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanXBTJPY').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdXBTJPY"><span id="realisedPnlSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanXBTJPY').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdXBTJPY"><span id="leverageSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanXBTJPY').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdXBTJPY"><span id="execCostSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanXBTJPY').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdXBTJPY"><span id="currentCostSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanXBTJPY').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdXBTJPY"><span id="unrealisedCostSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanXBTJPY').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdXBTJPY"><span id="posMarginSpanXBTJPY"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanXBTJPY').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="XBTJPY"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepXBTJPY']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'ADAZ18'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionADAZ18}</td>
+
+                                            <td id="avgEntryPriceTdADAZ18"><span id="avgEntryPriceSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanADAZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdADAZ18"><span id="markPriceSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanADAZ18').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdADAZ18"><span id="liquidationPriceSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanADAZ18').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdADAZ18"><span id="maintMarginSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanADAZ18').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdADAZ18"><span id="unrealisedPnlSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanADAZ18').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdADAZ18"><span id="unrealisedRoePcntSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanADAZ18').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdADAZ18"><span id="realisedPnlSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanADAZ18').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdADAZ18"><span id="leverageSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanADAZ18').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdADAZ18"><span id="execCostSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanADAZ18').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdADAZ18"><span id="currentCostSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanADAZ18').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdADAZ18"><span id="unrealisedCostSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanADAZ18').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdADAZ18"><span id="posMarginSpanADAZ18"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanADAZ18').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="ADAZ18"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepADAZ18']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'BCHZ18'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionBCHZ18}</td>
+
+                                            <td id="avgEntryPriceTdBCHZ18"><span id="avgEntryPriceSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanBCHZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdBCHZ18"><span id="markPriceSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanBCHZ18').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdBCHZ18"><span id="liquidationPriceSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanBCHZ18').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdBCHZ18"><span id="maintMarginSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanBCHZ18').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdBCHZ18"><span id="unrealisedPnlSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanBCHZ18').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdBCHZ18"><span id="unrealisedRoePcntSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanBCHZ18').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdBCHZ18"><span id="realisedPnlSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanBCHZ18').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdBCHZ18"><span id="leverageSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanBCHZ18').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdBCHZ18"><span id="execCostSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanBCHZ18').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdBCHZ18"><span id="currentCostSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanBCHZ18').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdBCHZ18"><span id="unrealisedCostSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanBCHZ18').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdBCHZ18"><span id="posMarginSpanBCHZ18"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanBCHZ18').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="BCHZ18"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepBCHZ18']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'EOSZ18'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionEOSZ18}</td>
+
+                                            <td id="avgEntryPriceTdEOSZ18"><span id="avgEntryPriceSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanEOSZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdEOSZ18"><span id="markPriceSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanEOSZ18').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdEOSZ18"><span id="liquidationPriceSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanEOSZ18').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdEOSZ18"><span id="maintMarginSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanEOSZ18').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdEOSZ18"><span id="unrealisedPnlSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanEOSZ18').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdEOSZ18"><span id="unrealisedRoePcntSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanEOSZ18').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdEOSZ18"><span id="realisedPnlSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanEOSZ18').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdEOSZ18"><span id="leverageSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanEOSZ18').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdEOSZ18"><span id="execCostSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanEOSZ18').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdEOSZ18"><span id="currentCostSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanEOSZ18').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdEOSZ18"><span id="unrealisedCostSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanEOSZ18').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdEOSZ18"><span id="posMarginSpanEOSZ18"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanEOSZ18').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="EOSZ18"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepEOSZ18']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'ETHUSD'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionETHUSD}</td>
+
+                                            <td id="avgEntryPriceTdETHUSD"><span id="avgEntryPriceSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanETHUSD').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdETHUSD"><span id="markPriceSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanETHUSD').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdETHUSD"><span id="liquidationPriceSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanETHUSD').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdETHUSD"><span id="maintMarginSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanETHUSD').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdETHUSD"><span id="unrealisedPnlSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanETHUSD').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdETHUSD"><span id="unrealisedRoePcntSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanETHUSD').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdETHUSD"><span id="realisedPnlSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanETHUSD').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdETHUSD"><span id="leverageSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanETHUSD').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdETHUSD"><span id="execCostSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanETHUSD').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdETHUSD"><span id="currentCostSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanETHUSD').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdETHUSD"><span id="unrealisedCostSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanETHUSD').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdETHUSD"><span id="posMarginSpanETHUSD"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanETHUSD').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="ETHUSD"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepETHUSD']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'LTCZ18'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionLTCZ18}</td>
+
+                                            <td id="avgEntryPriceTdLTCZ18"><span id="avgEntryPriceSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanLTCZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdLTCZ18"><span id="markPriceSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanLTCZ18').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdLTCZ18"><span id="liquidationPriceSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanLTCZ18').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdLTCZ18"><span id="maintMarginSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanLTCZ18').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdLTCZ18"><span id="unrealisedPnlSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanLTCZ18').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdLTCZ18"><span id="unrealisedRoePcntSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanLTCZ18').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdLTCZ18"><span id="realisedPnlSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanLTCZ18').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdLTCZ18"><span id="leverageSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanLTCZ18').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdLTCZ18"><span id="execCostSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanLTCZ18').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdLTCZ18"><span id="currentCostSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanLTCZ18').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdLTCZ18"><span id="unrealisedCostSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanLTCZ18').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdLTCZ18"><span id="posMarginSpanLTCZ18"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanLTCZ18').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="LTCZ18"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepLTCZ18']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'TRXZ18'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionTRXZ18}</td>
+
+                                            <td id="avgEntryPriceTdTRXZ18"><span id="avgEntryPriceSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanTRXZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdTRXZ18"><span id="markPriceSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanTRXZ18').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdTRXZ18"><span id="liquidationPriceSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanTRXZ18').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdTRXZ18"><span id="maintMarginSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanTRXZ18').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdTRXZ18"><span id="unrealisedPnlSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanTRXZ18').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdTRXZ18"><span id="unrealisedRoePcntSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanTRXZ18').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdTRXZ18"><span id="realisedPnlSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanTRXZ18').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdTRXZ18"><span id="leverageSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanTRXZ18').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdTRXZ18"><span id="execCostSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanTRXZ18').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdTRXZ18"><span id="currentCostSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanTRXZ18').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdTRXZ18"><span id="unrealisedCostSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanTRXZ18').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdTRXZ18"><span id="posMarginSpanTRXZ18"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanTRXZ18').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="TRXZ18"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepTRXZ18']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                                <c:forEach var="tempMap" items="${randomPositions}">
+                                    <c:if test="${tempMap['isOpen'] == 'true' && tempMap['symbol'] == 'XRPZ18'}" >
+                                        <tr>
+                                            <th scope="row">${tempMap['symbol']}</th>
+
+                                            <td>${sumPositionXRPZ18}</td>
+
+                                            <td id="avgEntryPriceTdXRPZ18"><span id="avgEntryPriceSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('avgEntryPriceSpanXRPZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="markPriceTdXRPZ18"><span id="markPriceSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('markPriceSpanXRPZ18').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                            </script>
+
+                                            <td id="liquidationPriceTdXRPZ18"><span id="liquidationPriceSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('liquidationPriceSpanXRPZ18').innerText = (${tempMap['liquidationPrice'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="maintMarginTdXRPZ18"><span id="maintMarginSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('maintMarginSpanXRPZ18').innerText = (${tempMap['maintMargin'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedPnlTdXRPZ18"><span id="unrealisedPnlSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedPnlSpanXRPZ18').innerText = (${tempMap['unrealisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="unrealisedRoePcntTdXRPZ18"><span id="unrealisedRoePcntSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedRoePcntSpanXRPZ18').innerText = (${tempMap['unrealisedRoePcnt'] * 100}).toFixed(2)+'%';
+                                            </script>
+
+                                            <td id="realisedPnlTdXRPZ18"><span id="realisedPnlSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('realisedPnlSpanXRPZ18').innerText = (${tempMap['realisedPnl'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                                <%--<td>${tempMap['commission']}</td>--%>
+                                            <td id="leverageTdXRPZ18"><span id="leverageSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('leverageSpanXRPZ18').innerText = (${tempMap['leverage'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['isOpen']}</td>--%>
+                                                <%--<td>${tempMap['rebalancedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevRealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['prevUnrealisedPnl']}</td>--%>
+                                                <%--<td>${tempMap['openingQty']}</td>--%>
+                                                <%--<td>${tempMap['openingCost']}</td>--%>
+                                                <%--<td>${tempMap['execQty']}</td>--%>
+
+                                            <td id="execCostTdXRPZ18"><span id="execCostSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('execCostSpanXRPZ18').innerText = (${tempMap['execCost'] / 100000000}).toFixed(8);
+                                            </script>
+
+                                            <td id="currentCostTdXRPZ18"><span id="currentCostSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('currentCostSpanXRPZ18').innerText = (${tempMap['currentCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['currentComm']}</td>--%>
+                                                <%--<td>${tempMap['realisedCost']}</td>--%>
+                                            <td id="unrealisedCostTdXRPZ18"><span id="unrealisedCostSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('unrealisedCostSpanXRPZ18').innerText = (${tempMap['unrealisedCost'] / 100000000}).toFixed(8);
+                                            </script>
+                                                <%--<td>${tempMap['grossOpenCost']}</td>--%>
+                                                <%--<td>${tempMap['grossOpenPremium']}</td>--%>
+                                                <%--<td>${tempMap['grossExecCost']}</td>--%>
+                                                <%--<script>--%>
+                                                <%--function someFunction1() {--%>
+                                                <%--var num = 0;--%>
+                                                <%--num = ${tempMap['posMargin']};--%>
+                                                <%--var n = num / 100000000;--%>
+                                                <%--n = num.toFixed(7);--%>
+
+                                                <%--document.getElementById("this").innerHTML = n;--%>
+                                                <%--}--%>
+                                                <%--</script>--%>
+                                            <td id="posMarginTdXRPZ18"><span id="posMarginSpanXRPZ18"></span></td>
+                                            <script>
+                                                document.getElementById('posMarginSpanXRPZ18').innerText = (${tempMap['posMargin'] / 100000000}).toFixed(8) ;
+                                            </script>
+                                                <%--<td>${tempMap['unrealisedGrossPnl']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedTax']}</td>--%>
+                                                <%--<td>${tempMap['unrealisedPnlPcnt']}</td>--%>
+                                                <%--<td>${tempMap['simpleQty']}</td>--%>
+                                                <%--<td>${tempMap['simpleCost']}</td>--%>
+                                                <%--<td>${tempMap['avgCostPrice']}</td>--%>
+                                                <%--<td>${tempMap['breakEvenPrice']}</td>--%>
+                                                <%--<td>${tempMap['marginCallPrice']}</td>--%>
+                                                <%--<td>${tempMap['timestamp']}</td>--%>
+                                                <%--<td>${tempMap['lastPrice']}</td>--%>
+                                                <%--<td>${tempMap['lastValue']}</td>--%>
+                                                <%--<td>--%>
+                                                <%--<form:form action="${pageContext.request.contextPath}/trade/position/close" method="POST">--%>
+                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <%--<input type="number" name="limitPrice"/>--%>
+                                                <%--<input type="submit" class="btn btn-danger" value="Close"/>--%>
+                                                <%--</form:form>--%>
+
+                                                <%--</td>--%>
+
+                                            <td>
+                                                <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
+                                                <input type="hidden" name="symbol" value="XRPZ18"/>
+                                                <input id="orderType" type="hidden" name="orderType"/>
+
+                                                <c:if test="${tempMap['currentQty'] < '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Buy"/>
+                                                </c:if>
+                                                <c:if test="${tempMap['currentQty'] > '0'}">
+                                                    <input id="side" type="hidden" name="side" value="Sell"/>
+                                                </c:if>
+                                                    <%--<input id="side" type="hidden" name="side" value="${if tempMap['currentQty']}"/>--%>
+                                                <input type="number" name="percentage" min="0" max="100"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="price" step="${priceSteps['priceStepXRPZ18']}" min="0"  value="0"/>
+                                            </td>
+                                            <td>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
+                                            </td>
+                                            <td>
+                                                    <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
+                                                </form:form>
+                                            </td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
                                 </tbody>
                             </table>
                         </div>
                         <%--followers--%>
-                        <div class="row">
+                        <div class="row" id="followers">
                             <h3>-- Followers & Fixed Qty --</h3>
                         </div>
                         <div class="row">
@@ -668,42 +1861,697 @@
         var exampleSocket = new WebSocket("wss://testnet.bitmex.com/realtime");
         exampleSocket.onopen = function () {
             exampleSocket.send("{\"op\": \"authKeyExpires\", \"args\": [\"obt_f-85F7m2Olfi9IIUUlTG\", 1600883067, \"71c2f5ff56dc905bb9ada3b6f20b950b19b7c30716e9af2160a3e27c78d1b2ee\"]}");
-            exampleSocket.send("{\"op\": \"subscribe\", \"args\": [\"position:XBTUSD\"]}");
+            exampleSocket.send("{\"op\": \"subscribe\", \"args\": [\"position\"]}");
+            // exampleSocket.send("{\"op\": \"subscribe\", \"args\": [\"position:XBTUSD\"]}");
         }
         // console.log(exampleSocket.readyState);
     </script>
     <script>
         exampleSocket.onmessage = function (event) {
             var msg = JSON.parse(event.data);
+            //
+            // var arrayLength = msg.length;
+            // console.log(msg.length);
+            console.log(msg.data["0"]);
 
-            if (document.getElementById("markPriceSpan") != msg.data["0"].markPrice) {
-                $(function () {
-                    $("#markPriceTd").delay(150).animate({
-                        "background-color": "#ffeb79"
-                    }, 350, function () {
-                        $("#markPriceTd").animate({
-                            "background-color": "#fff"
-                        }, 200);
-                    });
-                });
-                document.getElementById("markPriceSpan").innerText = msg.data[0].markPrice;
-            }
-            if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpan") != msg.data["0"].maintMargin) {
-                $(function () {
-                    $("#maintMarginTd").delay(150).animate({
-                        "background-color": "#ffeb79"
-                    }, 350, function () {
-                        $("#maintMarginTd").animate({
-                            "background-color": "#fff"
-                        }, 200);
-                    });
-                });
-                document.getElementById("maintMarginSpan").innerText = msg.data[0].maintMargin;
+            if (msg.data["0"] != null) {
+                if (msg.data["0"].symbol.toString() === 'XBTUSD') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanXBTUSD") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdXBTUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdXBTUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanXBTUSD").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanXBTUSD") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdXBTUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdXBTUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanXBTUSD").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanXBTUSD") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdXBTUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdXBTUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanXBTUSD").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanXBTUSD").toString() != msg.data["0"].unrealisedRoePcnt.toString()) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdXBTUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdXBTUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanXBTUSD").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanXBTUSD") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdXBTUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdXBTUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanXBTUSD").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'XBTJPY') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanXBTJPY") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdXBTJPY").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdXBTJPY").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanXBTJPY").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanXBTJPY") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdXBTJPY").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdXBTJPY").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanXBTJPY").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanXBTJPY") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdXBTJPY").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdXBTJPY").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanXBTJPY").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanXBTJPY") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdXBTJPY").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdXBTJPY").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanXBTJPY").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanXBTJPY") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdXBTJPY").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdXBTJPY").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanXBTJPY").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'ADAZ18') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanADAZ18") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdADAZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdADAZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanADAZ18").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanADAZ18") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdADAZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdADAZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanADAZ18").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanADAZ18") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdADAZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdADAZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanADAZ18").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanADAZ18") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdADAZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdADAZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanADAZ18").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanADAZ18") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdADAZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdADAZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanADAZ18").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'BCHZ18') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanBCHZ18") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdBCHZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdBCHZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanBCHZ18").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanBCHZ18") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdBCHZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdBCHZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanBCHZ18").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanBCHZ18") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdBCHZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdBCHZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanBCHZ18").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanBCHZ18") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdBCHZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdBCHZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanBCHZ18").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanBCHZ18") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdBCHZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdBCHZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanBCHZ18").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'EOSZ18') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanEOSZ18") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdEOSZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdEOSZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanEOSZ18").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanEOSZ18") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdEOSZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdEOSZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanEOSZ18").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanEOSZ18") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdEOSZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdEOSZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanEOSZ18").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanEOSZ18") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdEOSZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdEOSZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanEOSZ18").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanEOSZ18") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdEOSZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdEOSZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanEOSZ18").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'ETHUSD') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanETHUSD") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdETHUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdETHUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanETHUSD").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanETHUSD") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdETHUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdETHUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanETHUSD").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanETHUSD") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdETHUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdETHUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanETHUSD").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanETHUSD") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdETHUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdETHUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanETHUSD").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanETHUSD") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdETHUSD").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdETHUSD").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanETHUSD").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'LTCZ18') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanLTCZ18") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdLTCZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdLTCZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanLTCZ18").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanLTCZ18") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdLTCZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdLTCZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanLTCZ18").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanLTCZ18") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdLTCZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdLTCZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanLTCZ18").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanLTCZ18") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdLTCZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdLTCZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanLTCZ18").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanLTCZ18") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdLTCZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdLTCZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanLTCZ18").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'TRXZ18') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanTRXZ18") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdTRXZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdTRXZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanTRXZ18").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanTRXZ18") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdTRXZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdTRXZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanTRXZ18").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanTRXZ18") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdTRXZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdTRXZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanTRXZ18").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanTRXZ18") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdTRXZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdTRXZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanTRXZ18").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanTRXZ18") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdTRXZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdTRXZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanTRXZ18").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+                }
+                else if (msg.data["0"].symbol.toString() === 'XRPZ18') {
+                    if (msg.data["0"].markPrice != null && document.getElementById("markPriceSpanXRPZ18") != msg.data["0"].markPrice) {
+                        $(function () {
+                            $("#markPriceTdXRPZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#markPriceTdXRPZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("markPriceSpanXRPZ18").innerText = msg.data["0"].markPrice;
+                    }
+                    if (msg.data["0"].maintMargin != null && document.getElementById("maintMarginSpanXRPZ18") != msg.data["0"].maintMargin) {
+                        $(function () {
+                            $("#maintMarginTdXRPZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#maintMarginTdXRPZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("maintMarginSpanXRPZ18").innerText = (msg.data["0"].maintMargin / 100000000).toFixed(8);
+                    }
+
+                    if (msg.data["0"].liquidationPrice != null && document.getElementById("liquidationPriceSpanXRPZ18") != msg.data["0"].liquidationPrice) {
+                        $(function () {
+                            $("#liquidationPriceTdXRPZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#liquidationPriceTdXRPZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("liquidationPriceSpanXRPZ18").innerText = msg.data["0"].liquidationPrice;
+                    }
+
+                    if (msg.data["0"].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanXRPZ18") != msg.data["0"].unrealisedRoePcnt) {
+                        $(function () {
+                            $("#unrealisedRoePcntTdXRPZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedRoePcntTdXRPZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedRoePcntSpanXRPZ18").innerText = (msg.data["0"].unrealisedRoePcnt * 100).toFixed(2) + '%';
+                    }
+
+                    if (msg.data["0"].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanXRPZ18") != msg.data["0"].unrealisedPnl) {
+                        $(function () {
+                            $("#unrealisedPnlTdXRPZ18").delay(150).animate({
+                                "background-color": "#ffeb79"
+                            }, 350, function () {
+                                $("#unrealisedPnlTdXRPZ18").animate({
+                                    "background-color": "#fff"
+                                }, 200);
+                            });
+                        });
+                        document.getElementById("unrealisedPnlSpanXRPZ18").innerText = (msg.data["0"].unrealisedPnl / 100000000).toFixed(8);
+                    }
+
+                }
             }
 
+            // if (msg.data[1] != null) {
+            //
+            //     if (msg.data[i].symbol.toString() === 'ETHUSD') {
+            //         if (msg.data[i].markPrice != null && document.getElementById("markPriceSpanETHUSD") != msg.data[i].markPrice) {
+            //             $(function () {
+            //                 $("#markPriceTdETHUSD").delay(150).animate({
+            //                     "background-color": "#ffeb79"
+            //                 }, 350, function () {
+            //                     $("#markPriceTdETHUSD").animate({
+            //                         "background-color": "#fff"
+            //                     }, 200);
+            //                 });
+            //             });
+            //             document.getElementById("markPriceSpanETHUSD").innerText = msg.data[0].markPrice;
+            //         }
+            //         if (msg.data[i].maintMargin != null && document.getElementById("maintMarginSpanETHUSD") != msg.data[i].maintMargin) {
+            //             $(function () {
+            //                 $("#maintMarginTdETHUSD").delay(150).animate({
+            //                     "background-color": "#ffeb79"
+            //                 }, 350, function () {
+            //                     $("#maintMarginTdETHUSD").animate({
+            //                         "background-color": "#fff"
+            //                     }, 200);
+            //                 });
+            //             });
+            //             document.getElementById("maintMarginSpanETHUSD").innerText = (msg.data[0].maintMargin / 100000000).toFixed(8);
+            //         }
+            //
+            //         if (msg.data[i].liquidationPrice != null && document.getElementById("liquidationPriceSpanETHUSD") != msg.data[i].liquidationPrice) {
+            //             $(function () {
+            //                 $("#liquidationPriceTdETHUSD").delay(150).animate({
+            //                     "background-color": "#ffeb79"
+            //                 }, 350, function () {
+            //                     $("#liquidationPriceTdETHUSD").animate({
+            //                         "background-color": "#fff"
+            //                     }, 200);
+            //                 });
+            //             });
+            //             document.getElementById("liquidationPriceSpanETHUSD").innerText = msg.data[0].liquidationPrice;
+            //         }
+            //
+            //         if (msg.data[i].unrealisedRoePcnt != null && document.getElementById("unrealisedRoePcntSpanETHUSD").toString() != msg.data[i].unrealisedRoePcnt.toString()) {
+            //             $(function () {
+            //                 $("#unrealisedRoePcntTdETHUSD").delay(150).animate({
+            //                     "background-color": "#ffeb79"
+            //                 }, 350, function () {
+            //                     $("#unrealisedRoePcntTdETHUSD").animate({
+            //                         "background-color": "#fff"
+            //                     }, 200);
+            //                 });
+            //             });
+            //             document.getElementById("unrealisedRoePcntSpanETHUSD").innerText = (msg.data[0].unrealisedRoePcnt * 100).toFixed(2) + '%';
+            //         }
+            //
+            //         if (msg.data[i].unrealisedPnl != null && document.getElementById("unrealisedPnlSpanETHUSD") != msg.data[i].unrealisedPnl) {
+            //             $(function () {
+            //                 $("#unrealisedPnlTdETHUSD").delay(150).animate({
+            //                     "background-color": "#ffeb79"
+            //                 }, 350, function () {
+            //                     $("#unrealisedPnlTdETHUSD").animate({
+            //                         "background-color": "#fff"
+            //                     }, 200);
+            //                 });
+            //             });
+            //             document.getElementById("unrealisedPnlSpanETHUSD").innerText = (msg.data[0].unrealisedPnl / 100000000).toFixed(8);
+            //         }
+            //     }
+            // }
 
         }
     </script>
+<%--<script>--%>
+    <%--function myFunc(){--%>
+        <%--var cb = document.getElementById('unrealCost');--%>
+        <%--// var label = document.getElementsByName('label206451')[0]; // Get the first one of index--%>
+        <%--// console.log(label);--%>
+        <%--// cb.addEventListener('load',function(evt){ // use change here. not neccessarily--%>
+        <%--// if(this.checked){--%>
+        <%--cb.innerHTML = (55553 / 100000000).toFixed(7);--%>
+
+        <%--// temp = temp / 100000000;--%>
+        <%--// label.value='Thanks'--%>
+        <%--// }else{--%>
+        <%--//     label.value='0'--%>
+        <%--// }--%>
+        <%--// },false);--%>
+    <%--}--%>
+
+<%--</script>--%>
 
 </body>
 </html>

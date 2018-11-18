@@ -118,7 +118,8 @@ public class UserController {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        userService.setFixedQty(userDetails.getUser(), symbol, qty);
+        if (qty != null)
+            userService.setFixedQty(userDetails.getUser(), symbol, qty);
 
         return "redirect:/user/settings";
     }
