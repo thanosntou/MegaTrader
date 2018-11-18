@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/copy")
@@ -26,7 +27,11 @@ public class CopyController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = userService.findByUsername(userDetails.getUser().getUsername()).orElseThrow(RuntimeException::new);
 
-        List<User> activeTraders = userService.getTraders();
+        List<User> activeTraders = userService.getTraders()
+                .stream()
+                .filter(i -> i.getUsername().equals("jegejo"))
+                .collect(Collectors.toList());
+
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);
 
         model.addAttribute("user", user);
