@@ -99,7 +99,7 @@
                                                             Leverage
                                                         </div>
                                                         <div class="col-sm">
-                                                            <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                            <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                             <%--<output name="x" for="a"></output>--%>
                                                         </div>
                                                     </div>
@@ -174,7 +174,7 @@
                                                                         Limit Price
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" step="${priceStep}" name="price"/>
+                                                                        <input type="number" step="${currentCoinPriceStep}" name="price"/>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -182,7 +182,7 @@
                                                                         Leverage
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                        <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                                             <%--<output name="x" for="a"></output>--%>
                                                                     </div>
                                                                 </div>
@@ -227,7 +227,7 @@
                                                                         Leverage
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                        <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                                             <%--<output name="x" for="a"></output>--%>
                                                                     </div>
                                                                 </div>
@@ -273,7 +273,7 @@
                                                                         Stop Price
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" step="${priceStep}" name="stopPx"/>
+                                                                        <input type="number" step="${currentCoinPriceStep}" name="stopPx"/>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -281,7 +281,7 @@
                                                                         Leverage
                                                                     </div>
                                                                     <div class="col-sm">
-                                                                        <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                        <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                                             <%--<output name="x" for="a"></output>--%>
                                                                     </div>
                                                                 </div>
@@ -327,7 +327,7 @@
                                                                             Limit Price
                                                                         </div>
                                                                         <div class="col-sm">
-                                                                            <input type="number" step="${priceStep}" name="price"/>
+                                                                            <input type="number" step="${currentCoinPriceStep}" name="price"/>
                                                                         </div>
                                                                     </div>
                                                                     <div class="row">
@@ -335,7 +335,7 @@
                                                                             Stop Price
                                                                         </div>
                                                                         <div class="col-sm">
-                                                                            <input type="number" step="${priceStep}" name="stopPx"/>
+                                                                            <input type="number" step="${currentCoinPriceStep}" name="stopPx"/>
                                                                         </div>
                                                                     </div>
                                                                     <div class="row">
@@ -343,7 +343,7 @@
                                                                             Leverage
                                                                         </div>
                                                                         <div class="col-sm">
-                                                                            <input type="number" name="leverage" value="${currentLeverage}" min="0" max="${maxLeverage}">
+                                                                            <input type="number" name="leverage" value="${currentCoinLeverage}" min="0" max="${currentCoinMaxLeverage}">
                                                                                 <%--<output name="x" for="a"></output>--%>
                                                                         </div>
                                                                     </div>
@@ -369,7 +369,7 @@
                         <div class="row">
                             <h3>-- Active Orders --</h3>
                         </div>
-                        <div class="row">
+                        <div class="row" id="activeOrders">
                             <table class="table table-hover table-sm ">
                                 <thead class="thead bg-info">
                                 <tr>
@@ -594,7 +594,7 @@
 
                                         <td>
                                             <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="XBTUSD"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -607,14 +607,12 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                         </td>
                                         <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepXBTUSD']}" min="0"  value="0"/>
                                         </td>
                                         <td>
-                                            <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
-
+                                                <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
                                         </td>
                                         <td>
-                                                <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Limit';" class="btn btn-danger" value="Close"/>
                                             </form:form>
                                         </td>
@@ -730,7 +728,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="XBTJPY"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -743,7 +741,7 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepXBTJPY']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
@@ -866,7 +864,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="ADAZ18"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -879,7 +877,7 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepADAZ18']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
@@ -1002,7 +1000,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="BCHZ18"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -1015,7 +1013,7 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepBCHZ18']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
@@ -1138,7 +1136,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="EOSZ18"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -1151,7 +1149,7 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepEOSZ18']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
@@ -1274,7 +1272,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="ETHUSD"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -1287,7 +1285,7 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepETHUSD']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
@@ -1410,7 +1408,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="LTCZ18"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -1423,7 +1421,7 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepLTCZ18']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
@@ -1546,7 +1544,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="TRXZ18"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -1559,7 +1557,7 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepTRXZ18']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
@@ -1682,7 +1680,7 @@
 
                                             <td>
                                                 <form:form action="${pageContext.request.contextPath}/trade/positionAll" method="POST">
-                                                <input type="hidden" name="symbol" value="${symbol}"/>
+                                                <input type="hidden" name="symbol" value="XRPZ18"/>
                                                 <input id="orderType" type="hidden" name="orderType"/>
 
                                                 <c:if test="${tempMap['currentQty'] < '0'}">
@@ -1695,11 +1693,10 @@
                                                 <input type="number" name="percentage" min="0" max="100"  value="0"/>
                                             </td>
                                             <td>
-                                                <input type="number" name="price" min="0"  value="0"/>
+                                                <input type="number" name="price" step="${priceSteps['priceStepXRPZ18']}" min="0"  value="0"/>
                                             </td>
                                             <td>
                                                 <input type="submit" onclick="document.getElementById('orderType').value = 'Market';" class="btn btn-danger" value="Market"/>
-
                                             </td>
                                             <td>
                                                     <%--<input type="hidden" name="symbol" value="${symbol}"/>--%>
@@ -1713,7 +1710,7 @@
                             </table>
                         </div>
                         <%--followers--%>
-                        <div class="row">
+                        <div class="row" id="followers">
                             <h3>-- Followers & Fixed Qty --</h3>
                         </div>
                         <div class="row">
