@@ -110,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling().accessDeniedPage("/access-denied");
 
-                http.formLogin().defaultSuccessUrl("/dashboard", true);
+                http.formLogin().defaultSuccessUrl("/trade", true);
     }
 
 

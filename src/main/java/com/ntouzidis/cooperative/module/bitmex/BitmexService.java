@@ -127,6 +127,15 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
+    public List<Map<String, Object>> getAllSymbolPosition(User user) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION, "");
+
+        return getMapList(res.orElse(null));
+    }
+
+    @Override
     public List<Map<String, Object>> get_Position(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
