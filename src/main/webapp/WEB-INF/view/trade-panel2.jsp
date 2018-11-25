@@ -764,12 +764,12 @@
 
                                             <td id="avgEntryPriceTdADAZ18"><span id="avgEntryPriceSpanADAZ18"></span></td>
                                             <script>
-                                                document.getElementById('avgEntryPriceSpanADAZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(2);
+                                                document.getElementById('avgEntryPriceSpanADAZ18').innerText = (${tempMap['avgEntryPrice']}).toFixed(7);
                                             </script>
 
                                             <td id="markPriceTdADAZ18"><span id="markPriceSpanADAZ18"></span></td>
                                             <script>
-                                                document.getElementById('markPriceSpanADAZ18').innerText = (${tempMap['markPrice']}).toFixed(2);
+                                                document.getElementById('markPriceSpanADAZ18').innerText = (${tempMap['markPrice']}).toFixed(7);
                                             </script>
 
                                             <td id="liquidationPriceTdADAZ18"><span id="liquidationPriceSpanADAZ18"></span></td>
