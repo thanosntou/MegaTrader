@@ -31,7 +31,6 @@ public class TradeService {
 
             bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder);
         });
-
     }
 
     void createSignal(User trader, SignalBuilder sb) {
@@ -107,6 +106,21 @@ public class TradeService {
 
             if (randomPositions != null)
                 return randomPositions;
+        }
+
+        return Collections.emptyList();
+    }
+
+    public List<Map<String, Object>> getRandomTX(User trader) {
+        List<Map<String, Object>> randomTX;
+
+        List<User> followers = userService.getFollowers(trader);
+
+        for (User f: followers) {
+            randomTX = bitmexService.get_Order_Order(f);
+
+            if (randomTX != null)
+                return randomTX;
         }
 
         return Collections.emptyList();

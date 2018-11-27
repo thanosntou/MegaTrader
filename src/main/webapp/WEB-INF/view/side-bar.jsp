@@ -164,8 +164,10 @@
                         </security:authorize>
                         <security:authorize access="hasRole('ADMIN')">
                             <a class="nav-link active" href="${pageContext.request.contextPath}/admin" role="button"><i class="fas fa-exchange-alt"></i> Admin Panel</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/admin/logins" role="button"><i class="fas fa-exchange-alt"></i> Logins</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/admin/deposits" role="button"><i class="fas fa-exchange-alt"></i> Deposits</a>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/admin/tx" role="button"><i class="fas fa-exchange-alt"></i> TX</a>
                         </security:authorize>
-
                     </div>
                 </c:when>
             </c:choose>
