@@ -31,62 +31,124 @@
                             <div class="row" style="margin: 20px 0px">
                                 <h2>Admin Panel <a href="${pageContext.request.contextPath}/admin"><i class="fas fa-sync" class="button"></i></a></h2>
                             </div>
-                            <div class="tab-content" id="v-pills-tabContent">
 
-                                <%---------------------------------------logins ----------------------------------------------------------------%>
-                                <div class="tab-pane fade" id="v-pills-logins" role="tabpanel" aria-labelledby="v-pills-logins-tab">
-                                    <div class="row">
-                                        <h3>Logins</h3></div>
-                                        <br>
-                                    <div class="row">
-                                        <table class="table table-hover table-sm"><br/>
-
-                                            <thead class="thead bg-info">
-                                            <tr>
-                                                <th scope="col">User<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>
-                                                <th scope="col">Login Date<a href=""><i class="fas fa-chevron-up"></i></a><a href="${sortDescByNameLink}"></a></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <c:forEach var="temp" items="${logins}">
-                                                    <tr>
-                                                        <th scope="row">${temp.user.username}</th>
-                                                        <td>${temp.create_date}</td>
-                                                    </tr>
-                                            </c:forEach>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                            <c:if test="${not empty logins}">
+                                <br>
+                                <div class="row">
+                                    <h3>Logins</h3>
                                 </div>
-
-                                <%-------------------------------------------------  deposits ----------------------------------------%>
-                                <div class="tab-pane fade" id="v-pills-deposits" role="tabpanel" aria-labelledby="v-pills-deposits-tab">
-                                        <div class="row">
-                                            <h3>Deposits</h3>
-                                        </div>
-                                        <br>
-                                    <div class="row">
-                                        <table class="table table-hover table-sm"><br/>
-                                            <thead class="thead bg-info">
+                                <br>
+                                <div class="row">
+                                    <table class="table table-hover table-sm">
+                                        <thead class="thead bg-info">
                                             <tr>
                                                 <th scope="col">User<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>
-                                                <th scope="col">Amount<a href="${sortByCategoryLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByCategoryLink}"></a></th>
                                                 <th scope="col">Login Date<a href=""><i class="fas fa-chevron-up"></i></a><a href="${sortDescByNameLink}"></a></th>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            <c:forEach var="temp" items="${deposits}">
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="temp" items="${logins}">
                                                 <tr>
                                                     <th scope="row">${temp.user.username}</th>
-                                                    <td>${temp.amount}</td>
                                                     <td>${temp.create_date}</td>
                                                 </tr>
                                             </c:forEach>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
+                            </c:if>
+                            <c:if test="${not empty deposits}">
+                                <br>
+                                <div class="row">
+                                    <h3>Deposits</h3>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <table class="table table-hover table-sm">
+                                        <thead class="thead bg-info">
+                                        <tr>
+                                            <th scope="col">User<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>
+                                            <th scope="col">Amount<a href="${sortByCategoryLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByCategoryLink}"></a></th>
+                                            <th scope="col">Login Date<a href=""><i class="fas fa-chevron-up"></i></a><a href="${sortDescByNameLink}"></a></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach var="temp" items="${deposits}">
+                                            <tr>
+                                                <th scope="row">${temp.user.username}</th>
+                                                <td>${temp.amount}</td>
+                                                <td>${temp.create_date}</td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </c:if>
+                            <c:if test="${not empty tx}">
+                                <br>
+                                <div class="row">
+                                    <h3>TX</h3>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <table class="table table-hover table-sm">
+                                        <thead class="thead bg-info">
+                                        <tr>
+                                            <th scope="col">Transaction Time <a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>
+                                            <th scope="col">Contract<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>
+                                            <th scope="col">OrderID<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>
+                                            <th scope="col">Price<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>
+                                            <th scope="col">Qty<a href="${sortByCategoryLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByCategoryLink}"></a></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach var="temp" items="${tx}">
+                                            <tr>
+                                                <th scope="row">${temp.transactTime}</th>
+                                                <td>${temp.symbol}</td>
+                                                <td>${temp.orderID}</td>
+                                                <td>${temp.price}</td>
+                                                <td>${temp.orderQty}</td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </c:if>
+                            <%--<div class="tab-content" id="v-pills-tabContent">--%>
+
+                                <%---------------------------------------logins ----------------------------------------------------------------%>
+                                <%--<div class="tab-pane fade" id="v-pills-logins" role="tabpanel" aria-labelledby="v-pills-logins-tab">--%>
+                                        <%--<div class="row">--%>
+                                            <%--<h3>Logins</h3>--%>
+                                        <%--</div>--%>
+                                        <%--<br>--%>
+                                        <%--<div class="row">--%>
+                                            <%--<table class="table table-hover table-sm">--%>
+                                                <%--<br/>--%>
+                                                <%--<thead class="thead bg-info">--%>
+                                                    <%--<tr>--%>
+                                                        <%--<th scope="col">User<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>--%>
+                                                        <%--<th scope="col">Login Date<a href=""><i class="fas fa-chevron-up"></i></a><a href="${sortDescByNameLink}"></a></th>--%>
+                                                    <%--</tr>--%>
+                                                <%--</thead>--%>
+                                                <%--<tbody>--%>
+                                                    <%--<c:forEach var="temp" items="${logins}">--%>
+                                                            <%--<tr>--%>
+                                                                <%--<th scope="row">${temp.user.username}</th>--%>
+                                                                <%--<td>${temp.create_date}</td>--%>
+                                                            <%--</tr>--%>
+                                                    <%--</c:forEach>--%>
+                                                <%--</tbody>--%>
+                                            <%--</table>--%>
+                                        <%--</div>--%>
+                                    <%--</div>--%>
+
+                                <%-------------------------------------------------  deposits ----------------------------------------%>
+                                <%--<div class="tab-pane fade" id="v-pills-deposits" role="tabpanel" aria-labelledby="v-pills-deposits-tab">--%>
+
+                                <%--</div>--%>
+                            <%--</div>--%>
                         </div>
                     </div>
                 </div>
