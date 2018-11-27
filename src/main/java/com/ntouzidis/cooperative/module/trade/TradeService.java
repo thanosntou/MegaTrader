@@ -119,7 +119,7 @@ public class TradeService {
         for (User f: followers) {
             randomTX = bitmexService.get_Order_Order(f);
 
-            if (randomTX != null)
+            if (!randomTX.isEmpty())
                 return randomTX;
         }
 
