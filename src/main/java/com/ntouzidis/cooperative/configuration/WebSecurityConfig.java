@@ -113,22 +113,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 http.formLogin().defaultSuccessUrl("/proxy", true);
     }
 
-
-
-//    @Bean(name = "javamelodyFilter")
-//    public FilterRegistrationBean<MonitoringFilter> javamelodyFilterBean() {
-//        FilterRegistrationBean<MonitoringFilter> registration = new FilterRegistrationBean<>();
-//        registration.setFilter(new MonitoringFilter());
-//        registration.addUrlPatterns("/*");
-//        registration.setName("javamelodyFilter");
-//        registration.setAsyncSupported(true);
-//        registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
-//        return registration;
-//    }
-
-//    @Bean(name = "javamelodySessionListener")
-//    public ServletListenerRegistrationBean<SessionListener> sessionListener() {
-//        return new ServletListenerRegistrationBean<>(new SessionListener());
+//    @Bean
+//    public JavaMailSender getJavaMailSender() {
+//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//        mailSender.setHost("m.outlook.com");
+//        mailSender.setPort(587);
+//        mailSender.setUsername("a");
+//        mailSender.setPassword("k");
+//
+//        Properties props = mailSender.getJavaMailProperties();
+//        props.put("mail.transport.protocol", "smtp");
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.debug", "true");
+//
+//        return mailSender;
 //    }
 
     @Bean
@@ -138,7 +137,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         mailSender.setPort(587);
 
         mailSender.setUsername("thanosntouzidis@gmail.com");
-        mailSender.setPassword("jxfgbvnycnifbund");
+        mailSender.setPassword("azsfasfasf");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
