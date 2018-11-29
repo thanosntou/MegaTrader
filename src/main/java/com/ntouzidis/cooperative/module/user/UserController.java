@@ -1,8 +1,10 @@
 package com.ntouzidis.cooperative.module.user;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.mail.EmailService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,11 +23,13 @@ public class UserController {
 
     private final UserService userService;
     private final BitmexService bitmexService;
+    private final EmailService emailService;
 
     @Autowired
-    public UserController(UserService userService, BitmexService bitmexService) {
+    public UserController(UserService userService, BitmexService bitmexService, EmailService emailService) {
         this.userService = userService;
         this.bitmexService = bitmexService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/news")
@@ -34,6 +38,13 @@ public class UserController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         List<Map<String, Object>> announcements = bitmexService.get_Announcements(userDetails.getUser());
+
+        String to = "thanos_nt@yahoo.gr";
+//        String to = "thanos_nt@yahoo.gr";
+        String subject = "News Visit";
+        String text = "Someone went into the News section to read the news.";
+
+        emailService.sendSimpleMessage(to, subject, text);
 
         model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "news");
