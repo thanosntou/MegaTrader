@@ -113,31 +113,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 http.formLogin().defaultSuccessUrl("/proxy", true);
     }
 
-//    @Bean
-//    public JavaMailSender getJavaMailSender() {
-//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//        mailSender.setHost("m.outlook.com");
-//        mailSender.setPort(587);
-//        mailSender.setUsername("a");
-//        mailSender.setPassword("k");
-//
-//        Properties props = mailSender.getJavaMailProperties();
-//        props.put("mail.transport.protocol", "smtp");
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.debug", "true");
-//
-//        return mailSender;
-//    }
-
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-
-        mailSender.setUsername("thanosntouzidis@gmail.com");
-        mailSender.setPassword("azsfasfasf");
+        mailSender.setHost("smtp.office365.com");
+        mailSender.setPort(25);
+        mailSender.setUsername("admin@bitmexcallbot.com");
+        mailSender.setPassword("kobines4ever//");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -147,6 +129,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         return mailSender;
     }
+
+//    @Bean
+//    public JavaMailSender getJavaMailSender() {
+//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//        mailSender.setHost("smtp.gmail.com");
+//        mailSender.setPort(587);
+//
+//        mailSender.setUsername("thanosntouzidis@gmail.com");
+//        mailSender.setPassword("azsfasfasf");
+//
+//        Properties props = mailSender.getJavaMailProperties();
+//        props.put("mail.transport.protocol", "smtp");
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.debug", "true");
+//
+//        return mailSender;
+//    }
 
 //    @Bean
 //    @Override

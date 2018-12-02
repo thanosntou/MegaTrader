@@ -39,8 +39,9 @@ public class UserController {
 
         List<Map<String, Object>> announcements = bitmexService.get_Announcements(userDetails.getUser());
 
-        String to = "thanos_nt@yahoo.gr";
-//        String to = "thanos_nt@yahoo.gr";
+//        String to = "mimakos@protonmail.com";
+        String to = "thanosntouzidis@gmail.com";
+//        String to = "info@bitmexcallbot.com";
         String subject = "News Visit";
         String text = "Someone went into the News section to read the news.";
 
