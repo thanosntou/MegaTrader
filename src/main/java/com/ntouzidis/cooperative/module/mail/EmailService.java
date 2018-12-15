@@ -15,7 +15,7 @@ public class EmailService {
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setFrom("<admin@bitmexcallbot.com>");
+        message.setFrom("admin@bitmexcallbot.com");
         message.setSubject(subject);
         message.setText(text);
 
