@@ -30,6 +30,9 @@
                         <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
                             <a class="nav-link" href="${pageContext.request.contextPath}/copy/" role="button"><i class="fas fa-chart-line"></i> Follow a Trader</a>
                         </security:authorize>
+                        <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/followers" role="button"><i class="fas fa-chart-line"></i> Followers</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -47,6 +50,9 @@
                         <a class="nav-link active" href="${pageContext.request.contextPath}/dashboard" role="button"><i class="fas fa-exchange-alt"></i> Dashboard</a>
                         <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
                             <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Follow a Trader</a>
+                        </security:authorize>
+                        <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/followers" role="button"><i class="fas fa-chart-line"></i> Followers</a>
                         </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
@@ -84,6 +90,9 @@
                         <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
                             <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Follow a Trader</a>
                         </security:authorize>
+                        <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/followers" role="button"><i class="fas fa-chart-line"></i> Followers</a>
+                        </security:authorize>
                         <a class="nav-link active" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -101,6 +110,9 @@
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
                         <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
                             <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Follow a Trader</a>
+                        </security:authorize>
+                        <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/followers" role="button"><i class="fas fa-chart-line"></i> Followers</a>
                         </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link active" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
@@ -120,6 +132,9 @@
                         <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
                             <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Follow a Trader</a>
                         </security:authorize>
+                        <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/followers" role="button"><i class="fas fa-chart-line"></i> Followers</a>
+                        </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>
                         <a class="nav-link active" href="${pageContext.request.contextPath}/user/settings" role="button"><i class="fas fa-cogs"></i> Settings</a>
@@ -137,6 +152,9 @@
                         <a class="nav-link" href="${pageContext.request.contextPath}/dashboard" role="button" aria-selected="true"><i class="fas fa-exchange-alt"></i> Dashboard</a>
                         <security:authorize access="hasAnyRole('ADMIN', 'CUSTOMER')">
                             <a class="nav-link" href="${pageContext.request.contextPath}/copy" role="button"><i class="fas fa-chart-line"></i> Follow a Trader</a>
+                        </security:authorize>
+                        <security:authorize access="hasAnyRole('ADMIN', 'TRADER')">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/user/followers" role="button"><i class="fas fa-chart-line"></i> Followers</a>
                         </security:authorize>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/tx" role="button"><i class="fas fa-history"></i> Transaction History</a>
                         <a class="nav-link" href="${pageContext.request.contextPath}/user/wallet" role="button"><i class="fas fa-wallet"></i> Wallet</a>

@@ -25,6 +25,9 @@ public class User {
     @Column(name="email")
     private String email;
 
+    @Column(name="enabled")
+    private Boolean enabled;
+
     @Column(name="create_date")
     private LocalDate create_date;
 
@@ -110,6 +113,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public LocalDate getCreate_date() {
