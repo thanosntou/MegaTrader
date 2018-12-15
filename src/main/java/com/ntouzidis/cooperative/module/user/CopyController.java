@@ -3,6 +3,7 @@ package com.ntouzidis.cooperative.module.user;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/copy")
 public class CopyController {
+
+    @Value("${trader}")
+    private String traderUserName;
 
     private final UserService userService;
 
@@ -29,7 +33,7 @@ public class CopyController {
 
         List<User> activeTraders = userService.getTraders()
                 .stream()
-                .filter(i -> i.getUsername().equals("jegejo"))
+                .filter(i -> i.getUsername().equals(traderUserName))
                 .collect(Collectors.toList());
 
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElse(null);

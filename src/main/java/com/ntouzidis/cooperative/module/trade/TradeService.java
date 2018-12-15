@@ -10,6 +10,7 @@ import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TradeService {
@@ -24,9 +25,9 @@ public class TradeService {
     }
 
     void placeOrderAll(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
-        followers.forEach(customer -> {
+        enabledfollowers.forEach(customer -> {
             bitmexService.post_Position_Leverage(customer, dataPostLeverage);
 
             bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder);
@@ -34,13 +35,13 @@ public class TradeService {
     }
 
     void createSignal(User trader, SignalBuilder sb) {
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
         DataPostLeverage dataLeverage = new DataPostLeverage()
                 .withSymbol(sb.getSymbol())
                 .withLeverage(sb.getLeverage());
 
-        followers.forEach(customer -> {
+        enabledfollowers.forEach(customer -> {
             //            1. Set Leverage
             bitmexService.post_Position_Leverage(customer, dataLeverage);
 
@@ -84,7 +85,7 @@ public class TradeService {
     List<Map<String, Object>> getRandomActiveOrders(User trader) {
         List<Map<String, Object>> randomAllOrders;
 
-        LinkedList<User> followers = new LinkedList<>(userService.getFollowers(trader));
+        LinkedList<User> followers = new LinkedList<>(getEnabledFollowers(trader));
 
         for (User f: followers) {
             randomAllOrders = bitmexService.get_Order_Order(f);
@@ -99,9 +100,9 @@ public class TradeService {
     List<Map<String, Object>> getRandomPositions(User trader) {
         List<Map<String, Object>> randomPositions;
 
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
-        for (User f: followers) {
+        for (User f: enabledfollowers) {
             randomPositions = bitmexService.get_Position(f);
 
             if (randomPositions != null)
@@ -114,9 +115,9 @@ public class TradeService {
     public List<Map<String, Object>> getRandomTX(User trader) {
         List<Map<String, Object>> randomTX;
 
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
-        for (User f: followers) {
+        for (User f: enabledfollowers) {
             randomTX = bitmexService.get_Order_Order(f);
 
             if (!randomTX.isEmpty())
@@ -127,27 +128,27 @@ public class TradeService {
     }
 
     void cancelOrder(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
-        followers.forEach(customer -> bitmexService.cancelOrder(customer, dataDeleteOrderBuilder));
+        enabledfollowers.forEach(customer -> bitmexService.cancelOrder(customer, dataDeleteOrderBuilder));
     }
 
     void cancelAllOrders(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
-        followers.forEach(customer -> bitmexService.cancelAllOrders(customer, dataDeleteOrderBuilder));
+        enabledfollowers.forEach(customer -> bitmexService.cancelAllOrders(customer, dataDeleteOrderBuilder));
     }
 
     void positionAll(User trader, DataPostOrderBuilder dataPostOrderBuilder, int percentage) {
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
-        followers.forEach(customer -> bitmexService.post_Order_Order_WithFixedsAndPercentage(customer, dataPostOrderBuilder, percentage));
+        enabledfollowers.forEach(customer -> bitmexService.post_Order_Order_WithFixedsAndPercentage(customer, dataPostOrderBuilder, percentage));
     }
 
     void closeAllPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
-        List<User> followers = userService.getFollowers(trader);
+        List<User> enabledfollowers = getEnabledFollowers(trader);
 
-        followers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
+        enabledfollowers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
     }
 
 //    private Long calculateFixedQtyForWantedSymbol(User user, String symbol) {
@@ -206,6 +207,13 @@ public class TradeService {
         sumFixedQtys.put("sumXBTKRW", String.valueOf(sumXBTKRW));
 
         return sumFixedQtys;
+    }
+
+    public List<User> getEnabledFollowers(User trader) {
+        return userService.getFollowers(trader)
+                .stream()
+                .filter(User::getEnabled)
+                .collect(Collectors.toList());
     }
 
 }

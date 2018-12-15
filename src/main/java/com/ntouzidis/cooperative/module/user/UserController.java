@@ -3,9 +3,12 @@ package com.ntouzidis.cooperative.module.user;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.mail.EmailService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
+import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,12 +17,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.jws.WebParam;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    @Value("${trader}")
+    private String traderUserName;
 
     private final UserService userService;
     private final BitmexService bitmexService;
@@ -52,6 +59,23 @@ public class UserController {
         model.addAttribute("announcements", announcements);
 
         return "news-panel";
+    }
+
+    @GetMapping("/followers")
+    public String showFollowers(Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        User trader = userService.findByUsername(traderUserName)
+                .orElseThrow(() -> new NotFoundException("Trader not found"));
+
+        List<User> followers = userService.getFollowers(trader);
+
+        model.addAttribute("user", userDetails.getUser());
+        model.addAttribute("page", "followers");
+        model.addAttribute("followers", followers);
+
+        return "followers-page";
     }
 
     @GetMapping("/tx")
@@ -109,6 +133,35 @@ public class UserController {
         userService.unlinkTrader(userDetails.getUser());
 
         return "redirect:/copy";
+    }
+
+    @PostMapping(value = "/enable")
+    public String enableFollower(@RequestParam(name = "follower") String followerUsername,
+                                 Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        User follower = userService.findByUsername(followerUsername).orElseThrow(() -> new NotFoundException("Follower not found"));
+
+        follower.setEnabled(true);
+
+        userService.update(follower);
+
+        return "redirect:/user/followers";
+    }
+
+    @PostMapping(value = "/disable")
+    public String disableFollower(@RequestParam(name = "follower") String followerUsername,
+                                 Model model, Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        User follower = userService.findByUsername(followerUsername).orElseThrow(() -> new NotFoundException("Follower not found"));
+        follower.setEnabled(false);
+
+        userService.update(follower);
+
+        return "redirect:/user/followers";
     }
 
     @PostMapping(value = "/apikey")

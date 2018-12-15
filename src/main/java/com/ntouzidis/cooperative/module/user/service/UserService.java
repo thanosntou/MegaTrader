@@ -68,6 +68,11 @@ public class UserService implements UserDetailsService {
         return authorityService.getAuthorities(username);
     }
 
+    @Transactional
+    public void update(User user) {
+        userRepository.save(user);
+    }
+
     public void linkTrader(User user, int traderId) {
         CustomerToTraderLink link = new CustomerToTraderLink();
         link.setCustomer(user);
@@ -76,6 +81,9 @@ public class UserService implements UserDetailsService {
         link.setCreate_date();
 
         customerToTraderLinkRepository.save(link);
+
+        user.setEnabled(false);
+        userRepository.save(user);
     }
 
     public void unlinkTrader(User user) {
