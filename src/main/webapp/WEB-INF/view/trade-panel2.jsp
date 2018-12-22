@@ -490,7 +490,7 @@
                                     <tr>
                                         <th scope="row">${tempMap['symbol']}</th>
 
-                                        <td>${sumPositionXBTUSD}</td>
+                                        <td>${sumPositions.get("XBTUSD")}</td>
 
                                         <td id="avgEntryPriceTdXBTUSD"><span id="avgEntryPriceSpanXBTUSD"></span></td>
                                         <script>
@@ -624,7 +624,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionXBTJPY}</td>
+                                            <td>${sumPositions.get("XBTJPY")}</td>
 
                                             <td id="avgEntryPriceTdXBTJPY"><span id="avgEntryPriceSpanXBTJPY"></span></td>
                                             <script>
@@ -760,7 +760,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionADAZ18}</td>
+                                            <td>${sumPositions.get("ADAZ18")}</td>
 
                                             <td id="avgEntryPriceTdADAZ18"><span id="avgEntryPriceSpanADAZ18"></span></td>
                                             <script>
@@ -896,7 +896,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionBCHZ18}</td>
+                                            <td>${sumPositions.get("BCHZ18")}</td>
 
                                             <td id="avgEntryPriceTdBCHZ18"><span id="avgEntryPriceSpanBCHZ18"></span></td>
                                             <script>
@@ -1032,7 +1032,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionEOSZ18}</td>
+                                            <td>${sumPositions.get("EOSZ18")}</td>
 
                                             <td id="avgEntryPriceTdEOSZ18"><span id="avgEntryPriceSpanEOSZ18"></span></td>
                                             <script>
@@ -1168,7 +1168,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionETHUSD}</td>
+                                            <td>${sumPositions.get("ETHUSD")}</td>
 
                                             <td id="avgEntryPriceTdETHUSD"><span id="avgEntryPriceSpanETHUSD"></span></td>
                                             <script>
@@ -1304,7 +1304,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionLTCZ18}</td>
+                                            <td>${sumPositions.get("LTCZ18")}</td>
 
                                             <td id="avgEntryPriceTdLTCZ18"><span id="avgEntryPriceSpanLTCZ18"></span></td>
                                             <script>
@@ -1440,7 +1440,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionTRXZ18}</td>
+                                            <td>${sumPositions.get("TRXZ18")}</td>
 
                                             <td id="avgEntryPriceTdTRXZ18"><span id="avgEntryPriceSpanTRXZ18"></span></td>
                                             <script>
@@ -1576,7 +1576,7 @@
                                         <tr>
                                             <th scope="row">${tempMap['symbol']}</th>
 
-                                            <td>${sumPositionXRPZ18}</td>
+                                            <td>${sumPositions.get("XRPZ18")}</td>
 
                                             <td id="avgEntryPriceTdXRPZ18"><span id="avgEntryPriceSpanXRPZ18"></span></td>
                                             <script>
@@ -1763,16 +1763,16 @@
                                 <tfoot class="tfoot bg-info">
                                     <tr>
                                         <th scope="col">Sum</th>
-                                        <th scope="col">${sumFixedQtys.get("sumXBTUSD")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumXBTJPY")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumADAZ18")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumBCHZ18")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumEOSZ18")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumETHUSD")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumLTCZ18")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumTRXZ18")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumXRPZ18")}</th>
-                                        <th scope="col">${sumFixedQtys.get("sumXBTKRW")}</th>
+                                        <th scope="col">${sumFixedQtys.get("XBTUSD")}</th>
+                                        <th scope="col">${sumFixedQtys.get("XBTJPY")}</th>
+                                        <th scope="col">${sumFixedQtys.get("ADAZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("BCHZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("EOSZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("ETHUSD")}</th>
+                                        <th scope="col">${sumFixedQtys.get("LTCZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("TRXZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("XRPZ18")}</th>
+                                        <th scope="col">${sumFixedQtys.get("XBTKRW")}</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </tfoot>
