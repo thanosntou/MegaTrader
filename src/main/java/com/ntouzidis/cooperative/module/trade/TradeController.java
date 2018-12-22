@@ -11,6 +11,7 @@ import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/trade")
 public class TradeController {
+
+//    @Value("${trader}")
+//    private String traderName;
 
     private final IBitmexService bitmexService;
     private final UserService userService;
@@ -51,73 +55,15 @@ public class TradeController {
 
         List<User> followers = userService.getFollowers(trader);
 
-        //       Sum of Fixed Customer Qty
-        Map<String, String> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
-
-        //       maxLeverages and piceSteps
+        // maxLeverages and piceSteps
         Map<String, String> maxLeverages = calculateMaxLeverages();
         Map<String, String> priceSteps = calculatePriceSteps();
 
-        //        sumPositions + any customer position (temporary)
-        double sumPositionXBTUSD = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("XBTUSD")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
+        // sumPositions + any customer position (temporary)
+        Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
 
-        double sumPositionXBTJPY = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("XBTJPY")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionADAZ18 = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("ADAZ18")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionBCHZ18 = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("BCHZ18")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionEOSZ18 = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("EOSZ18")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionETHUSD = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("ETHUSD")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionLTCZ18 = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("LTCZ18")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionTRXZ18 = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("TRXZ18")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionXRPZ18 = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("XRPZ18")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
-
-        double sumPositionXBTKRW = followers.stream()
-                .map(i -> bitmexService.getAllSymbolPosition(i).stream().filter(k -> k.get("symbol").equals("XBTKRW")).findAny().orElse(null))
-                .filter(Objects::nonNull)
-                .mapToDouble(tempPos -> Double.parseDouble(tempPos.get("currentQty").toString()))
-                .sum();
+        // Sum of Fixed Customer Qty
+        Map<String, Long> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
         //        random positions. for sure not empty
         List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
@@ -157,16 +103,7 @@ public class TradeController {
         model.addAttribute("currentCoinMaxLeverage", currentCoinMaxLeverage);
         model.addAttribute("currentCoinPriceStep", currentCoinPriceStep);
         model.addAttribute("page", "trade");
-        model.addAttribute("sumPositionXBTUSD", sumPositionXBTUSD);
-        model.addAttribute("sumPositionXBTJPY", sumPositionXBTJPY);
-        model.addAttribute("sumPositionADAZ18", sumPositionADAZ18);
-        model.addAttribute("sumPositionBCHZ18", sumPositionBCHZ18);
-        model.addAttribute("sumPositionEOSZ18", sumPositionEOSZ18);
-        model.addAttribute("sumPositionETHUSD", sumPositionETHUSD);
-        model.addAttribute("sumPositionLTCZ18", sumPositionLTCZ18);
-        model.addAttribute("sumPositionTRXZ18", sumPositionTRXZ18);
-        model.addAttribute("sumPositionXRPZ18", sumPositionXRPZ18);
-        model.addAttribute("sumPositionXBTKRW", sumPositionXBTKRW);
+        model.addAttribute("sumPositions", sumPositions);
         model.addAttribute("randomPositions", randomPositions);
         model.addAttribute("randomActiveOrders", randomActiveOrders);
 
@@ -389,6 +326,13 @@ public class TradeController {
         maxLeverages.put("maxLeverageXBTKRW", "100");
 
         return maxLeverages;
+    }
+
+    private Map<String, Object> getSymbolPosition(User user, String symbol) {
+        return bitmexService.getAllSymbolPosition(user)
+                .stream()
+                .filter(k -> k.get("symbol").equals(symbol))
+                .findAny().orElse(null);
     }
 
 }
