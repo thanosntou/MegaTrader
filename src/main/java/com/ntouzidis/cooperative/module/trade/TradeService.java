@@ -92,7 +92,9 @@ public class TradeService {
             randomAllOrders = bitmexService.get_Order_Order(f);
 
             if (randomAllOrders != null)
-                return randomAllOrders;
+                return randomAllOrders.stream()
+                        .filter(i -> i.get("ordStatus").equals("New"))
+                        .collect(Collectors.toList());
         }
 
         return Collections.emptyList();
@@ -152,25 +154,18 @@ public class TradeService {
         enabledfollowers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
     }
 
-//    private Long calculateFixedQtyForWantedSymbol(User user, String symbol) {
-//        Long wantedFixQty = 0L;
-//
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXBTUSD();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXBTJPY();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyADAZ18();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyBCHZ18();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyEOSZ18();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyETHUSD();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyLTCZ18();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyTRXZ18();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXRPZ18();
-//        if (symbol.equals("XBTUSD")) wantedFixQty = user.getFixedQtyXBTKRW();
-//
-//        return wantedFixQty;
-//    }
-
     Map<String, Long> calculateSumFixedQtys(List<User> followers) {
         Map<String, Long> sumFixedQtys = new HashMap<>();
+        sumFixedQtys.put("XBTUSD", 0L);
+        sumFixedQtys.put("XBTJPY", 0L);
+        sumFixedQtys.put("ADAZ18", 0L);
+        sumFixedQtys.put("BCHZ18", 0L);
+        sumFixedQtys.put("EOSZ18", 0L);
+        sumFixedQtys.put("ETHUSD", 0L);
+        sumFixedQtys.put("LTCZ18", 0L);
+        sumFixedQtys.put("TRXZ18", 0L);
+        sumFixedQtys.put("XRPZ18", 0L);
+        sumFixedQtys.put("XBTKRW", 0L);
 
         followers.forEach(f -> {
             sumFixedQtys.put("XBTUSD", sumFixedQtys.get("XBTUSD") + f.getFixedQtyXBTUSD());
