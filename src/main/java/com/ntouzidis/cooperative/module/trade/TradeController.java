@@ -54,9 +54,6 @@ public class TradeController {
         User trader = userDetails.getUser();
 
         List<User> followers = userService.getFollowers(trader);
-
-        // maxLeverages and piceSteps
-        Map<String, String> maxLeverages = calculateMaxLeverages();
         Map<String, String> priceSteps = calculatePriceSteps();
 
         // sumPositions + any customer position (temporary)
@@ -65,48 +62,44 @@ public class TradeController {
         // Sum of Fixed Customer Qty
         Map<String, Long> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
-        //        random positions. for sure not empty
+        // random positions. for sure not empty
         List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
 
-        //       Current Leverage
+        // Current Leverage
         String currentCoinLeverage = String.valueOf(randomPositions.stream()
                 .filter(i -> i.get("symbol").equals(symbol))
                 .map(i -> i.get("leverage"))
-                .findAny()
-                .orElse(0));
+                .findAny().orElse(0));
 
-        //       Current Price Step
+        // Current Price Step
         String currentCoinPriceStep = priceSteps.entrySet().stream()
                 .filter(i -> i.getKey().equals("priceStep"+symbol))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("price step not found"))
+                .findAny().orElseThrow(() -> new RuntimeException("price step not found"))
                 .getValue();
 
-        //       Current coin Max Leverage Step
-        String currentCoinMaxLeverage = maxLeverages.entrySet().stream()
+        // Current coin Max Leverage
+        String currentCoinMaxLeverage = calculateMaxLeverages().entrySet().stream()
                 .filter(i -> i.getKey().equals("maxLeverage"+symbol))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("price step not found"))
+                .findAny().orElseThrow(() -> new RuntimeException("price step not found"))
                 .getValue();
 
-        //        random active orders. for sure not empty
-        List<Map<String, Object>> randomAllOrders = tradeService.getRandomActiveOrders(trader);
-        List<Map<String, Object>> randomActiveOrders = randomAllOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
+        // random active orders. for sure not empty
+        List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
 
-        model.addAttribute("user", trader);
+        model.addAttribute("page", "trade");
         model.addAttribute("symbol", symbol);
-        model.addAttribute("maxLeverages", maxLeverages);
-        model.addAttribute("priceSteps", priceSteps);
+        model.addAttribute("user", trader);
         model.addAttribute("followers", followers);
-        model.addAttribute("sumFixedQtys", sumFixedQtys);
+        model.addAttribute("priceSteps", priceSteps);
+
         model.addAttribute("currentCoinLeverage", currentCoinLeverage);
         model.addAttribute("currentCoinMaxLeverage", currentCoinMaxLeverage);
         model.addAttribute("currentCoinPriceStep", currentCoinPriceStep);
-        model.addAttribute("page", "trade");
+
         model.addAttribute("sumPositions", sumPositions);
+        model.addAttribute("sumFixedQtys", sumFixedQtys);
         model.addAttribute("randomPositions", randomPositions);
         model.addAttribute("randomActiveOrders", randomActiveOrders);
-
         return "trade-panel2";
     }
 
@@ -256,58 +249,6 @@ public class TradeController {
         priceSteps.put("priceStepTRXZ18", "0.00000001");
         priceSteps.put("priceStepXRPZ18", "0.00000001");
         priceSteps.put("priceStepXBTKRW", "1");
-
-//        if (symbol.equals("XBTUSD")) {
-//            maxLeverage = "100";
-//            priceStep = "0.1";
-//        }
-//        if (symbol.equals("XBTJPY")) {
-//            maxLeverage = "100";
-//        }
-//
-//        if (symbol.equals("ADAZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.00000001";
-//        }
-//
-//        if (symbol.equals("BCHZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.0001";
-//        }
-//
-//        if (symbol.equals("EOSZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.0000001";
-//        }
-//
-//        if (symbol.equals("ETHUSD")) {
-//            maxLeverage = "50";
-//            priceStep = "0.01";
-//        }
-//
-//        if (symbol.equals("LTCZ18")) {
-//            maxLeverage = "33.3";
-//            priceStep = "0.00001";
-//        }
-//
-//        if (symbol.equals("TRXZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.00000001";
-//        }
-//
-//        if (symbol.equals("XRPZ18")) {
-//            maxLeverage = "20";
-//            priceStep = "0.00000001";
-//        }
-//
-//        if (symbol.equals("XBTKRW")) {
-//            maxLeverage = "100";
-//        }
-//
-//        Map<String, String> myMap = new HashMap<>();
-//        myMap.put("maxLeverage", maxLeverage);
-//        myMap.put("priceStep", priceStep);
-
         return priceSteps;
     }
 
