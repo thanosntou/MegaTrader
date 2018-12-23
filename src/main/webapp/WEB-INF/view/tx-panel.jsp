@@ -32,7 +32,7 @@
                         <h2>Transaction History <a href="${pageContext.request.contextPath}/user/tx"><i class="fas fa-sync" class="button"></i></a></h2>
                     </div>
                     <div class="row">
-                        <h3>All Orders</h3>
+                        <h3>Bitmexcallbot Orders <c:if test="${not empty userTX}"> - <span style="background-color: yellow"> ${userTX}</span></c:if></h3>
                     </div>
                     <div class="row">
                         <table class="table table-hover table-sm">

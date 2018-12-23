@@ -79,12 +79,18 @@ public class UserController {
     }
 
     @GetMapping("/tx")
-    public String showTxPage(Model model, Authentication authentication) {
+    public String showTxPage(@RequestParam(name = "follower", required = false) String follower,
+                             Model model, Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(userDetails.getUser());
+        User userTX = follower != null ? userService.findByUsername(follower)
+                .orElseThrow(() -> new NotFoundException("user " + follower + " not found"))
+                : userDetails.getUser();
 
+        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(userTX);
+
+        model.addAttribute("userTX", userTX.getUsername());
         model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "tx");
         model.addAttribute("allOrders", allOrders);
