@@ -40,7 +40,7 @@
                                 <tbody>
                                     <c:forEach var="temp" items="${followers}">
                                         <tr>
-                                            <th scope="row">${temp.username}</th>
+                                            <th scope="row"><a href="${pageContext.request.contextPath}/user/tx?follower=${temp.username}">${temp.username}</a></th>
                                             <td>
 
                                                     <%--<input type="hidden" name="symbol" value="XBTUSD"/>--%>
