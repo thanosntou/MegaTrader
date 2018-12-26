@@ -64,19 +64,33 @@
                         </div>
 
                     </div>
-                    <br><br>
+                    <br>
                     <div>
-                        To start using our services please contact @Bitmexcall
-                        <br>
-                        Full link
-                        <br>
-                        Telegram channel
-                        <br>
-                        https://t.me/bitmexcall
-                        <br>
-                        To get full access or Live chat support
-                        https://t.me/jegejo
-                        BITMEX CALL
+                        <div class="row">
+                            To start using our services please contact @Bitmexcall
+                        </div>
+                        <div class="row">
+                            Full link
+                        </div>
+                        <div class="row">
+                            Telegram channel
+                        </div>
+                        <div class="row">
+                            <a href="https://t.me/bitmexcall" target="_blank">
+                                https://t.me/bitmexcall
+                            </a>
+                        </div>
+                        <div class="row">
+                            To get full access or Live chat support
+                        </div>
+                        <div class="row">
+                            <a href="https://t.me/jegejo" target="_blank">
+                                https://t.me/jegejo
+                            </a>
+                        </div>
+                        <div class="row">
+                            BITMEX CALL
+                        </div>
                     </div>
                     <br><br>
                     <div class="row">
