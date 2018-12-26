@@ -56,6 +56,7 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).map(CustomerToTraderLink::getTrader);
     }
 
+    @Transactional
     public List<User> getFollowers(User trader) {
         return customerToTraderLinkRepository.findAllByTrader(trader).stream().map(CustomerToTraderLink::getCustomer).collect(Collectors.toList());
     }
