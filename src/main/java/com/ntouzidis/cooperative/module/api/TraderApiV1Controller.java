@@ -2,10 +2,10 @@ package com.ntouzidis.cooperative.module.api;
 
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,10 +27,11 @@ public class TraderApiV1Controller {
   }
 
   @GetMapping("/followers")
-  public ResponseEntity<?> getFollowers() throws NotFoundException {
+  public ResponseEntity<?> getFollowers() {
 
     User trader = userService.findByUsername(traderName)
-            .orElseThrow(() -> new NotFoundException("Trader not found"));
+            .orElseGet(() -> userService.findByUsername("athan")
+                    .orElseThrow(() -> new NotFoundException("Trader not found")));
 
     List<User> followers = userService.getFollowers(trader);
 
