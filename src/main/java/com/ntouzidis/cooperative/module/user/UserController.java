@@ -68,14 +68,13 @@ public class UserController {
 
         User trader = userService.findByUsername(traderUserName)
                 .orElseGet(() -> userService.findByUsername("athan")
-                .orElseThrow(() -> new NotFoundException("Trader not found")));
+                        .orElseThrow(() -> new NotFoundException("Trader not found")));
 
         List<User> followers = userService.getFollowers(trader);
 
         model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "followers");
         model.addAttribute("followers", followers);
-
         return "followers-page";
     }
 
@@ -95,7 +94,6 @@ public class UserController {
         model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "tx");
         model.addAttribute("allOrders", allOrders);
-
         return "tx-panel";
     }
 
@@ -106,7 +104,6 @@ public class UserController {
 
         model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "wallet");
-
         return "wallet";
     }
 
@@ -117,7 +114,6 @@ public class UserController {
 
         model.addAttribute("user", userDetails.getUser());
         model.addAttribute("page", "settings");
-
         return "settings-panel";
     }
 

@@ -1,5 +1,7 @@
 package com.ntouzidis.cooperative.module.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -39,6 +41,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="wallet_id")
+    @JsonIgnore
     private Wallet wallet;
 
     @Column(name = "fixed_qty")
