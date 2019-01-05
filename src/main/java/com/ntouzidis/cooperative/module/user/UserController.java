@@ -67,7 +67,8 @@ public class UserController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         User trader = userService.findByUsername(traderUserName)
-                .orElseThrow(() -> new NotFoundException("Trader not found"));
+                .orElseGet(() -> userService.findByUsername("athan")
+                .orElseThrow(() -> new NotFoundException("Trader not found")));
 
         List<User> followers = userService.getFollowers(trader);
 
