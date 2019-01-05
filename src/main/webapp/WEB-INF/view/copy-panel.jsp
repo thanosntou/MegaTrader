@@ -17,6 +17,7 @@
 
         <%@ include file="side-bar.jsp" %>
 
+
         <%-- main bar --%>
         <div class="col-sm-10" style="background-color: #bac9d6">
             <div class="card" style="height: 100%; margin-top: 12px">
@@ -30,83 +31,110 @@
                     <div class="row" style="margin: 20px 0px">
                         <h2>Follow a Trader <a href="${pageContext.request.contextPath}/copy"><i class="fas fa-sync" class="button"></i></a></h2>
                     </div>
-                        <br>
-                        <div class="row">
-                            <h4>Personal Trader</h4>
-                        </div>
-                        <div class="row">
-                            <div class="card" style="max-width: 16rem; min-width: 16rem; margin-bottom: 20px">
+                    <br>
+                    <div class="row">
+                        <h4>Personal Trader</h4>
+                    </div>
+                    <div class="row">
+                        <div class="card" style="max-width: 16rem; min-width: 16rem; margin-bottom: 20px">
 
-                                <c:if test="${not empty personalTrader}">
-                                    <div class="card-body row">
-                                        <div class="col-sm-6">
-                                            <img class="card-img-top" src="${pageContext.request.contextPath}/images/t1.jpg" alt="Card image cap">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <h5 class="card-title">${personalTrader.username}</h5>
-                                            <p class="card-text">The best trader in da hood</p>
-                                        </div>
+                            <c:if test="${not empty personalTrader}">
+                                <div class="card-body row">
+                                    <div class="col-sm-6">
+                                        <img class="card-img-top" src="${pageContext.request.contextPath}/images/t1.jpg" alt="Card image cap">
                                     </div>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Profit last week</li>
-                                        <li class="list-group-item">Followed by</li>
-                                    </ul>
-                                    <div class="card-body">
-
-                                        <form:form action="${pageContext.request.contextPath}/user/unlink" method="POST">
-                                            <input type="hidden" value="${personalTrader.id}" name="traderId"/>
-                                            <input type="submit" class="btn btn-outline-primary" value="Uncopy"/>
-                                        </form:form>
-
-                                    </div>
-                                </c:if>
-                            </div>
-
-                        </div>
-                        <br>
-                        <br>
-                        <div class="row">
-                            <h4>Other Traders</h4>
-                        </div>
-                        <br>
-                        <div class="card-deck">
-                            <c:forEach var="temp" items="${activeTraders}">
-                                <%--<c:url var="disableLink" value="/management-panel/updateProduct">--%>
-                                <%--<c:param name="productId" value="${temp.id}" />--%>
-                                <%--</c:url>--%>
-                                <div class="card" style="max-width: 16rem; min-width: 16rem; margin-bottom: 20px">
-
-
-                                    <div class="card-body row">
-                                        <div class="col-sm-6">
-                                            <img class="card-img-top" src="${pageContext.request.contextPath}/images/t1.jpg" alt="Card image cap">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <h5 class="card-title">${temp.username}</h5>
-                                            <p class="card-text">The best trader in da hood</p>
-                                        </div>
-                                    </div>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Profit last week</li>
-                                        <li class="list-group-item">Followed by</li>
-                                    </ul>
-                                    <div class="card-body">
-                                        <form:form action="${pageContext.request.contextPath}/user/link" method="POST">
-                                            <input type="hidden" value="${temp.id}" name="traderId"/>
-                                            <c:if test="${empty personalTrader}">
-                                                <input type="submit" class="btn btn-outline-primary" value="Copy"/>
-                                            </c:if>
-                                        </form:form>
-
-                                            <%--<form:form action="${pageContext.request.contextPath}/user/unlink" method="POST">--%>
-                                            <%--<c:if test="${not empty personalTrader}">--%>
-                                            <%--<input type="submit" class="btn btn-outline-primary" value="Copy"/>--%>
-                                            <%--</c:if>--%>
-                                            <%--</form:form>--%>
+                                    <div class="col-sm-6">
+                                        <h5 class="card-title">${personalTrader.username}</h5>
+                                        <p class="card-text">The best trader in da hood</p>
                                     </div>
                                 </div>
-                            </c:forEach>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Profit last week</li>
+                                    <li class="list-group-item">Followed by</li>
+                                </ul>
+                                <div class="card-body">
+
+                                    <form:form action="${pageContext.request.contextPath}/user/unlink" method="POST">
+                                        <input type="hidden" value="${personalTrader.id}" name="traderId"/>
+                                        <input type="submit" class="btn btn-outline-primary" value="Uncopy"/>
+                                    </form:form>
+
+                                </div>
+                            </c:if>
                         </div>
+
+                    </div>
+                    <br>
+                    <div>
+                        <div class="row">
+                            To start using our services please contact @Bitmexcall
+                        </div>
+                        <div class="row">
+                            Full link
+                        </div>
+                        <div class="row">
+                            Telegram channel
+                        </div>
+                        <div class="row">
+                            <a href="https://t.me/bitmexcall" target="_blank">
+                                https://t.me/bitmexcall
+                            </a>
+                        </div>
+                        <div class="row">
+                            To get full access or Live chat support
+                        </div>
+                        <div class="row">
+                            <a href="https://t.me/jegejo" target="_blank">
+                                https://t.me/jegejo
+                            </a>
+                        </div>
+                        <div class="row">
+                            BITMEX CALL
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <h4>Other Traders</h4>
+                    </div>
+                    <br>
+                    <div class="card-deck">
+                        <c:forEach var="temp" items="${activeTraders}">
+                            <%--<c:url var="disableLink" value="/management-panel/updateProduct">--%>
+                            <%--<c:param name="productId" value="${temp.id}" />--%>
+                            <%--</c:url>--%>
+                            <div class="card" style="max-width: 16rem; min-width: 16rem; margin-bottom: 20px">
+
+
+                                <div class="card-body row">
+                                    <div class="col-sm-6">
+                                        <img class="card-img-top" src="${pageContext.request.contextPath}/images/t1.jpg" alt="Card image cap">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h5 class="card-title">${temp.username}</h5>
+                                        <p class="card-text">The best trader in da hood</p>
+                                    </div>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Profit last week</li>
+                                    <li class="list-group-item">Followed by</li>
+                                </ul>
+                                <div class="card-body">
+                                    <form:form action="${pageContext.request.contextPath}/user/link" method="POST">
+                                        <input type="hidden" value="${temp.id}" name="traderId"/>
+                                        <c:if test="${empty personalTrader}">
+                                            <input type="submit" class="btn btn-outline-primary" value="Copy"/>
+                                        </c:if>
+                                    </form:form>
+
+                                        <%--<form:form action="${pageContext.request.contextPath}/user/unlink" method="POST">--%>
+                                        <%--<c:if test="${not empty personalTrader}">--%>
+                                        <%--<input type="submit" class="btn btn-outline-primary" value="Copy"/>--%>
+                                        <%--</c:if>--%>
+                                        <%--</form:form>--%>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
                 </div>
             </div>
         </div>
