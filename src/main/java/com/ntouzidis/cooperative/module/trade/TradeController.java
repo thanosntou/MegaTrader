@@ -57,7 +57,7 @@ public class TradeController {
         Map<String, String> priceSteps = calculatePriceSteps();
 
         // sumPositions + any customer position (temporary)
-//        Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
+        Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
 
         // Sum of Fixed Customer Qty
         Map<String, Long> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
