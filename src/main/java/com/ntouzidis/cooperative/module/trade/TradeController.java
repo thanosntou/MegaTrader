@@ -113,7 +113,7 @@ public class TradeController {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
-
+///qasfas//
         if (symbol == null) symbol = "XBTUSD";
 
         SignalBuilder signalBuilder = new SignalBuilder()
