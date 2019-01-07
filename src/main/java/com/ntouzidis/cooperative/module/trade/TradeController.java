@@ -57,7 +57,7 @@ public class TradeController {
         Map<String, String> priceSteps = calculatePriceSteps();
 
         // sumPositions + any customer position (temporary)
-        Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
+//        Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
 
         // Sum of Fixed Customer Qty
         Map<String, Long> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
@@ -96,7 +96,7 @@ public class TradeController {
         model.addAttribute("currentCoinMaxLeverage", currentCoinMaxLeverage);
         model.addAttribute("currentCoinPriceStep", currentCoinPriceStep);
 
-        model.addAttribute("sumPositions", sumPositions);
+//        model.addAttribute("sumPositions", sumPositions);
         model.addAttribute("sumFixedQtys", sumFixedQtys);
         model.addAttribute("randomPositions", randomPositions);
         model.addAttribute("randomActiveOrders", randomActiveOrders);
