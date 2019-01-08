@@ -8,6 +8,8 @@ import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import net.bull.javamelody.internal.model.Collector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class TradeService {
+
+    Logger logger = LoggerFactory.getLogger(TradeService.class);
 
     private final BitmexService bitmexService;
     private final UserService userService;
@@ -185,25 +189,37 @@ public class TradeService {
 
     Map<String, Double> calculateSumPositions(List<User> followers) {
         Map<String, Double> sumPositions = new HashMap<>();
-        sumPositions.put("XBTUSD", (double) 0);
-        sumPositions.put("XBTJPY", (double) 0);
-        sumPositions.put("ADAZ18", (double) 0);
-        sumPositions.put("BCHZ18", (double) 0);
-        sumPositions.put("EOSZ18", (double) 0);
-        sumPositions.put("ETHUSD", (double) 0);
-        sumPositions.put("LTCZ18", (double) 0);
-        sumPositions.put("TRXZ18", (double) 0);
-        sumPositions.put("XRPZ18", (double) 0);
-        sumPositions.put("XBTKRW", (double) 0);
 
-        followers.forEach(f -> bitmexService.getAllSymbolPosition(f)
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(map -> {
-                    String sym = map.get("symbol").toString();
-                    sumPositions.put(sym, sumPositions.get(sym) + Double.parseDouble(map.get("currentQty").toString()));
-                })
-        );
+
+        try {
+            sumPositions.put("XBTUSD", (double) 0);
+            sumPositions.put("XBTJPY", (double) 0);
+            sumPositions.put("ADAZ18", (double) 0);
+            sumPositions.put("BCHZ18", (double) 0);
+            sumPositions.put("EOSZ18", (double) 0);
+            sumPositions.put("ETHUSD", (double) 0);
+            sumPositions.put("LTCZ18", (double) 0);
+            sumPositions.put("TRXZ18", (double) 0);
+            sumPositions.put("XRPZ18", (double) 0);
+            sumPositions.put("XBTKRW", (double) 0);
+
+            followers.forEach(f -> bitmexService.getAllSymbolPosition(f)
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .forEach(map -> {
+                        String sym = map.get("symbol").toString();
+                        sumPositions.put(sym, sumPositions.get(sym) + Double.parseDouble(map.get("currentQty").toString()));
+                    })
+            );
+
+        } catch (Exception ex){
+            logger.debug("Eskase h calculateSumPositions. Cause", ex.getCause());
+            logger.debug("Eskase h calculateSumPositions, Stacktrace", ex.getStackTrace());
+            logger.debug("Eskase h calculateSumPositions", ex);
+
+        }
+
+
 
         return sumPositions;
     }
