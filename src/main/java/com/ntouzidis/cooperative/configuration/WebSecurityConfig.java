@@ -99,32 +99,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable();
-//        http.authorizeRequests()
-//                .antMatchers("/welcome/**").permitAll()
-////                .antMatchers("/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
-//                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
-//                .antMatchers("/trade/**").hasAnyRole("TRADER", "ADMIN")
-//                .antMatchers("/copy/**").hasAnyRole("CUSTOMER", "ADMIN")
-////                .antMatchers("/user/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
-//                .antMatchers("/resources/**").permitAll()
-//                .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
-//                .antMatchers("/admin/**").hasRole("ADMIN")
-//                .antMatchers("/offers/**").hasRole("MEMBER")
-//                .antMatchers("/order/**").denyAll()
-////                .antMatchers("/order/**").hasRole("CUSTOMER")
-//                .antMatchers("/cart/**").hasRole("CUSTOMER")
-//                .antMatchers("/email/**").hasRole("ADMIN")
-//                .and()
-//                .formLogin()
-//                .loginPage("/login")
-//                .loginProcessingUrl("/authenticateTheUser")
-//                .permitAll()
-//                .and()
-//                .logout().permitAll()
-//                .and()
-//                .exceptionHandling().accessDeniedPage("/access-denied");
-//
-//                http.formLogin().defaultSuccessUrl("/proxy", true);
+        http.authorizeRequests()
+                .antMatchers("/welcome/**").permitAll()
+//                .antMatchers("/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
+                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
+                .antMatchers("/trade/**").hasAnyRole("TRADER", "ADMIN")
+                .antMatchers("/copy/**").hasAnyRole("CUSTOMER", "ADMIN")
+//                .antMatchers("/user/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
+                .antMatchers("/resources/**").permitAll()
+                .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/offers/**").hasRole("MEMBER")
+                .antMatchers("/order/**").denyAll()
+//                .antMatchers("/order/**").hasRole("CUSTOMER")
+                .antMatchers("/cart/**").hasRole("CUSTOMER")
+                .antMatchers("/email/**").hasRole("ADMIN")
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/authenticateTheUser")
+                .permitAll()
+                .and()
+                .logout().permitAll()
+                .and()
+                .exceptionHandling().accessDeniedPage("/access-denied");
+
+                http.formLogin().defaultSuccessUrl("/proxy", true);
     }
 
     @Bean
