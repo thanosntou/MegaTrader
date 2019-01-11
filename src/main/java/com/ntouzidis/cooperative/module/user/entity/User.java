@@ -250,4 +250,29 @@ public class User {
     public void setFixedQtyXBTKRW(Long fixedQtyXBTKRW) {
         this.fixedQtyXBTKRW = fixedQtyXBTKRW;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", enabled=" + enabled +
+                ", create_date=" + create_date +
+                ", apiKey='" + apiKey + '\'' +
+                ", apiSecret='" + apiSecret + '\'' +
+                ", wallet=" + wallet +
+                ", fixedQtyXBTUSD=" + fixedQtyXBTUSD +
+                ", fixedQtyXBTJPY=" + fixedQtyXBTJPY +
+                ", fixedQtyADAZ18=" + fixedQtyADAZ18 +
+                ", fixedQtyBCHZ18=" + fixedQtyBCHZ18 +
+                ", fixedQtyEOSZ18=" + fixedQtyEOSZ18 +
+                ", fixedQtyETHUSD=" + fixedQtyETHUSD +
+                ", fixedQtyLTCZ18=" + fixedQtyLTCZ18 +
+                ", fixedQtyTRXZ18=" + fixedQtyTRXZ18 +
+                ", fixedQtyXRPZ18=" + fixedQtyXRPZ18 +
+                ", fixedQtyXBTKRW=" + fixedQtyXBTKRW +
+                '}';
+    }
 }

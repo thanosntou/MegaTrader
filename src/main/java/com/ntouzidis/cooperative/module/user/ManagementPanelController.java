@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.controller;
+package com.ntouzidis.cooperative.module.user;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -21,13 +21,13 @@ import java.util.List;
 @RequestMapping("/oldtrade")
 public class ManagementPanelController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private BitmexService bitmexService;
-
-    @Value("${images.upload.folder}")
-    private String imagesfolder;
+//    @Autowired
+//    private UserService userService;
+//    @Autowired
+//    private BitmexService bitmexService;
+//
+//    @Value("${images.upload.folder}")
+//    private String imagesfolder;
 
     @GetMapping(value = {"", "/"})
     public String showProducts(Model model, Principal principal) {
@@ -54,7 +54,7 @@ public class ManagementPanelController {
                             @RequestParam(name="leverage", required = false) String leverage,
                             Model model, Principal principal) {
 
-        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
+//        User user = userService.findByUsername(principal.getName()).orElseThrow(RuntimeException::new);
 
 //        String dataLeverage = "";
 //        if (symbol != null) dataLeverage += "symbol=" + symbol;
@@ -74,8 +74,8 @@ public class ManagementPanelController {
 //
 //        bitmexService.post_Order_Order(user, client, dataOrder);
 
-        model.addAttribute("user", user);
-        model.addAttribute("user", principal.getName());
+//        model.addAttribute("user", user);
+//        model.addAttribute("user", principal.getName());
 
         return "trade-panel";
     }
@@ -103,9 +103,9 @@ public class ManagementPanelController {
 //            tabContent = paymentService.getAllSortedAndOrdered((sb.equals("username")?"date":sb), ob);
 //        }
 
-        model.addAttribute("businessEntity", tab);
-        model.addAttribute("businessList", tabContent);
-        model.addAttribute("user", (principal.getName().equalsIgnoreCase("athan")));
+//        model.addAttribute("businessEntity", tab);
+//        model.addAttribute("businessList", tabContent);
+//        model.addAttribute("user", (principal.getName().equalsIgnoreCase("athan")));
 
         return "management-panel";
     }
@@ -125,15 +125,7 @@ public class ManagementPanelController {
     }
 
     @PostMapping("/save-product")
-    public String submit(
-//            @Valid @ModelAttribute("product") Product theProduct,
-            @RequestParam(required=false,name="myfile") MultipartFile file) throws IOException {
-
-        //TODO: need refactoring here, move logic
-        if (!file.isEmpty() && ImageIO.read(file.getInputStream()) != null) {
-//            Path pathFile = Paths.get("src/main/resources/static/images/" + theProduct.getName() + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
-//            Files.write(pathFile, file.getBytes(), StandardOpenOption.CREATE);
-        }
+    public String submit() {
 
         return "redirect:/management-panel";
     }

@@ -14,6 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.Properties;
 
@@ -82,35 +85,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        return super.userDetailsServiceBean();
 //    }
 
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurerAdapter() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").allowedOrigins("http://localhost:4000");
+//            }
+//        };
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
-                .antMatchers("/welcome/**").permitAll()
-//                .antMatchers("/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
-                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
-                .antMatchers("/trade/**").hasAnyRole("TRADER", "ADMIN")
-                .antMatchers("/copy/**").hasAnyRole("CUSTOMER", "ADMIN")
-                .antMatchers("/user/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
-                .antMatchers("/resources/**").permitAll()
-                .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/offers/**").hasRole("MEMBER")
-                .antMatchers("/order/**").denyAll()
-//                .antMatchers("/order/**").hasRole("CUSTOMER")
-                .antMatchers("/cart/**").hasRole("CUSTOMER")
-                .antMatchers("/email/**").hasRole("ADMIN")
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/authenticateTheUser")
-                .permitAll()
-                .and()
-                .logout().permitAll()
-                .and()
-                .exceptionHandling().accessDeniedPage("/access-denied");
-
-                http.formLogin().defaultSuccessUrl("/proxy", true);
+        http.csrf().disable();
+//        http.authorizeRequests()
+//                .antMatchers("/welcome/**").permitAll()
+////                .antMatchers("/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
+//                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
+//                .antMatchers("/trade/**").hasAnyRole("TRADER", "ADMIN")
+//                .antMatchers("/copy/**").hasAnyRole("CUSTOMER", "ADMIN")
+////                .antMatchers("/user/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
+//                .antMatchers("/resources/**").permitAll()
+//                .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/offers/**").hasRole("MEMBER")
+//                .antMatchers("/order/**").denyAll()
+////                .antMatchers("/order/**").hasRole("CUSTOMER")
+//                .antMatchers("/cart/**").hasRole("CUSTOMER")
+//                .antMatchers("/email/**").hasRole("ADMIN")
+//                .and()
+//                .formLogin()
+//                .loginPage("/login")
+//                .loginProcessingUrl("/authenticateTheUser")
+//                .permitAll()
+//                .and()
+//                .logout().permitAll()
+//                .and()
+//                .exceptionHandling().accessDeniedPage("/access-denied");
+//
+//                http.formLogin().defaultSuccessUrl("/proxy", true);
     }
 
     @Bean
