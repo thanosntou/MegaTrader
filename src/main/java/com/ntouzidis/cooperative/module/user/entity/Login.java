@@ -1,18 +1,21 @@
 package com.ntouzidis.cooperative.module.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name="login")
-public class Login {
+public class Login implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ID")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
 

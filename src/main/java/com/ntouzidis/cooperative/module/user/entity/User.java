@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "users") // used 'users' instead of 'user' because of spring security default queries. leave it!!
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

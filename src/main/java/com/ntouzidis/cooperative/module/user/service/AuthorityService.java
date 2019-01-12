@@ -29,11 +29,11 @@ public class AuthorityService {
         authorities.stream().map(GrantedAuthority::getAuthority).forEach(auth -> authorityRepository.save(new Authority(username, auth)));
     }
 
-    boolean isCustomer(User user) {
+    public boolean isCustomer(User user) {
         return Optional.ofNullable(authorityRepository.findByUsernameAndAuthority(user.getUsername(), "ROLE_CUSTOMER")).isPresent();
     }
 
-    boolean isTrader(User user) {
+    public boolean isTrader(User user) {
         return Optional.ofNullable(authorityRepository.findByUsernameAndAuthority(user.getUsername(), "ROLE_TRADER")).isPresent();
     }
 
