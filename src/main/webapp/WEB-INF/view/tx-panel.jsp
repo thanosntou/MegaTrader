@@ -29,7 +29,7 @@
 
                 <div class="card-body">
                     <div class="row" style="margin: 20px 0px">
-                        <h2>Transaction History <a href="${pageContext.request.contextPath}/user/tx"><i class="fas fa-sync" class="button"></i></a></h2>
+                        <h2>Transaction History <a href="${pageContext.request.contextPath}/user/tx"></a></h2>
                     </div>
                     <div class="row">
                         <h3>Bitmexcallbot Orders <c:if test="${not empty userTX}"> - <span style="background-color: yellow"> ${userTX}</span></c:if></h3>
