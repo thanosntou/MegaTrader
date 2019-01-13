@@ -1,21 +1,25 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
-import liquibase.util.StringUtils;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserApiV1Controller {
 
     private final UserService userService;
+    private final BitmexService bitmexService;
 
-    public UserApiV1Controller(UserService userService) {
+    public UserApiV1Controller(UserService userService, BitmexService bitmexService) {
         this.userService = userService;
+        this.bitmexService = bitmexService;
     }
 
     @GetMapping
@@ -25,6 +29,17 @@ public class UserApiV1Controller {
                 .orElseThrow(() -> new NotFoundException("user not found"));
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/tx")
+    public ResponseEntity<?> getTX()
+    {
+        User user = userService.findByUsername("athan")
+                .orElseThrow(() -> new NotFoundException("user not found"));
+
+        List<Map<String, Object>> mapList= bitmexService.get_Order_Order(user);
+
+        return ResponseEntity.ok(mapList);
     }
 
     @GetMapping("/keys")
