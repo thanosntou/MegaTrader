@@ -32,10 +32,15 @@ public class UserApiV1Controller {
     }
 
     @GetMapping("/tx")
-    public ResponseEntity<?> getTX()
+    public ResponseEntity<?> getTX(@RequestParam(name = "userId", required = false) Integer id)
     {
-        User user = userService.findByUsername("athan")
-                .orElseThrow(() -> new NotFoundException("user not found"));
+        User user;
+        if (id == null)
+            user = userService.findByUsername("athan")
+                    .orElseThrow(() -> new NotFoundException("user not found"));
+        else
+            user = userService.findById(id)
+                    .orElseThrow(() -> new NotFoundException("user not found"));
 
         List<Map<String, Object>> mapList= bitmexService.get_Order_Order(user);
 
