@@ -39,6 +39,10 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public Optional<User> findById(Integer id) {
+        return userRepository.findById(id);
+    }
+
     public Optional<User> findByUsername(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username));
     }
