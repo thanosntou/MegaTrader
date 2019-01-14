@@ -87,7 +87,7 @@ public class TradeService {
         });
     }
 
-    List<Map<String, Object>> getRandomActiveOrders(User trader) {
+    public List<Map<String, Object>> getRandomActiveOrders(User trader) {
         List<Map<String, Object>> randomAllOrders;
 
         LinkedList<User> followers = new LinkedList<>(getEnabledFollowers(trader));
