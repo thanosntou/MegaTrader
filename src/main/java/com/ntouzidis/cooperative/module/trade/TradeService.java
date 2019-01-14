@@ -104,7 +104,7 @@ public class TradeService {
         return Collections.emptyList();
     }
 
-    List<Map<String, Object>> getRandomPositions(User trader) {
+    public List<Map<String, Object>> getRandomPositions(User trader) {
         List<Map<String, Object>> randomPositions;
 
         List<User> enabledfollowers = getEnabledFollowers(trader);

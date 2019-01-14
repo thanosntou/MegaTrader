@@ -53,4 +53,16 @@ public class TraderApiV1Controller {
 
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
   }
+
+  @GetMapping("/active_positions")
+  public ResponseEntity<List<Map<String, Object>>> getActivePositions() {
+
+    User trader = userService.findByUsername(traderName)
+            .orElseGet(() -> userService.findByUsername(superAdmin)
+                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+
+    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader);
+
+    return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
+  }
 }
