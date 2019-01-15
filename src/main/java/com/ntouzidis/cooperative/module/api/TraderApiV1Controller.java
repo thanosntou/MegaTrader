@@ -69,10 +69,10 @@ public class TraderApiV1Controller {
 
   @PostMapping(value = "/signal")
   public ResponseEntity<?> createSignal(@RequestParam(name="symbol", required = false) String symbol,
-                             @RequestParam(name="side") String side,
-                             @RequestParam(name="leverage", required = false) String leverage,
-                             @RequestParam(name="stopLoss", required = false) String stopLoss,
-                             @RequestParam(name="profitTrigger", required = false) String profitTrigger) {
+                                        @RequestParam(name="side", required = false) String side,
+                                        @RequestParam(name="leverage", required = false) String leverage,
+                                        @RequestParam(name="stopLoss", required = false) String stopLoss,
+                                        @RequestParam(name="profitTrigger", required = false) String profitTrigger) {
 
     User trader = userService.findByUsername(traderName)
             .orElseGet(() -> userService.findByUsername(superAdmin)
@@ -86,6 +86,6 @@ public class TraderApiV1Controller {
 
     tradeService.createSignal(trader, signalBuilder);
 
-    return new ResponseEntity<>(null, HttpStatus.OK);
+    return new ResponseEntity<>("okk", HttpStatus.OK);
   }
 }
