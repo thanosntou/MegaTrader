@@ -39,7 +39,7 @@ public class TradeService {
         });
     }
 
-    void createSignal(User trader, SignalBuilder sb) {
+    public void createSignal(User trader, SignalBuilder sb) {
         List<User> enabledfollowers = getEnabledFollowers(trader);
 
         DataPostLeverage dataLeverage = new DataPostLeverage()
