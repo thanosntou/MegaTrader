@@ -1,18 +1,18 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/trader")
@@ -65,5 +65,27 @@ public class TraderApiV1Controller {
     List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader);
 
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
+  }
+
+  @PostMapping(value = "/signal")
+  public ResponseEntity<?> createSignal(@RequestParam(name="symbol", required = false) String symbol,
+                             @RequestParam(name="side") String side,
+                             @RequestParam(name="leverage", required = false) String leverage,
+                             @RequestParam(name="stopLoss", required = false) String stopLoss,
+                             @RequestParam(name="profitTrigger", required = false) String profitTrigger) {
+
+    User trader = userService.findByUsername(traderName)
+            .orElseGet(() -> userService.findByUsername(superAdmin)
+                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+
+    if (symbol == null) symbol = "XBTUSD";
+
+    SignalBuilder signalBuilder = new SignalBuilder()
+            .withSymbol(symbol).withSide(side).withleverage(leverage)
+            .withStopLoss(stopLoss).withProfitTrigger(profitTrigger);
+
+    tradeService.createSignal(trader, signalBuilder);
+
+    return new ResponseEntity<>(null, HttpStatus.OK);
   }
 }
