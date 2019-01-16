@@ -1,12 +1,16 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
+import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.trade.TradeService;
+import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,4 +92,28 @@ public class TraderApiV1Controller {
 
     return new ResponseEntity<>("okk", HttpStatus.OK);
   }
+
+    @PostMapping(value = "/orderAll")
+    public ResponseEntity<?> postOrderAll(@RequestParam(name="symbol") String symbol,
+                                          @RequestParam(name="side") String side,
+                                          @RequestParam(name="ordType") String ordType,
+                                          @RequestParam(name="price", required=false) String price,
+                                          @RequestParam(name="execInst", required=false) String execInst,
+                                          @RequestParam(name="stopPx", required = false) String stopPx,
+                                          @RequestParam(name="leverage", required = false) String leverage) {
+
+        User trader = userService.findByUsername(traderName)
+                .orElseGet(() -> userService.findByUsername(superAdmin)
+                        .orElseThrow(() -> new RuntimeException("Trader not found")));
+
+        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
+
+        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
+                .withSide(side).withOrderType(ordType)
+                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
+
+        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
+
+        return new ResponseEntity<>("okk", HttpStatus.OK);
+    }
 }

@@ -29,7 +29,7 @@ public class TradeService {
         this.userService = userService;
     }
 
-    void placeOrderAll(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
+    public void placeOrderAll(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
         List<User> enabledfollowers = getEnabledFollowers(trader);
 
         enabledfollowers.forEach(customer -> {
