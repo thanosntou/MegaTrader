@@ -94,7 +94,9 @@ public class BitmexService implements IBitmexService {
     public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get());
+        String data = dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get();
+
+        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, data);
 
         return getMap(res.orElse(null));
     }

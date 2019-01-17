@@ -55,7 +55,7 @@ public class TradeService {
                     .withOrderType("Market")
                     .withSymbol(sb.getSymbol())
                     .withSide(sb.getSide())
-                    .withText("Bitcoin Syndicate");
+                    .withText("Bitmexcallbot");
 
             bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
 
@@ -68,7 +68,7 @@ public class TradeService {
                         .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
                         .withExecInst("Close,LastPrice")
                         .withStopPrice(sb.getStopLoss())
-                        .withText("Bitcoin Syndicate");
+                        .withText("Bitmexcallbot");
 
                 bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
             }
@@ -80,7 +80,7 @@ public class TradeService {
                         .withSymbol(sb.getSymbol())
                         .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
                         .withPrice(sb.getProfitTrigger())
-                        .withText("Bitcoin Syndicate");
+                        .withText("Bitmexcallbot");
 
                 bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
             }
