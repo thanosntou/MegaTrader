@@ -73,6 +73,7 @@ public class DataPostOrderBuilder {
     }
 
     public String getSymbol() {
+//        return this.symbol.substring(7, 10);
         return this.symbol.substring(7, 13);
     }
 

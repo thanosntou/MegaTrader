@@ -4,6 +4,7 @@ import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -109,7 +110,8 @@ public class TraderApiV1Controller {
 
         DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
 
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
+        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
+                .withSymbol(Symbol.valueOf(symbol).getValue())
                 .withSide(side).withOrderType(ordType)
                 .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
 
@@ -126,7 +128,7 @@ public class TraderApiV1Controller {
                     .orElseThrow(() -> new RuntimeException("Trader not found")));
 
     DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-            .withSymbol(symbol);
+            .withSymbol(Symbol.valueOf(symbol).getValue());
 
     tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
 
