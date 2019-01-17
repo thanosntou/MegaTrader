@@ -140,7 +140,7 @@ public class TradeService {
         enabledfollowers.forEach(customer -> bitmexService.cancelOrder(customer, dataDeleteOrderBuilder));
     }
 
-    void cancelAllOrders(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
+    public void cancelAllOrders(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
         List<User> enabledfollowers = getEnabledFollowers(trader);
 
         enabledfollowers.forEach(customer -> bitmexService.cancelAllOrders(customer, dataDeleteOrderBuilder));
