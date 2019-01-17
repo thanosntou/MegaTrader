@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
@@ -116,4 +117,19 @@ public class TraderApiV1Controller {
 
         return new ResponseEntity<>("okk", HttpStatus.OK);
     }
+
+  @PostMapping("/order/cancelAll")
+  public ResponseEntity<?> cancelOrderAll(@RequestParam(name="symbol", required = false) String symbol) {
+
+    User trader = userService.findByUsername(traderName)
+            .orElseGet(() -> userService.findByUsername(superAdmin)
+                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+
+    DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
+            .withSymbol(symbol);
+
+    tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
+
+    return new ResponseEntity<>("okk", HttpStatus.OK);
+  }
 }
