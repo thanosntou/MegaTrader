@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.sql.DataSource;
 import java.util.Properties;
 
 
@@ -26,12 +28,22 @@ import java.util.Properties;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    private DataSource dataSource;
+
+    @Autowired
     @Qualifier("userDetailsService")
     UserDetailsService userDetailsService;
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider());
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .authenticationProvider(authProvider())
+                .jdbcAuthentication()
+                .dataSource(dataSource);
+
+//        auth.authenticationProvider(authProvider());
 //        auth.jdbcAuthentication().dataSource(securityDataSource);
 //        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
@@ -47,6 +59,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean(name="authenticationManager")
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
 //    @Override
@@ -72,11 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials());
 //    }
 //
-//    @Bean(name="authenticationManager")
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
+
 //
 //    // Expose the UserDetailsService as a Bean
 //    @Bean
@@ -94,38 +109,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //            }
 //        };
 //    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-
-        http.csrf().disable();
-        http.authorizeRequests()
-                .antMatchers("/welcome/**").permitAll()
-//                .antMatchers("/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
-                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
-                .antMatchers("/trade/**").hasAnyRole("TRADER", "ADMIN")
-                .antMatchers("/copy/**").hasAnyRole("CUSTOMER", "ADMIN")
-//                .antMatchers("/user/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
-                .antMatchers("/resources/**").permitAll()
-                .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/offers/**").hasRole("MEMBER")
-                .antMatchers("/order/**").denyAll()
-//                .antMatchers("/order/**").hasRole("CUSTOMER")
-                .antMatchers("/cart/**").hasRole("CUSTOMER")
-                .antMatchers("/email/**").hasRole("ADMIN")
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/authenticateTheUser")
-                .permitAll()
-                .and()
-                .logout().permitAll()
-                .and()
-                .exceptionHandling().accessDeniedPage("/access-denied");
-
-                http.formLogin().defaultSuccessUrl("/proxy", true);
-    }
+//        http.authorizeRequests()
+//                .antMatchers("/welcome/**").permitAll()
+////                .antMatchers("/**").hasAnyRole("CUSTOMER", "MEMBER", "ADMIN")
+//                .antMatchers("/dashboard/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
+//                .antMatchers("/trade/**").hasAnyRole("TRADER", "ADMIN")
+//                .antMatchers("/copy/**").hasAnyRole("CUSTOMER", "ADMIN")
+////                .antMatchers("/user/**").hasAnyRole("CUSTOMER", "TRADER", "ADMIN")
+//                .antMatchers("/resources/**").permitAll()
+//                .antMatchers("/management-panel/**").hasAnyRole("MEMBER", "ADMIN")
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/offers/**").hasRole("MEMBER")
+//                .antMatchers("/order/**").denyAll()
+////                .antMatchers("/order/**").hasRole("CUSTOMER")
+//                .antMatchers("/cart/**").hasRole("CUSTOMER")
+//                .antMatchers("/email/**").hasRole("ADMIN")
+//                .and()
+//                .formLogin()
+//                .loginPage("/login")
+//                .loginProcessingUrl("/authenticateTheUser")
+//                .permitAll()
+//                .and()
+//                .logout().permitAll()
+//                .and()
+//                .exceptionHandling().accessDeniedPage("/access-denied");
+//
+//                http.formLogin().defaultSuccessUrl("/proxy", true)
 
     @Bean
     public JavaMailSender getJavaMailSender() {

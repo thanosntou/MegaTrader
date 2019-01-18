@@ -33,3 +33,12 @@ databaseChangeLog:
   - include:
       file: changeset-013-add-fixedFields-to-users.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-014-oauth-model.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset-015-create-access-token-tables.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset-016-insert-auth-client.yaml
+      relativeToChangelogFile: true

@@ -1,0 +1,105 @@
+databaseChangeLog:
+  - changeSet:
+      id: 014-oauth-model
+      author: ntouzidis
+      changes:
+          - createTable:
+                tableName: auth_client
+                columns:
+                    - column:
+                          name: id
+                          type: int
+                          constraints:
+                              primaryKey: true
+                    - column:
+                          name: client_id
+                          type: varchar(255)
+                          constraints:
+                              nullable: false
+                              unique: true
+                    - column:
+                          name: secret
+                          type: varchar(255)
+                          constraints:
+                              nullable: false
+
+          - createTable:
+                tableName: auth_client_authority
+                columns:
+                    - column:
+                          name: id
+                          type: int
+                          constraints:
+                              primaryKey: true
+                    - column:
+                          name: client_id
+                          type: int
+                          constraints:
+                            foreignKeyName: fk_auth_clientId
+                            references: auth_client(id)
+                            nullable: false
+                    - column:
+                          name: name
+                          type: varchar(255)
+                          constraints:
+                              nullable: false
+
+          - createTable:
+                tableName: auth_client_grant_type
+                columns:
+                    - column:
+                          name: id
+                          type: int
+                          constraints:
+                              primaryKey: true
+                    - column:
+                          name: client_id
+                          type: int
+                          constraints:
+                            foreignKeyName: fk_auth_clientId
+                            references: auth_client(id)
+                            nullable: false
+                    - column:
+                          name: name
+                          type: varchar(255)
+                          constraints:
+                              nullable: false
+
+          - createTable:
+                tableName: auth_client_scope
+                columns:
+                    - column:
+                          name: id
+                          type: int
+                          constraints:
+                              primaryKey: true
+                    - column:
+                          name: client_id
+                          type: int
+                          constraints:
+                            foreignKeyName: fk_auth_clientId
+                            references: auth_client(id)
+                            nullable: false
+                    - column:
+                          name: name
+                          type: varchar(255)
+                          constraints:
+                              nullable: false
+
+          - insert:
+              tableName: auth_client
+              columns:
+                - column:
+                    name: id
+                    type: int
+                    value: 1
+                - column:
+                    name: client_id
+                    type: varchar(255)
+                    value: test
+                - column:
+                    name: secret
+                    type: varchar(255)
+                    value: $2a$10$ZrbYZbtDkHcNBn1HtnvjCectGjOW1QEvMYr9XWK59bzt5PxDx6pq.
+
+
