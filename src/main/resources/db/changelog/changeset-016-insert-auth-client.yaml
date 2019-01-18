@@ -1,0 +1,146 @@
+databaseChangeLog:
+  - changeSet:
+      id: 016-changeset-016-insert-auth-client
+      author: ntouzidis
+      changes:
+
+
+              - insert:
+                  tableName: auth_client_authority
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 1
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: ROLE_TRUSTED_CLIENT
+              - insert:
+                  tableName: auth_client_authority
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 2
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: ROLE_CLIENT
+
+
+              - insert:
+                  tableName: auth_client_grant_type
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 1
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: password
+              - insert:
+                  tableName: auth_client_grant_type
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 2
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: authorization_code
+              - insert:
+                  tableName: auth_client_grant_type
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 3
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: refresh_token
+              - insert:
+                  tableName: auth_client_grant_type
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 4
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: implicit
+
+
+              - insert:
+                  tableName: auth_client_scope
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 1
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: read
+              - insert:
+                  tableName: auth_client_scope
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 2
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: write
+              - insert:
+                  tableName: auth_client_scope
+                  columns:
+                    - column:
+                        name: id
+                        type: int
+                        value: 3
+                    - column:
+                        name: client_id
+                        type: int
+                        value: 1
+                    - column:
+                        name: name
+                        type: varchar(255)
+                        value: trust

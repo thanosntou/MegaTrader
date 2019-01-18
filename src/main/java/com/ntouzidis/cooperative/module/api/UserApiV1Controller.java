@@ -1,10 +1,13 @@
 package com.ntouzidis.cooperative.module.api;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -82,5 +85,13 @@ public class UserApiV1Controller {
             userService.setFixedQty(user, symbol, qty);
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/authenticate")
+    public ResponseEntity<User> authenticate(Authentication authentication) {
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        return new ResponseEntity<>(userDetails.getUser(), HttpStatus.OK);
     }
 }
