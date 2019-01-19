@@ -74,8 +74,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void update(User user) {
-        userRepository.save(user);
+    public User update(User user) {
+        return userRepository.save(user);
     }
 
     public void linkTrader(User user, int traderId) {
