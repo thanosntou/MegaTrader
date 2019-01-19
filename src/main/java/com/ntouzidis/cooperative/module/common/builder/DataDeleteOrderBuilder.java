@@ -7,7 +7,7 @@ public class DataDeleteOrderBuilder {
     private String symbol;
     private String orderID;
     private String clOrdID;
-    private String text = "text=Bitcoin Syndicate";
+    private String text = "text=CryptoInfluencer";
 
     public DataDeleteOrderBuilder withSymbol(String symbol) {
         if (symbol != null)
