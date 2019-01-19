@@ -11,7 +11,7 @@ public class DataPostOrderBuilder {
     private String price;
     private String execInst;
     private String stopPrice;
-    private String text = "text=Bitcoin Syndicate";
+    private String text = "text=CryptoInfluencer";
 
     public DataPostOrderBuilder withSymbol(String symbol) {
         if (symbol != null)
