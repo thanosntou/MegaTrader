@@ -75,7 +75,8 @@ public class TradeApiV1Controller {
 
     @DeleteMapping("/order")
     public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
-                                 Authentication authentication) {
+                              @RequestParam(name="orderId", required = false) String orderId,
+                              Authentication authentication) {
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
@@ -87,7 +88,8 @@ public class TradeApiV1Controller {
             }
         } else {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withSymbol(Symbol.valueOf(symbol).getValue());
+                    .withSymbol(Symbol.valueOf(symbol).getValue())
+                    .withOrderID(orderId);
             tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
         }
         return "redirect:/trade/" + symbol;
