@@ -26,24 +26,30 @@ public class UserApiV1Controller {
     }
 
     @GetMapping
-    public ResponseEntity<?> read()
-    {
-        User user = userService.findByUsername("athan")
-                .orElseThrow(() -> new NotFoundException("user not found"));
+    public ResponseEntity<?> read(Authentication authentication) {
+
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+        //TODO implement
+//        User user = userService.findByUsername("athan")
+//                .orElseThrow(() -> new NotFoundException("user not found"));
 
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/tx")
-    public ResponseEntity<?> getTX(@RequestParam(name = "userId", required = false) Integer id)
+    public ResponseEntity<?> getTX(@RequestParam(name = "userId", required = false) Integer id,
+                                   Authentication authentication)
     {
-        User user;
-        if (id == null)
-            user = userService.findByUsername("athan")
-                    .orElseThrow(() -> new NotFoundException("user not found"));
-        else
-            user = userService.findById(id)
-                    .orElseThrow(() -> new NotFoundException("user not found"));
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        //TODO implement this
+//        User user;
+//        if (id == null)
+//            user = userService.findByUsername("athan")
+//                    .orElseThrow(() -> new NotFoundException("user not found"));
+//        else
+//            user = userService.findById(id)
+//                    .orElseThrow(() -> new NotFoundException("user not found"));
 
         List<Map<String, Object>> mapList= bitmexService.get_Order_Order(user);
 
@@ -52,7 +58,8 @@ public class UserApiV1Controller {
 
     @GetMapping("/keys")
     public ResponseEntity<?> updateKeys(@RequestParam(name = "apiKey", required = false) String apiKey,
-                                        @RequestParam(name = "apiSecret", required = false) String apiSecret)
+                                        @RequestParam(name = "apiSecret", required = false) String apiSecret,
+                                        Authentication authentication)
     {
         User user = userService.findByUsername("athan")
                 .orElseThrow(() -> new NotFoundException("user not found"));
@@ -64,7 +71,8 @@ public class UserApiV1Controller {
 
     @PostMapping("/keys")
     public ResponseEntity<?> updateKeys2(@RequestParam(name = "apiKey", required = false) String apiKey,
-                                        @RequestParam(name = "apiSecret", required = false) String apiSecret)
+                                        @RequestParam(name = "apiSecret", required = false) String apiSecret,
+                                         Authentication authentication)
     {
         User user = userService.findByUsername("athan")
                 .orElseThrow(() -> new NotFoundException("user not found"));
@@ -76,8 +84,9 @@ public class UserApiV1Controller {
 
     @PostMapping(value = "/fixedQty")
     public ResponseEntity<?> setFixedQty(@RequestParam(name="fixedQty", required=false) Long qty,
-                                         @RequestParam(name="symbol", required=false) String symbol) {
-
+                                         @RequestParam(name="symbol", required=false) String symbol,
+                                         Authentication authentication)
+    {
         User user = userService.findByUsername("athan")
                 .orElseThrow(() -> new NotFoundException("user not found"));
 
@@ -88,10 +97,10 @@ public class UserApiV1Controller {
     }
 
     @GetMapping("/authenticate")
-    public ResponseEntity<User> authenticate(Authentication authentication) {
+    public ResponseEntity<CustomUserDetails> authenticate(Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        return new ResponseEntity<>(userDetails.getUser(), HttpStatus.OK);
+        return new ResponseEntity<>(userDetails, HttpStatus.OK);
     }
 }
