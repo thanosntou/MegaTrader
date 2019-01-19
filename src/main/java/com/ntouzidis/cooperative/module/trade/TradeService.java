@@ -134,7 +134,7 @@ public class TradeService {
         return Collections.emptyList();
     }
 
-    void cancelOrder(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
+    public void cancelOrder(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
         List<User> enabledfollowers = getEnabledFollowers(trader);
 
         enabledfollowers.forEach(customer -> bitmexService.cancelOrder(customer, dataDeleteOrderBuilder));
@@ -152,7 +152,7 @@ public class TradeService {
         enabledfollowers.forEach(customer -> bitmexService.post_Order_Order_WithFixedsAndPercentage(customer, dataPostOrderBuilder, percentage));
     }
 
-    void closeAllPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
+    public void closeAllPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
         List<User> enabledfollowers = getEnabledFollowers(trader);
 
         enabledfollowers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));

@@ -44,9 +44,6 @@ public class TraderApiV1Controller {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-//    User trader = userService.findByUsername(traderName)
-//            .orElseThrow(() -> new RuntimeException("Trader not found"));
-
     List<User> followers = userService.getFollowers(trader);
 
     return ResponseEntity.ok(followers);
@@ -57,10 +54,6 @@ public class TraderApiV1Controller {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-//    User trader = userService.findByUsername(traderName)
-//            .orElseGet(() -> userService.findByUsername(superAdmin)
-//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
-
     List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
 
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
@@ -70,10 +63,6 @@ public class TraderApiV1Controller {
   public ResponseEntity<List<Map<String, Object>>> getActivePositions(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-//    User trader = userService.findByUsername(traderName)
-//            .orElseGet(() -> userService.findByUsername(superAdmin)
-//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
 
     List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader);
 
@@ -90,15 +79,14 @@ public class TraderApiV1Controller {
   {
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-//    User trader = userService.findByUsername(traderName)
-//            .orElseGet(() -> userService.findByUsername(superAdmin)
-//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
-
     if (symbol == null) symbol = "XBTUSD";
 
     SignalBuilder signalBuilder = new SignalBuilder()
-            .withSymbol(symbol).withSide(side).withleverage(leverage)
-            .withStopLoss(stopLoss).withProfitTrigger(profitTrigger);
+            .withSymbol(Symbol.valueOf(symbol).getValue())
+            .withSide(side)
+            .withleverage(leverage)
+            .withStopLoss(stopLoss)
+            .withProfitTrigger(profitTrigger);
 
     tradeService.createSignal(trader, signalBuilder);
 
@@ -117,37 +105,35 @@ public class TraderApiV1Controller {
 
       User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-//        User trader = userService.findByUsername(traderName)
-//                .orElseGet(() -> userService.findByUsername(superAdmin)
-//                        .orElseThrow(() -> new RuntimeException("Trader not found")));
+      DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
+              .withSymbol(Symbol.valueOf(symbol).getValue())
+              .withLeverage(leverage);
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
+      DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
+              .withSymbol(Symbol.valueOf(symbol).getValue())
+              .withSide(side).withOrderType(ordType)
+              .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
 
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(Symbol.valueOf(symbol).getValue())
-                .withSide(side).withOrderType(ordType)
-                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
+      tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
 
-        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
-
-        return new ResponseEntity<>("okk", HttpStatus.OK);
+      return new ResponseEntity<>("okk", HttpStatus.OK);
     }
 
-  @PostMapping("/order/cancelAll")
-  public ResponseEntity<?> cancelOrderAll(@RequestParam(name="symbol", required = false) String symbol,
+  @DeleteMapping("/position")
+  public ResponseEntity<?> postPosition(@RequestParam(name="symbol", required = false) String symbol,
                                           Authentication authentication)
   {
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-//    User trader = userService.findByUsername(traderName)
-//            .orElseGet(() -> userService.findByUsername(superAdmin)
-//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+    DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+            .withSymbol(symbol)
+            .withOrderType("Market")
+            .withExecInst("Close");
 
-    DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-            .withSymbol(Symbol.valueOf(symbol).getValue());
-
-    tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
+    tradeService.closeAllPosition(trader, dataPostOrderBuilder);
 
     return new ResponseEntity<>("okk", HttpStatus.OK);
   }
+
+
 }

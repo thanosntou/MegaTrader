@@ -44,7 +44,7 @@ public class DataPostOrderBuilder {
     }
 
     public DataPostOrderBuilder withExecInst(String execInst) {
-        if (execInst != null && orderType.equals("Market"))
+        if (execInst != null && orderType.equals("ordType=Market&"))
             this.execInst = "execInst=" + execInst + "&";
         return this;
     }
