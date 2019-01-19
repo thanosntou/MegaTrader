@@ -9,6 +9,7 @@ import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/trader")
@@ -39,10 +40,12 @@ public class TraderApiV1Controller {
   }
 
   @GetMapping("/followers")
-  public ResponseEntity<?> getFollowers() {
+  public ResponseEntity<?> getFollowers(Authentication authentication) {
 
-    User trader = userService.findByUsername(traderName)
-            .orElseThrow(() -> new RuntimeException("Trader not found"));
+    User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+//    User trader = userService.findByUsername(traderName)
+//            .orElseThrow(() -> new RuntimeException("Trader not found"));
 
     List<User> followers = userService.getFollowers(trader);
 
@@ -50,11 +53,13 @@ public class TraderApiV1Controller {
   }
 
   @GetMapping("/active_orders")
-  public ResponseEntity<List<Map<String, Object>>> getActiveOrders() {
+  public ResponseEntity<List<Map<String, Object>>> getActiveOrders(Authentication authentication) {
 
-    User trader = userService.findByUsername(traderName)
-            .orElseGet(() -> userService.findByUsername(superAdmin)
-                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+    User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+//    User trader = userService.findByUsername(traderName)
+//            .orElseGet(() -> userService.findByUsername(superAdmin)
+//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
 
     List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
 
@@ -62,11 +67,13 @@ public class TraderApiV1Controller {
   }
 
   @GetMapping("/active_positions")
-  public ResponseEntity<List<Map<String, Object>>> getActivePositions() {
+  public ResponseEntity<List<Map<String, Object>>> getActivePositions(Authentication authentication) {
 
-    User trader = userService.findByUsername(traderName)
-            .orElseGet(() -> userService.findByUsername(superAdmin)
-                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+    User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+//    User trader = userService.findByUsername(traderName)
+//            .orElseGet(() -> userService.findByUsername(superAdmin)
+//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
 
     List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader);
 
@@ -78,11 +85,14 @@ public class TraderApiV1Controller {
                                         @RequestParam(name="side") String side,
                                         @RequestParam(name="leverage", required = false) String leverage,
                                         @RequestParam(name="stopLoss", required = false) String stopLoss,
-                                        @RequestParam(name="profitTrigger", required = false) String profitTrigger) {
+                                        @RequestParam(name="profitTrigger", required = false) String profitTrigger,
+                                        Authentication authentication)
+  {
+    User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-    User trader = userService.findByUsername(traderName)
-            .orElseGet(() -> userService.findByUsername(superAdmin)
-                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+//    User trader = userService.findByUsername(traderName)
+//            .orElseGet(() -> userService.findByUsername(superAdmin)
+//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
 
     if (symbol == null) symbol = "XBTUSD";
 
@@ -102,11 +112,14 @@ public class TraderApiV1Controller {
                                           @RequestParam(name="price", required=false) String price,
                                           @RequestParam(name="execInst", required=false) String execInst,
                                           @RequestParam(name="stopPx", required = false) String stopPx,
-                                          @RequestParam(name="leverage", required = false) String leverage) {
+                                          @RequestParam(name="leverage", required = false) String leverage,
+                                          Authentication authentication) {
 
-        User trader = userService.findByUsername(traderName)
-                .orElseGet(() -> userService.findByUsername(superAdmin)
-                        .orElseThrow(() -> new RuntimeException("Trader not found")));
+      User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+//        User trader = userService.findByUsername(traderName)
+//                .orElseGet(() -> userService.findByUsername(superAdmin)
+//                        .orElseThrow(() -> new RuntimeException("Trader not found")));
 
         DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
 
@@ -121,11 +134,14 @@ public class TraderApiV1Controller {
     }
 
   @PostMapping("/order/cancelAll")
-  public ResponseEntity<?> cancelOrderAll(@RequestParam(name="symbol", required = false) String symbol) {
+  public ResponseEntity<?> cancelOrderAll(@RequestParam(name="symbol", required = false) String symbol,
+                                          Authentication authentication)
+  {
+    User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-    User trader = userService.findByUsername(traderName)
-            .orElseGet(() -> userService.findByUsername(superAdmin)
-                    .orElseThrow(() -> new RuntimeException("Trader not found")));
+//    User trader = userService.findByUsername(traderName)
+//            .orElseGet(() -> userService.findByUsername(superAdmin)
+//                    .orElseThrow(() -> new RuntimeException("Trader not found")));
 
     DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
             .withSymbol(Symbol.valueOf(symbol).getValue());
