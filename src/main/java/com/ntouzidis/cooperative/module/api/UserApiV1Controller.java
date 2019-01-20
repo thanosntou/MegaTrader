@@ -28,14 +28,21 @@ public class UserApiV1Controller {
     }
 
     @GetMapping
-    public ResponseEntity<?> read(Authentication authentication) {
+    public ResponseEntity<?> read(@RequestParam(name = "id", required = false) Integer id,
+                                  @RequestParam(name = "name", required = false) String name,
+                                  Authentication authentication) {
 
-//        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-        //TODO implement
-//        User user = userService.findByUsername("athan")
-//                .orElseThrow(() -> new NotFoundException("user not found"));
+        Preconditions.checkArgument(id != null || name != null);
 
-        return ResponseEntity.ok("sfsff");
+        User user;
+        if (id != null)
+            user = userService.findById(id)
+                    .orElseThrow(() -> new NotFoundException("user not found"));
+        else
+            user = userService.findByUsername("athan")
+                    .orElseThrow(() -> new NotFoundException("user not found"));
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/new")
