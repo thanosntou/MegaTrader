@@ -1,9 +1,11 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
@@ -28,12 +30,35 @@ public class UserApiV1Controller {
     @GetMapping
     public ResponseEntity<?> read(Authentication authentication) {
 
-        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+//        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
         //TODO implement
 //        User user = userService.findByUsername("athan")
 //                .orElseThrow(() -> new NotFoundException("user not found"));
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok("sfsff");
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<User> create(@RequestParam(value = "username") String username,
+                                       @RequestParam(value = "email") String email,
+                                       @RequestParam(value = "pass") String pass,
+                                       @RequestParam(value = "confirmPass") String confirmPass) {
+
+//        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+//        Preconditions.checkArgument(pin != null, "You need a secret pin to create a user. Ask your trader");
+        Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
+        Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
+        Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(pass);
+        user.setEmail(email);
+
+        userService.createCustomer(user, pass);
+
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/tx")
