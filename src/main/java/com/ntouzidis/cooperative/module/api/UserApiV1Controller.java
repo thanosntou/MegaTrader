@@ -62,6 +62,18 @@ public class UserApiV1Controller {
         user.setUsername(username);
         user.setPassword(pass);
         user.setEmail(email);
+        user.setApiKey("");
+        user.setApiSecret("");
+        user.setEnabled(false);
+        user.setFixedQtyXBTUSD(0L);
+        user.setFixedQtyETHUSD(0L);
+        user.setFixedQtyADAZ18(0L);
+        user.setFixedQtyBCHZ18(0L);
+        user.setFixedQtyEOSZ18(0L);
+//        user.setFixedQtyETHUSD(0L);
+        user.setFixedQtyLTCZ18(0L);
+        user.setFixedQtyTRXZ18(0L);
+        user.setFixedQtyXRPZ18(0L);
 
         userService.createCustomer(user, pass);
 
