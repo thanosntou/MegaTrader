@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -13,8 +14,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/trader")
@@ -75,7 +79,14 @@ public class TraderApiV1Controller {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader);
+    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader)
+            .stream()
+            .filter(pos -> Arrays.stream(Symbol.values())
+                    .map(Symbol::getValue)
+                    .collect(Collectors.toList())
+                    .contains(pos.get("symbol").toString()))
+            .filter(pos -> pos.get("markPrice") != null)
+            .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
   }
