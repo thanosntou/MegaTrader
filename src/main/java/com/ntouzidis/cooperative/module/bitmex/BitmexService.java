@@ -336,6 +336,7 @@ public class BitmexService implements IBitmexService {
     private String calculateFixedQtyForSymbol(User user, String symbol) {
         if (symbol.equals(Symbol.XBTUSD.getValue())) return user.getFixedQtyXBTUSD().toString();
         if (symbol.equals(Symbol.ETHUSD.getValue())) return user.getFixedQtyETHUSD().toString(); //TODO fix these ethusd euth
+        if (symbol.equals(Symbol.ADA.getValue())) return user.getFixedQtyADAZ18().toString(); //TODO fix these ethusd euth
         if (symbol.equals(Symbol.BCH.getValue())) return user.getFixedQtyBCHZ18().toString();
         if (symbol.equals(Symbol.EOS.getValue())) return user.getFixedQtyEOSZ18().toString();
 //        if (symbol.equals(Symbol.ETHUSD.getValue())) return user.getFixedQtyETHUSD().toString();
