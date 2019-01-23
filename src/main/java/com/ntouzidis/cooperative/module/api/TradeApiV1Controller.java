@@ -9,9 +9,15 @@ import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/trade")
@@ -47,7 +53,10 @@ public class TradeApiV1Controller {
         return new ResponseEntity<>("okk", HttpStatus.OK);
     }
 
-    @PostMapping(value = "/orderAll")
+    @PostMapping(
+            value = "/orderAll",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<?> postOrderAll(@RequestParam(name="symbol") String symbol,
                                           @RequestParam(name="side") String side,
                                           @RequestParam(name="ordType") String ordType,
@@ -70,7 +79,7 @@ public class TradeApiV1Controller {
 
         tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
 
-        return new ResponseEntity<>("okk", HttpStatus.OK);
+        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
 
     @DeleteMapping("/order")
@@ -95,8 +104,11 @@ public class TradeApiV1Controller {
         return "redirect:/trade/" + symbol;
     }
 
-    @DeleteMapping("/position")
-    public ResponseEntity<?> postPosition(@RequestParam(name="symbol", required = false) String symbol,
+    @DeleteMapping(
+            value = "/position",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> postPosition(@RequestParam(name="symbol", required = false) String symbol,
                                           Authentication authentication)
     {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -108,6 +120,16 @@ public class TradeApiV1Controller {
 
         tradeService.closeAllPosition(trader, dataPostOrderBuilder);
 
-        return new ResponseEntity<>("okk", HttpStatus.OK);
+//        List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader)
+//                .stream()
+//                .filter(pos -> Arrays.stream(Symbol.values())
+//                        .map(Symbol::getValue)
+//                        .collect(Collectors.toList())
+//                        .contains(pos.get("symbol").toString()))
+//                .filter(pos -> pos.get("markPrice") != null)
+//                .collect(Collectors.toList());
+        String positionThatClosed = symbol;
+
+        return new ResponseEntity<>("{ \"symbol\": \"" + positionThatClosed + "\" }", HttpStatus.OK);
     }
 }
