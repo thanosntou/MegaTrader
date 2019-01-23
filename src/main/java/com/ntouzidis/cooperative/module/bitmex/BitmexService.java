@@ -334,15 +334,15 @@ public class BitmexService implements IBitmexService {
 //    }
 
     private String calculateFixedQtyForSymbol(User user, String symbol) {
-        if (symbol.equals("XBTUSD")) return user.getFixedQtyXBTUSD().toString();
-        if (symbol.equals("XBTJPY")) return user.getFixedQtyXBTJPY().toString();
-        if (symbol.equals(Symbol.valueOf("ADA").getValue())) return user.getFixedQtyADAZ18().toString();
-        if (symbol.equals(Symbol.valueOf("BCH").getValue())) return user.getFixedQtyBCHZ18().toString();
-        if (symbol.equals(Symbol.valueOf("EOS").getValue())) return user.getFixedQtyEOSZ18().toString();
-        if (symbol.equals(Symbol.valueOf("ETH").getValue())) return user.getFixedQtyETHUSD().toString();
-        if (symbol.equals(Symbol.valueOf("LTC").getValue())) return user.getFixedQtyLTCZ18().toString();
-        if (symbol.equals(Symbol.valueOf("TRX").getValue())) return user.getFixedQtyTRXZ18().toString();
-        if (symbol.equals(Symbol.valueOf("XRP").getValue())) return user.getFixedQtyXRPZ18().toString();
+        if (symbol.equals(Symbol.XBTUSD.getValue())) return user.getFixedQtyXBTUSD().toString();
+        if (symbol.equals(Symbol.ETHUSD.getValue())) return user.getFixedQtyETHUSD().toString(); //TODO fix these ethusd euth
+        if (symbol.equals(Symbol.ADA.getValue())) return user.getFixedQtyADAZ18().toString(); //TODO fix these ethusd euth
+        if (symbol.equals(Symbol.BCH.getValue())) return user.getFixedQtyBCHZ18().toString();
+        if (symbol.equals(Symbol.EOS.getValue())) return user.getFixedQtyEOSZ18().toString();
+//        if (symbol.equals(Symbol.ETHUSD.getValue())) return user.getFixedQtyETHUSD().toString();
+        if (symbol.equals(Symbol.LTC.getValue())) return user.getFixedQtyLTCZ18().toString();
+        if (symbol.equals(Symbol.TRX.getValue())) return user.getFixedQtyTRXZ18().toString();
+        if (symbol.equals(Symbol.XRP.getValue())) return user.getFixedQtyXRPZ18().toString();
 
         return null;
     }

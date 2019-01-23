@@ -31,7 +31,7 @@ public class TradeApiV1Controller {
 
     @PostMapping(value = "/signal")
     public ResponseEntity<?> createSignal(@RequestParam(name="symbol", required = false) String symbol,
-                                          @RequestParam(name="side") String side,
+                                          @RequestParam(name="side", required = false) String side,
                                           @RequestParam(name="leverage", required = false) String leverage,
                                           @RequestParam(name="stopLoss", required = false) String stopLoss,
                                           @RequestParam(name="profitTrigger", required = false) String profitTrigger,
@@ -42,7 +42,7 @@ public class TradeApiV1Controller {
         if (symbol == null) symbol = "XBTUSD";
 
         SignalBuilder signalBuilder = new SignalBuilder()
-                .withSymbol(Symbol.valueOf(symbol).getValue())
+                .withSymbol(symbol)
                 .withSide(side)
                 .withleverage(leverage)
                 .withStopLoss(stopLoss)
@@ -50,7 +50,7 @@ public class TradeApiV1Controller {
 
         tradeService.createSignal(trader, signalBuilder);
 
-        return new ResponseEntity<>("okk", HttpStatus.OK);
+        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
 
     @PostMapping(
@@ -69,11 +69,11 @@ public class TradeApiV1Controller {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
-                .withSymbol(Symbol.valueOf(symbol).getValue())
+                .withSymbol(symbol)
                 .withLeverage(leverage);
 
         DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(Symbol.valueOf(symbol).getValue())
+                .withSymbol(symbol)
                 .withSide(side).withOrderType(ordType)
                 .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
 
