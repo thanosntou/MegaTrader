@@ -1,10 +1,10 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
-import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -13,11 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/trade")
@@ -82,34 +77,41 @@ public class TradeApiV1Controller {
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
 
-    @DeleteMapping("/order")
-    public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
-                              @RequestParam(name="orderId", required = false) String orderId,
-                              Authentication authentication) {
+    @DeleteMapping(
+            value = "/order",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> cancelOrder(@RequestParam(name="orderID", required = false) String orderID,
+                                         @RequestParam(name="symbol", required = false) String symbol,
+                                         Authentication authentication) {
+
+        Preconditions.checkArgument(orderID != null || symbol != null,
+                "Either orderID or symbol must be present");
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         if (symbol == null) {
-            for (Symbol s: Symbol.values()) {
-                DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                        .withSymbol(s.getValue());
-                tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
-            }
+            DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
+                    .withSymbol(symbol);
+            tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
+
+            return new ResponseEntity<>("{ \"orderID\": \"" + orderID + "\" }", HttpStatus.OK);
+
         } else {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withSymbol(Symbol.valueOf(symbol).getValue())
-                    .withOrderID(orderId);
-            tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
+                    .withOrderID(orderID);
+            tradeService.cancelOrder(trader, dataDeleteOrderBuilder);
+
+            return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
         }
-        return "redirect:/trade/" + symbol;
     }
 
     @DeleteMapping(
             value = "/position",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> postPosition(@RequestParam(name="symbol", required = false) String symbol,
-                                          Authentication authentication)
+    public ResponseEntity<?> closePosition(@RequestParam(name="symbol", required = false) String symbol,
+                                            Authentication authentication)
     {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
@@ -128,8 +130,7 @@ public class TradeApiV1Controller {
 //                        .contains(pos.get("symbol").toString()))
 //                .filter(pos -> pos.get("markPrice") != null)
 //                .collect(Collectors.toList());
-        String positionThatClosed = symbol;
 
-        return new ResponseEntity<>("{ \"symbol\": \"" + positionThatClosed + "\" }", HttpStatus.OK);
+        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
 }

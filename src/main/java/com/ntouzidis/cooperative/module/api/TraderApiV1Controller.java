@@ -7,14 +7,12 @@ import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -64,22 +62,31 @@ public class TraderApiV1Controller {
     return new ResponseEntity<>(userService.update(follower), HttpStatus.OK);
   }
 
-  @GetMapping("/active_orders")
+  @GetMapping(
+          value = "/active_orders",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
   public ResponseEntity<List<Map<String, Object>>> getActiveOrders(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
+    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader)
+            .stream()
+            .filter(order -> Arrays.stream(Symbol.values())
+                    .map(Symbol::getValue)
+                    .collect(Collectors.toList())
+                    .contains(order.get("symbol").toString()))
+            .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
   }
 
   @GetMapping("/active_positions")
-  public ResponseEntity<List<Map<String, Object>>> getActivePositions(Authentication authentication) {
+  public ResponseEntity<List<Map<String, Object>>> getOpenPositions(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader)
+    List<Map<String, Object>> randomOpenPositions = tradeService.getRandomPositions(trader)
             .stream()
             .filter(pos -> Arrays.stream(Symbol.values())
                     .map(Symbol::getValue)
@@ -88,7 +95,7 @@ public class TraderApiV1Controller {
             .filter(pos -> pos.get("markPrice") != null)
             .collect(Collectors.toList());
 
-    return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
+    return new ResponseEntity<>(randomOpenPositions, HttpStatus.OK);
   }
 
 
