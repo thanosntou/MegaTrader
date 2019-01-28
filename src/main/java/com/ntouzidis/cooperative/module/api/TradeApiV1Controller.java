@@ -77,6 +77,32 @@ public class TradeApiV1Controller {
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
 
+    @PostMapping(
+            value = "/position",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> setAllPosition(@RequestParam("symbol") String symbol,
+                                            @RequestParam("orderType") String orderType,
+                                            @RequestParam("side") String side,
+                                            @RequestParam("percentage") int percentage,
+                                            @RequestParam("price") String price,
+                                            Authentication authentication) {
+
+        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+                .withSymbol(symbol)
+                .withOrderType(orderType)
+                .withSide(side);
+
+        if (orderType.equals("Limit"))
+            dataPostOrderBuilder.withPrice(price);
+
+        tradeService.positionAll(trader, dataPostOrderBuilder, percentage);
+
+        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
+    }
+
     @DeleteMapping(
             value = "/order",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -121,15 +147,6 @@ public class TradeApiV1Controller {
                 .withExecInst("Close");
 
         tradeService.closeAllPosition(trader, dataPostOrderBuilder);
-
-//        List<Map<String, Object>> randomActiveOrders = tradeService.getRandomPositions(trader)
-//                .stream()
-//                .filter(pos -> Arrays.stream(Symbol.values())
-//                        .map(Symbol::getValue)
-//                        .collect(Collectors.toList())
-//                        .contains(pos.get("symbol").toString()))
-//                .filter(pos -> pos.get("markPrice") != null)
-//                .collect(Collectors.toList());
 
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }

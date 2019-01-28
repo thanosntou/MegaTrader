@@ -146,7 +146,7 @@ public class TradeService {
         enabledfollowers.forEach(customer -> bitmexService.cancelAllOrders(customer, dataDeleteOrderBuilder));
     }
 
-    void positionAll(User trader, DataPostOrderBuilder dataPostOrderBuilder, int percentage) {
+    public void positionAll(User trader, DataPostOrderBuilder dataPostOrderBuilder, int percentage) {
         List<User> enabledfollowers = getEnabledFollowers(trader);
 
         enabledfollowers.forEach(customer -> bitmexService.post_Order_Order_WithFixedsAndPercentage(customer, dataPostOrderBuilder, percentage));

@@ -92,7 +92,7 @@ public class TraderApiV1Controller {
                     .map(Symbol::getValue)
                     .collect(Collectors.toList())
                     .contains(pos.get("symbol").toString()))
-            .filter(pos -> pos.get("markPrice") != null)
+            .filter(pos -> pos.get("avgEntryPrice") != null)
             .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomOpenPositions, HttpStatus.OK);
