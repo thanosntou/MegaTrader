@@ -65,6 +65,10 @@ public class UserService implements UserDetailsService {
         return customerToTraderLinkRepository.findAllByTrader(trader).stream().map(CustomerToTraderLink::getCustomer).collect(Collectors.toList());
     }
 
+    public List<User> getEnabledFollowers(User trader) {
+        return getFollowers(trader).stream().filter(User::getEnabled).collect(Collectors.toList());
+    }
+
     public List<User> getTraders() {
         return  userRepository.findAll().stream().filter(authorityService::isTrader).collect(Collectors.toList());
     }

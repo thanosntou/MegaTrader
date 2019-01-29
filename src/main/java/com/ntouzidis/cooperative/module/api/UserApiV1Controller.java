@@ -6,18 +6,25 @@ import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserApiV1Controller {
+
+    @Value("${trader}")
+    private String traderName;
+
+    @Value("${superAdmin}")
+    private String superAdmin;
 
     private final UserService userService;
     private final BitmexService bitmexService;
@@ -27,32 +34,71 @@ public class UserApiV1Controller {
         this.bitmexService = bitmexService;
     }
 
-    @GetMapping
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<?> read(@RequestParam(name = "id", required = false) Integer id,
                                   @RequestParam(name = "name", required = false) String name,
-                                  Authentication authentication) {
-
+                                  Authentication authentication)
+    {
         Preconditions.checkArgument(id != null || name != null);
 
-        User user;
+        Optional<User> user;
         if (id != null)
-            user = userService.findById(id)
-                    .orElseThrow(() -> new NotFoundException("user not found"));
+            user = userService.findById(id);
         else
-            user = userService.findByUsername("athan")
-                    .orElseThrow(() -> new NotFoundException("user not found"));
+            user = userService.findByUsername(name);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user.orElseThrow(() -> new NotFoundException("user not found")), HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/personal",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> getPersonalTrader(Authentication authentication)
+    {
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        User personalTrader = userService.getPersonalTrader(user.getUsername()).orElseThrow(() ->
+                new RuntimeException("User don't have a personal trader"));
+
+        return ResponseEntity.ok(personalTrader);
+    }
+
+    @PostMapping(
+            value = "/follow",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public String followTrader(@RequestParam(name = "traderId") int traderId,
+                             Authentication authentication)
+    {
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        userService.linkTrader(user, traderId);
+
+        return "redirect:/copy";
+    }
+
+    @PostMapping(
+            value = "/unfollow",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public String unfollowTrader(Authentication authentication)
+    {
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        userService.unlinkTrader(user);
+
+        return "redirect:/copy";
     }
 
     @PostMapping("/new")
     public ResponseEntity<User> create(@RequestParam(value = "username") String username,
                                        @RequestParam(value = "email") String email,
                                        @RequestParam(value = "pass") String pass,
-                                       @RequestParam(value = "confirmPass") String confirmPass) {
-
-//        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
+                                       @RequestParam(value = "confirmPass") String confirmPass)
+    {
 //        Preconditions.checkArgument(pin != null, "You need a secret pin to create a user. Ask your trader");
         Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
         Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
@@ -80,24 +126,20 @@ public class UserApiV1Controller {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @GetMapping("/tx")
-    public ResponseEntity<?> getTX(@RequestParam(name = "userId", required = false) Integer id,
+    @GetMapping(
+            value = "/tx",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> getTX(@RequestParam(name = "id", required = false) Integer id,
                                    Authentication authentication)
     {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        //TODO implement this
-//        User user;
-//        if (id == null)
-//            user = userService.findByUsername("athan")
-//                    .orElseThrow(() -> new NotFoundException("user not found"));
-//        else
-//            user = userService.findById(id)
-//                    .orElseThrow(() -> new NotFoundException("user not found"));
+        if (id != null)
+            user = userService.findById(id).orElseThrow(() ->
+                    new NotFoundException("user not found"));
 
-        List<Map<String, Object>> mapList= bitmexService.get_Order_Order(user);
-
-        return ResponseEntity.ok(mapList);
+        return ResponseEntity.ok(bitmexService.get_Order_Order(user));
     }
 
     @GetMapping("/keys")
@@ -105,8 +147,7 @@ public class UserApiV1Controller {
                                         @RequestParam(name = "apiSecret", required = false) String apiSecret,
                                         Authentication authentication)
     {
-        User user = userService.findByUsername("athan")
-                .orElseThrow(() -> new NotFoundException("user not found"));
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         userService.saveKeys(user, apiKey, apiSecret);
 
@@ -118,8 +159,7 @@ public class UserApiV1Controller {
                                         @RequestParam(name = "apiSecret", required = false) String apiSecret,
                                          Authentication authentication)
     {
-        User user = userService.findByUsername("athan")
-                .orElseThrow(() -> new NotFoundException("user not found"));
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         userService.saveKeys(user, apiKey, apiSecret);
 
@@ -131,8 +171,7 @@ public class UserApiV1Controller {
                                          @RequestParam(name="symbol", required=false) String symbol,
                                          Authentication authentication)
     {
-        User user = userService.findByUsername("athan")
-                .orElseThrow(() -> new NotFoundException("user not found"));
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         if (qty != null)
             userService.setFixedQty(user, symbol, qty);
