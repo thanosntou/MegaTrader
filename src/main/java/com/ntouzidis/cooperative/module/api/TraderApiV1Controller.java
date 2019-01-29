@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,24 @@ public class TraderApiV1Controller {
   public TraderApiV1Controller(UserService userService, TradeService tradeService) {
     this.userService = userService;
     this.tradeService = tradeService;
+  }
+
+  @GetMapping(
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public ResponseEntity<?> readAll(Authentication authentication) {
+
+    User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+    // temporary till choose the final business model
+    List<User> activeTraders = new ArrayList<>();
+    activeTraders.add(
+            userService.findByUsername(traderName)
+                    .orElseGet(() -> userService.findByUsername("athan")
+                            .orElseThrow(() -> new NotFoundException("App Trader not found")))
+    );
+
+    return ResponseEntity.ok(activeTraders);
   }
 
   @GetMapping("/followers")
