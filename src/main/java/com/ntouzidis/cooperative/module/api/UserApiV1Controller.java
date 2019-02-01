@@ -142,46 +142,44 @@ public class UserApiV1Controller {
         return ResponseEntity.ok(bitmexService.get_Order_Order(user));
     }
 
-    @GetMapping("/keys")
+    @PostMapping(
+            value = "/keys",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<?> updateKeys(@RequestParam(name = "apiKey", required = false) String apiKey,
                                         @RequestParam(name = "apiSecret", required = false) String apiSecret,
-                                        Authentication authentication)
-    {
-        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        userService.saveKeys(user, apiKey, apiSecret);
-
-        return ResponseEntity.ok(user);
-    }
-
-    @PostMapping("/keys")
-    public ResponseEntity<?> updateKeys2(@RequestParam(name = "apiKey", required = false) String apiKey,
-                                        @RequestParam(name = "apiSecret", required = false) String apiSecret,
                                          Authentication authentication)
     {
-        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+        CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
-        userService.saveKeys(user, apiKey, apiSecret);
+        User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new IllegalStateException("User not found"));
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.saveKeys(user, apiKey, apiSecret));
     }
 
-    @PostMapping(value = "/fixedQty")
-    public ResponseEntity<?> setFixedQty(@RequestParam(name="fixedQty", required=false) Long qty,
-                                         @RequestParam(name="symbol", required=false) String symbol,
+    @PostMapping(
+            value = "/fixedQty",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> setFixedQty(@RequestParam("symbol") String symbol,
+                                         @RequestParam("fixedQty") Long qty,
                                          Authentication authentication)
     {
-        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+        CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
-        if (qty != null)
-            userService.setFixedQty(user, symbol, qty);
+        User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new IllegalStateException("User not found"));
 
-        return ResponseEntity.ok(user);
+        return new ResponseEntity<>(userService.setFixedQty(user, symbol, qty), HttpStatus.OK);
     }
 
-    @GetMapping("/authenticate")
-    public ResponseEntity<CustomUserDetails> authenticate(Authentication authentication) {
-
+    @GetMapping(
+            value = "/authenticate",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CustomUserDetails> authenticate(Authentication authentication)
+    {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return new ResponseEntity<>(userDetails, HttpStatus.OK);
