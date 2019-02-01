@@ -172,14 +172,6 @@ public class User implements Serializable {
         this.fixedQtyXBTUSD = fixedQtyXBTUSD;
     }
 
-//    public Long getFixedQtyBCHZ18() {
-//        return fixedQtyBCHZ18;
-//    }
-//
-//    public void setFixedQtyBCHZ18(Long fixedQtyBCHZ18) {
-//        this.fixedQtyBCHZ18 = fixedQtyBCHZ18;
-//    }
-
     public Long getFixedQtyEOSZ18() {
         return fixedQtyEOSZ18;
     }

@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -49,9 +48,9 @@ public class TraderApiV1Controller {
     // temporary till choose the final business model
     List<User> activeTraders = new ArrayList<>();
     activeTraders.add(
-            userService.findByUsername(traderName)
-                    .orElseGet(() -> userService.findByUsername("athan")
-                            .orElseThrow(() -> new NotFoundException("App Trader not found")))
+            userService.findByUsername(traderName).orElseGet(() ->
+                    userService.findByUsername(superAdmin).orElseThrow(() ->
+                            new NotFoundException("App Trader not found")))
     );
 
     return ResponseEntity.ok(activeTraders);

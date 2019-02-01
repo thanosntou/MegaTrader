@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.user.service;
 
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -7,11 +8,8 @@ import com.ntouzidis.cooperative.module.user.entity.Wallet;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
 import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -82,6 +80,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public void linkTrader(User user, int traderId) {
         CustomerToTraderLink link = new CustomerToTraderLink();
         link.setCustomer(user);
@@ -95,25 +94,37 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void unlinkTrader(User user) {
         CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
 
         customerToTraderLinkRepository.delete(link);
     }
 
-    public void setFixedQty(User user, String symbol, Long qty) {
-        if (symbol.equals("XBTUSD")) user.setFixedQtyXBTUSD(qty);
-        if (symbol.equals("XBTJPY")) user.setFixedQtyXBTJPY(qty);
-        if (symbol.equals("ADAZ18")) user.setFixedQtyADAZ18(qty);
-        if (symbol.equals("BCHZ18")) user.setFixedQtyBCHZ18(qty);
-        if (symbol.equals("EOSZ18")) user.setFixedQtyEOSZ18(qty);
-        if (symbol.equals("ETHUSD")) user.setFixedQtyETHUSD(qty);
-        if (symbol.equals("LTCZ18")) user.setFixedQtyLTCZ18(qty);
-        if (symbol.equals("TRXZ18")) user.setFixedQtyTRXZ18(qty);
-        if (symbol.equals("XRPZ18")) user.setFixedQtyXRPZ18(qty);
-        if (symbol.equals("XBTKRW")) user.setFixedQtyXBTKRW(qty);
+    @Transactional
+    public User setFixedQty(User user, String symbol, Long qty) {
+        if (symbol.equals(Symbol.XBTUSD.getValue()))
+            user.setFixedQtyXBTUSD(qty);
+        else if (symbol.equals(Symbol.ETHUSD.getValue()))
+            user.setFixedQtyETHUSD(qty);
+        else if (symbol.equals(Symbol.ADAXXX.getValue()))
+            user.setFixedQtyADAZ18(qty);
+        else if (symbol.equals(Symbol.BCHXXX.getValue()))
+            user.setFixedQtyBCHZ18(qty);
+        else if (symbol.equals(Symbol.EOSXXX.getValue()))
+            user.setFixedQtyEOSZ18(qty);
+        else if (symbol.equals(Symbol.ETHXXX.getValue()))
+            user.setFixedQtyXBTJPY(qty); // TODO replace with ETHH19
+        else if (symbol.equals(Symbol.LTCXXX.getValue()))
+            user.setFixedQtyLTCZ18(qty);
+        else if (symbol.equals(Symbol.TRXXXX.getValue()))
+            user.setFixedQtyTRXZ18(qty);
+        else if (symbol.equals(Symbol.XRPXXX.getValue()))
+            user.setFixedQtyXRPZ18(qty);
+        else
+            throw new IllegalArgumentException("Couldn't set the qty");
 
-        userRepository.save(user);
+        return userRepository.saveAndFlush(user);
     }
 
     public boolean isCustomer(User user) {
@@ -135,11 +146,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void saveKeys(User user, String apiKey, String apiSecret) {
+    public User saveKeys(User user, String apiKey, String apiSecret) {
         if (apiKey != null) user.setApiKey(apiKey);
         if (apiSecret != null) user.setApiSecret(apiSecret);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional(readOnly=true)

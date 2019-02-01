@@ -4,13 +4,13 @@ public enum Symbol {
 
     XBTUSD("XBTUSD"),
     ETHUSD("ETHUSD"),
-    ADA("ADAH19"),
-    BCH("BCHH19"),
-    EOS("EOSH19"),
-    ETH("ETHH19"),
-    LTC("LTCH19"),
-    TRX("TRXH19"),
-    XRP("XRPH19");
+    ADAXXX("ADAH19"),
+    BCHXXX("BCHH19"),
+    EOSXXX("EOSH19"),
+    ETHXXX("ETHH19"),
+    LTCXXX("LTCH19"),
+    TRXXXX("TRXH19"),
+    XRPXXX("XRPH19");
 
     private final String value;
 
