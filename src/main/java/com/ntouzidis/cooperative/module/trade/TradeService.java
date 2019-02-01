@@ -5,6 +5,7 @@ import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import net.bull.javamelody.internal.model.Collector;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -160,28 +162,18 @@ public class TradeService {
 
     Map<String, Long> calculateSumFixedQtys(List<User> followers) {
         Map<String, Long> sumFixedQtys = new HashMap<>();
-        sumFixedQtys.put("XBTUSD", 0L);
-        sumFixedQtys.put("XBTJPY", 0L);
-        sumFixedQtys.put("ADAZ18", 0L);
-        sumFixedQtys.put("BCHZ18", 0L);
-        sumFixedQtys.put("EOSZ18", 0L);
-        sumFixedQtys.put("ETHUSD", 0L);
-        sumFixedQtys.put("LTCZ18", 0L);
-        sumFixedQtys.put("TRXZ18", 0L);
-        sumFixedQtys.put("XRPZ18", 0L);
-        sumFixedQtys.put("XBTKRW", 0L);
+        Arrays.stream(Symbol.values()).forEach(symbol -> sumFixedQtys.put(symbol.getValue(), 0L));
 
         followers.forEach(f -> {
-            sumFixedQtys.put("XBTUSD", sumFixedQtys.get("XBTUSD") + f.getFixedQtyXBTUSD());
-            sumFixedQtys.put("XBTJPY", sumFixedQtys.get("XBTJPY") + f.getFixedQtyXBTJPY());
-            sumFixedQtys.put("ADAZ18", sumFixedQtys.get("ADAZ18") + f.getFixedQtyADAZ18());
-            sumFixedQtys.put("BCHZ18", sumFixedQtys.get("BCHZ18") + f.getFixedQtyBCHZ18());
-            sumFixedQtys.put("EOSZ18", sumFixedQtys.get("EOSZ18") + f.getFixedQtyEOSZ18());
-            sumFixedQtys.put("ETHUSD", sumFixedQtys.get("ETHUSD") + f.getFixedQtyETHUSD());
-            sumFixedQtys.put("LTCZ18", sumFixedQtys.get("LTCZ18") + f.getFixedQtyLTCZ18());
-            sumFixedQtys.put("TRXZ18", sumFixedQtys.get("TRXZ18") + f.getFixedQtyTRXZ18());
-            sumFixedQtys.put("XRPZ18", sumFixedQtys.get("XRPZ18") + f.getFixedQtyXRPZ18());
-            sumFixedQtys.put("XBTKRW", sumFixedQtys.get("XBTKRW") + f.getFixedQtyXBTKRW());
+            sumFixedQtys.put(Symbol.XBTUSD.getValue(), sumFixedQtys.get(Symbol.XBTUSD.getValue()) + f.getFixedQtyXBTUSD());
+            sumFixedQtys.put(Symbol.ETHUSD.getValue(), sumFixedQtys.get(Symbol.ETHUSD.getValue()) + f.getFixedQtyXBTJPY());
+            sumFixedQtys.put(Symbol.ADAXXX.getValue(), sumFixedQtys.get(Symbol.ADAXXX.getValue()) + f.getFixedQtyADAZ18());
+            sumFixedQtys.put(Symbol.BCHXXX.getValue(), sumFixedQtys.get(Symbol.BCHXXX.getValue()) + f.getFixedQtyBCHZ18());
+            sumFixedQtys.put(Symbol.EOSXXX.getValue(), sumFixedQtys.get(Symbol.EOSXXX.getValue()) + f.getFixedQtyEOSZ18());
+            sumFixedQtys.put(Symbol.ETHXXX.getValue(), sumFixedQtys.get(Symbol.ETHXXX.getValue()) + f.getFixedQtyETHUSD());
+            sumFixedQtys.put(Symbol.LTCXXX.getValue(), sumFixedQtys.get(Symbol.LTCXXX.getValue()) + f.getFixedQtyLTCZ18());
+            sumFixedQtys.put(Symbol.TRXXXX.getValue(), sumFixedQtys.get(Symbol.TRXXXX.getValue()) + f.getFixedQtyTRXZ18());
+            sumFixedQtys.put(Symbol.XRPXXX.getValue(), sumFixedQtys.get(Symbol.XRPXXX.getValue()) + f.getFixedQtyXRPZ18());
         });
 
         return sumFixedQtys;
@@ -189,20 +181,9 @@ public class TradeService {
 
     Map<String, Double> calculateSumPositions(List<User> followers) {
         Map<String, Double> sumPositions = new HashMap<>();
-
+        Arrays.stream(Symbol.values()).forEach(symbol -> sumPositions.put(symbol.getValue(), (double) 0));
 
         try {
-            sumPositions.put("XBTUSD", (double) 0);
-            sumPositions.put("XBTJPY", (double) 0);
-            sumPositions.put("ADAZ18", (double) 0);
-            sumPositions.put("BCHZ18", (double) 0);
-            sumPositions.put("EOSZ18", (double) 0);
-            sumPositions.put("ETHUSD", (double) 0);
-            sumPositions.put("LTCZ18", (double) 0);
-            sumPositions.put("TRXZ18", (double) 0);
-            sumPositions.put("XRPZ18", (double) 0);
-            sumPositions.put("XBTKRW", (double) 0);
-
             followers.forEach(f -> bitmexService.getAllSymbolPosition(f)
                     .stream()
                     .filter(Objects::nonNull)
@@ -211,16 +192,9 @@ public class TradeService {
                         sumPositions.put(sym, sumPositions.get(sym) + Double.parseDouble(map.get("currentQty").toString()));
                     })
             );
-
         } catch (Exception ex){
-            logger.debug("Eskase h calculateSumPositions. Cause", ex.getCause());
-            logger.debug("Eskase h calculateSumPositions, Stacktrace", ex.getStackTrace());
             logger.debug("Eskase h calculateSumPositions", ex);
-
         }
-
-
-
         return sumPositions;
     }
 

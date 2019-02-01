@@ -168,8 +168,8 @@ public class UserApiV1Controller {
     {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
-        User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new IllegalStateException("User not found"));
+        User user = userService.findById(userDetails.getUser().getId())
+                .orElseThrow(() -> new IllegalStateException("User not found"));
 
         return new ResponseEntity<>(userService.setFixedQty(user, symbol, qty), HttpStatus.OK);
     }

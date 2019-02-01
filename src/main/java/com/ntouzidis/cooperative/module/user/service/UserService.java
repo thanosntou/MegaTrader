@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.user.service;
 
+import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
@@ -7,7 +8,6 @@ import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.entity.Wallet;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,8 +45,16 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(userRepository.findByUsername(username));
     }
 
+    public Optional<User> findCustomer(Integer id) {
+        return userRepository.findById(id).filter(this::isCustomer);
+    }
+
     public Optional<User> findCustomer(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username)).filter(this::isCustomer);
+    }
+
+    public Optional<User> findTrader(Integer id) {
+        return userRepository.findById(id).filter(this::isTrader);
     }
 
     public Optional<User> findTrader(String username) {
@@ -75,6 +83,14 @@ public class UserService implements UserDetailsService {
         return authorityService.getAuthorities(username);
     }
 
+    public boolean isCustomer(User user) {
+        return authorityService.isCustomer(user);
+    }
+
+    public boolean isTrader(User user) {
+        return authorityService.isTrader(user);
+    }
+
     @Transactional
     public User update(User user) {
         return userRepository.save(user);
@@ -82,27 +98,30 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void linkTrader(User user, int traderId) {
-        CustomerToTraderLink link = new CustomerToTraderLink();
-        link.setCustomer(user);
-        link.setTrader(findTrader(userRepository.findById(traderId).orElseThrow(RuntimeException::new).getUsername()).orElse(null));
-//        link.setTrader(userRepository.findById(traderId).orElseThrow(() -> new RuntimeException("trader not found")));
-        link.setCreate_date();
+        findTrader(traderId).ifPresent(i -> {
+            Preconditions.checkArgument(Objects.nonNull(user), "User cannot be null");
 
-        customerToTraderLinkRepository.save(link);
+            CustomerToTraderLink link = new CustomerToTraderLink();
+            link.setCustomer(user);
+            link.setTrader(i);
+            link.setCreate_date();
 
-        user.setEnabled(false);
-        userRepository.save(user);
+            customerToTraderLinkRepository.save(link);
+            user.setEnabled(false);
+            userRepository.save(user);
+        });
     }
 
     @Transactional
     public void unlinkTrader(User user) {
         CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
-
         customerToTraderLinkRepository.delete(link);
     }
 
     @Transactional
     public User setFixedQty(User user, String symbol, Long qty) {
+        Preconditions.checkArgument(qty != null, "Qty cannot be null");
+
         if (symbol.equals(Symbol.XBTUSD.getValue()))
             user.setFixedQtyXBTUSD(qty);
         else if (symbol.equals(Symbol.ETHUSD.getValue()))
@@ -125,14 +144,6 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Couldn't set the qty");
 
         return userRepository.saveAndFlush(user);
-    }
-
-    public boolean isCustomer(User user) {
-        return authorityService.isCustomer(user);
-    }
-
-    public boolean isTrader(User user) {
-        return authorityService.isTrader(user);
     }
 
     @Transactional
