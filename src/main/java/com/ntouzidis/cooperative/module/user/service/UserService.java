@@ -98,12 +98,12 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void linkTrader(User user, int traderId) {
-        findTrader(traderId).ifPresent(i -> {
+        findTrader(traderId).ifPresent(trader -> {
             Preconditions.checkArgument(Objects.nonNull(user), "User cannot be null");
 
             CustomerToTraderLink link = new CustomerToTraderLink();
             link.setCustomer(user);
-            link.setTrader(i);
+            link.setTrader(trader);
             link.setCreate_date();
 
             customerToTraderLinkRepository.save(link);
