@@ -70,27 +70,29 @@ public class UserApiV1Controller {
             value = "/follow",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public String followTrader(@RequestParam(name = "traderId") int traderId,
-                             Authentication authentication)
+    public ResponseEntity<User> followTrader(@RequestParam(name = "traderId") Integer traderId,
+                                             Authentication authentication)
     {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        userService.linkTrader(user, traderId);
+        User trader = userService.findTrader(traderId).orElseThrow(() -> new RuntimeException("Trader not found"));
 
-        return "redirect:/copy";
+        userService.linkTrader(user, trader.getId());
+
+        return ResponseEntity.ok(trader);
     }
 
     @PostMapping(
             value = "/unfollow",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public String unfollowTrader(Authentication authentication)
+    public ResponseEntity<User> unfollowTrader(Authentication authentication)
     {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         userService.unlinkTrader(user);
 
-        return "redirect:/copy";
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/new")
