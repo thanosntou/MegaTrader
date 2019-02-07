@@ -2,6 +2,7 @@ package com.ntouzidis.cooperative.module.api;
 
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
@@ -158,6 +159,21 @@ public class UserApiV1Controller {
                 new IllegalStateException("User not found"));
 
         return ResponseEntity.ok(userService.saveKeys(user, apiKey, apiSecret));
+    }
+
+    @PostMapping(
+            value = "/client",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> updateClient(@RequestParam(name = "client", required = false) Client client,
+                                          Authentication authentication)
+    {
+        CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
+
+        User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new IllegalStateException("User not found"));
+
+        return ResponseEntity.ok(userService.updateClient(user, client));
     }
 
     @PostMapping(

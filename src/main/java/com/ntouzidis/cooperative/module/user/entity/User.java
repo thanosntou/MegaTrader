@@ -1,6 +1,7 @@
 package com.ntouzidis.cooperative.module.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ntouzidis.cooperative.module.common.enumeration.Client;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -65,6 +66,10 @@ public class User implements Serializable {
     private Long fixedQtyXRPZ18;
     @Column(name = "fixed_qty_xbtkrw")
     private Long fixedQtyXBTKRW;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "client")
+    private Client client;
 
     public User() {
     }
@@ -244,6 +249,14 @@ public class User implements Serializable {
         this.fixedQtyXBTKRW = fixedQtyXBTKRW;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -266,6 +279,7 @@ public class User implements Serializable {
                 ", fixedQtyTRXZ18=" + fixedQtyTRXZ18 +
                 ", fixedQtyXRPZ18=" + fixedQtyXRPZ18 +
                 ", fixedQtyXBTKRW=" + fixedQtyXBTKRW +
+                ", client=" + client +
                 '}';
     }
 }

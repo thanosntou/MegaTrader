@@ -1,14 +1,15 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
+import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.postgresql.shaded.com.ongres.scram.common.util.Preconditions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class BitmexService implements IBitmexService {
@@ -50,7 +50,7 @@ public class BitmexService implements IBitmexService {
     public List<Map<String, Object>> get_Announcements(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestGET(user, base_url, ENDPOINT_ANNOUNCEMENT, "");
+        Optional<String> res = requestGET(user, ENDPOINT_ANNOUNCEMENT, "");
 
         return getMapList(res.orElse(null));
     }
@@ -59,7 +59,7 @@ public class BitmexService implements IBitmexService {
     public Map<String, Object> get_User_Margin(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestGET(user, base_url, ENDPOINT_USER_MARGIN, "");
+        Optional<String> res = requestGET(user, ENDPOINT_USER_MARGIN, "");
 
         return getMap(res.orElse(null));
     }
@@ -68,7 +68,7 @@ public class BitmexService implements IBitmexService {
     public List<Map<String, Object>> get_Order_Order(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestGET(user, base_url, ENDPOINT_ORDER + "?reverse=true", "");
+        Optional<String> res = requestGET(user, ENDPOINT_ORDER + "?reverse=true", "");
 
         return getMapList(res.orElse(null));
     }
@@ -85,7 +85,7 @@ public class BitmexService implements IBitmexService {
 
         Long finalQty = qty * percentage / 100;
 
-        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.withOrderQty(finalQty.toString()).get());
+        Optional<String> res = requestPOST(user, ENDPOINT_ORDER, dataOrder.withOrderQty(finalQty.toString()).get());
 
         return getMap(res.orElse(null));
     }
@@ -96,7 +96,7 @@ public class BitmexService implements IBitmexService {
 
         String data = dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get();
 
-        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, data);
+        Optional<String> res = requestPOST(user, ENDPOINT_ORDER, data);
 
         return getMap(res.orElse(null));
     }
@@ -105,26 +105,26 @@ public class BitmexService implements IBitmexService {
     public Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestPOST(user, base_url, ENDPOINT_ORDER, dataOrder.get());
+        Optional<String> res = requestPOST(user, ENDPOINT_ORDER, dataOrder.get());
 
         return getMap(res.orElse(null));
     }
 
     @Override
     public void cancelOrder(User user, DataDeleteOrderBuilder dataDeleteOrder) {
-        requestDELETE(user, base_url, ENDPOINT_ORDER, dataDeleteOrder.get());
+        requestDELETE(user, ENDPOINT_ORDER, dataDeleteOrder.get());
     }
 
     @Override
     public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
-        requestDELETE(user, base_url, ENDPOINT_ORDER_ALL, dataDeleteOrderBuilder.get());
+        requestDELETE(user, ENDPOINT_ORDER_ALL, dataDeleteOrderBuilder.get());
     }
 
     @Override
     public Map<String, Object> getSymbolPosition(User user, String symbol) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION, "");
+        Optional<String> res = requestGET(user, ENDPOINT_POSITION, "");
 
         return getMapList(res.orElse(null)).stream().filter(i -> i.get("symbol").equals(symbol)).findAny().orElse(null);
     }
@@ -133,7 +133,7 @@ public class BitmexService implements IBitmexService {
     public List<Map<String, Object>> getAllSymbolPosition(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION, "");
+        Optional<String> res = requestGET(user, ENDPOINT_POSITION, "");
 
         return getMapList(res.orElse(null));
     }
@@ -142,7 +142,7 @@ public class BitmexService implements IBitmexService {
     public List<Map<String, Object>> get_Position(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION, "");
+        Optional<String> res = requestGET(user, ENDPOINT_POSITION, "");
 
         return getMapList(res.orElse(null));
     }
@@ -151,7 +151,7 @@ public class BitmexService implements IBitmexService {
     public List<Map<String, Object>> get_Position_Leverage(User user, String data) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        Optional<String> res = requestGET(user, base_url, ENDPOINT_POSITION_LEVERAGE, data);
+        Optional<String> res = requestGET(user, ENDPOINT_POSITION_LEVERAGE, data);
 
         return getMapList(res.orElse(null));
     }
@@ -160,10 +160,10 @@ public class BitmexService implements IBitmexService {
     public void post_Position_Leverage(User user, DataPostLeverage dataLeverageBuilder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        requestPOST(user, base_url, ENDPOINT_POSITION_LEVERAGE, dataLeverageBuilder.get());
+        requestPOST(user, ENDPOINT_POSITION_LEVERAGE, dataLeverageBuilder.get());
     }
 
-    private Optional<String> requestGET(User user, String baseUrl, String path, String data) {
+    private Optional<String> requestGET(User user, String path, String data) {
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
@@ -183,7 +183,7 @@ public class BitmexService implements IBitmexService {
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.GET, entity, String.class);
+            ResponseEntity<?> res = restTemplate.exchange(user.getClient().getValue() + path, HttpMethod.GET, entity, String.class);
 
             return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
 
@@ -194,7 +194,8 @@ public class BitmexService implements IBitmexService {
         return Optional.empty();
     }
 
-    private Optional<String> requestPOST(User user, String baseUrl, String path, String data) {
+    private Optional<String> requestPOST(User user, String path, String data) {
+        Preconditions.checkState(user.getClient() != null, "User has not set a client");
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
@@ -217,18 +218,17 @@ public class BitmexService implements IBitmexService {
 
             HttpEntity<String> entity = new HttpEntity<>(data, headers);
 
-            ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.POST, entity, String.class);
+            ResponseEntity<?> res = restTemplate.exchange(user.getClient().getValue() + path, HttpMethod.POST, entity, String.class);
 
             return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
         return Optional.empty();
     }
 
-    private void requestDELETE(User user, String baseUrl, String path, String data) {
+    private void requestDELETE(User user, String path, String data) {
         String apikey = user.getApiKey();
         String apiSecret = user.getApiSecret();
         String expires = String.valueOf(1600883067);
@@ -247,7 +247,7 @@ public class BitmexService implements IBitmexService {
 
             HttpEntity<String> entity = new HttpEntity<>(data, headers);
 
-            ResponseEntity<?> res = restTemplate.exchange(baseUrl + path, HttpMethod.DELETE, entity, String.class);
+            ResponseEntity<?> res = restTemplate.exchange(user.getClient().getValue() + path, HttpMethod.DELETE, entity, String.class);
 
             Objects.requireNonNull(res.getBody());
 

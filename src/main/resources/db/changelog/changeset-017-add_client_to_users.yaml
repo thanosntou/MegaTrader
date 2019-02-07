@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 017-add_client_to_users
+      author: ntouzidis
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: client
+                  type: varchar(255)
+
+

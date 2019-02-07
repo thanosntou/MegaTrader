@@ -78,14 +78,15 @@ public class TradeApiV1Controller {
     }
 
     @PostMapping(
-            value = "/position",
+            value = "/orderAll2",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> setAllPosition(@RequestParam("symbol") String symbol,
+    public ResponseEntity<?> postOrder2(@RequestParam("symbol") String symbol,
                                             @RequestParam("orderType") String orderType,
                                             @RequestParam("side") String side,
-                                            @RequestParam("percentage") int percentage,
-                                            @RequestParam("price") String price,
+                                            @RequestParam(value = "percentage", required = false) int percentage,
+                                            @RequestParam(value = "price", required = false) String price,
+                                            @RequestParam(value = "execInst", required = false) String execInst,
                                             Authentication authentication) {
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -93,12 +94,11 @@ public class TradeApiV1Controller {
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(symbol)
                 .withOrderType(orderType)
-                .withSide(side);
+                .withSide(side)
+                .withPrice(price)
+                .withExecInst(execInst);
 
-        if (orderType.equals("Limit"))
-            dataPostOrderBuilder.withPrice(price);
-
-        tradeService.positionAll(trader, dataPostOrderBuilder, percentage);
+        tradeService.postOrder2(trader, dataPostOrderBuilder, percentage);
 
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
