@@ -1,6 +1,7 @@
 package com.ntouzidis.cooperative.module.user.service;
 
 import com.google.common.base.Preconditions;
+import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
@@ -161,6 +162,14 @@ public class UserService implements UserDetailsService {
     public User saveKeys(User user, String apiKey, String apiSecret) {
         if (apiKey != null) user.setApiKey(apiKey);
         if (apiSecret != null) user.setApiSecret(apiSecret);
+
+        userRepository.save(user);
+        return user;
+    }
+
+    @Transactional
+    public User updateClient(User user, Client client) {
+        if (client != null) user.setClient(client);
 
         userRepository.save(user);
         return user;

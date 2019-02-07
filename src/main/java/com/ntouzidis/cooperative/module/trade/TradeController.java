@@ -171,7 +171,7 @@ public class TradeController {
 
         if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
 
-        tradeService.positionAll(trader, dataPostOrderBuilder, percentage);
+        tradeService.postOrder2(trader, dataPostOrderBuilder, percentage);
 
         try {
             Thread.sleep(500);
