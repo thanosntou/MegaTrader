@@ -143,7 +143,8 @@ public class UserService implements UserDetailsService {
         else
             throw new IllegalArgumentException("Couldn't set the qty");
 
-        return userRepository.saveAndFlush(user);
+        userRepository.save(user);
+        return user;
     }
 
     @Transactional
@@ -161,7 +162,8 @@ public class UserService implements UserDetailsService {
         if (apiKey != null) user.setApiKey(apiKey);
         if (apiSecret != null) user.setApiSecret(apiSecret);
 
-        return userRepository.save(user);
+        userRepository.save(user);
+        return user;
     }
 
     @Transactional(readOnly=true)
