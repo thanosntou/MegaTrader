@@ -194,6 +194,7 @@ public class UserService implements UserDetailsService {
         user.setEmail(userDetails.getEmail());
         user.setCreate_date();
         user.setWallet(wallet);
+        user.setClient(Client.BITMEX);
         user.setFixedQtyXBTUSD(0L);
         user.setFixedQtyXBTJPY(0L);
         user.setFixedQtyADAZ18(0L);
@@ -204,6 +205,8 @@ public class UserService implements UserDetailsService {
         user.setFixedQtyTRXZ18(0L);
         user.setFixedQtyXRPZ18(0L);
         user.setFixedQtyXBTKRW(0L);
+        user.setApiKey("Fill_Me");
+        user.setApiSecret("Fill_Me");
 
         userRepository.save(user);
 
