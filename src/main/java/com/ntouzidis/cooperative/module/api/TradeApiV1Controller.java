@@ -116,9 +116,10 @@ public class TradeApiV1Controller {
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        if (symbol == null) {
+        if (symbol != null) {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
                     .withSymbol(symbol);
+
             tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
 
             return new ResponseEntity<>("{ \"orderID\": \"" + orderID + "\" }", HttpStatus.OK);
@@ -126,6 +127,7 @@ public class TradeApiV1Controller {
         } else {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
                     .withOrderID(orderID);
+
             tradeService.cancelOrder(trader, dataDeleteOrderBuilder);
 
             return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
@@ -137,8 +139,8 @@ public class TradeApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> closePosition(@RequestParam(name="symbol", required = false) String symbol,
-                                            Authentication authentication)
-    {
+                                           Authentication authentication
+    ) {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
