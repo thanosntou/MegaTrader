@@ -15,6 +15,7 @@ import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -51,6 +52,17 @@ public class UserApiV1Controller {
             user = userService.findByUsername(name);
 
         return new ResponseEntity<>(user.orElseThrow(() -> new NotFoundException("user not found")), HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "all",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> readAll(Authentication authentication)
+    {
+        List<User> users = userService.findAll();
+
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping(

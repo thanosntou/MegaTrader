@@ -9,6 +9,7 @@ import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.entity.Wallet;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,6 +37,10 @@ public class UserService implements UserDetailsService {
         this.authorityService = authorityService;
         this.customerToTraderLinkRepository = customerToTraderLinkRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "username"));
     }
 
     public Optional<User> findById(Integer id) {
