@@ -11,6 +11,8 @@ import com.ntouzidis.cooperative.module.user.service.UserService;
 import net.bull.javamelody.internal.model.Collector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
@@ -24,6 +26,9 @@ public class TradeService {
 
     private final BitmexService bitmexService;
     private final UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public TradeService(BitmexService bitmexService,
                         UserService userService) {
@@ -44,6 +49,10 @@ public class TradeService {
     public void createSignal(User trader, SignalBuilder sb) {
         List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
+        String uniqueclOrdID1 = UUID.randomUUID().toString();
+        String uniqueclOrdID2 = UUID.randomUUID().toString();
+        String uniqueclOrdID3 = UUID.randomUUID().toString();
+
         DataPostLeverage dataLeverage = new DataPostLeverage()
                 .withSymbol(sb.getSymbol())
                 .withLeverage(sb.getLeverage());
@@ -54,6 +63,7 @@ public class TradeService {
 
             //            2. Market
             DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
+                    .withClOrdId(uniqueclOrdID1)
                     .withOrderType("Market")
                     .withSymbol(sb.getSymbol())
                     .withSide(sb.getSide())
@@ -65,6 +75,7 @@ public class TradeService {
             //            3. Stop Market
             if (sb.getStopLoss() != null) {
                 DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
+                        .withClOrdId(uniqueclOrdID2)
                         .withOrderType("Stop")
                         .withSymbol(sb.getSymbol())
                         .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
@@ -78,6 +89,7 @@ public class TradeService {
             //            4. Limit
             if (sb.getProfitTrigger() != null) {
                 DataPostOrderBuilder limitDataOrder = new DataPostOrderBuilder()
+                        .withClOrdId(uniqueclOrdID3)
                         .withOrderType("Limit")
                         .withSymbol(sb.getSymbol())
                         .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")

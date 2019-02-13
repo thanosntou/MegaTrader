@@ -41,25 +41,25 @@ public class UserApiV1Controller {
     )
     public ResponseEntity<?> read(@RequestParam(name = "id", required = false) Integer id,
                                   @RequestParam(name = "name", required = false) String name,
-                                  Authentication authentication)
-    {
+                                  Authentication authentication
+    ) {
         Preconditions.checkArgument(id != null || name != null);
 
-        Optional<User> user;
+        Optional<User> userOpt;
         if (id != null)
-            user = userService.findById(id);
+            userOpt = userService.findById(id);
         else
-            user = userService.findByUsername(name);
+            userOpt = userService.findByUsername(name);
 
-        return new ResponseEntity<>(user.orElseThrow(() -> new NotFoundException("user not found")), HttpStatus.OK);
+        return new ResponseEntity<>(userOpt.orElseThrow(() -> new NotFoundException("user not found")), HttpStatus.OK);
     }
 
     @GetMapping(
             value = "all",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> readAll(Authentication authentication)
-    {
+    public ResponseEntity<?> readAll(Authentication authentication
+    ) {
         List<User> users = userService.findAll();
 
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -69,8 +69,8 @@ public class UserApiV1Controller {
             value = "/personal",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> getPersonalTrader(Authentication authentication)
-    {
+    public ResponseEntity<?> getPersonalTrader(Authentication authentication
+    ) {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElseThrow(() ->
@@ -84,8 +84,8 @@ public class UserApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<User> followTrader(@RequestParam(name = "traderId") Integer traderId,
-                                             Authentication authentication)
-    {
+                                             Authentication authentication
+    ) {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         User trader = userService.findTrader(traderId).orElseThrow(() -> new RuntimeException("Trader not found"));
@@ -151,8 +151,7 @@ public class UserApiV1Controller {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         if (id != null)
-            user = userService.findById(id).orElseThrow(() ->
-                    new NotFoundException("user not found"));
+            user = userService.findById(id).orElseThrow(() -> new NotFoundException("user not found"));
 
         return ResponseEntity.ok(bitmexService.get_Order_Order(user));
     }
@@ -198,8 +197,8 @@ public class UserApiV1Controller {
     ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
-        User user = userService.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new IllegalStateException("User not found"));
+        User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
+                new IllegalStateException("User not found"));
 
         return new ResponseEntity<>(userService.setFixedQty(user, symbol, qty), HttpStatus.OK);
     }
@@ -224,8 +223,8 @@ public class UserApiV1Controller {
             value = "/authenticate",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CustomUserDetails> authenticate(Authentication authentication)
-    {
+    public ResponseEntity<CustomUserDetails> authenticate(Authentication authentication
+    ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return new ResponseEntity<>(userDetails, HttpStatus.OK);
