@@ -5,6 +5,7 @@ import java.util.Optional;
 public class DataPostOrderBuilder {
 
     private String symbol;
+    private String clOrdId;
     private String side;
     private String orderType;
     private String orderQty;
@@ -13,9 +14,18 @@ public class DataPostOrderBuilder {
     private String stopPrice;
     private String text = "text=CryptoInfluencer";
 
+    public DataPostOrderBuilder() {
+    }
+
     public DataPostOrderBuilder withSymbol(String symbol) {
         if (symbol != null)
             this.symbol = "symbol=" + symbol + "&";
+        return this;
+    }
+
+    public DataPostOrderBuilder withClOrdId(String clOrdId) {
+        if (clOrdId != null)
+            this.clOrdId = "clOrdID=" + clOrdId + "&";
         return this;
     }
 
@@ -63,6 +73,7 @@ public class DataPostOrderBuilder {
 
     public String get() {
         return Optional.ofNullable(symbol).orElse("") +
+                Optional.ofNullable(clOrdId).orElse("") +
                 Optional.ofNullable(side).orElse("") +
                 Optional.ofNullable(orderType).orElse("") +
                 Optional.ofNullable(orderQty).orElse("") +

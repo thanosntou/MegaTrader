@@ -107,11 +107,11 @@ public class TradeApiV1Controller {
             value = "/order",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> cancelOrder(@RequestParam(name="orderID", required = false) String orderID,
+    public ResponseEntity<?> cancelOrder(@RequestParam(name="clOrdID", required = false) String clOrdID,
                                          @RequestParam(name="symbol", required = false) String symbol,
                                          Authentication authentication) {
 
-        Preconditions.checkArgument(orderID != null || symbol != null,
+        Preconditions.checkArgument(clOrdID != null || symbol != null,
                 "Either orderID or symbol must be present");
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -122,11 +122,11 @@ public class TradeApiV1Controller {
 
             tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
 
-            return new ResponseEntity<>("{ \"orderID\": \"" + orderID + "\" }", HttpStatus.OK);
+            return new ResponseEntity<>("{ \"clOrdID\": \"" + clOrdID + "\" }", HttpStatus.OK);
 
         } else {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withOrderID(orderID);
+                    .withClientOrderId(clOrdID);
 
             tradeService.cancelOrder(trader, dataDeleteOrderBuilder);
 
