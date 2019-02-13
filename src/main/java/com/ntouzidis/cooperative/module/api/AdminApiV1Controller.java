@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -23,8 +25,13 @@ public class AdminApiV1Controller {
     }
 
     @GetMapping("/logins")
-    public ResponseEntity<List<Login>> readLogins() {
-        List<Login> logins = loginRepository.findAll();
+    public ResponseEntity<List<Login>> readLogins()
+    {
+        List<Login> logins = loginRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Login::getId))
+                .collect(Collectors.toList());
+
         return new ResponseEntity<>(logins, HttpStatus.OK);
     }
 }
