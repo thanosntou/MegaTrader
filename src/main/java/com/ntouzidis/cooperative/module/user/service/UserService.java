@@ -180,6 +180,21 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    @Transactional
+    public User changePassword(int id, String newPass, String confirmPass) {
+        Preconditions.checkArgument( newPass != null && confirmPass != null, "Password is empty");
+        Preconditions.checkArgument(newPass.equals(confirmPass), "Wrong confirmation password");
+
+        Optional<User> userOpt = findById(id);
+
+        if (userOpt.isPresent()) {
+            userOpt.get().setPassword(passwordEncoder.encode(newPass));
+            userRepository.save(userOpt.get());
+            return userOpt.get();
+        }
+        throw new RuntimeException("User not found");
+    }
+
     @Transactional(readOnly=true)
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

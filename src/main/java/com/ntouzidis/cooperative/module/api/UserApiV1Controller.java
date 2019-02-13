@@ -131,7 +131,7 @@ public class UserApiV1Controller {
         user.setFixedQtyADAZ18(0L);
         user.setFixedQtyBCHZ18(0L);
         user.setFixedQtyEOSZ18(0L);
-//        user.setFixedQtyETHUSD(0L);
+        user.setFixedQtyXBTJPY(0L);//TODO should change to ethxxx
         user.setFixedQtyLTCZ18(0L);
         user.setFixedQtyTRXZ18(0L);
         user.setFixedQtyXRPZ18(0L);
@@ -194,14 +194,30 @@ public class UserApiV1Controller {
     )
     public ResponseEntity<?> setFixedQty(@RequestParam("symbol") String symbol,
                                          @RequestParam("fixedQty") Long qty,
-                                         Authentication authentication)
-    {
+                                         Authentication authentication
+    ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
         User user = userService.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
         return new ResponseEntity<>(userService.setFixedQty(user, symbol, qty), HttpStatus.OK);
+    }
+
+    @PostMapping(
+            value = "/pass",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<User> updatePass(@RequestParam("oldPass") String oldPass,
+                                           @RequestParam("newPass") String newPass,
+                                           @RequestParam("confirmPass") String confirmPass,
+                                           Authentication authentication
+    ) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        User user = userService.changePassword(userDetails.getUser().getId(), newPass, confirmPass);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(
