@@ -39,10 +39,12 @@ public class TradeService {
     public void placeOrderAll(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
         List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
+        String uniqueclOrdID1 = UUID.randomUUID().toString();
+
         enabledfollowers.forEach(customer -> {
             bitmexService.post_Position_Leverage(customer, dataPostLeverage);
 
-            bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder);
+            bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder.withClOrdId(uniqueclOrdID1));
         });
     }
 
