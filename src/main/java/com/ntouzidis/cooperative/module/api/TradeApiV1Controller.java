@@ -122,7 +122,7 @@ public class TradeApiV1Controller {
 
             tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
 
-            return new ResponseEntity<>("{ \"clOrdID\": \"" + clOrdID + "\" }", HttpStatus.OK);
+            return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
 
         } else {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
@@ -130,7 +130,7 @@ public class TradeApiV1Controller {
 
             tradeService.cancelOrder(trader, dataDeleteOrderBuilder);
 
-            return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
+            return new ResponseEntity<>("{ \"clOrdID\": \"" + clOrdID + "\" }", HttpStatus.OK);
         }
     }
 

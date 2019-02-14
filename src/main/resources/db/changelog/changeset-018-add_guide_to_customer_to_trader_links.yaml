@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 018-add_guide_to_customer_to_trader_links
+      author: ntouzidis
+      changes:
+        - addColumn:
+            tableName: customer_to_trader
+            columns:
+              - column:
+                  name: guide
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,10 +33,14 @@ public class TraderApiV1Controller {
 
   private final UserService userService;
   private final TradeService tradeService;
+  private final PasswordEncoder passwordEncoder;
 
-  public TraderApiV1Controller(UserService userService, TradeService tradeService) {
+  public TraderApiV1Controller(UserService userService,
+                               TradeService tradeService,
+                               PasswordEncoder passwordEncoder) {
     this.userService = userService;
     this.tradeService = tradeService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @GetMapping(
@@ -53,6 +58,8 @@ public class TraderApiV1Controller {
                             new NotFoundException("App Trader not found")))
     );
 
+    activeTraders.forEach(this::encodeUserApiKeys);
+
     return ResponseEntity.ok(activeTraders);
   }
 
@@ -62,6 +69,8 @@ public class TraderApiV1Controller {
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
     List<User> followers = userService.getFollowers(trader);
+
+    followers.forEach(this::encodeUserApiKeys);
 
     return ResponseEntity.ok(followers);
   }
@@ -79,7 +88,7 @@ public class TraderApiV1Controller {
 
     follower.setEnabled(!follower.getEnabled());
 
-    return new ResponseEntity<>(userService.update(follower), HttpStatus.OK);
+    return new ResponseEntity<>(userService.update(encodeUserApiKeys(follower)), HttpStatus.OK);
   }
 
   @GetMapping(
@@ -90,13 +99,13 @@ public class TraderApiV1Controller {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader)
-            .stream()
-            .filter(order -> Arrays.stream(Symbol.values())
-                    .map(Symbol::getValue)
-                    .collect(Collectors.toList())
-                    .contains(order.get("symbol").toString()))
-            .collect(Collectors.toList());
+    List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
+//            .stream()
+//            .filter(order -> Arrays.stream(Symbol.values())
+//                    .map(Symbol::getValue)
+//                    .collect(Collectors.toList())
+//                    .contains(order.get("symbol").toString()))
+//            .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
   }
@@ -116,6 +125,15 @@ public class TraderApiV1Controller {
             .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomOpenPositions, HttpStatus.OK);
+  }
+
+  private User encodeUserApiKeys(User user) {
+    if (user.getApiKey() != null)
+      user.setApiKey(passwordEncoder.encode(user.getApiKey()));
+    if (user.getApiSecret() != null)
+      user.setApiSecret(passwordEncoder.encode(user.getApiSecret()));
+
+    return user;
   }
 
 

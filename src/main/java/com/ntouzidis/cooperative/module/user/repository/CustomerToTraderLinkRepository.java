@@ -12,6 +12,8 @@ public interface CustomerToTraderLinkRepository extends JpaRepository<CustomerTo
 
     List<CustomerToTraderLink> findAllByTrader(User trader);
 
+    List<CustomerToTraderLink> findAllByTraderAndGuide(User trader, boolean guide);
+
 //    @Modifying
 //    @Query("update Offer o set o.active=:status where id=:id")
 //    int updateOfferStatus(@Param("id")int id, @Param("status")int status);

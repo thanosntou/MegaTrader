@@ -23,6 +23,9 @@ public class CustomerToTraderLink {
     @Column(name="create_date")
     private LocalDate create_date;
 
+    @Column(name="guide")
+    private boolean guide;
+
     public CustomerToTraderLink() {
     }
 
@@ -57,5 +60,13 @@ public class CustomerToTraderLink {
     public void setCreate_date() {
         if (this.create_date == null)
             this.create_date = LocalDate.now();
+    }
+
+    public boolean isGuide() {
+        return guide;
+    }
+
+    public void setGuide(boolean guide) {
+        this.guide = guide;
     }
 }

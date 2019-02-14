@@ -81,6 +81,16 @@ public class UserService implements UserDetailsService {
         return getFollowers(trader).stream().filter(User::getEnabled).collect(Collectors.toList());
     }
 
+    public User getGuideFollower(User trader) {
+
+        CustomerToTraderLink link = customerToTraderLinkRepository.findAllByTraderAndGuide(trader, true)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Guide follower not found"));
+
+        return link.getCustomer();
+    }
+
     public List<User> getTraders() {
         return  userRepository.findAll().stream().filter(authorityService::isTrader).collect(Collectors.toList());
     }
@@ -198,7 +208,7 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly=true)
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return Optional.of(new CustomUserDetails(userRepository.findByUsername(username), authorityService.getAuthorities(username)))
+        return Optional.of(new CustomUserDetails(encodeUserApiKeys(userRepository.findByUsername(username)), authorityService.getAuthorities(username)))
                 .orElseThrow(() -> new RuntimeException("user not found"));
     }
 
@@ -237,5 +247,14 @@ public class UserService implements UserDetailsService {
 
     private boolean usernameExists(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username)).isPresent();
+    }
+
+    private User encodeUserApiKeys(User user) {
+        if (user.getApiKey() != null)
+            user.setApiKey(passwordEncoder.encode(user.getApiKey()));
+        if (user.getApiSecret() != null)
+            user.setApiSecret(passwordEncoder.encode(user.getApiSecret()));
+
+        return user;
     }
 }
