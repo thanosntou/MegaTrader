@@ -237,6 +237,9 @@ public class UserApiV1Controller {
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
+        userDetails.getUser().setApiKey(passwordEncoder.encode(userDetails.getUser().getApiKey()));
+        userDetails.getUser().setApiSecret(passwordEncoder.encode(userDetails.getUser().getApiSecret()));
+
         return new ResponseEntity<>(userDetails, HttpStatus.OK);
     }
 

@@ -208,7 +208,7 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly=true)
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return Optional.of(new CustomUserDetails(encodeUserApiKeys(userRepository.findByUsername(username)), authorityService.getAuthorities(username)))
+        return Optional.of(new CustomUserDetails(userRepository.findByUsername(username), authorityService.getAuthorities(username)))
                 .orElseThrow(() -> new RuntimeException("user not found"));
     }
 
