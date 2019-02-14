@@ -102,35 +102,20 @@ public class TradeService {
     }
 
     public List<Map<String, Object>> getRandomActiveOrders(User trader) {
-        List<Map<String, Object>> randomAllOrders;
-
-        LinkedList<User> followers = new LinkedList<>(userService.getEnabledFollowers(trader));
-
-        for (User f: followers) {
-            randomAllOrders = bitmexService.get_Order_Order(f);
-
-            if (randomAllOrders != null)
-                return randomAllOrders.stream()
-                        .filter(i -> i.get("ordStatus").equals("New"))
-                        .collect(Collectors.toList());
-        }
-
-        return Collections.emptyList();
+        User guideFollower = userService.getGuideFollower(trader);
+        return bitmexService.get_Order_Order(guideFollower)
+                .stream()
+                .filter(order -> Arrays.stream(Symbol.values())
+                        .map(Symbol::getValue)
+                        .collect(Collectors.toList())
+                        .contains(order.get("symbol").toString()))
+                .filter(i -> i.get("ordStatus").equals("New"))
+                .collect(Collectors.toList());
     }
 
     public List<Map<String, Object>> getRandomPositions(User trader) {
-        List<Map<String, Object>> randomPositions;
-
-        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
-
-        for (User f: enabledfollowers) {
-            randomPositions = bitmexService.get_Position(f);
-
-            if (randomPositions != null)
-                return randomPositions;
-        }
-
-        return Collections.emptyList();
+        User guideFollower = userService.getGuideFollower(trader);
+        return bitmexService.get_Position(guideFollower);
     }
 
     public List<Map<String, Object>> getRandomTX(User trader) {

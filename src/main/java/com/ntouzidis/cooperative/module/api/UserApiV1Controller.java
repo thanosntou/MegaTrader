@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,10 +31,15 @@ public class UserApiV1Controller {
 
     private final UserService userService;
     private final BitmexService bitmexService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserApiV1Controller(UserService userService, BitmexService bitmexService) {
+    public UserApiV1Controller(UserService userService,
+                               BitmexService bitmexService,
+                               PasswordEncoder passwordEncoder
+    ) {
         this.userService = userService;
         this.bitmexService = bitmexService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping(
@@ -51,7 +57,9 @@ public class UserApiV1Controller {
         else
             userOpt = userService.findByUsername(name);
 
-        return new ResponseEntity<>(userOpt.orElseThrow(() -> new NotFoundException("user not found")), HttpStatus.OK);
+        User user = userOpt.orElseThrow(() -> new NotFoundException("user not found"));
+
+        return new ResponseEntity<>(encodeUserApiKeys(user), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -61,6 +69,8 @@ public class UserApiV1Controller {
     public ResponseEntity<?> readAll(Authentication authentication
     ) {
         List<User> users = userService.findAll();
+
+        users.forEach(this::encodeUserApiKeys);
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -76,7 +86,7 @@ public class UserApiV1Controller {
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElseThrow(() ->
                 new RuntimeException("User don't have a personal trader"));
 
-        return ResponseEntity.ok(personalTrader);
+        return ResponseEntity.ok(encodeUserApiKeys(personalTrader));
     }
 
     @PostMapping(
@@ -92,28 +102,28 @@ public class UserApiV1Controller {
 
         userService.linkTrader(user, trader.getId());
 
-        return ResponseEntity.ok(trader);
+        return ResponseEntity.ok(encodeUserApiKeys(trader));
     }
 
     @PostMapping(
             value = "/unfollow",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<User> unfollowTrader(Authentication authentication)
-    {
+    public ResponseEntity<User> unfollowTrader(Authentication authentication
+    ) {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         userService.unlinkTrader(user);
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(encodeUserApiKeys(user));
     }
 
     @PostMapping("/new")
     public ResponseEntity<User> create(@RequestParam(value = "username") String username,
                                        @RequestParam(value = "email") String email,
                                        @RequestParam(value = "pass") String pass,
-                                       @RequestParam(value = "confirmPass") String confirmPass)
-    {
+                                       @RequestParam(value = "confirmPass") String confirmPass
+    ) {
 //        Preconditions.checkArgument(pin != null, "You need a secret pin to create a user. Ask your trader");
         Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
         Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
@@ -138,7 +148,7 @@ public class UserApiV1Controller {
 
         userService.createCustomer(user, pass);
 
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(encodeUserApiKeys(user), HttpStatus.CREATED);
     }
 
     @GetMapping(
@@ -146,8 +156,8 @@ public class UserApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> getTX(@RequestParam(name = "id", required = false) Integer id,
-                                   Authentication authentication)
-    {
+                                   Authentication authentication
+    ) {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         if (id != null)
@@ -162,12 +172,14 @@ public class UserApiV1Controller {
     )
     public ResponseEntity<?> updateKeys(@RequestParam(name = "apiKey", required = false) String apiKey,
                                         @RequestParam(name = "apiSecret", required = false) String apiSecret,
-                                         Authentication authentication)
-    {
+                                         Authentication authentication
+    ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
+
+        encodeUserApiKeys(user);
 
         return ResponseEntity.ok(userService.saveKeys(user, apiKey, apiSecret));
     }
@@ -177,14 +189,14 @@ public class UserApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> updateClient(@RequestParam(name = "client", required = false) Client client,
-                                          Authentication authentication)
-    {
+                                          Authentication authentication
+    ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        return ResponseEntity.ok(userService.updateClient(user, client));
+        return ResponseEntity.ok(userService.updateClient(encodeUserApiKeys(user), client));
     }
 
     @PostMapping(
@@ -200,7 +212,7 @@ public class UserApiV1Controller {
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        return new ResponseEntity<>(userService.setFixedQty(user, symbol, qty), HttpStatus.OK);
+        return new ResponseEntity<>(userService.setFixedQty(encodeUserApiKeys(user), symbol, qty), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -216,7 +228,7 @@ public class UserApiV1Controller {
 
         User user = userService.changePassword(userDetails.getUser().getId(), newPass, confirmPass);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(encodeUserApiKeys(user), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -228,5 +240,14 @@ public class UserApiV1Controller {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return new ResponseEntity<>(userDetails, HttpStatus.OK);
+    }
+
+    private User encodeUserApiKeys(User user) {
+        if (user.getApiKey() != null)
+            user.setApiKey(passwordEncoder.encode(user.getApiKey()));
+        if (user.getApiSecret() != null)
+            user.setApiSecret(passwordEncoder.encode(user.getApiSecret()));
+
+        return user;
     }
 }

@@ -45,3 +45,8 @@ databaseChangeLog:
   - include:
       file: changeset-017-add_client_to_users.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-018-add_guide_to_customer_to_trader_links.yaml
+      relativeToChangelogFile: true
+
+
