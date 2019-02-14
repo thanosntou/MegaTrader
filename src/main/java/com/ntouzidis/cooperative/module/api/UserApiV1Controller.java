@@ -179,9 +179,7 @@ public class UserApiV1Controller {
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        encodeUserApiKeys(user);
-
-        return ResponseEntity.ok(userService.saveKeys(user, apiKey, apiSecret));
+        return ResponseEntity.ok(encodeUserApiKeys(userService.saveKeys(user, apiKey, apiSecret)));
     }
 
     @PostMapping(
@@ -196,7 +194,7 @@ public class UserApiV1Controller {
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        return ResponseEntity.ok(userService.updateClient(encodeUserApiKeys(user), client));
+        return ResponseEntity.ok(encodeUserApiKeys(userService.updateClient(user, client)));
     }
 
     @PostMapping(
@@ -212,7 +210,7 @@ public class UserApiV1Controller {
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        return new ResponseEntity<>(userService.setFixedQty(encodeUserApiKeys(user), symbol, qty), HttpStatus.OK);
+        return new ResponseEntity<>(encodeUserApiKeys(userService.setFixedQty(user, symbol, qty)), HttpStatus.OK);
     }
 
     @PostMapping(
