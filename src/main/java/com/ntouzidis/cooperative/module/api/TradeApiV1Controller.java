@@ -5,6 +5,7 @@ import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -13,6 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/v1/trade")
@@ -151,5 +154,30 @@ public class TradeApiV1Controller {
         tradeService.closeAllPosition(trader, dataPostOrderBuilder);
 
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
+    }
+
+    @DeleteMapping(
+            value = "/panic",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> panicButton(Authentication authentication
+    ) {
+        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Arrays.stream(Symbol.values()).forEach(symbol -> {
+            DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
+                    .withSymbol(symbol.getValue());
+
+            tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
+
+            DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+                    .withSymbol(symbol.getValue())
+                    .withOrderType("Market")
+                    .withExecInst("Close");
+
+            tradeService.closeAllPosition(trader, dataPostOrderBuilder);
+        });
+
+        return ResponseEntity.ok("ok");
     }
 }
