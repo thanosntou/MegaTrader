@@ -125,7 +125,8 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User update(User user) {
-        return userRepository.save(user);
+        userRepository.save(user);
+        return user;
     }
 
     @Transactional

@@ -58,8 +58,6 @@ public class TraderApiV1Controller {
                             new NotFoundException("App Trader not found")))
     );
 
-    activeTraders.forEach(this::encodeUserApiKeys);
-
     return ResponseEntity.ok(activeTraders);
   }
 
@@ -69,8 +67,6 @@ public class TraderApiV1Controller {
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
     List<User> followers = userService.getFollowers(trader);
-
-    followers.forEach(this::encodeUserApiKeys);
 
     return ResponseEntity.ok(followers);
   }
@@ -88,7 +84,7 @@ public class TraderApiV1Controller {
 
     follower.setEnabled(!follower.getEnabled());
 
-    return new ResponseEntity<>(userService.update(encodeUserApiKeys(follower)), HttpStatus.OK);
+    return new ResponseEntity<>(userService.update(follower), HttpStatus.OK);
   }
 
   @GetMapping(
