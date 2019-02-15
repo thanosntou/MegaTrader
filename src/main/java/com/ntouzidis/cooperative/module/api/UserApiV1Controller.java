@@ -8,6 +8,8 @@ import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import sun.rmi.runtime.Log;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserApiV1Controller {
+
+    Logger logger = LoggerFactory.getLogger(UserApiV1Controller.class);
 
     @Value("${trader}")
     private String traderName;
@@ -269,7 +274,12 @@ public class UserApiV1Controller {
     }
 
     private void decryptApiKeys(User user) {
-        user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
-        user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
+        try {
+            user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
+            user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
+        } catch (Exception e) {
+            logger.warn("Api keys decryption failed", e);
+        }
+
     }
 }
