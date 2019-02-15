@@ -178,6 +178,6 @@ public class TradeApiV1Controller {
             tradeService.closeAllPosition(trader, dataPostOrderBuilder);
         });
 
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok("{ \"result\": \"ok\" }");
     }
 }
