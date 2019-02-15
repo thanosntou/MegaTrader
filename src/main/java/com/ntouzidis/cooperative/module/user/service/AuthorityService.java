@@ -37,4 +37,12 @@ public class AuthorityService {
         return Optional.ofNullable(authorityRepository.findByUsernameAndAuthority(user.getUsername(), "ROLE_TRADER")).isPresent();
     }
 
+    public boolean isAdmin(User user) {
+        return Optional.ofNullable(authorityRepository.findByUsernameAndAuthority(user.getUsername(), "ROLE_ADMIN")).isPresent();
+    }
+
+    void deleteAuthorities(User user) {
+        authorityRepository.deleteAllByUsername(user.getUsername());
+    }
+
 }

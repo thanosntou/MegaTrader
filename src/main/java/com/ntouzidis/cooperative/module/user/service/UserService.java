@@ -9,6 +9,7 @@ import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.entity.Wallet;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
+import com.ntouzidis.cooperative.module.user.repository.LoginRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,16 +31,24 @@ public class UserService implements UserDetailsService {
     private final CustomerToTraderLinkRepository customerToTraderLinkRepository;
     private final PasswordEncoder passwordEncoder;
     private final SimpleEncryptor simpleEncryptor;
+    private final LoginRepository loginRepository;
 
     public UserService(UserRepository userRepository,
                        AuthorityService authorityService,
                        CustomerToTraderLinkRepository customerToTraderLinkRepository,
-                       PasswordEncoder passwordEncoder, SimpleEncryptor encryptor) {
+                       PasswordEncoder passwordEncoder,
+                       SimpleEncryptor encryptor,
+                       LoginRepository loginRepository) {
         this.userRepository = userRepository;
         this.authorityService = authorityService;
         this.customerToTraderLinkRepository = customerToTraderLinkRepository;
         this.passwordEncoder = passwordEncoder;
         this.simpleEncryptor = encryptor;
+        this.loginRepository = loginRepository;
+    }
+
+    public User getOne(int id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public List<User> findAll() {
@@ -108,6 +117,10 @@ public class UserService implements UserDetailsService {
 
     public boolean isTrader(User user) {
         return authorityService.isTrader(user);
+    }
+
+    public boolean isAdmin(User user) {
+        return authorityService.isAdmin(user);
     }
 
     @Transactional
@@ -206,6 +219,13 @@ public class UserService implements UserDetailsService {
             return userOpt.get();
         }
         throw new RuntimeException("User not found");
+    }
+
+    @Transactional
+    public void delete(User user) {
+        loginRepository.deleteAllByUser(user);
+        authorityService.deleteAuthorities(user);
+        userRepository.delete(user);
     }
 
     @Transactional(readOnly=true)
