@@ -59,7 +59,7 @@ public class UserApiV1Controller {
 
         User user = userOpt.orElseThrow(() -> new NotFoundException("user not found"));
 
-        return new ResponseEntity<>(encodeUserApiKeys(user), HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(
@@ -69,8 +69,6 @@ public class UserApiV1Controller {
     public ResponseEntity<?> readAll(Authentication authentication
     ) {
         List<User> users = userService.findAll();
-
-        users.forEach(this::encodeUserApiKeys);
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -86,7 +84,7 @@ public class UserApiV1Controller {
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElseThrow(() ->
                 new RuntimeException("User don't have a personal trader"));
 
-        return ResponseEntity.ok(encodeUserApiKeys(personalTrader));
+        return ResponseEntity.ok(personalTrader);
     }
 
     @PostMapping(
@@ -102,7 +100,7 @@ public class UserApiV1Controller {
 
         userService.linkTrader(user, trader.getId());
 
-        return ResponseEntity.ok(encodeUserApiKeys(trader));
+        return ResponseEntity.ok(trader);
     }
 
     @PostMapping(
@@ -115,7 +113,7 @@ public class UserApiV1Controller {
 
         userService.unlinkTrader(user);
 
-        return ResponseEntity.ok(encodeUserApiKeys(user));
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/new")
@@ -148,7 +146,7 @@ public class UserApiV1Controller {
 
         userService.createCustomer(user, pass);
 
-        return new ResponseEntity<>(encodeUserApiKeys(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping(
@@ -179,7 +177,7 @@ public class UserApiV1Controller {
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        return ResponseEntity.ok(encodeUserApiKeys(userService.saveKeys(user, apiKey, apiSecret)));
+        return ResponseEntity.ok(userService.saveKeys(user, apiKey, apiSecret));
     }
 
     @PostMapping(
@@ -194,7 +192,7 @@ public class UserApiV1Controller {
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        return ResponseEntity.ok(encodeUserApiKeys(userService.updateClient(user, client)));
+        return ResponseEntity.ok(userService.updateClient(user, client));
     }
 
     @PostMapping(
@@ -210,7 +208,7 @@ public class UserApiV1Controller {
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
                 new IllegalStateException("User not found"));
 
-        return new ResponseEntity<>(encodeUserApiKeys(userService.setFixedQty(user, symbol, qty)), HttpStatus.OK);
+        return new ResponseEntity<>(userService.setFixedQty(user, symbol, qty), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -226,7 +224,7 @@ public class UserApiV1Controller {
 
         User user = userService.changePassword(userDetails.getUser().getId(), newPass, confirmPass);
 
-        return new ResponseEntity<>(encodeUserApiKeys(user), HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(
@@ -237,18 +235,6 @@ public class UserApiV1Controller {
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        userDetails.getUser().setApiKey(passwordEncoder.encode(userDetails.getUser().getApiKey()));
-        userDetails.getUser().setApiSecret(passwordEncoder.encode(userDetails.getUser().getApiSecret()));
-
         return new ResponseEntity<>(userDetails, HttpStatus.OK);
-    }
-
-    private User encodeUserApiKeys(User user) {
-        if (user.getApiKey() != null)
-            user.setApiKey(passwordEncoder.encode(user.getApiKey()));
-        if (user.getApiSecret() != null)
-            user.setApiSecret(passwordEncoder.encode(user.getApiSecret()));
-
-        return user;
     }
 }

@@ -3,6 +3,7 @@ package com.ntouzidis.cooperative.module.user.service;
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -28,15 +29,17 @@ public class UserService implements UserDetailsService {
     private final AuthorityService authorityService;
     private final CustomerToTraderLinkRepository customerToTraderLinkRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SimpleEncryptor simpleEncryptor;
 
     public UserService(UserRepository userRepository,
                        AuthorityService authorityService,
                        CustomerToTraderLinkRepository customerToTraderLinkRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder, SimpleEncryptor encryptor) {
         this.userRepository = userRepository;
         this.authorityService = authorityService;
         this.customerToTraderLinkRepository = customerToTraderLinkRepository;
         this.passwordEncoder = passwordEncoder;
+        this.simpleEncryptor = encryptor;
     }
 
     public List<User> findAll() {
@@ -175,8 +178,8 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User saveKeys(User user, String apiKey, String apiSecret) {
-        if (apiKey != null) user.setApiKey(apiKey);
-        if (apiSecret != null) user.setApiSecret(apiSecret);
+        if (apiKey != null) user.setApiKey(simpleEncryptor.encrypt(apiKey));
+        if (apiSecret != null) user.setApiSecret(simpleEncryptor.encrypt(apiSecret));
 
         userRepository.save(user);
         return user;

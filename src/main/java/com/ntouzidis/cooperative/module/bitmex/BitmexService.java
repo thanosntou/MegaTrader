@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
-import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
@@ -43,7 +43,10 @@ public class BitmexService implements IBitmexService {
     @Value("${baseUrl}")
     private String base_url;
 
-    public BitmexService() {
+    private final SimpleEncryptor simpleEncryptor;
+
+    public BitmexService(SimpleEncryptor simpleEncryptor) {
+        this.simpleEncryptor = simpleEncryptor;
     }
 
     @Override
@@ -164,12 +167,21 @@ public class BitmexService implements IBitmexService {
     }
 
     private Optional<String> requestGET(User user, String path, String data) {
-        String apikey = user.getApiKey();
-        String apiSecret = user.getApiSecret();
-        String expires = String.valueOf(1600883067);
+        String apikey;
+        String apiSecret;
+        String expires;
         String signature;
 
         try {
+            Preconditions.checkState(user.getClient() != null, "User has not set a client");
+
+            long start = System.nanoTime();
+            apikey = simpleEncryptor.decrypt(user.getApiKey());
+            long end = System.nanoTime();
+
+            System.out.println((end - start) / 1000000);
+            apiSecret = simpleEncryptor.decrypt(user.getApiSecret());
+            expires = String.valueOf(1600883067);
             signature = calculateSignature(apiSecret, GET, path, expires, data);
 
             RestTemplate restTemplate = new RestTemplate();
@@ -187,7 +199,7 @@ public class BitmexService implements IBitmexService {
 
             return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
 
-        } catch (NoSuchAlgorithmException | IllegalArgumentException | InvalidKeyException | RestClientException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -195,13 +207,17 @@ public class BitmexService implements IBitmexService {
     }
 
     private Optional<String> requestPOST(User user, String path, String data) {
-        Preconditions.checkState(user.getClient() != null, "User has not set a client");
-        String apikey = user.getApiKey();
-        String apiSecret = user.getApiSecret();
-        String expires = String.valueOf(1600883067);
+        String apikey;
+        String apiSecret;
+        String expires;
         String signature;
 
         try {
+            Preconditions.checkState(user.getClient() != null, "User has not set a client");
+
+            apikey = simpleEncryptor.decrypt(user.getApiKey());
+            apiSecret = simpleEncryptor.decrypt(user.getApiSecret());
+            expires = String.valueOf(1600883067);
             signature = calculateSignature(apiSecret, POST, path, expires, data);
 
             RestTemplate restTemplate = new RestTemplate();
@@ -222,19 +238,25 @@ public class BitmexService implements IBitmexService {
 
             return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
 
-        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | IllegalArgumentException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return Optional.empty();
     }
 
     private void requestDELETE(User user, String path, String data) {
-        String apikey = user.getApiKey();
-        String apiSecret = user.getApiSecret();
-        String expires = String.valueOf(1600883067);
+        String apikey;
+        String apiSecret;
+        String expires;
         String signature;
 
         try {
+            Preconditions.checkState(user.getClient() != null, "User has not set a client");
+
+            apikey = simpleEncryptor.decrypt(user.getApiKey());
+            apiSecret = simpleEncryptor.decrypt(user.getApiSecret());
+            expires = String.valueOf(1600883067);
+
             signature = calculateSignature(apiSecret, DELETE, path, expires, data);
 
             RestTemplate restTemplate = new RestTemplate();
@@ -251,7 +273,7 @@ public class BitmexService implements IBitmexService {
 
             Objects.requireNonNull(res.getBody());
 
-        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | IllegalArgumentException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -369,7 +391,7 @@ public class BitmexService implements IBitmexService {
     }
 
     private String calculateSignature(String apiSecret, String verb, String path, String expires, String data)
-            throws NoSuchAlgorithmException, InvalidKeyException, IllegalArgumentException, UnsupportedEncodingException {
+            throws NoSuchAlgorithmException, InvalidKeyException, IllegalArgumentException, Exception {
         Preconditions.checkNotNull(apiSecret, "API Secret");
         Preconditions.checkNotNull(verb, "request method");
         Preconditions.checkNotNull(path, "bitmex path");
