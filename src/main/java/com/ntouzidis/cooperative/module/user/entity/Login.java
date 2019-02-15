@@ -1,6 +1,5 @@
 package com.ntouzidis.cooperative.module.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;

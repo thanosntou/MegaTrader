@@ -3,6 +3,7 @@ package com.ntouzidis.cooperative.module.api;
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
+import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -32,14 +34,16 @@ public class UserApiV1Controller {
     private final UserService userService;
     private final BitmexService bitmexService;
     private final PasswordEncoder passwordEncoder;
+    private final SimpleEncryptor simpleEncryptor;
 
     public UserApiV1Controller(UserService userService,
                                BitmexService bitmexService,
-                               PasswordEncoder passwordEncoder
-    ) {
+                               PasswordEncoder passwordEncoder,
+                               SimpleEncryptor simpleEncryptor) {
         this.userService = userService;
         this.bitmexService = bitmexService;
         this.passwordEncoder = passwordEncoder;
+        this.simpleEncryptor = simpleEncryptor;
     }
 
     @GetMapping(
@@ -68,7 +72,14 @@ public class UserApiV1Controller {
     )
     public ResponseEntity<?> readAll(Authentication authentication
     ) {
-        List<User> users = userService.findAll();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        Preconditions.checkArgument(userService.isAdmin(userDetails.getUser()));
+
+        List<User> users = userService.findAll()
+                .stream()
+                .peek(this::decryptApiKeys)
+                .collect(Collectors.toList());
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -227,6 +238,25 @@ public class UserApiV1Controller {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+
+    @DeleteMapping(
+            value = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> delete(@PathVariable Integer id,
+                                    Authentication authentication
+    ) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        Preconditions.checkArgument(userService.isAdmin(userDetails.getUser()));
+
+        User user = userService.getOne(id);
+
+        userService.delete(user);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
     @GetMapping(
             value = "/authenticate",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -236,5 +266,10 @@ public class UserApiV1Controller {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return new ResponseEntity<>(userDetails, HttpStatus.OK);
+    }
+
+    private void decryptApiKeys(User user) {
+        user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
+        user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
     }
 }
