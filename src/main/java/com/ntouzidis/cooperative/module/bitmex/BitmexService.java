@@ -1,25 +1,26 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
 import com.google.common.base.Preconditions;
+import com.ntouzidis.cooperative.module.api.UserApiV1Controller;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.common.endpoints.InstrumentEndpoint;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.apache.commons.codec.binary.Hex;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +28,8 @@ import java.util.*;
 
 @Service
 public class BitmexService implements IBitmexService {
+
+    Logger logger = LoggerFactory.getLogger(BitmexService.class);
 
     private static String ENDPOINT_ANNOUNCEMENT = "/api/v1/announcement";
     private static String ENDPOINT_ORDER = "/api/v1/order";
@@ -59,6 +62,25 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
+    public String getInstrumentLastPrice(User user, Symbol symbol) {
+        try {
+            Preconditions.checkNotNull(user, "user cannot be null");
+            Preconditions.checkNotNull(symbol, "symbol cannot be null");
+
+            Optional<String> res = requestGET(user, InstrumentEndpoint.INSTRUMENT + "?symbol=" + symbol.getValue(), "");
+
+            List<Map<String, Object>> ml = getMapList(res.orElse(null));
+
+            Preconditions.checkState(symbol.getValue().equals(ml.get(0).get("symbol")));
+
+            return ml.get(0).get("lastPrice").toString();
+        } catch (Exception e) {
+            logger.error("instrument last price calculation failed");
+        }
+        return "0";
+    }
+
+    @Override
     public Map<String, Object> get_User_Margin(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -81,10 +103,14 @@ public class BitmexService implements IBitmexService {
         Preconditions.checkNotNull(user, "user cannot be null");
 
         long qty = 0L;
-        Map<String, Object> getPosXBTUSD = get_Position(user).stream().filter(i -> i.get("symbol").equals(dataOrder.getSymbol())).findAny().orElse(Collections.emptyMap());
+        Map<String, Object> position = get_Position(user)
+                .stream()
+                .filter(i -> i.get("symbol").equals(dataOrder.getSymbol()))
+                .findAny()
+                .orElse(Collections.emptyMap());
 
-        if (!getPosXBTUSD.isEmpty())
-            qty = Long.valueOf(getPosXBTUSD.get("currentQty").toString());
+        if (!position.isEmpty())
+            qty = Long.valueOf(position.get("currentQty").toString());
 
         Long finalQty = qty * percentage / 100;
 
@@ -94,10 +120,12 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder) {
+    public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder, String leverage) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String data = dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol())).get();
+        String data = dataOrder.withOrderQty(
+                calculateFixedQtyForSymbol(user, dataOrder.getSymbol(), leverage)
+        ).get();
 
         Optional<String> res = requestPOST(user, ENDPOINT_ORDER, data);
 
@@ -160,10 +188,12 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public void post_Position_Leverage(User user, DataPostLeverage dataLeverageBuilder) {
+    public Map<String, Object> post_Position_Leverage(User user, DataPostLeverage dataLeverageBuilder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        requestPOST(user, ENDPOINT_POSITION_LEVERAGE, dataLeverageBuilder.get());
+        Optional<String> res = requestPOST(user, ENDPOINT_POSITION_LEVERAGE, dataLeverageBuilder.get());
+
+        return getMap(res.orElse(null));
     }
 
     private Optional<String> requestGET(User user, String path, String data) {
@@ -355,18 +385,34 @@ public class BitmexService implements IBitmexService {
 //        return null;
 //    }
 
-    private String calculateFixedQtyForSymbol(User user, String symbol) {
-        if (symbol.equals(Symbol.XBTUSD.getValue())) return user.getFixedQtyXBTUSD().toString();
-        if (symbol.equals(Symbol.ETHUSD.getValue())) return user.getFixedQtyETHUSD().toString();
-        if (symbol.equals(Symbol.ADAXXX.getValue())) return user.getFixedQtyADAZ18().toString();
-        if (symbol.equals(Symbol.BCHXXX.getValue())) return user.getFixedQtyBCHZ18().toString();
-        if (symbol.equals(Symbol.EOSXXX.getValue())) return user.getFixedQtyEOSZ18().toString();
-        if (symbol.equals(Symbol.ETHXXX.getValue())) return user.getFixedQtyETHUSD().toString();//TODO fix these ethh19
-        if (symbol.equals(Symbol.LTCXXX.getValue())) return user.getFixedQtyLTCZ18().toString();
-        if (symbol.equals(Symbol.TRXXXX.getValue())) return user.getFixedQtyTRXZ18().toString();
-        if (symbol.equals(Symbol.XRPXXX.getValue())) return user.getFixedQtyXRPZ18().toString();
+    private String calculateFixedQtyForSymbol(User user, String symbol, String leverage) {
+        if (symbol.equals(Symbol.XBTUSD.getValue()))
+            return calculateOrderQty(user, Symbol.XBTUSD, user.getFixedQtyXBTUSD(), leverage);
+        if (symbol.equals(Symbol.ETHUSD.getValue()))
+            return calculateOrderQty(user, Symbol.ETHUSD, user.getFixedQtyETHUSD(), leverage);
+        if (symbol.equals(Symbol.ADAXXX.getValue()))
+            return calculateOrderQty(user, Symbol.ADAXXX, user.getFixedQtyADAZ18(), leverage);
+        if (symbol.equals(Symbol.BCHXXX.getValue()))
+            return calculateOrderQty(user, Symbol.BCHXXX, user.getFixedQtyBCHZ18(), leverage);
+        if (symbol.equals(Symbol.EOSXXX.getValue()))
+            return calculateOrderQty(user, Symbol.EOSXXX, user.getFixedQtyEOSZ18(), leverage);
+        if (symbol.equals(Symbol.ETHXXX.getValue()))
+            return calculateOrderQty(user, Symbol.ETHXXX, user.getFixedQtyXBTJPY(), leverage);
+        //TODO fix these ethh19
+        if (symbol.equals(Symbol.LTCXXX.getValue()))
+            return calculateOrderQty(user, Symbol.LTCXXX, user.getFixedQtyLTCZ18(), leverage);
+        if (symbol.equals(Symbol.TRXXXX.getValue()))
+            return calculateOrderQty(user, Symbol.TRXXXX, user.getFixedQtyTRXZ18(), leverage);
+        if (symbol.equals(Symbol.XRPXXX.getValue()))
+            return calculateOrderQty(user, Symbol.XRPXXX, user.getFixedQtyXRPZ18(), leverage);
 
         throw new RuntimeException("Fixed qty user calculation failed");
+    }
+
+    private String calculateOrderQty(User user, Symbol symbol, double fixedQty, String leverage) {
+        String lastPrice =  getInstrumentLastPrice(user, symbol);
+        double wantedQty = fixedQty * Double.parseDouble(leverage) * Double.parseDouble(lastPrice);
+        return String.valueOf(Math.round(wantedQty));
     }
 
     private Map<String, Object> getMap(String responseBody) {

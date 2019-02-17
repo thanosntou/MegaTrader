@@ -44,7 +44,7 @@ public class TradeService {
         enabledfollowers.forEach(customer -> {
             bitmexService.post_Position_Leverage(customer, dataPostLeverage);
 
-            bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder.withClOrdId(uniqueclOrdID1));
+            bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
         });
     }
 
@@ -71,7 +71,7 @@ public class TradeService {
                     .withSide(sb.getSide())
                     .withText("Bitmexcallbot");
 
-            bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
+            bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder, dataLeverage.getLeverage());
 
 
             //            3. Stop Market
@@ -85,7 +85,7 @@ public class TradeService {
                         .withStopPrice(sb.getStopLoss())
                         .withText("Bitmexcallbot");
 
-                bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
+                bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder, dataLeverage.getLeverage());
             }
 
             //            4. Limit
@@ -98,7 +98,7 @@ public class TradeService {
                         .withPrice(sb.getProfitTrigger())
                         .withText("Bitmexcallbot");
 
-                bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
+                bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder, dataLeverage.getLeverage());
             }
         });
     }
@@ -159,9 +159,9 @@ public class TradeService {
         enabledfollowers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
     }
 
-    Map<String, Long> calculateSumFixedQtys(List<User> followers) {
-        Map<String, Long> sumFixedQtys = new HashMap<>();
-        Arrays.stream(Symbol.values()).forEach(symbol -> sumFixedQtys.put(symbol.getValue(), 0L));
+    Map<String, Double> calculateSumFixedQtys(List<User> followers) {
+        Map<String, Double> sumFixedQtys = new HashMap<>();
+        Arrays.stream(Symbol.values()).forEach(symbol -> sumFixedQtys.put(symbol.getValue(), (double) 0));
 
         followers.forEach(f -> {
             sumFixedQtys.put(Symbol.XBTUSD.getValue(), sumFixedQtys.get(Symbol.XBTUSD.getValue()) + f.getFixedQtyXBTUSD());

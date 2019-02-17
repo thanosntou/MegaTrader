@@ -24,4 +24,10 @@ public class DataPostLeverage {
                 Optional.ofNullable(leverage).orElse("");
 
     }
+
+    public String getLeverage() {
+        if (this.leverage != null)
+            return this.leverage.substring(9);
+        throw new RuntimeException("Leverage is null");
+    }
 }
