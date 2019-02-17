@@ -389,7 +389,7 @@ public class BitmexService implements IBitmexService {
         if (symbol.equals(Symbol.XBTUSD.getValue()))
             return calculateOrderQty(user, Symbol.XBTUSD, user.getFixedQtyXBTUSD(), leverage);
         if (symbol.equals(Symbol.ETHUSD.getValue()))
-            return calculateOrderQty(user, Symbol.ETHUSD, user.getFixedQtyETHUSD(), leverage);
+            return calculateOrderQtyETHUSD(user, Symbol.ETHUSD, user.getFixedQtyETHUSD(), leverage);
         if (symbol.equals(Symbol.ADAXXX.getValue()))
             return calculateOrderQty(user, Symbol.ADAXXX, user.getFixedQtyADAZ18(), leverage);
         if (symbol.equals(Symbol.BCHXXX.getValue()))
@@ -412,6 +412,12 @@ public class BitmexService implements IBitmexService {
     private String calculateOrderQty(User user, Symbol symbol, double fixedQty, String leverage) {
         String lastPrice =  getInstrumentLastPrice(user, symbol);
         double wantedQty = fixedQty * Double.parseDouble(leverage) * Double.parseDouble(lastPrice);
+        return String.valueOf(Math.round(wantedQty));
+    }
+
+    private String calculateOrderQtyETHUSD(User user, Symbol symbol, double fixedQty, String leverage) {
+        String lastPrice =  getInstrumentLastPrice(user, symbol);
+        double wantedQty = (fixedQty * Double.parseDouble(leverage)) / (Double.parseDouble(lastPrice) * 0.000001);
         return String.valueOf(Math.round(wantedQty));
     }
 
