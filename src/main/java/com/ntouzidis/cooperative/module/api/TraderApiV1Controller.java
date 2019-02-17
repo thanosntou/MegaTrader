@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.api;
 
+import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
@@ -50,6 +51,8 @@ public class TraderApiV1Controller {
 
     User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
+    Preconditions.checkArgument(userService.isTrader(user));
+
     // temporary till choose the final business model
     List<User> activeTraders = new ArrayList<>();
     activeTraders.add(
@@ -66,6 +69,8 @@ public class TraderApiV1Controller {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
+    Preconditions.checkArgument(userService.isTrader(trader));
+
     List<User> followers = userService.getFollowers(trader);
 
     return ResponseEntity.ok(followers);
@@ -76,6 +81,8 @@ public class TraderApiV1Controller {
                                Authentication authentication) {
 
     CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
+
+    Preconditions.checkArgument(userService.isTrader(userDetails.getUser()));
 
     if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TRADER")))
       throw new RuntimeException("Sorry, you are not a trader...");
@@ -95,6 +102,8 @@ public class TraderApiV1Controller {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
+    Preconditions.checkArgument(userService.isTrader(trader));
+
     List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
 //            .stream()
 //            .filter(order -> Arrays.stream(Symbol.values())
@@ -110,6 +119,8 @@ public class TraderApiV1Controller {
   public ResponseEntity<List<Map<String, Object>>> getOpenPositions(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+    Preconditions.checkArgument(userService.isTrader(trader));
 
     List<Map<String, Object>> randomOpenPositions = tradeService.getRandomPositions(trader)
             .stream()

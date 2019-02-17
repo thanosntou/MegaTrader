@@ -9,6 +9,7 @@ import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
+import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,11 @@ import java.util.Arrays;
 public class TradeApiV1Controller {
 
     private final TradeService tradeService;
+    private final UserService userService;
 
-    public TradeApiV1Controller(TradeService tradeService) {
+    public TradeApiV1Controller(TradeService tradeService, UserService userService) {
         this.tradeService = tradeService;
+        this.userService = userService;
     }
 
     @PostMapping(value = "/signal")
@@ -36,6 +39,8 @@ public class TradeApiV1Controller {
                                           Authentication authentication)
     {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(userService.isTrader(trader));
 
         if (symbol == null) symbol = "XBTUSD";
 
@@ -66,6 +71,8 @@ public class TradeApiV1Controller {
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
+        Preconditions.checkArgument(userService.isTrader(trader));
+
         DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
                 .withSymbol(symbol)
                 .withLeverage(leverage);
@@ -94,6 +101,8 @@ public class TradeApiV1Controller {
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
+        Preconditions.checkArgument(userService.isTrader(trader));
+
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(symbol)
                 .withOrderType(orderType)
@@ -118,6 +127,8 @@ public class TradeApiV1Controller {
                 "Either orderID or symbol must be present");
 
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(userService.isTrader(trader));
 
         if (symbol != null) {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
@@ -146,6 +157,8 @@ public class TradeApiV1Controller {
     ) {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
+        Preconditions.checkArgument(userService.isTrader(trader));
+
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(symbol)
                 .withOrderType("Market")
@@ -163,6 +176,8 @@ public class TradeApiV1Controller {
     public ResponseEntity<?> panicButton(Authentication authentication
     ) {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(userService.isTrader(trader));
 
         Arrays.stream(Symbol.values()).forEach(symbol -> {
             DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
