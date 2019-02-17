@@ -152,8 +152,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User setFixedQty(User user, String symbol, Long qty) {
-        Preconditions.checkArgument(qty != null, "Qty cannot be null");
+    public User setFixedQty(User user, String symbol, double qty) {
 
         if (symbol.equals(Symbol.XBTUSD.getValue()))
             user.setFixedQtyXBTUSD(qty);
@@ -249,16 +248,16 @@ public class UserService implements UserDetailsService {
         user.setCreate_date();
         user.setWallet(wallet);
         user.setClient(Client.BITMEX);
-        user.setFixedQtyXBTUSD(0L);
-        user.setFixedQtyXBTJPY(0L);
-        user.setFixedQtyADAZ18(0L);
-        user.setFixedQtyBCHZ18(0L);
-        user.setFixedQtyEOSZ18(0L);
-        user.setFixedQtyETHUSD(0L);
-        user.setFixedQtyLTCZ18(0L);
-        user.setFixedQtyTRXZ18(0L);
-        user.setFixedQtyXRPZ18(0L);
-        user.setFixedQtyXBTKRW(0L);
+        user.setFixedQtyXBTUSD(0);
+        user.setFixedQtyXBTJPY(0);
+        user.setFixedQtyADAZ18(0);
+        user.setFixedQtyBCHZ18(0);
+        user.setFixedQtyEOSZ18(0);
+        user.setFixedQtyETHUSD(0);
+        user.setFixedQtyLTCZ18(0);
+        user.setFixedQtyTRXZ18(0);
+        user.setFixedQtyXRPZ18(0);
+        user.setFixedQtyXBTKRW(0);
         user.setApiKey("Fill_Me");
         user.setApiSecret("Fill_Me");
 

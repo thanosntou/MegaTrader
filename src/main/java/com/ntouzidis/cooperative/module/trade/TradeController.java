@@ -60,7 +60,7 @@ public class TradeController {
         Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
 
         // Sum of Fixed Customer Qty
-        Map<String, Long> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
+        Map<String, Double> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
         // random positions. for sure not empty
         List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
