@@ -36,7 +36,6 @@ public class AdminApiV1Controller {
 
         Preconditions.checkArgument(userService.isAdmin(userDetails.getUser()));
 
-
         List<Login> logins = loginRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Login::getId))
