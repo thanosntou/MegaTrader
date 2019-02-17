@@ -51,8 +51,6 @@ public class TraderApiV1Controller {
 
     User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-    Preconditions.checkArgument(userService.isTrader(user));
-
     // temporary till choose the final business model
     List<User> activeTraders = new ArrayList<>();
     activeTraders.add(
