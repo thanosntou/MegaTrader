@@ -216,7 +216,7 @@ public class UserApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> setFixedQty(@RequestParam("symbol") String symbol,
-                                         @RequestParam("fixedQty") double qty,
+                                         @RequestParam("fixedQty") long qty,
                                          Authentication authentication
     ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
