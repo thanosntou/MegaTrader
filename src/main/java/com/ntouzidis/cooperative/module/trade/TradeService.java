@@ -42,9 +42,14 @@ public class TradeService {
         String uniqueclOrdID1 = UUID.randomUUID().toString();
 
         enabledfollowers.forEach(customer -> {
-            bitmexService.post_Position_Leverage(customer, dataPostLeverage);
+            try {
+                bitmexService.post_Position_Leverage(customer, dataPostLeverage);
 
-            bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
+                bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
+            } catch (Exception e) {
+                logger.error("Order failed for follower: " + customer.getUsername());
+            }
+
         });
     }
 
@@ -60,46 +65,51 @@ public class TradeService {
                 .withLeverage(sb.getLeverage());
 
         enabledfollowers.forEach(customer -> {
-            //            1. Set Leverage
-            bitmexService.post_Position_Leverage(customer, dataLeverage);
+            try {
+                //            1. Set Leverage
+                bitmexService.post_Position_Leverage(customer, dataLeverage);
 
-            //            2. Market
-            DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
-                    .withClOrdId(uniqueclOrdID1)
-                    .withOrderType("Market")
-                    .withSymbol(sb.getSymbol())
-                    .withSide(sb.getSide())
-                    .withText("Bitmexcallbot");
-
-            bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder, dataLeverage.getLeverage());
-
-
-            //            3. Stop Market
-            if (sb.getStopLoss() != null) {
-                DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
-                        .withClOrdId(uniqueclOrdID2)
-                        .withOrderType("Stop")
+                //            2. Market
+                DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
+                        .withClOrdId(uniqueclOrdID1)
+                        .withOrderType("Market")
                         .withSymbol(sb.getSymbol())
-                        .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
-                        .withExecInst("Close,LastPrice")
-                        .withStopPrice(sb.getStopLoss())
+                        .withSide(sb.getSide())
                         .withText("Bitmexcallbot");
 
-                bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder, dataLeverage.getLeverage());
+                bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder, dataLeverage.getLeverage());
+
+
+                //            3. Stop Market
+                if (sb.getStopLoss() != null) {
+                    DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
+                            .withClOrdId(uniqueclOrdID2)
+                            .withOrderType("Stop")
+                            .withSymbol(sb.getSymbol())
+                            .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
+                            .withExecInst("Close,LastPrice")
+                            .withStopPrice(sb.getStopLoss())
+                            .withText("Bitmexcallbot");
+
+                    bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder, dataLeverage.getLeverage());
+                }
+
+                //            4. Limit
+                if (sb.getProfitTrigger() != null) {
+                    DataPostOrderBuilder limitDataOrder = new DataPostOrderBuilder()
+                            .withClOrdId(uniqueclOrdID3)
+                            .withOrderType("Limit")
+                            .withSymbol(sb.getSymbol())
+                            .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
+                            .withPrice(sb.getProfitTrigger())
+                            .withText("Bitmexcallbot");
+
+                    bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder, dataLeverage.getLeverage());
+                }
+            } catch (Exception e) {
+                logger.error("Order failed for follower: " + customer.getUsername());
             }
 
-            //            4. Limit
-            if (sb.getProfitTrigger() != null) {
-                DataPostOrderBuilder limitDataOrder = new DataPostOrderBuilder()
-                        .withClOrdId(uniqueclOrdID3)
-                        .withOrderType("Limit")
-                        .withSymbol(sb.getSymbol())
-                        .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
-                        .withPrice(sb.getProfitTrigger())
-                        .withText("Bitmexcallbot");
-
-                bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder, dataLeverage.getLeverage());
-            }
         });
     }
 
