@@ -47,25 +47,25 @@ public class User implements Serializable {
     private Wallet wallet;
 
     @Column(name = "fixed_qty")
-    private double fixedQtyXBTUSD;
+    private long fixedQtyXBTUSD;
     @Column(name = "fixed_qty_xbtjpy")
-    private double fixedQtyXBTJPY;
+    private long fixedQtyXBTJPY;
     @Column(name = "fixed_qty_adaz18")
-    private double fixedQtyADAZ18;
+    private long fixedQtyADAZ18;
     @Column(name = "fixed_qty_bchz18")
-    private double fixedQtyBCHZ18;
+    private long fixedQtyBCHZ18;
     @Column(name = "fixed_qty_eosz18")
-    private double fixedQtyEOSZ18;
+    private long fixedQtyEOSZ18;
     @Column(name = "fixed_qty_ethusd")
-    private double fixedQtyETHUSD;
+    private long fixedQtyETHUSD;
     @Column(name = "fixed_qty_ltc1818")
-    private double fixedQtyLTCZ18;
+    private long fixedQtyLTCZ18;
     @Column(name = "fixed_qty_trxz18")
-    private double fixedQtyTRXZ18;
+    private long fixedQtyTRXZ18;
     @Column(name = "fixed_qty_xrpz18")
-    private double fixedQtyXRPZ18;
+    private long fixedQtyXRPZ18;
     @Column(name = "fixed_qty_xbtkrw")
-    private double fixedQtyXBTKRW;
+    private long fixedQtyXBTKRW;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "client")
@@ -169,83 +169,83 @@ public class User implements Serializable {
         this.create_date = create_date;
     }
 
-    public double getFixedQtyXBTUSD() {
+    public long getFixedQtyXBTUSD() {
         return fixedQtyXBTUSD;
     }
 
-    public void setFixedQtyXBTUSD(double fixedQtyXBTUSD) {
+    public void setFixedQtyXBTUSD(long fixedQtyXBTUSD) {
         this.fixedQtyXBTUSD = fixedQtyXBTUSD;
     }
 
-    public double getFixedQtyXBTJPY() {
+    public long getFixedQtyXBTJPY() {
         return fixedQtyXBTJPY;
     }
 
-    public void setFixedQtyXBTJPY(double fixedQtyXBTJPY) {
+    public void setFixedQtyXBTJPY(long fixedQtyXBTJPY) {
         this.fixedQtyXBTJPY = fixedQtyXBTJPY;
     }
 
-    public double getFixedQtyADAZ18() {
+    public long getFixedQtyADAZ18() {
         return fixedQtyADAZ18;
     }
 
-    public void setFixedQtyADAZ18(double fixedQtyADAZ18) {
+    public void setFixedQtyADAZ18(long fixedQtyADAZ18) {
         this.fixedQtyADAZ18 = fixedQtyADAZ18;
     }
 
-    public double getFixedQtyBCHZ18() {
+    public long getFixedQtyBCHZ18() {
         return fixedQtyBCHZ18;
     }
 
-    public void setFixedQtyBCHZ18(double fixedQtyBCHZ18) {
+    public void setFixedQtyBCHZ18(long fixedQtyBCHZ18) {
         this.fixedQtyBCHZ18 = fixedQtyBCHZ18;
     }
 
-    public double getFixedQtyEOSZ18() {
+    public long getFixedQtyEOSZ18() {
         return fixedQtyEOSZ18;
     }
 
-    public void setFixedQtyEOSZ18(double fixedQtyEOSZ18) {
+    public void setFixedQtyEOSZ18(long fixedQtyEOSZ18) {
         this.fixedQtyEOSZ18 = fixedQtyEOSZ18;
     }
 
-    public double getFixedQtyETHUSD() {
+    public long getFixedQtyETHUSD() {
         return fixedQtyETHUSD;
     }
 
-    public void setFixedQtyETHUSD(double fixedQtyETHUSD) {
+    public void setFixedQtyETHUSD(long fixedQtyETHUSD) {
         this.fixedQtyETHUSD = fixedQtyETHUSD;
     }
 
-    public double getFixedQtyLTCZ18() {
+    public long getFixedQtyLTCZ18() {
         return fixedQtyLTCZ18;
     }
 
-    public void setFixedQtyLTCZ18(double fixedQtyLTCZ18) {
+    public void setFixedQtyLTCZ18(long fixedQtyLTCZ18) {
         this.fixedQtyLTCZ18 = fixedQtyLTCZ18;
     }
 
-    public double getFixedQtyTRXZ18() {
+    public long getFixedQtyTRXZ18() {
         return fixedQtyTRXZ18;
     }
 
-    public void setFixedQtyTRXZ18(double fixedQtyTRXZ18) {
+    public void setFixedQtyTRXZ18(long fixedQtyTRXZ18) {
         this.fixedQtyTRXZ18 = fixedQtyTRXZ18;
     }
 
-    public double getFixedQtyXRPZ18() {
+    public long getFixedQtyXRPZ18() {
         return fixedQtyXRPZ18;
     }
 
-    public void setFixedQtyXRPZ18(double fixedQtyXRPZ18) {
+    public void setFixedQtyXRPZ18(long fixedQtyXRPZ18) {
         this.fixedQtyXRPZ18 = fixedQtyXRPZ18;
     }
 
-    public double getFixedQtyXBTKRW() {
+    public long getFixedQtyXBTKRW() {
         return fixedQtyXBTKRW;
     }
 
-    public void setFixedQtyXBTKRW(double fixedQtyXBTKRW) {
+    public void setFixedQtyXBTKRW(long fixedQtyXBTKRW) {
         this.fixedQtyXBTKRW = fixedQtyXBTKRW;
     }
 

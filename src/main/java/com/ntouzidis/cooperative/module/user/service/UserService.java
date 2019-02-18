@@ -152,7 +152,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User setFixedQty(User user, String symbol, double qty) {
+    public User setFixedQty(User user, String symbol, long qty) {
 
         if (symbol.equals(Symbol.XBTUSD.getValue()))
             user.setFixedQtyXBTUSD(qty);

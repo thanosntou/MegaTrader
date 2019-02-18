@@ -51,3 +51,6 @@ databaseChangeLog:
   - include:
       file: changeset-019-alter_qties_type.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-020-alter_qties_type.yaml
+      relativeToChangelogFile: true

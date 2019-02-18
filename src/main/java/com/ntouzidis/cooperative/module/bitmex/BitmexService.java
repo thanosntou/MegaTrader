@@ -385,26 +385,50 @@ public class BitmexService implements IBitmexService {
 //        return null;
 //    }
 
+//    private String calculateFixedQtyForSymbol(User user, String symbol, String leverage) {
+//        if (symbol.equals(Symbol.XBTUSD.getValue()))
+//            return calculateOrderQty(user, Symbol.XBTUSD, user.getFixedQtyXBTUSD(), leverage);
+//        if (symbol.equals(Symbol.ETHUSD.getValue()))
+//            return calculateOrderQtyETHUSD(user, Symbol.ETHUSD, user.getFixedQtyETHUSD(), leverage);
+//        if (symbol.equals(Symbol.ADAXXX.getValue()))
+//            return calculateOrderQty(user, Symbol.ADAXXX, user.getFixedQtyADAZ18(), leverage);
+//        if (symbol.equals(Symbol.BCHXXX.getValue()))
+//            return calculateOrderQty(user, Symbol.BCHXXX, user.getFixedQtyBCHZ18(), leverage);
+//        if (symbol.equals(Symbol.EOSXXX.getValue()))
+//            return calculateOrderQty(user, Symbol.EOSXXX, user.getFixedQtyEOSZ18(), leverage);
+//        if (symbol.equals(Symbol.ETHXXX.getValue()))
+//            return calculateOrderQty(user, Symbol.ETHXXX, user.getFixedQtyXBTJPY(), leverage);
+//        //TODO fix these ethh19
+//        if (symbol.equals(Symbol.LTCXXX.getValue()))
+//            return calculateOrderQty(user, Symbol.LTCXXX, user.getFixedQtyLTCZ18(), leverage);
+//        if (symbol.equals(Symbol.TRXXXX.getValue()))
+//            return calculateOrderQty(user, Symbol.TRXXXX, user.getFixedQtyTRXZ18(), leverage);
+//        if (symbol.equals(Symbol.XRPXXX.getValue()))
+//            return calculateOrderQty(user, Symbol.XRPXXX, user.getFixedQtyXRPZ18(), leverage);
+//
+//        throw new RuntimeException("Fixed qty user calculation failed");
+//    }
+
     private String calculateFixedQtyForSymbol(User user, String symbol, String leverage) {
         if (symbol.equals(Symbol.XBTUSD.getValue()))
-            return calculateOrderQty(user, Symbol.XBTUSD, user.getFixedQtyXBTUSD(), leverage);
+            return String.valueOf(user.getFixedQtyXBTUSD() / 10 * Double.parseDouble(leverage));
         if (symbol.equals(Symbol.ETHUSD.getValue()))
-            return calculateOrderQtyETHUSD(user, Symbol.ETHUSD, user.getFixedQtyETHUSD(), leverage);
+            return String.valueOf(user.getFixedQtyETHUSD() / 10 * Double.parseDouble(leverage));
         if (symbol.equals(Symbol.ADAXXX.getValue()))
-            return calculateOrderQty(user, Symbol.ADAXXX, user.getFixedQtyADAZ18(), leverage);
+            return String.valueOf(user.getFixedQtyADAZ18() / 10 * Double.parseDouble(leverage));
         if (symbol.equals(Symbol.BCHXXX.getValue()))
-            return calculateOrderQty(user, Symbol.BCHXXX, user.getFixedQtyBCHZ18(), leverage);
+            return String.valueOf(user.getFixedQtyBCHZ18() / 10 * Double.parseDouble(leverage));
         if (symbol.equals(Symbol.EOSXXX.getValue()))
-            return calculateOrderQty(user, Symbol.EOSXXX, user.getFixedQtyEOSZ18(), leverage);
+            return String.valueOf(user.getFixedQtyEOSZ18() / 10 * Double.parseDouble(leverage));
         if (symbol.equals(Symbol.ETHXXX.getValue()))
-            return calculateOrderQty(user, Symbol.ETHXXX, user.getFixedQtyXBTJPY(), leverage);
+            return String.valueOf(user.getFixedQtyXBTJPY() / 10 * Double.parseDouble(leverage));
         //TODO fix these ethh19
         if (symbol.equals(Symbol.LTCXXX.getValue()))
-            return calculateOrderQty(user, Symbol.LTCXXX, user.getFixedQtyLTCZ18(), leverage);
+            return String.valueOf(user.getFixedQtyLTCZ18() / 10 * Double.parseDouble(leverage));
         if (symbol.equals(Symbol.TRXXXX.getValue()))
-            return calculateOrderQty(user, Symbol.TRXXXX, user.getFixedQtyTRXZ18(), leverage);
+            return String.valueOf(user.getFixedQtyTRXZ18() / 10 * Double.parseDouble(leverage));
         if (symbol.equals(Symbol.XRPXXX.getValue()))
-            return calculateOrderQty(user, Symbol.XRPXXX, user.getFixedQtyXRPZ18(), leverage);
+            return String.valueOf(user.getFixedQtyXRPZ18() / 10 * Double.parseDouble(leverage));
 
         throw new RuntimeException("Fixed qty user calculation failed");
     }
