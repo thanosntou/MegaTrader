@@ -47,9 +47,10 @@ public class TradeService {
                 if ("Stop".equals(dataPostOrder.getOrderType()) || "StopLimit".equals(dataPostOrder.getOrderType())) {
                     Map<String, Object> position = bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol());
                     dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer) position.get("execQty"))));
-                }
+                } else {
+                    dataPostOrder.withOrderQty(calculateFixedQtyForSymbol(follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice));
 
-                dataPostOrder.withOrderQty(calculateFixedQtyForSymbol(follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice));
+                }
 
                 bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
             } catch (Exception e) {
