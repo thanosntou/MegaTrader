@@ -133,8 +133,8 @@ public class BitmexService implements IBitmexService {
     public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder, String leverage) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        if (dataOrder.getOrderQty() == null)
-            dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol(), leverage));
+//        if (dataOrder.getOrderQty() == null)
+//            dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol(), leverage));
 
         Optional<String> res = requestPOST(user, ENDPOINT_ORDER, dataOrder.get());
 
