@@ -27,9 +27,6 @@ public class TradeService {
     private final BitmexService bitmexService;
     private final UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     public TradeService(BitmexService bitmexService,
                         UserService userService) {
         this.bitmexService = bitmexService;
@@ -41,13 +38,18 @@ public class TradeService {
 
         String uniqueclOrdID1 = UUID.randomUUID().toString();
 
-        enabledfollowers.forEach(customer -> {
+        enabledfollowers.forEach(follower -> {
             try {
-                bitmexService.post_Position_Leverage(customer, dataPostLeverage);
+                bitmexService.post_Position_Leverage(follower, dataPostLeverage);
 
-                bitmexService.post_Order_Order_WithFixeds(customer, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
+                if ("Stop".equals(dataPostOrder.getOrderType()) || "StopLimit".equals(dataPostOrder.getOrderType())) {
+                    Map<String, Object> position = bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol());
+                    dataPostOrder.withOrderQty(position.get("execQty").toString());
+                }
+
+                bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
             } catch (Exception e) {
-                logger.error("Order failed for follower: " + customer.getUsername());
+                logger.error("Order failed for follower: " + follower.getUsername());
             }
 
         });

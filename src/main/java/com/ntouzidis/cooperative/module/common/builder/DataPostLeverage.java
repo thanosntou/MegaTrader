@@ -1,5 +1,7 @@
 package com.ntouzidis.cooperative.module.common.builder;
 
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+
 import java.util.Optional;
 
 public class DataPostLeverage {
@@ -29,5 +31,9 @@ public class DataPostLeverage {
         if (this.leverage != null)
             return this.leverage.substring(9);
         throw new RuntimeException("Leverage is null");
+    }
+
+    public Symbol getSymbol() {
+        return Symbol.valueOf(symbol.substring(7,13));
     }
 }

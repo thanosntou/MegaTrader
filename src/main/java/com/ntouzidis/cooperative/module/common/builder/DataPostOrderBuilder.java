@@ -88,4 +88,14 @@ public class DataPostOrderBuilder {
         return this.symbol.substring(7, 13);
     }
 
+    public String getOrderType() {
+        return this.orderType.substring(8, this.orderType.indexOf("&"));
+//        return this.symbol.substring(7, 13);
+    }
+
+    public String getOrderQty() {
+        return this.orderQty;
+//        return this.symbol.substring(7, 13);
+    }
+
 }

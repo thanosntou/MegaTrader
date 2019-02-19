@@ -79,8 +79,11 @@ public class TradeApiV1Controller {
 
         DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(symbol)
-                .withSide(side).withOrderType(ordType)
-                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
+                .withSide(side)
+                .withOrderType(ordType)
+                .withPrice(price)
+                .withExecInst(execInst)
+                .withStopPrice(stopPx);
 
         tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
 

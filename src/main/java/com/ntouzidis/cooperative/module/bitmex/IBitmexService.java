@@ -15,6 +15,8 @@ public interface IBitmexService {
 
     String getInstrumentLastPrice(User user, Symbol symbol);
 
+    Map<String, Object> getUserWallet(User user);
+
     Map<String, Object> get_User_Margin(User user);
 
     List<Map<String, Object>> get_Order_Order(User user);
@@ -29,7 +31,7 @@ public interface IBitmexService {
 
     void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder);
 
-    Map<String, Object> getSymbolPosition(User user, String symbol);
+    Map<String, Object> getSymbolPosition(User user, Symbol symbol);
 
     List<Map<String, Object>> getAllSymbolPosition(User user);
 

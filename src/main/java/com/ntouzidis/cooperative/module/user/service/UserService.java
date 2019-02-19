@@ -154,6 +154,8 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User setFixedQty(User user, String symbol, long qty) {
 
+        Preconditions.checkState(qty <= 100 && qty >= 0, "Wrong quantity input");
+
         if (symbol.equals(Symbol.XBTUSD.getValue()))
             user.setFixedQtyXBTUSD(qty);
         else if (symbol.equals(Symbol.ETHUSD.getValue()))

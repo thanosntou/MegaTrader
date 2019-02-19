@@ -37,6 +37,7 @@ public class BitmexService implements IBitmexService {
     private static String ENDPOINT_POSITION = "/api/v1/position";
     private static String ENDPOINT_POSITION_LEVERAGE = "/api/v1/position/leverage";
     private static String ENDPOINT_USER_MARGIN = "/api/v1/user/margin";
+    private static String ENDPOINT_USER_WALLET = "/api/v1/user/wallet";
 
     private static String GET = "GET";
     private static String POST = "POST";
@@ -78,6 +79,15 @@ public class BitmexService implements IBitmexService {
             logger.error("instrument last price calculation failed");
         }
         return "0";
+    }
+
+    @Override
+    public Map<String, Object> getUserWallet(User user) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        Optional<String> res = requestGET(user, ENDPOINT_USER_WALLET, "");
+
+        return getMap(res.orElse(null));
     }
 
     @Override
@@ -123,11 +133,10 @@ public class BitmexService implements IBitmexService {
     public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder, String leverage) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        String data = dataOrder.withOrderQty(
-                calculateFixedQtyForSymbol(user, dataOrder.getSymbol(), leverage)
-        ).get();
+        if (dataOrder.getOrderQty() == null)
+            dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol(), leverage));
 
-        Optional<String> res = requestPOST(user, ENDPOINT_ORDER, data);
+        Optional<String> res = requestPOST(user, ENDPOINT_ORDER, dataOrder.get());
 
         return getMap(res.orElse(null));
     }
@@ -152,12 +161,12 @@ public class BitmexService implements IBitmexService {
     }
 
     @Override
-    public Map<String, Object> getSymbolPosition(User user, String symbol) {
+    public Map<String, Object> getSymbolPosition(User user, Symbol symbol) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
         Optional<String> res = requestGET(user, ENDPOINT_POSITION, "");
 
-        return getMapList(res.orElse(null)).stream().filter(i -> i.get("symbol").equals(symbol)).findAny().orElse(null);
+        return getMapList(res.orElse(null)).stream().filter(i -> i.get("symbol").equals(symbol.getValue())).findAny().orElse(null);
     }
 
     @Override
@@ -411,24 +420,24 @@ public class BitmexService implements IBitmexService {
 
     private String calculateFixedQtyForSymbol(User user, String symbol, String leverage) {
         if (symbol.equals(Symbol.XBTUSD.getValue()))
-            return String.valueOf(user.getFixedQtyXBTUSD() / 10 * Long.parseLong(leverage));
+            return String.valueOf((user.getFixedQtyXBTUSD() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString())) * (Long.parseLong(leverage) / 10));
         if (symbol.equals(Symbol.ETHUSD.getValue()))
-            return String.valueOf(user.getFixedQtyETHUSD() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyETHUSD() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
         if (symbol.equals(Symbol.ADAXXX.getValue()))
-            return String.valueOf(user.getFixedQtyADAZ18() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyADAZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
         if (symbol.equals(Symbol.BCHXXX.getValue()))
-            return String.valueOf(user.getFixedQtyBCHZ18() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyBCHZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
         if (symbol.equals(Symbol.EOSXXX.getValue()))
-            return String.valueOf(user.getFixedQtyEOSZ18() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyEOSZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
         if (symbol.equals(Symbol.ETHXXX.getValue()))
-            return String.valueOf(user.getFixedQtyXBTJPY() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyXBTJPY() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
         //TODO fix these ethh19
         if (symbol.equals(Symbol.LTCXXX.getValue()))
-            return String.valueOf(user.getFixedQtyLTCZ18() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyLTCZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
         if (symbol.equals(Symbol.TRXXXX.getValue()))
-            return String.valueOf(user.getFixedQtyTRXZ18() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyTRXZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
         if (symbol.equals(Symbol.XRPXXX.getValue()))
-            return String.valueOf(user.getFixedQtyXRPZ18() / 10 * Long.parseLong(leverage));
+            return String.valueOf(user.getFixedQtyXRPZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
 
         throw new RuntimeException("Fixed qty user calculation failed");
     }
