@@ -12,7 +12,7 @@ public class DataPostOrderBuilder {
     private String price;
     private String execInst;
     private String stopPrice;
-    private String text = "text=CryptoInfluencer";
+    private String text = "text=BITMEXCALLBOT";
 
     public DataPostOrderBuilder() {
     }
