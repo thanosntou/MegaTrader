@@ -422,7 +422,7 @@ public class BitmexService implements IBitmexService {
         if (symbol.equals(Symbol.XBTUSD.getValue()))
             return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
         if (symbol.equals(Symbol.ETHUSD.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyETHUSD(), leverage);
+            return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage);
         if (symbol.equals(Symbol.ADAXXX.getValue()))
             return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyADAZ18(), leverage);
         if (symbol.equals(Symbol.BCHXXX.getValue()))
@@ -448,15 +448,13 @@ public class BitmexService implements IBitmexService {
                         Double.parseDouble(leverage) *
                         Double.parseDouble(getInstrumentLastPrice(user, symbol))
         ));
-//        String lastPrice =  getInstrumentLastPrice(user, symbol);
-//        double wantedQty = fixedQty * Double.parseDouble(leverage) * Double.parseDouble(lastPrice);
-//        return String.valueOf(Math.round(wantedQty));
     }
 
     private String calculateOrderQtyETHUSD(User user, double fixedQty, String leverage) {
-        String lastPrice =  getInstrumentLastPrice(user, Symbol.ETHUSD);
-        double wantedQty = (fixedQty * Double.parseDouble(leverage)) / (Double.parseDouble(lastPrice) * 0.000001);
-        return String.valueOf(Math.round(wantedQty));
+        return String.valueOf(Math.round(
+                ((fixedQty / 100 * Double.parseDouble(get_User_Margin(user).get("walletBalance").toString()) / 100000000) * Double.parseDouble(leverage))
+                        / (Double.parseDouble(getInstrumentLastPrice(user, Symbol.ETHUSD)) / 0.000001)
+        ));
     }
 
     private Map<String, Object> getMap(String responseBody) {
