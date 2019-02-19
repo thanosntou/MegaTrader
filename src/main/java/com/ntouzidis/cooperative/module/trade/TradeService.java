@@ -38,7 +38,7 @@ public class TradeService {
 
         String uniqueclOrdID1 = UUID.randomUUID().toString();
 
-        String lastPrice = bitmexService.getInstrumentLastPrice(userService.findCustomer("pelaths").orElseThrow(RuntimeException::new), Symbol.valueOf(dataPostOrder.getSymbol()));
+        String lastPrice = bitmexService.getInstrumentLastPrice(userService.findCustomer("gejocust").orElseThrow(RuntimeException::new), Symbol.valueOf(dataPostOrder.getSymbol()));
 
         enabledfollowers.forEach(follower -> {
             try {
