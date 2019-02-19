@@ -444,8 +444,8 @@ public class BitmexService implements IBitmexService {
 
     private String calculateOrderQty(User user, Symbol symbol, double fixedQty, String leverage) {
         return String.valueOf(Math.round(
-                (fixedQty / 100 * Double.parseDouble(get_User_Margin(user).get("walletBalance").toString())) *
-                        Double.parseDouble(leverage) /
+                (fixedQty / 100 * Double.parseDouble(get_User_Margin(user).get("walletBalance").toString()) / 100000000) *
+                        Double.parseDouble(leverage) *
                         Double.parseDouble(getInstrumentLastPrice(user, symbol))
         ));
 //        String lastPrice =  getInstrumentLastPrice(user, symbol);
