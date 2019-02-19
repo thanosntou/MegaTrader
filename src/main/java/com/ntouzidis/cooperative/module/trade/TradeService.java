@@ -49,8 +49,7 @@ public class TradeService {
                     dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer) position.get("execQty"))));
                 }
 
-                if (dataPostOrder.getOrderQty() == null)
-                    dataPostOrder.withOrderQty(calculateFixedQtyForSymbol(follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice));
+                dataPostOrder.withOrderQty(calculateFixedQtyForSymbol(follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice));
 
                 bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
             } catch (Exception e) {
@@ -216,29 +215,29 @@ public class TradeService {
 
     private String calculateFixedQtyForSymbol(User user, String symbol, String leverage, String lastPrice) {
         if (symbol.equals(Symbol.XBTUSD.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyXBTUSD(), leverage, lastPrice);
         if (symbol.equals(Symbol.ETHUSD.getValue()))
             return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage);
         if (symbol.equals(Symbol.ADAXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyADAZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyADAZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.BCHXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyBCHZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyBCHZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.EOSXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyEOSZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyEOSZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.ETHXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTJPY(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyXBTJPY(), leverage, lastPrice);
         //TODO fix these ethh19
         if (symbol.equals(Symbol.LTCXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyLTCZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyLTCZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.TRXXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyTRXZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyTRXZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.XRPXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXRPZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, user.getFixedQtyXRPZ18(), leverage, lastPrice);
 
         throw new RuntimeException("Fixed qty user calculation failed");
     }
 
-    private String calculateOrderQty(User user, Symbol symbol, double fixedQty, String leverage, String lastPrice) {
+    private String calculateOrderQty(User user, double fixedQty, String leverage, String lastPrice) {
         return String.valueOf(Math.round(
                 (fixedQty / 100 * Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000) * Double.parseDouble(leverage) * Double.parseDouble(lastPrice)
         ));

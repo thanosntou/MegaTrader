@@ -42,8 +42,7 @@ public class DataPostOrderBuilder {
     }
 
     public DataPostOrderBuilder withOrderQty(String orderQty) {
-        if (orderQty != null)
-            this.orderQty = "orderQty=" + orderQty + "&";
+        this.orderQty = "orderQty=" + orderQty + "&";
         return this;
     }
 
