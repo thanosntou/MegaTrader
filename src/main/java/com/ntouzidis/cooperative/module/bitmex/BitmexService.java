@@ -421,32 +421,23 @@ public class BitmexService implements IBitmexService {
     private String calculateFixedQtyForSymbol(User user, String symbol, String leverage) {
         if (symbol.equals(Symbol.XBTUSD.getValue()))
             return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//
         if (symbol.equals(Symbol.ETHUSD.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyETHUSD() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyETHUSD(), leverage);
         if (symbol.equals(Symbol.ADAXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyADAZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyADAZ18(), leverage);
         if (symbol.equals(Symbol.BCHXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyBCHZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyBCHZ18(), leverage);
         if (symbol.equals(Symbol.EOSXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyEOSZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyEOSZ18(), leverage);
         if (symbol.equals(Symbol.ETHXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyXBTJPY() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTJPY(), leverage);
         //TODO fix these ethh19
         if (symbol.equals(Symbol.LTCXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyLTCZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyLTCZ18(), leverage);
         if (symbol.equals(Symbol.TRXXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyTRXZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyTRXZ18(), leverage);
         if (symbol.equals(Symbol.XRPXXX.getValue()))
-            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXBTUSD(), leverage);
-//            return String.valueOf(user.getFixedQtyXRPZ18() * Long.parseLong(get_User_Margin(user).get("walletBalance").toString()) * (Long.parseLong(leverage) / 10));
+            return calculateOrderQty(user, Symbol.valueOf(symbol), user.getFixedQtyXRPZ18(), leverage);
 
         throw new RuntimeException("Fixed qty user calculation failed");
     }
