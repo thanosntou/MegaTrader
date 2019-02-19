@@ -453,7 +453,7 @@ public class BitmexService implements IBitmexService {
     private String calculateOrderQtyETHUSD(User user, double fixedQty, String leverage) {
         return String.valueOf(Math.round(
                 ((fixedQty / 100 * Double.parseDouble(get_User_Margin(user).get("walletBalance").toString()) / 100000000) * Double.parseDouble(leverage))
-                        / (Double.parseDouble(getInstrumentLastPrice(user, Symbol.ETHUSD)) / 0.000001)
+                        / (Double.parseDouble(getInstrumentLastPrice(user, Symbol.ETHUSD)) * 0.000001)
         ));
     }
 
