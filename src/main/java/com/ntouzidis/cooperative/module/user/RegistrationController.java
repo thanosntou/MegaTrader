@@ -83,7 +83,7 @@ public class RegistrationController {
 //            return "registration-form-customer";
 //        }
 
-        userService.createCustomer(theCustomer, pass);
+//        userService.createCustomer(theCustomer, pass);
 
         return "redirect:/";
     }
