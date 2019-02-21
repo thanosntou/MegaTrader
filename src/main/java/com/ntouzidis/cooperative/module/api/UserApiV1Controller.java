@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
+import com.ntouzidis.cooperative.module.trade.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
@@ -16,11 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import sun.rmi.runtime.Log;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,17 +37,19 @@ public class UserApiV1Controller {
     private String superAdmin;
 
     private final UserService userService;
+    private final TradeService tradeService;
     private final BitmexService bitmexService;
-    private final PasswordEncoder passwordEncoder;
     private final SimpleEncryptor simpleEncryptor;
 
-    public UserApiV1Controller(UserService userService,
-                               BitmexService bitmexService,
-                               PasswordEncoder passwordEncoder,
-                               SimpleEncryptor simpleEncryptor) {
+    public UserApiV1Controller(
+            UserService userService,
+            TradeService tradeService,
+            BitmexService bitmexService,
+            SimpleEncryptor simpleEncryptor
+    ) {
         this.userService = userService;
+        this.tradeService = tradeService;
         this.bitmexService = bitmexService;
-        this.passwordEncoder = passwordEncoder;
         this.simpleEncryptor = simpleEncryptor;
     }
 
@@ -60,6 +62,8 @@ public class UserApiV1Controller {
     ) {
         Preconditions.checkArgument(id != null || name != null);
 
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
         Optional<User> userOpt;
         if (id != null)
             userOpt = userService.findById(id);
@@ -67,6 +71,9 @@ public class UserApiV1Controller {
             userOpt = userService.findByUsername(name);
 
         User user = userOpt.orElseThrow(() -> new NotFoundException("user not found"));
+
+        if (userService.isAdmin(userDetails.getUser()))
+            decryptApiKeys(user);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -166,6 +173,41 @@ public class UserApiV1Controller {
     }
 
     @GetMapping(
+            value = "/active_orders",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<Map<String, Object>>> getActiveOrders(@RequestParam("id") int id,
+                                                                     Authentication authentication
+    ) {
+        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(
+                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
+        );
+        User user = userService.getOne(id);
+
+        List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrdersOf(user);
+
+        return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
+    }
+
+    @GetMapping("/active_positions")
+    public ResponseEntity<List<Map<String, Object>>> getOpenPositions(@RequestParam("id") int id,
+                                                                      Authentication authentication
+    ) {
+        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(
+                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
+        );
+        User user = userService.getOne(id);
+
+        List<Map<String, Object>> randomOpenPositions = tradeService.getRandomPositionsOf(user);
+
+        return new ResponseEntity<>(randomOpenPositions, HttpStatus.OK);
+    }
+
+    @GetMapping(
             value = "/tx",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -186,7 +228,7 @@ public class UserApiV1Controller {
     )
     public ResponseEntity<?> updateKeys(@RequestParam(name = "apiKey", required = false) String apiKey,
                                         @RequestParam(name = "apiSecret", required = false) String apiSecret,
-                                         Authentication authentication
+                                        Authentication authentication
     ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
@@ -248,8 +290,7 @@ public class UserApiV1Controller {
             value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> delete(@PathVariable Integer id,
-                                    Authentication authentication
+    public ResponseEntity<?> delete(@PathVariable Integer id, Authentication authentication
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
