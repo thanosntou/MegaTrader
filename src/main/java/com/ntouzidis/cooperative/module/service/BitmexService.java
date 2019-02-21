@@ -31,13 +31,13 @@ public class BitmexService {
 
     Logger logger = LoggerFactory.getLogger(BitmexService.class);
 
-    private static String ENDPOINT_ANNOUNCEMENT = "/api_v1/v1/announcement";
-    private static String ENDPOINT_ORDER = "/api_v1/v1/order";
-    private static String ENDPOINT_ORDER_ALL = "/api_v1/v1/order/all";
-    private static String ENDPOINT_POSITION = "/api_v1/v1/position";
-    private static String ENDPOINT_POSITION_LEVERAGE = "/api_v1/v1/position/leverage";
-    private static String ENDPOINT_USER_MARGIN = "/api_v1/v1/user/margin";
-    private static String ENDPOINT_USER_WALLET = "/api_v1/v1/user/wallet";
+    private static String ENDPOINT_ANNOUNCEMENT = "/api/v1/announcement";
+    private static String ENDPOINT_ORDER = "/api/v1/order";
+    private static String ENDPOINT_ORDER_ALL = "/api/v1/order/all";
+    private static String ENDPOINT_POSITION = "/api/v1/position";
+    private static String ENDPOINT_POSITION_LEVERAGE = "/api/v1/position/leverage";
+    private static String ENDPOINT_USER_MARGIN = "/api/v1/user/margin";
+    private static String ENDPOINT_USER_WALLET = "/api/v1/user/wallet";
 
     private static String GET = "GET";
     private static String POST = "POST";
@@ -213,9 +213,9 @@ public class BitmexService {
             headers.set("Accept", "application/json");
             headers.set("Content-type", "application/x-www-form-urlencoded");
             headers.set("X-Requested-With", "XMLHttpRequest");
-            headers.set("api_v1-expires", expires);
-            headers.set("api_v1-key", apikey);
-            headers.set("api_v1-signature", signature);
+            headers.set("api-expires", expires);
+            headers.set("api-key", apikey);
+            headers.set("api-signature", signature);
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -249,9 +249,9 @@ public class BitmexService {
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.set("X-Requested-With", "XMLHttpRequest");
-            headers.set("api_v1-expires", expires);
-            headers.set("api_v1-key", apikey);
-            headers.set("api_v1-signature", signature);
+            headers.set("api-expires", expires);
+            headers.set("api-key", apikey);
+            headers.set("api-signature", signature);
 
 //            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
 //            body.add("raw", data);
@@ -287,9 +287,9 @@ public class BitmexService {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            headers.set("api_v1-expires", expires);
-            headers.set("api_v1-key", apikey);
-            headers.set("api_v1-signature", signature);
+            headers.set("api-expires", expires);
+            headers.set("api-key", apikey);
+            headers.set("api-signature", signature);
 
             HttpEntity<String> entity = new HttpEntity<>(data, headers);
 
@@ -313,13 +313,13 @@ public class BitmexService {
 //            headers.set("Accept", "application/json");
 //            headers.set("Content-type", "application/x-www-form-urlencoded");
 //            headers.set("X-Requested-With", "XMLHttpRequest");
-//            headers.set("api_v1-expires", expires);
-//            headers.set("api_v1-key", principal.getApiKey());
-//            headers.set("api_v1-signature", calculateSignature(principal.getApiSecret(), GET, path, expires, data));
+//            headers.set("api-expires", expires);
+//            headers.set("api-key", principal.getApiKey());
+//            headers.set("api-signature", calculateSignature(principal.getApiSecret(), GET, path, expires, data));
 //
 //            HttpEntity<String> entity = new HttpEntity<>(headers);
 //
-//            ResponseEntity<String> res = restTemplate.exchange(baseUrl + "/api_v1/v1/order?filter={key}", HttpMethod.GET, entity, String.class, "%7B%22open%22%3A%20true%7D");
+//            ResponseEntity<String> res = restTemplate.exchange(baseUrl + "/api/v1/order?filter={key}", HttpMethod.GET, entity, String.class, "%7B%22open%22%3A%20true%7D");
 //            return Objects.requireNonNull(res.getBody());
 //
 //        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {
@@ -345,16 +345,16 @@ public class BitmexService {
 //            HttpHeaders headers = new HttpHeaders();
 //            headers.set("Accept", "application/json;charset=UTF-8");
 //            headers.set("Content-Type", "application/x-www-form-urlencoded");
-//            headers.set("api_v1-expires", expires);
-//            headers.set("api_v1-key", apikey);
-//            headers.set("api_v1-signature", signature);
+//            headers.set("api-expires", expires);
+//            headers.set("api-key", apikey);
+//            headers.set("api-signature", signature);
 //
 //            ObjectMapper objectMapper = new ObjectMapper();
 //            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 //            params.set("filter", "{\"open\": true}");
 //
 //            UriComponentsBuilder builder = UriComponentsBuilder
-//                    .fromHttpUrl(baseUrl + "/api_v1/v1/order").queryParams(params);
+//                    .fromHttpUrl(baseUrl + "/api/v1/order").queryParams(params);
 //                    .queryParam("filter", "{\"open\": true}");
 //
 //            String encoded1 = builder.toUriString();
