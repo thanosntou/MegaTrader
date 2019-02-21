@@ -182,8 +182,25 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User createCustomer(User user, String password) {
-        return createUSer(user, password, AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
+    public User createCustomer(String username, String email, String pass, String confirmPass) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(pass);
+        user.setEmail(email);
+        user.setApiKey("");
+        user.setApiSecret("");
+        user.setEnabled(false);
+        user.setFixedQtyXBTUSD(0L);
+        user.setFixedQtyETHUSD(0L);
+        user.setFixedQtyADAZ18(0L);
+        user.setFixedQtyBCHZ18(0L);
+        user.setFixedQtyEOSZ18(0L);
+        user.setFixedQtyXBTJPY(0L);//TODO should change to ethxxx
+        user.setFixedQtyLTCZ18(0L);
+        user.setFixedQtyTRXZ18(0L);
+        user.setFixedQtyXRPZ18(0L);
+
+        return createUSer(user, pass, AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
     }
 
     @Transactional
@@ -263,8 +280,7 @@ public class UserService implements UserDetailsService {
         user.setApiKey("Fill_Me");
         user.setApiSecret("Fill_Me");
 
-        userRepository.save(user);
-
+        userRepository.save(encodeUserApiKeys(user));
         authorityService.createAuthorities(user.getUsername(), authorities);
 
         return userDetails;

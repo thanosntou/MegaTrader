@@ -88,10 +88,10 @@ public class UserApiV1Controller {
 
         Preconditions.checkArgument(userService.isAdmin(userDetails.getUser()));
 
-        List<User> users = userService.findAll()
-                .stream()
-                .peek(this::decryptApiKeys)
-                .collect(Collectors.toList());
+        List<User> users = userService.findAll();
+
+        if (userService.isAdmin(userDetails.getUser()))
+            users = users.stream().peek(this::decryptApiKeys).collect(Collectors.toList());
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -150,24 +150,7 @@ public class UserApiV1Controller {
         Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
         Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
 
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(pass);
-        user.setEmail(email);
-        user.setApiKey("");
-        user.setApiSecret("");
-        user.setEnabled(false);
-        user.setFixedQtyXBTUSD(0L);
-        user.setFixedQtyETHUSD(0L);
-        user.setFixedQtyADAZ18(0L);
-        user.setFixedQtyBCHZ18(0L);
-        user.setFixedQtyEOSZ18(0L);
-        user.setFixedQtyXBTJPY(0L);//TODO should change to ethxxx
-        user.setFixedQtyLTCZ18(0L);
-        user.setFixedQtyTRXZ18(0L);
-        user.setFixedQtyXRPZ18(0L);
-
-        userService.createCustomer(user, pass);
+        User user = userService.createCustomer(username, email, pass, confirmPass);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
