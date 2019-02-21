@@ -1,14 +1,12 @@
 package com.ntouzidis.cooperative.module.common;
 
-import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
+import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.Formatter;
@@ -21,9 +19,9 @@ import java.util.stream.Collectors;
 public class DashboardController {
 
     private final UserService userService;
-    private final IBitmexService bitmexService;
+    private final BitmexService bitmexService;
 
-    public DashboardController(UserService userService, IBitmexService bitmexService) {
+    public DashboardController(UserService userService, BitmexService bitmexService) {
         this.userService = userService;
         this.bitmexService = bitmexService;
     }

@@ -1,11 +1,10 @@
 package com.ntouzidis.cooperative.module.bitmex;
 
 import com.google.common.base.Preconditions;
-import com.ntouzidis.cooperative.module.api.UserApiV1Controller;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
-import com.ntouzidis.cooperative.module.common.endpoints.InstrumentEndpoint;
+import com.ntouzidis.cooperative.module.common.endpoints.Instrument;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -24,23 +23,21 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class BitmexService implements IBitmexService {
+public class BitmexService {
 
     Logger logger = LoggerFactory.getLogger(BitmexService.class);
 
-    private static String ENDPOINT_ANNOUNCEMENT = "/api/v1/announcement";
-    private static String ENDPOINT_ORDER = "/api/v1/order";
-    private static String ENDPOINT_ORDER_ALL = "/api/v1/order/all";
-    private static String ENDPOINT_POSITION = "/api/v1/position";
-    private static String ENDPOINT_POSITION_LEVERAGE = "/api/v1/position/leverage";
-    private static String ENDPOINT_USER_MARGIN = "/api/v1/user/margin";
-    private static String ENDPOINT_USER_WALLET = "/api/v1/user/wallet";
+    private static String ENDPOINT_ANNOUNCEMENT = "/api_v1/v1/announcement";
+    private static String ENDPOINT_ORDER = "/api_v1/v1/order";
+    private static String ENDPOINT_ORDER_ALL = "/api_v1/v1/order/all";
+    private static String ENDPOINT_POSITION = "/api_v1/v1/position";
+    private static String ENDPOINT_POSITION_LEVERAGE = "/api_v1/v1/position/leverage";
+    private static String ENDPOINT_USER_MARGIN = "/api_v1/v1/user/margin";
+    private static String ENDPOINT_USER_WALLET = "/api_v1/v1/user/wallet";
 
     private static String GET = "GET";
     private static String POST = "POST";
@@ -56,7 +53,6 @@ public class BitmexService implements IBitmexService {
         this.simpleEncryptor = simpleEncryptor;
     }
 
-    @Override
     public List<Map<String, Object>> get_Announcements(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -65,13 +61,12 @@ public class BitmexService implements IBitmexService {
         return getMapList(res.orElse(null));
     }
 
-    @Override
     public String getInstrumentLastPrice(User user, Symbol symbol) {
         try {
             Preconditions.checkNotNull(user, "user cannot be null");
             Preconditions.checkNotNull(symbol, "symbol cannot be null");
 
-            Optional<String> res = requestGET(user, InstrumentEndpoint.INSTRUMENT + "?symbol=" + symbol.getValue(), "");
+            Optional<String> res = requestGET(user, Instrument.INSTRUMENT + "?symbol=" + symbol.getValue(), "");
 
             List<Map<String, Object>> ml = getMapList(res.orElse(null));
 
@@ -84,7 +79,6 @@ public class BitmexService implements IBitmexService {
         return "0";
     }
 
-    @Override
     public Map<String, Object> getUserWallet(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -93,7 +87,6 @@ public class BitmexService implements IBitmexService {
         return getMap(res.orElse(null));
     }
 
-    @Override
     public Map<String, Object> get_User_Margin(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -102,7 +95,6 @@ public class BitmexService implements IBitmexService {
         return getMap(res.orElse(null));
     }
 
-    @Override
     public List<Map<String, Object>> get_Order_Order(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -111,7 +103,6 @@ public class BitmexService implements IBitmexService {
         return getMapList(res.orElse(null));
     }
 
-    @Override
     public Map<String, Object> post_Order_Order_WithFixedsAndPercentage(User user, DataPostOrderBuilder dataOrder, int percentage) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -132,19 +123,14 @@ public class BitmexService implements IBitmexService {
         return getMap(res.orElse(null));
     }
 
-    @Override
-    public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder, String leverage) {
+    public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
-
-//        if (dataOrder.getOrderQty() == null)
-//            dataOrder.withOrderQty(calculateFixedQtyForSymbol(user, dataOrder.getSymbol(), leverage));
 
         Optional<String> res = requestPOST(user, ENDPOINT_ORDER, dataOrder.get());
 
         return getMap(res.orElse(null));
     }
 
-    @Override
     public Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -153,26 +139,25 @@ public class BitmexService implements IBitmexService {
         return getMap(res.orElse(null));
     }
 
-    @Override
     public void cancelOrder(User user, DataDeleteOrderBuilder dataDeleteOrder) {
         requestDELETE(user, ENDPOINT_ORDER, dataDeleteOrder.get());
     }
 
-    @Override
     public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
         requestDELETE(user, ENDPOINT_ORDER_ALL, dataDeleteOrderBuilder.get());
     }
 
-    @Override
     public Map<String, Object> getSymbolPosition(User user, Symbol symbol) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
         Optional<String> res = requestGET(user, ENDPOINT_POSITION, "");
 
-        return getMapList(res.orElse(null)).stream().filter(i -> i.get("symbol").equals(symbol.getValue())).findAny().orElse(null);
+        return getMapList(res.orElse(null))
+                .stream()
+                .filter(i -> i.get("symbol").equals(symbol.getValue()))
+                .findAny().orElse(null);
     }
 
-    @Override
     public List<Map<String, Object>> getAllSymbolPosition(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -181,7 +166,6 @@ public class BitmexService implements IBitmexService {
         return getMapList(res.orElse(null));
     }
 
-    @Override
     public List<Map<String, Object>> get_Position(User user) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -190,7 +174,6 @@ public class BitmexService implements IBitmexService {
         return getMapList(res.orElse(null));
     }
 
-    @Override
     public List<Map<String, Object>> get_Position_Leverage(User user, String data) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -199,7 +182,6 @@ public class BitmexService implements IBitmexService {
         return getMapList(res.orElse(null));
     }
 
-    @Override
     public Map<String, Object> post_Position_Leverage(User user, DataPostLeverage dataLeverageBuilder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -231,9 +213,9 @@ public class BitmexService implements IBitmexService {
             headers.set("Accept", "application/json");
             headers.set("Content-type", "application/x-www-form-urlencoded");
             headers.set("X-Requested-With", "XMLHttpRequest");
-            headers.set("api-expires", expires);
-            headers.set("api-key", apikey);
-            headers.set("api-signature", signature);
+            headers.set("api_v1-expires", expires);
+            headers.set("api_v1-key", apikey);
+            headers.set("api_v1-signature", signature);
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
@@ -267,9 +249,9 @@ public class BitmexService implements IBitmexService {
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.set("X-Requested-With", "XMLHttpRequest");
-            headers.set("api-expires", expires);
-            headers.set("api-key", apikey);
-            headers.set("api-signature", signature);
+            headers.set("api_v1-expires", expires);
+            headers.set("api_v1-key", apikey);
+            headers.set("api_v1-signature", signature);
 
 //            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
 //            body.add("raw", data);
@@ -305,9 +287,9 @@ public class BitmexService implements IBitmexService {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            headers.set("api-expires", expires);
-            headers.set("api-key", apikey);
-            headers.set("api-signature", signature);
+            headers.set("api_v1-expires", expires);
+            headers.set("api_v1-key", apikey);
+            headers.set("api_v1-signature", signature);
 
             HttpEntity<String> entity = new HttpEntity<>(data, headers);
 
@@ -331,13 +313,13 @@ public class BitmexService implements IBitmexService {
 //            headers.set("Accept", "application/json");
 //            headers.set("Content-type", "application/x-www-form-urlencoded");
 //            headers.set("X-Requested-With", "XMLHttpRequest");
-//            headers.set("api-expires", expires);
-//            headers.set("api-key", principal.getApiKey());
-//            headers.set("api-signature", calculateSignature(principal.getApiSecret(), GET, path, expires, data));
+//            headers.set("api_v1-expires", expires);
+//            headers.set("api_v1-key", principal.getApiKey());
+//            headers.set("api_v1-signature", calculateSignature(principal.getApiSecret(), GET, path, expires, data));
 //
 //            HttpEntity<String> entity = new HttpEntity<>(headers);
 //
-//            ResponseEntity<String> res = restTemplate.exchange(baseUrl + "/api/v1/order?filter={key}", HttpMethod.GET, entity, String.class, "%7B%22open%22%3A%20true%7D");
+//            ResponseEntity<String> res = restTemplate.exchange(baseUrl + "/api_v1/v1/order?filter={key}", HttpMethod.GET, entity, String.class, "%7B%22open%22%3A%20true%7D");
 //            return Objects.requireNonNull(res.getBody());
 //
 //        } catch (NoSuchAlgorithmException | InvalidKeyException | HttpClientErrorException | UnsupportedEncodingException e) {
@@ -363,16 +345,16 @@ public class BitmexService implements IBitmexService {
 //            HttpHeaders headers = new HttpHeaders();
 //            headers.set("Accept", "application/json;charset=UTF-8");
 //            headers.set("Content-Type", "application/x-www-form-urlencoded");
-//            headers.set("api-expires", expires);
-//            headers.set("api-key", apikey);
-//            headers.set("api-signature", signature);
+//            headers.set("api_v1-expires", expires);
+//            headers.set("api_v1-key", apikey);
+//            headers.set("api_v1-signature", signature);
 //
 //            ObjectMapper objectMapper = new ObjectMapper();
 //            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 //            params.set("filter", "{\"open\": true}");
 //
 //            UriComponentsBuilder builder = UriComponentsBuilder
-//                    .fromHttpUrl(baseUrl + "/api/v1/order").queryParams(params);
+//                    .fromHttpUrl(baseUrl + "/api_v1/v1/order").queryParams(params);
 //                    .queryParam("filter", "{\"open\": true}");
 //
 //            String encoded1 = builder.toUriString();
@@ -446,18 +428,23 @@ public class BitmexService implements IBitmexService {
     }
 
     private String calculateOrderQty(User user, Symbol symbol, double fixedQty, String leverage) {
-        return String.valueOf(Math.round(
-                (fixedQty / 100 * Double.parseDouble(get_User_Margin(user).get("walletBalance").toString()) / 100000000) *
-                        Double.parseDouble(leverage) *
-                        Double.parseDouble(getInstrumentLastPrice(user, symbol))
-        ));
+        return String.valueOf(
+                Math.round(
+                        (fixedQty / 100)
+                        * (Double.parseDouble(get_User_Margin(user).get("walletBalance").toString()) / 100000000)
+                        * Double.parseDouble(leverage)
+                        * Double.parseDouble(getInstrumentLastPrice(user, symbol))
+                )
+        );
     }
 
     private String calculateOrderQtyETHUSD(User user, double fixedQty, String leverage) {
-        return String.valueOf(Math.round(
-                ((fixedQty / 100 * Double.parseDouble(get_User_Margin(user).get("walletBalance").toString()) / 100000000) * Double.parseDouble(leverage))
-                        / (Double.parseDouble(getInstrumentLastPrice(user, Symbol.ETHUSD)) * 0.000001)
-        ));
+        return String.valueOf(
+                Math.round(
+                ((fixedQty / 100) * (Double.parseDouble(get_User_Margin(user).get("walletBalance").toString()) / 100000000) * Double.parseDouble(leverage))
+                 / (Double.parseDouble(getInstrumentLastPrice(user, Symbol.ETHUSD)) * 0.000001)
+                )
+        );
     }
 
     private Map<String, Object> getMap(String responseBody) {
@@ -481,8 +468,8 @@ public class BitmexService implements IBitmexService {
         return myMapList;
     }
 
-    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data)
-            throws NoSuchAlgorithmException, InvalidKeyException, IllegalArgumentException, Exception {
+    private String calculateSignature(String apiSecret, String verb, String path, String expires, String data
+    ) throws Exception {
         Preconditions.checkNotNull(apiSecret, "API Secret");
         Preconditions.checkNotNull(verb, "request method");
         Preconditions.checkNotNull(path, "bitmex path");
@@ -494,8 +481,6 @@ public class BitmexService implements IBitmexService {
         Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
         SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
         sha256_HMAC.init(secret_key);
-
-//        String hash = Base64.encodeBase64String(sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8)));
 
         return Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8)));
     }

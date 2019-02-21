@@ -1,6 +1,6 @@
-package com.ntouzidis.cooperative.module.api;
+package com.ntouzidis.cooperative.module.api_v1;
 
-import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
+import com.ntouzidis.cooperative.module.bitmex.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +22,9 @@ public class DashboardApiV1Controller {
     @Value("${baseUrl}")
     private String client;
 
-    private final IBitmexService bitmexService;
+    private final BitmexService bitmexService;
 
-    public DashboardApiV1Controller(IBitmexService bitmexService) {
+    public DashboardApiV1Controller(BitmexService bitmexService) {
         this.bitmexService = bitmexService;
     }
 

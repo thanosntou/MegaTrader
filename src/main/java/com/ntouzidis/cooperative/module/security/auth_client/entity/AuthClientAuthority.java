@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.security.entity;
+package com.ntouzidis.cooperative.module.security.auth_client.entity;
 
 import lombok.Data;
 

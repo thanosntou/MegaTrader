@@ -1,8 +1,8 @@
-package com.ntouzidis.cooperative.module.security.service;
+package com.ntouzidis.cooperative.module.security.auth_client.service;
 
-import com.ntouzidis.cooperative.module.security.entity.AuthClient;
-import com.ntouzidis.cooperative.module.security.entity.AuthClientScope;
-import com.ntouzidis.cooperative.module.security.entity.AuthGrantType;
+import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthClient;
+import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthClientScope;
+import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthGrantType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
