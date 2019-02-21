@@ -1,10 +1,11 @@
-package com.ntouzidis.cooperative.module.trade;
+package com.ntouzidis.cooperative.module.old;
 
-import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
@@ -49,10 +50,10 @@ public class TradeController {
         Map<String, String> priceSteps = calculatePriceSteps();
 
         // sumPositions + any customer position (temporary)
-        Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
+//        Map<String, Double> sumPositions = tradeService.calculateSumPositions(followers);
 
         // Sum of Fixed Customer Qty
-        Map<String, Double> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
+//        Map<String, Double> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
         // random positions. for sure not empty
         List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
@@ -89,7 +90,7 @@ public class TradeController {
         model.addAttribute("currentCoinPriceStep", currentCoinPriceStep);
 
 //        model.addAttribute("sumPositions", sumPositions);
-        model.addAttribute("sumFixedQtys", sumFixedQtys);
+//        model.addAttribute("sumFixedQtys", sumFixedQtys);
         model.addAttribute("randomPositions", randomPositions);
         model.addAttribute("randomActiveOrders", randomActiveOrders);
         return "trade-panel2";

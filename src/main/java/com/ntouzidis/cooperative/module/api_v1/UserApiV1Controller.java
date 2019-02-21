@@ -1,10 +1,10 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
 import com.google.common.base.Preconditions;
-import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
-import com.ntouzidis.cooperative.module.trade.TradeService;
+import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
