@@ -50,12 +50,11 @@ public class TradeService {
                 } else {
                     dataPostOrder.withOrderQty(calculateFixedQtyForSymbol(follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice));
                 }
+                bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1));
 
-                bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
             } catch (Exception e) {
                 logger.error("Order failed for follower: " + follower.getUsername());
             }
-
         });
     }
 
@@ -83,7 +82,7 @@ public class TradeService {
                         .withSide(sb.getSide())
                         .withText("Bitmexcallbot");
 
-                bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder, dataLeverage.getLeverage());
+                bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
 
 
                 //            3. Stop Market
@@ -97,7 +96,7 @@ public class TradeService {
                             .withStopPrice(sb.getStopLoss())
                             .withText("Bitmexcallbot");
 
-                    bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder, dataLeverage.getLeverage());
+                    bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
                 }
 
                 //            4. Limit
@@ -110,7 +109,7 @@ public class TradeService {
                             .withPrice(sb.getProfitTrigger())
                             .withText("Bitmexcallbot");
 
-                    bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder, dataLeverage.getLeverage());
+                    bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
                 }
             } catch (Exception e) {
                 logger.error("Order failed for follower: " + customer.getUsername());

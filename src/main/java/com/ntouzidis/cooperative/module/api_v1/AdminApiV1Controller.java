@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.api;
+package com.ntouzidis.cooperative.module.api_v1;
 
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;

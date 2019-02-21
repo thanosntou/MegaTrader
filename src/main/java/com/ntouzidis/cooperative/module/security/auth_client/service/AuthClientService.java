@@ -1,13 +1,13 @@
-package com.ntouzidis.cooperative.module.security.service;
+package com.ntouzidis.cooperative.module.security.auth_client.service;
 
-import com.ntouzidis.cooperative.module.security.entity.AuthClient;
-import com.ntouzidis.cooperative.module.security.entity.AuthClientAuthority;
-import com.ntouzidis.cooperative.module.security.entity.AuthClientScope;
-import com.ntouzidis.cooperative.module.security.entity.AuthGrantType;
-import com.ntouzidis.cooperative.module.security.repository.AuthClientAuthorityRepository;
-import com.ntouzidis.cooperative.module.security.repository.AuthClientRepository;
-import com.ntouzidis.cooperative.module.security.repository.AuthClientScopeRepository;
-import com.ntouzidis.cooperative.module.security.repository.AuthGrantTypeRepository;
+import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthClient;
+import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthClientAuthority;
+import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthClientScope;
+import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthGrantType;
+import com.ntouzidis.cooperative.module.security.auth_client.repository.AuthClientAuthorityRepository;
+import com.ntouzidis.cooperative.module.security.auth_client.repository.AuthClientRepository;
+import com.ntouzidis.cooperative.module.security.auth_client.repository.AuthClientScopeRepository;
+import com.ntouzidis.cooperative.module.security.auth_client.repository.AuthGrantTypeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

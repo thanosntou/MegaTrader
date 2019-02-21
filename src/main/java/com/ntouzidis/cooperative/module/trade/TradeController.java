@@ -1,7 +1,6 @@
 package com.ntouzidis.cooperative.module.trade;
 
 import com.ntouzidis.cooperative.module.bitmex.BitmexService;
-import com.ntouzidis.cooperative.module.bitmex.IBitmexService;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
@@ -9,20 +8,13 @@ import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
-import liquibase.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 import java.lang.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/trade")
@@ -31,7 +23,7 @@ public class TradeController {
 //    @Value("${trader}")
 //    private String traderName;
 
-    private final IBitmexService bitmexService;
+    private final BitmexService bitmexService;
     private final UserService userService;
     private final TradeService tradeService;
 

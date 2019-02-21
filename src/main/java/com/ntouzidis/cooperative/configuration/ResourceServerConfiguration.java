@@ -18,7 +18,7 @@ import org.springframework.web.context.request.RequestContextListener;
 @EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    private static final String RESOURCE_ID = "my-rest-api";
+    private static final String RESOURCE_ID = "my-rest-api_v1";
 
     @Bean
     public RequestContextListener requestContextListener() {
@@ -51,9 +51,9 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
         http.httpBasic().disable()
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and().anonymous().disable()
-                .requestMatchers().antMatchers("/api/**").and().csrf().disable()
+                .requestMatchers().antMatchers("/api_v1/**").and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api_v1/**").permitAll()
                 .and().authorizeRequests()
                 .anyRequest().authenticated()
                 .and()

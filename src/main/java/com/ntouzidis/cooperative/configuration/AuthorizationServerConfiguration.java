@@ -1,6 +1,6 @@
 package com.ntouzidis.cooperative.configuration;
 
-import com.ntouzidis.cooperative.module.security.service.AuthClientDetailsService;
+import com.ntouzidis.cooperative.module.security.auth_client.service.AuthClientDetailsService;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
