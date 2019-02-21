@@ -49,7 +49,6 @@ public class TradeService {
                     dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer) position.get("execQty"))));
                 } else {
                     dataPostOrder.withOrderQty(calculateFixedQtyForSymbol(follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice));
-
                 }
 
                 bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1), dataPostLeverage.getLeverage());
@@ -121,8 +120,11 @@ public class TradeService {
     }
 
     public List<Map<String, Object>> getRandomActiveOrders(User trader) {
-        User guideFollower = userService.getGuideFollower(trader);
-        return bitmexService.get_Order_Order(guideFollower)
+        return getRandomActiveOrdersOf(userService.getGuideFollower(trader));
+    }
+
+    public List<Map<String, Object>> getRandomActiveOrdersOf(User user) {
+        return bitmexService.get_Order_Order(user)
                 .stream()
                 .filter(order -> Arrays.stream(Symbol.values())
                         .map(Symbol::getValue)
@@ -133,8 +135,18 @@ public class TradeService {
     }
 
     public List<Map<String, Object>> getRandomPositions(User trader) {
-        User guideFollower = userService.getGuideFollower(trader);
-        return bitmexService.get_Position(guideFollower);
+        return getRandomPositionsOf(userService.getGuideFollower(trader));
+    }
+
+    public List<Map<String, Object>> getRandomPositionsOf(User user) {
+        return bitmexService.get_Position(user)
+                .stream()
+                .filter(pos -> Arrays.stream(Symbol.values())
+                        .map(Symbol::getValue)
+                        .collect(Collectors.toList())
+                        .contains(pos.get("symbol").toString()))
+                .filter(pos -> pos.get("avgEntryPrice") != null)
+                .collect(Collectors.toList());
     }
 
     public List<Map<String, Object>> getRandomTX(User trader) {
