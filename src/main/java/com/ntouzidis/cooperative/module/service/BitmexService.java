@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.bitmex;
+package com.ntouzidis.cooperative.module.service;
 
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;

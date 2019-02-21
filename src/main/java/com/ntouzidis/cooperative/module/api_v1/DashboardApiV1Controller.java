@@ -1,6 +1,6 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
-import com.ntouzidis.cooperative.module.bitmex.BitmexService;
+import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.springframework.beans.factory.annotation.Value;

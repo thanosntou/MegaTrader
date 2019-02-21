@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.mail;
+package com.ntouzidis.cooperative.module.old;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
