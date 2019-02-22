@@ -36,7 +36,7 @@ public class TradeService {
         String uniqueclOrdID1 = UUID.randomUUID().toString();
 
         String lastPrice = bitmexService.getInstrumentLastPrice(
-                userService.findCustomer("pelaths").orElseThrow(() ->
+                userService.findCustomer("gejocust").orElseThrow(() ->
                         new RuntimeException("Customer not found")
                 ),
                 Symbol.valueOf(dataPostOrder.getSymbol())
