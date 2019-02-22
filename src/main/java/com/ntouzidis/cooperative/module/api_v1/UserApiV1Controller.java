@@ -209,9 +209,10 @@ public class UserApiV1Controller {
             value = "/keys",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> updateKeys(@RequestParam(name = "apiKey", required = false) String apiKey,
-                                        @RequestParam(name = "apiSecret", required = false) String apiSecret,
-                                        Authentication authentication
+    public ResponseEntity<?> updateKeys(
+            @RequestParam(name = "apiKey", required = false) String apiKey,
+            @RequestParam(name = "apiSecret", required = false) String apiSecret,
+            Authentication authentication
     ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
@@ -225,8 +226,9 @@ public class UserApiV1Controller {
             value = "/client",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> updateClient(@RequestParam(name = "client", required = false) Client client,
-                                          Authentication authentication
+    public ResponseEntity<?> updateClient(
+            @RequestParam(name = "client", required = false) Client client,
+            Authentication authentication
     ) {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 

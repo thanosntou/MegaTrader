@@ -30,6 +30,7 @@ public class TradeApiV1Controller {
         this.userService = userService;
     }
 
+    @SuppressWarnings("Duplicates")
     @PostMapping(value = "/signal")
     public ResponseEntity<?> createSignal(@RequestParam(name="symbol", required = false) String symbol,
                                           @RequestParam(name="side", required = false) String side,
@@ -56,6 +57,7 @@ public class TradeApiV1Controller {
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
 
+    @SuppressWarnings("Duplicates")
     @PostMapping(
             value = "/orderAll",
             produces = MediaType.APPLICATION_JSON_VALUE

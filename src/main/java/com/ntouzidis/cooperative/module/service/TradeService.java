@@ -22,8 +22,10 @@ public class TradeService {
     private final BitmexService bitmexService;
     private final UserService userService;
 
-    public TradeService(BitmexService bitmexService,
-                        UserService userService) {
+    public TradeService(
+            BitmexService bitmexService,
+            UserService userService
+    ) {
         this.bitmexService = bitmexService;
         this.userService = userService;
     }
@@ -33,17 +35,34 @@ public class TradeService {
 
         String uniqueclOrdID1 = UUID.randomUUID().toString();
 
-        String lastPrice = bitmexService.getInstrumentLastPrice(userService.findCustomer("gejocust").orElseThrow(RuntimeException::new), Symbol.valueOf(dataPostOrder.getSymbol()));
+        String lastPrice = bitmexService.getInstrumentLastPrice(
+                userService.findCustomer("pelaths").orElseThrow(() ->
+                        new RuntimeException("Customer not found")
+                ),
+                Symbol.valueOf(dataPostOrder.getSymbol())
+        );
 
         enabledfollowers.forEach(follower -> {
             try {
                 bitmexService.post_Position_Leverage(follower, dataPostLeverage);
 
                 if ("Stop".equals(dataPostOrder.getOrderType()) || "StopLimit".equals(dataPostOrder.getOrderType())) {
-                    Map<String, Object> position = bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol());
-                    dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer) position.get("execQty"))));
+                    dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer)
+                            bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol()).get("execQty")))
+                    );
+                    if ("0".equals(dataPostOrder.getOrderQty())) {
+                        dataPostOrder.withOrderQty(
+                                calculateFixedQtyForSymbol(
+                                        follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice
+                                )
+                        );
+                    }
                 } else {
-                    dataPostOrder.withOrderQty(calculateFixedQtyForSymbol(follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice));
+                    dataPostOrder.withOrderQty(
+                            calculateFixedQtyForSymbol(
+                                    follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice
+                            )
+                    );
                 }
                 bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1));
 
@@ -244,17 +263,35 @@ public class TradeService {
         throw new RuntimeException("Fixed qty user calculation failed");
     }
 
-    private String calculateOrderQty(User user, double fixedQty, String leverage, String lastPrice) {
+    private String calculateOrderQty(User user, double fixedQty, String lev, String lastPrice) {
         return String.valueOf(Math.round(
-                (fixedQty / 100 * Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000) * Double.parseDouble(leverage) * Double.parseDouble(lastPrice)
+                xbtAmount(user, fixedQty) * leverage(lev) * lastPrice(lastPrice)
         ));
     }
 
-    private String calculateOrderQtyETHUSD(User user, double fixedQty, String leverage) {
+    private String calculateOrderQtyETHUSD(User user, double fixedQty, String lev) {
         return String.valueOf(Math.round(
-                ((fixedQty / 100 * Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000) * Double.parseDouble(leverage))
+                        ((fixedQty / 100 * Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000)
+                          * leverage(lev)
+                        )
                         / (Double.parseDouble(bitmexService.getInstrumentLastPrice(user, Symbol.ETHUSD)) * 0.000001)
         ));
+    }
+
+    private Double lastPrice2(User user, Symbol symbol) {
+        return Double.parseDouble(bitmexService.getInstrumentLastPrice(user, symbol)) * 0.000001;
+    }
+
+    private Double leverage(String leverage) {
+        return Double.parseDouble(leverage);
+    }
+
+    private Double xbtAmount(User user, double fixedQty) {
+        return fixedQty / 100 * Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000;
+    }
+
+    private Double lastPrice(String leverage) {
+        return Double.parseDouble(leverage);
     }
 
 }
