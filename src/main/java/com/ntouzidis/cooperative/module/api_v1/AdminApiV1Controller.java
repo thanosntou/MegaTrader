@@ -57,10 +57,11 @@ public class AdminApiV1Controller {
     )
     public ResponseEntity<Map<String, Double>> calculateTotalBalance(Authentication authentication) {
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        Preconditions.checkArgument(userService.isAdmin(userDetails.getUser()));
-
+        Preconditions.checkArgument(
+                userService.isAdmin(user) || userService.isTrader(user)
+        );
         double totalVolume = userService.calculateTotalVolume();
         double activeVolume = userService.calculateActiveVolume();
 
