@@ -75,8 +75,10 @@ public class TraderApiV1Controller {
   }
 
   @PostMapping(value = "/status")
-  public ResponseEntity<User> enableOrDisableFollower(@RequestParam("followerId") Integer followerId,
-                               Authentication authentication) {
+  public ResponseEntity<User> enableOrDisableFollower(
+          Authentication authentication,
+          @RequestParam("followerId") Integer followerId
+  ) {
 
     CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
