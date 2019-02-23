@@ -48,7 +48,7 @@ public class DashboardApiV1Controller {
         if (!bitmexUserWalletGet.isEmpty()) {
             walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
             availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
-            activeBalance = String.valueOf(Integer.parseInt(walletBalance.toString()) - Integer.parseInt(availableMargin.toString()));
+            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
         }
 
 //        activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());

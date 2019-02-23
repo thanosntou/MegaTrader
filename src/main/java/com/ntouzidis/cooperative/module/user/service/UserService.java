@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
+import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -32,19 +33,24 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final SimpleEncryptor simpleEncryptor;
     private final LoginRepository loginRepository;
+    private final BitmexService bitmexService;
 
-    public UserService(UserRepository userRepository,
-                       AuthorityService authorityService,
-                       CustomerToTraderLinkRepository customerToTraderLinkRepository,
-                       PasswordEncoder passwordEncoder,
-                       SimpleEncryptor encryptor,
-                       LoginRepository loginRepository) {
+    public UserService(
+            UserRepository userRepository,
+            AuthorityService authorityService,
+            CustomerToTraderLinkRepository customerToTraderLinkRepository,
+            PasswordEncoder passwordEncoder,
+            SimpleEncryptor encryptor,
+            LoginRepository loginRepository,
+            BitmexService bitmexService
+    ) {
         this.userRepository = userRepository;
         this.authorityService = authorityService;
         this.customerToTraderLinkRepository = customerToTraderLinkRepository;
         this.passwordEncoder = passwordEncoder;
         this.simpleEncryptor = encryptor;
         this.loginRepository = loginRepository;
+        this.bitmexService = bitmexService;
     }
 
     public User getOne(int id) {
@@ -127,6 +133,20 @@ public class UserService implements UserDetailsService {
     public User update(User user) {
         userRepository.save(user);
         return user;
+    }
+
+    public double calculateTotalBalance() {
+        int sum = findAll().stream().mapToInt(user -> {
+            try {
+                return ((Integer) bitmexService.get_User_Margin(user).get("walletBalance"));
+            }
+            catch (Exception e) {
+            }
+            return 0;
+        })
+                .sum();
+
+        return (double) sum / 100000000;
     }
 
     @Transactional
