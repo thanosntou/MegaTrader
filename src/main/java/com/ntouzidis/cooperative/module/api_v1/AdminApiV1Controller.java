@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -53,14 +55,19 @@ public class AdminApiV1Controller {
             value = "/totalBalance",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Double> calculateTotalBalance(Authentication authentication) {
+    public ResponseEntity<Map<String, Double>> calculateTotalBalance(Authentication authentication) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         Preconditions.checkArgument(userService.isAdmin(userDetails.getUser()));
 
-        double totalBalance = userService.calculateTotalBalance();
+        double totalVolume = userService.calculateTotalVolume();
+        double activeVolume = userService.calculateActiveVolume();
 
-        return new ResponseEntity<>(totalBalance, HttpStatus.OK);
+        Map<String, Double> map = new HashMap<>();
+        map.put("totalVolume", totalVolume);
+        map.put("activeVolume", activeVolume);
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
