@@ -49,6 +49,7 @@ public class TradeService {
         String lastPrice = getSymbolLastPrice(dataPostOrder.getSymbol());
 
         Future<?> future = null;
+        long start = System.nanoTime();
         for (User follower: enabledfollowers) {
             future = multiExecutor.submit(() -> {
                 try {
@@ -79,11 +80,13 @@ public class TradeService {
                 }
             });
         }
+        long end = System.nanoTime();
+        long duration = (end - start) / 1000000;
         Optional.ofNullable(future).ifPresent(fut -> {
             try {
                 fut.get();
                 if (fut.isDone()) {
-                    System.out.println("Bravooooooo");
+                    logger.info("Order took " + duration + "milliseconds for " + enabledfollowers.size() + " followers");
                 }
 
             } catch (InterruptedException | ExecutionException e) {
