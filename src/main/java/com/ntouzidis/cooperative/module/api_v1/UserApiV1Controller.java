@@ -11,6 +11,8 @@ import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @RestController
@@ -210,6 +214,9 @@ public class UserApiV1Controller {
                 userService.isAdmin(userDetails) || userService.isTrader(userDetails)
         );
         User user = userService.getOne(id);
+
+        Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> System.out.println("Hello World"));
 
         List<Map<String, Object>> wallet = bitmexService.getUserWalletSummary(user)
                 .stream().limit(50).collect(Collectors.toList());

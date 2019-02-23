@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,13 +24,16 @@ public class TradeService {
 
     private final BitmexService bitmexService;
     private final UserService userService;
+    private final Executor multiExecutor;
 
     public TradeService(
             BitmexService bitmexService,
-            UserService userService
+            UserService userService,
+            Executor multiExecutor
     ) {
         this.bitmexService = bitmexService;
         this.userService = userService;
+        this.multiExecutor = multiExecutor;
     }
 
     public void placeOrderAll(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
@@ -43,32 +49,35 @@ public class TradeService {
         );
 
         enabledfollowers.forEach(follower -> {
-            try {
-                bitmexService.post_Position_Leverage(follower, dataPostLeverage);
+            multiExecutor.execute(() -> {
+                System.out.println(LocalDateTime.now());
+                try {
+                    bitmexService.post_Position_Leverage(follower, dataPostLeverage);
 
-                if ("Stop".equals(dataPostOrder.getOrderType()) || "StopLimit".equals(dataPostOrder.getOrderType())) {
-                    dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer)
-                            bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol()).get("execQty")))
-                    );
-                    if ("0".equals(dataPostOrder.getOrderQty())) {
+                    if ("Stop".equals(dataPostOrder.getOrderType()) || "StopLimit".equals(dataPostOrder.getOrderType())) {
+                        dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer)
+                                bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol()).get("execQty")))
+                        );
+                        if ("0".equals(dataPostOrder.getOrderQty())) {
+                            dataPostOrder.withOrderQty(
+                                    calculateFixedQtyForSymbol(
+                                            follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice
+                                    )
+                            );
+                        }
+                    } else {
                         dataPostOrder.withOrderQty(
                                 calculateFixedQtyForSymbol(
                                         follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice
                                 )
                         );
                     }
-                } else {
-                    dataPostOrder.withOrderQty(
-                            calculateFixedQtyForSymbol(
-                                    follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice
-                            )
-                    );
-                }
-                bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1));
+                    bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1));
 
-            } catch (Exception e) {
-                logger.error("Order failed for follower: " + follower.getUsername());
-            }
+                } catch (Exception e) {
+                    logger.error("Order failed for follower: " + follower.getUsername());
+                }
+            });
         });
     }
 
