@@ -14,8 +14,13 @@ public class CooperativeApplication {
         SpringApplication.run(CooperativeApplication.class, args);
     }
 
+//    @Bean(name = "multiExecutor")
+//    public ExecutorService multiExecutor() {
+//        return Executors.newFixedThreadPool(50);
+//    }
+
     @Bean(name = "multiExecutor")
-    public Executor multiExecutor() {
-        return Executors.newFixedThreadPool(50);
+    public ExecutorService multiExecutor() {
+        return Executors.newCachedThreadPool();
     }
 }

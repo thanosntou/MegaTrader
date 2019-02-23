@@ -4,17 +4,22 @@ import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
+import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import org.apache.http.concurrent.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +29,12 @@ public class TradeService {
 
     private final BitmexService bitmexService;
     private final UserService userService;
-    private final Executor multiExecutor;
+    private final ExecutorService multiExecutor;
 
     public TradeService(
             BitmexService bitmexService,
             UserService userService,
-            Executor multiExecutor
+            ExecutorService multiExecutor
     ) {
         this.bitmexService = bitmexService;
         this.userService = userService;
@@ -41,20 +46,15 @@ public class TradeService {
 
         String uniqueclOrdID1 = UUID.randomUUID().toString();
 
-        String lastPrice = bitmexService.getInstrumentLastPrice(
-                userService.findCustomer("gejocust").orElseThrow(() ->
-                        new RuntimeException("Customer not found")
-                ),
-                Symbol.valueOf(dataPostOrder.getSymbol())
-        );
+        String lastPrice = getSymbolLastPrice(dataPostOrder.getSymbol());
 
-        enabledfollowers.forEach(follower -> {
-            multiExecutor.execute(() -> {
-                System.out.println(LocalDateTime.now());
+        Future<?> future = null;
+        for (User follower: enabledfollowers) {
+            future = multiExecutor.submit(() -> {
                 try {
                     bitmexService.post_Position_Leverage(follower, dataPostLeverage);
 
-                    if ("Stop".equals(dataPostOrder.getOrderType()) || "StopLimit".equals(dataPostOrder.getOrderType())) {
+                    if (OrderType.Stop.equals(dataPostOrder.getOrderType()) || OrderType.StopLimit.equals(dataPostOrder.getOrderType())) {
                         dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer)
                                 bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol()).get("execQty")))
                         );
@@ -78,12 +78,24 @@ public class TradeService {
                     logger.error("Order failed for follower: " + follower.getUsername());
                 }
             });
+        }
+        Optional.ofNullable(future).ifPresent(fut -> {
+            try {
+                fut.get();
+                if (fut.isDone()) {
+                    System.out.println("Bravooooooo");
+                }
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         });
     }
 
     public void createSignal(User trader, SignalBuilder sb) {
         List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
+        // unique id's to mark the following orders
         String uniqueclOrdID1 = UUID.randomUUID().toString();
         String uniqueclOrdID2 = UUID.randomUUID().toString();
         String uniqueclOrdID3 = UUID.randomUUID().toString();
@@ -94,50 +106,45 @@ public class TradeService {
 
         enabledfollowers.forEach(customer -> {
             try {
-                //            1. Set Leverage
+                // 1. Set Leverage
                 bitmexService.post_Position_Leverage(customer, dataLeverage);
 
-                //            2. Market
+                // 2. Market
                 DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
                         .withClOrdId(uniqueclOrdID1)
-                        .withOrderType("Market")
+                        .withOrderType(OrderType.Market)
                         .withSymbol(sb.getSymbol())
-                        .withSide(sb.getSide())
-                        .withText("Bitmexcallbot");
+                        .withSide(sb.getSide());
 
                 bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
 
-
-                //            3. Stop Market
+                // 3. Stop Market
                 if (sb.getStopLoss() != null) {
                     DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
                             .withClOrdId(uniqueclOrdID2)
-                            .withOrderType("Stop")
+                            .withOrderType(OrderType.Stop)
                             .withSymbol(sb.getSymbol())
-                            .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
+                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
                             .withExecInst("Close,LastPrice")
-                            .withStopPrice(sb.getStopLoss())
-                            .withText("Bitmexcallbot");
+                            .withStopPrice(sb.getStopLoss());
 
                     bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
                 }
 
-                //            4. Limit
+                // 4. Limit
                 if (sb.getProfitTrigger() != null) {
                     DataPostOrderBuilder limitDataOrder = new DataPostOrderBuilder()
                             .withClOrdId(uniqueclOrdID3)
-                            .withOrderType("Limit")
+                            .withOrderType(OrderType.Limit)
                             .withSymbol(sb.getSymbol())
-                            .withSide(sb.getSide().equals("Buy")?"Sell":"Buy")
-                            .withPrice(sb.getProfitTrigger())
-                            .withText("Bitmexcallbot");
+                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
+                            .withPrice(sb.getProfitTrigger());
 
                     bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
                 }
             } catch (Exception e) {
                 logger.error("Order failed for follower: " + customer.getUsername());
             }
-
         });
     }
 
@@ -248,25 +255,34 @@ public class TradeService {
         return sumPositions;
     }
 
-    private String calculateFixedQtyForSymbol(User user, String symbol, String leverage, String lastPrice) {
-        if (symbol.equals(Symbol.XBTUSD.getValue()))
+    private String getSymbolLastPrice(Symbol symbol) {
+        return bitmexService.getInstrumentLastPrice(
+                userService.findCustomer("pelaths").orElseThrow(() ->
+                        new RuntimeException("Customer not found")
+                ),
+                Symbol.valueOf(symbol.getValue())
+        );
+    }
+
+    private String calculateFixedQtyForSymbol(User user, Symbol symbol, String leverage, String lastPrice) {
+        if (symbol.equals(Symbol.XBTUSD))
             return calculateOrderQty(user, user.getFixedQtyXBTUSD(), leverage, lastPrice);
-        if (symbol.equals(Symbol.ETHUSD.getValue()))
+        if (symbol.equals(Symbol.ETHUSD))
             return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage);
-        if (symbol.equals(Symbol.ADAXXX.getValue()))
+        if (symbol.equals(Symbol.ADAXXX))
             return calculateOrderQty(user, user.getFixedQtyADAZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.BCHXXX.getValue()))
+        if (symbol.equals(Symbol.BCHXXX))
             return calculateOrderQty(user, user.getFixedQtyBCHZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.EOSXXX.getValue()))
+        if (symbol.equals(Symbol.EOSXXX))
             return calculateOrderQty(user, user.getFixedQtyEOSZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.ETHXXX.getValue()))
+        if (symbol.equals(Symbol.ETHXXX))
             return calculateOrderQty(user, user.getFixedQtyXBTJPY(), leverage, lastPrice);
         //TODO fix these ethh19
-        if (symbol.equals(Symbol.LTCXXX.getValue()))
+        if (symbol.equals(Symbol.LTCXXX))
             return calculateOrderQty(user, user.getFixedQtyLTCZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.TRXXXX.getValue()))
+        if (symbol.equals(Symbol.TRXXXX))
             return calculateOrderQty(user, user.getFixedQtyTRXZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.XRPXXX.getValue()))
+        if (symbol.equals(Symbol.XRPXXX))
             return calculateOrderQty(user, user.getFixedQtyXRPZ18(), leverage, lastPrice);
 
         throw new RuntimeException("Fixed qty user calculation failed");

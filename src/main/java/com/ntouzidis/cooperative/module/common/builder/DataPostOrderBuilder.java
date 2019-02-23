@@ -1,100 +1,119 @@
 package com.ntouzidis.cooperative.module.common.builder;
 
+import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
+import com.ntouzidis.cooperative.module.common.enumeration.Side;
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DataPostOrderBuilder {
 
-    private String symbol;
-    private String clOrdId;
-    private String side;
-    private String orderType;
+    private Symbol symbol;
+    private String clOrdID;
+    private Side side;
+    private OrderType orderType;
     private String orderQty;
     private String price;
     private String execInst;
     private String stopPrice;
-    private String text = "text=BITMEXCALLBOT";
+    private String text = "BITMEXCALLBOT";
 
     public DataPostOrderBuilder() {
     }
 
-    public DataPostOrderBuilder withSymbol(String symbol) {
-        if (symbol != null)
-            this.symbol = "symbol=" + symbol + "&";
+    public DataPostOrderBuilder withClOrdId(String clOrdID) {
+        this.clOrdID = clOrdID;
         return this;
     }
 
-    public DataPostOrderBuilder withClOrdId(String clOrdId) {
-        if (clOrdId != null)
-            this.clOrdId = "clOrdID=" + clOrdId + "&";
+    public DataPostOrderBuilder withSymbol(Symbol symbol) {
+        this.symbol = symbol;
         return this;
     }
 
-    public DataPostOrderBuilder withSide(String side) {
-        if (side != null)
-            this.side = "side=" + side + "&";
+    public DataPostOrderBuilder withSide(Side side) {
+        this.side = side;
         return this;
     }
 
-    public DataPostOrderBuilder withOrderType(String orderType) {
-        if (orderType != null)
-            this.orderType = "ordType=" + orderType + "&";
+    public DataPostOrderBuilder withOrderType(OrderType orderType) {
+        this.orderType = orderType;
         return this;
     }
 
     public DataPostOrderBuilder withOrderQty(String orderQty) {
-        this.orderQty = "orderQty=" + orderQty + "&";
+        this.orderQty = orderQty;
         return this;
     }
 
     public DataPostOrderBuilder withPrice(String price) {
-        if (price != null)
-            this.price = "price=" + price + "&";
+        this.price = price;
         return this;
     }
 
     public DataPostOrderBuilder withExecInst(String execInst) {
-        if (execInst != null && orderType.equals("ordType=Market&"))
-            this.execInst = "execInst=" + execInst + "&";
+        this.execInst = execInst;
         return this;
     }
 
     public DataPostOrderBuilder withStopPrice(String stopPrice) {
-        if (stopPrice != null)
-            this.stopPrice = "stopPx=" + stopPrice + "&";
+        this.stopPrice = stopPrice;
         return this;
     }
 
     public DataPostOrderBuilder withText(String text) {
-        if (text != null)
-            this.text = "text=" + text + "&";
+        this.text = text;
         return this;
     }
 
     public String get() {
-        return Optional.ofNullable(symbol).orElse("") +
-                Optional.ofNullable(clOrdId).orElse("") +
-                Optional.ofNullable(side).orElse("") +
-                Optional.ofNullable(orderType).orElse("") +
-                Optional.ofNullable(orderQty).orElse("") +
-                Optional.ofNullable(price).orElse("") +
-                Optional.ofNullable(execInst).orElse("") +
-                Optional.ofNullable(stopPrice).orElse("") +
-                Optional.ofNullable(text).orElse("");
+        AtomicReference<String> data = new AtomicReference<>();
+        Optional.ofNullable(clOrdID).ifPresent(i -> data.set("clOrdID=" + i));
+        Optional.ofNullable(symbol).ifPresent(i -> data.set(data.get() + "&symbol=" + i.getValue()));
+        Optional.ofNullable(side).ifPresent(i -> data.set(data.get() + "&side=" + i.getValue()));
+        Optional.ofNullable(orderType).ifPresent(i -> data.set(data.get() + "&ordType=" + i.getValue()));
+        Optional.ofNullable(orderQty).ifPresent(i -> data.set(data.get() + "&orderQty=" + i));
+        Optional.ofNullable(price).ifPresent(i -> data.set(data.get() + "&price=" + i));
+        Optional.ofNullable(execInst).ifPresent(i -> data.set(data.get() + "&execInst=" + i));
+        Optional.ofNullable(stopPrice).ifPresent(i -> data.set(data.get() + "&stopPrice=" + i));
+        Optional.ofNullable(text).ifPresent(i -> data.set(data.get() + "&text=" + i));
+        return data.get();
     }
 
-    public String getSymbol() {
-//        return this.symbol.substring(7, 10);
-        return this.symbol.substring(7, 13);
+    public Symbol getSymbol() {
+        return symbol;
     }
 
-    public String getOrderType() {
-        return this.orderType.substring(8, this.orderType.indexOf("&"));
-//        return this.symbol.substring(7, 13);
+    public String getClOrdID() {
+        return clOrdID;
+    }
+
+    public Side getSide() {
+        return side;
+    }
+
+    public OrderType getOrderType() {
+        return orderType;
     }
 
     public String getOrderQty() {
-//        return this.orderQty;
-        return this.orderQty.substring(9, this.orderQty.indexOf("&"));
+        return orderQty;
     }
 
+    public String getPrice() {
+        return price;
+    }
+
+    public String getExecInst() {
+        return execInst;
+    }
+
+    public String getStopPrice() {
+        return stopPrice;
+    }
+
+    public String getText() {
+        return text;
+    }
 }

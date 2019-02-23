@@ -1,43 +1,43 @@
 package com.ntouzidis.cooperative.module.common.builder;
 
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DataDeleteOrderBuilder {
 
-    private String symbol;
+    private Symbol symbol;
     private String orderID;
     private String clOrdID;
-    private String text = "text=BITMEXCALLBOT";
+    private String text = "BITMEXCALLBOT";
 
-    public DataDeleteOrderBuilder withSymbol(String symbol) {
-        if (symbol != null)
-            this.symbol = "symbol=" + symbol + "&";
+    public DataDeleteOrderBuilder withSymbol(Symbol symbol) {
+        this.symbol = symbol;
         return this;
     }
 
     public DataDeleteOrderBuilder withOrderID(String orderID) {
-        if (orderID != null)
-            this.orderID = "orderID=" + orderID + "&";
+        this.orderID = orderID;
         return this;
     }
 
     public DataDeleteOrderBuilder withClientOrderId(String clOrdID) {
-        if (clOrdID != null)
-            this.clOrdID = "clOrdID=" + clOrdID + "&";
+        this.clOrdID = clOrdID;
         return this;
     }
 
     public DataDeleteOrderBuilder withText(String text) {
-        if (text != null)
-            this.text = "text=" + text + "&";
+        this.text = text;
         return this;
     }
 
     public String get() {
-        return Optional.ofNullable(symbol).orElse("") +
-                Optional.ofNullable(orderID).orElse("") +
-                Optional.ofNullable(clOrdID).orElse("") +
-                Optional.ofNullable(text).orElse("");
-
+        AtomicReference<String> data = new AtomicReference<>();
+        Optional.ofNullable(symbol).ifPresent(i -> data.set("symbol=" + i.getValue()));
+        Optional.ofNullable(orderID).ifPresent(i -> data.set(data.get() + "&orderID=" + i));
+        Optional.ofNullable(clOrdID).ifPresent(i -> data.set(data.get() + "&clOrdID=" + i));
+        Optional.ofNullable(text).ifPresent(i -> data.set(data.get() + "&text=" + i));
+        return data.get();
     }
 }

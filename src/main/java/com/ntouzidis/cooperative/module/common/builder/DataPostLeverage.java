@@ -3,37 +3,35 @@ package com.ntouzidis.cooperative.module.common.builder;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DataPostLeverage {
 
-    private String symbol;
+    private Symbol symbol;
     private String leverage;
 
-    public DataPostLeverage withSymbol(String symbol) {
-        if (symbol != null)
-            this.symbol = "symbol=" + symbol + "&";
+    public DataPostLeverage withSymbol(Symbol symbol) {
+        this.symbol = symbol;
         return this;
     }
 
     public DataPostLeverage withLeverage(String leverage) {
-        if (leverage != null)
-            this.leverage = "leverage=" + leverage;
+        this.leverage = leverage;
         return this;
     }
 
     public String get() {
-        return Optional.ofNullable(symbol).orElse("") +
-                Optional.ofNullable(leverage).orElse("");
-
-    }
-
-    public String getLeverage() {
-        if (this.leverage != null)
-            return this.leverage.substring(9);
-        throw new RuntimeException("Leverage is null");
+        AtomicReference<String> data = new AtomicReference<>();
+        Optional.ofNullable(symbol).ifPresent(i -> data.set("symbol=" + i.getValue()));
+        Optional.ofNullable(leverage).ifPresent(i -> data.set(data.get() + "&leverage=" + i));
+        return data.get();
     }
 
     public Symbol getSymbol() {
-        return Symbol.valueOf(symbol.substring(7,13));
+        return symbol;
+    }
+
+    public String getLeverage() {
+        return leverage;
     }
 }

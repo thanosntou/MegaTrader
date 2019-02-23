@@ -1,5 +1,8 @@
 package com.ntouzidis.cooperative.module.old;
 
+import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
+import com.ntouzidis.cooperative.module.common.enumeration.Side;
+import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
@@ -96,6 +99,7 @@ public class TradeController {
         return "trade-panel2";
     }
 
+    @SuppressWarnings("Duplicates")
     @PostMapping(value = "/signal")
     public String createSignal(@RequestParam(name="symbol", required = false) String symbol,
                                @RequestParam(name="side") String side,
@@ -106,12 +110,13 @@ public class TradeController {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
-///qasfas//
-        if (symbol == null) symbol = "XBTUSD";
 
         SignalBuilder signalBuilder = new SignalBuilder()
-                .withSymbol(symbol).withSide(side).withleverage(leverage)
-                .withStopLoss(stopLoss).withProfitTrigger(profitTrigger);
+                .withSymbol(Symbol.valueOf(symbol))
+                .withSide(Side.valueOf(side))
+                .withleverage(leverage)
+                .withStopLoss(stopLoss)
+                .withProfitTrigger(profitTrigger);
 
         tradeService.createSignal(trader, signalBuilder);
 
@@ -120,6 +125,7 @@ public class TradeController {
         return "redirect:/trade/" + symbol;
     }
 
+    @SuppressWarnings("Duplicates")
     @PostMapping(value = "/orderAll")
     public String postOrderAll(@RequestParam(name="symbol") String symbol,
                                @RequestParam(name="side") String side,
@@ -133,11 +139,17 @@ public class TradeController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage().withSymbol(symbol).withLeverage(leverage);
+        DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
+                .withSymbol(Symbol.valueOf(symbol))
+                .withLeverage(leverage);
 
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder().withSymbol(symbol)
-                .withSide(side).withOrderType(ordType)
-                .withPrice(price).withExecInst(execInst).withStopPrice(stopPx);
+        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
+                .withSymbol(Symbol.valueOf(symbol))
+                .withSide(Side.valueOf(side))
+                .withOrderType(OrderType.valueOf(symbol))
+                .withPrice(price)
+                .withExecInst(execInst)
+                .withStopPrice(stopPx);
 
         tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
 
@@ -158,9 +170,9 @@ public class TradeController {
         User trader = userDetails.getUser();
 
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(symbol)
-                .withOrderType(orderType)
-                .withSide(side);
+                .withSymbol(Symbol.valueOf(symbol))
+                .withOrderType(OrderType.valueOf(orderType))
+                .withSide(Side.valueOf(side));
 
         if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
 
@@ -199,7 +211,7 @@ public class TradeController {
         User trader = userDetails.getUser();
 
         DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                .withSymbol(symbol);
+                .withSymbol(Symbol.valueOf(symbol));
 
         tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
 
@@ -214,9 +226,9 @@ public class TradeController {
         User trader = userDetails.getUser();
 
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(symbol)
+                .withSymbol(Symbol.valueOf(symbol))
                 .withExecInst("Close")
-                .withOrderType("Market");
+                .withOrderType(OrderType.Market);
 
         tradeService.closeAllPosition(trader, dataPostOrderBuilder);
 
