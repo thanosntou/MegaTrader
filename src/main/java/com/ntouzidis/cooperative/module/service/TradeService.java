@@ -80,13 +80,18 @@ public class TradeService {
                 }
             });
         }
-        long end = System.nanoTime();
-        long duration = (end - start) / 1000000;
+
+        long end1 = System.nanoTime();
+        long duration = (end1 - start) / 1000000;
+        logger.info("Order took " + duration + "milliseconds to submit for " + enabledfollowers.size() + " followers");
+
         Optional.ofNullable(future).ifPresent(fut -> {
             try {
                 fut.get();
                 if (fut.isDone()) {
-                    logger.info("Order took " + duration + "milliseconds for " + enabledfollowers.size() + " followers");
+                    long end2 = System.nanoTime();
+                    long duration2 = (end2 - start) / 1000000;
+                    logger.info("Order took " + duration2 + "milliseconds to complete for " + enabledfollowers.size() + " followers");
                 }
 
             } catch (InterruptedException | ExecutionException e) {
