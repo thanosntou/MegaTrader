@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
+import com.ntouzidis.cooperative.module.common.endpoints.BitmexUser;
 import com.ntouzidis.cooperative.module.common.endpoints.Instrument;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
@@ -85,6 +86,22 @@ public class BitmexService {
         Optional<String> res = requestGET(user, ENDPOINT_USER_WALLET, "");
 
         return getMap(res.orElse(null));
+    }
+
+    public List<Map<String, Object>> getUserWalletHistory(User user) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        Optional<String> res = requestGET(user, BitmexUser.USER_WALLET_HISTORY_, "");
+
+        return getMapList(res.orElse(null));
+    }
+
+    public List<Map<String, Object>> getUserWalletSummary(User user) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        Optional<String> res = requestGET(user, BitmexUser.USER_WALLET_SUMMARY_, "");
+
+        return getMapList(res.orElse(null));
     }
 
     public Map<String, Object> get_User_Margin(User user) {
@@ -197,7 +214,7 @@ public class BitmexService {
         String signature;
 
         try {
-            Preconditions.checkState(user.getClient() != null, "User has not set a client");
+            Preconditions.checkState(user.getClient() != null, "BitmexUser has not set a client");
 
             long start = System.nanoTime();
             apikey = simpleEncryptor.decrypt(user.getApiKey());
@@ -237,7 +254,7 @@ public class BitmexService {
         String signature;
 
         try {
-            Preconditions.checkState(user.getClient() != null, "User has not set a client");
+            Preconditions.checkState(user.getClient() != null, "BitmexUser has not set a client");
 
             apikey = simpleEncryptor.decrypt(user.getApiKey());
             apiSecret = simpleEncryptor.decrypt(user.getApiSecret());
@@ -275,7 +292,7 @@ public class BitmexService {
         String signature;
 
         try {
-            Preconditions.checkState(user.getClient() != null, "User has not set a client");
+            Preconditions.checkState(user.getClient() != null, "BitmexUser has not set a client");
 
             apikey = simpleEncryptor.decrypt(user.getApiKey());
             apiSecret = simpleEncryptor.decrypt(user.getApiSecret());
@@ -304,7 +321,7 @@ public class BitmexService {
     }
 
 //    private String requestGET2(String username, String baseUrl, String path, String data) {
-//        User principal = userService.findByUsername(username);
+//        BitmexUser principal = userService.findByUsername(username);
 //        String expires = String.valueOf(1600883067);
 //
 //        try {
@@ -330,7 +347,7 @@ public class BitmexService {
 //    }
 //
 //    private String requestGET3(String username, String baseUrl, String path, String data) {
-//        User principal = userService.findByUsername(username);
+//        BitmexUser principal = userService.findByUsername(username);
 //
 //        String apikey = principal.getApiKey();
 //        String apiSecret = principal.getApiSecret();
@@ -379,7 +396,7 @@ public class BitmexService {
 //        return null;
 //    }
 
-//    private String calculateFixedQtyForSymbol(User user, String symbol, String leverage) {
+//    private String calculateFixedQtyForSymbol(BitmexUser user, String symbol, String leverage) {
 //        if (symbol.equals(Symbol.XBTUSD.getValue()))
 //            return calculateOrderQty(user, Symbol.XBTUSD, user.getFixedQtyXBTUSD(), leverage);
 //        if (symbol.equals(Symbol.ETHUSD.getValue()))

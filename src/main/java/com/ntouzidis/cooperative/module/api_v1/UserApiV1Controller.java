@@ -105,7 +105,7 @@ public class UserApiV1Controller {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElseThrow(() ->
-                new RuntimeException("User don't have a personal trader"));
+                new RuntimeException("BitmexUser don't have a personal trader"));
 
         return ResponseEntity.ok(personalTrader);
     }
@@ -153,6 +153,68 @@ public class UserApiV1Controller {
         User user = userService.createCustomer(username, email, pass, confirmPass);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @GetMapping(
+            value = "/wallet",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Map<String, Object>> getUserBitmexWallet(
+            @RequestParam("id") int id,
+            Authentication authentication
+    ) {
+        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(
+                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
+        );
+        User user = userService.getOne(id);
+
+        Map<String, Object> wallet = bitmexService.getUserWallet(user);
+
+        return new ResponseEntity<>(wallet, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/wallet/history",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<Map<String, Object>>> getUserBitmexWalletHistory(
+            @RequestParam("id") int id,
+            Authentication authentication
+    ) {
+        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(
+                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
+        );
+        User user = userService.getOne(id);
+
+        List<Map<String, Object>> wallet = bitmexService.getUserWalletHistory(user)
+                .stream().limit(75).collect(Collectors.toList());
+
+        return new ResponseEntity<>(wallet, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/wallet/summary",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<Map<String, Object>>> getUserBitmexWalletSummary(
+            @RequestParam("id") int id,
+            Authentication authentication
+    ) {
+        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(
+                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
+        );
+        User user = userService.getOne(id);
+
+        List<Map<String, Object>> wallet = bitmexService.getUserWalletSummary(user)
+                .stream().limit(50).collect(Collectors.toList());
+
+        return new ResponseEntity<>(wallet, HttpStatus.OK);
     }
 
     @GetMapping(
@@ -217,7 +279,7 @@ public class UserApiV1Controller {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new IllegalStateException("User not found"));
+                new IllegalStateException("BitmexUser not found"));
 
         return ResponseEntity.ok(userService.saveKeys(user, apiKey, apiSecret));
     }
@@ -233,7 +295,7 @@ public class UserApiV1Controller {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new IllegalStateException("User not found"));
+                new IllegalStateException("BitmexUser not found"));
 
         return ResponseEntity.ok(userService.updateClient(user, client));
     }
@@ -249,7 +311,7 @@ public class UserApiV1Controller {
         CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
 
         User user = userService.findById(userDetails.getUser().getId()).orElseThrow(() ->
-                new IllegalStateException("User not found"));
+                new IllegalStateException("BitmexUser not found"));
 
         return new ResponseEntity<>(userService.setFixedQty(user, symbol, qty), HttpStatus.OK);
     }

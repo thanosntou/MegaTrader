@@ -1,6 +1,6 @@
 package com.ntouzidis.cooperative.module.common.endpoints;
 
-public class User extends BitmexAPI {
+public class BitmexUser extends BitmexAPI {
 
     public static final String USER_= "/api/v1/user";
     public static final String USER_MARGIN_= "/api/v1/user/margin";
