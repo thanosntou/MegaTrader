@@ -4,10 +4,7 @@ import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
-import com.ntouzidis.cooperative.module.common.endpoints.Announcement;
-import com.ntouzidis.cooperative.module.common.endpoints.BitmexUser;
-import com.ntouzidis.cooperative.module.common.endpoints.Instrument;
-import com.ntouzidis.cooperative.module.common.endpoints.Order;
+import com.ntouzidis.cooperative.module.common.endpoints.*;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -56,6 +53,20 @@ public class BitmexService {
 
         return getMapList(requestGET(user, Announcement.ANNOUNCEMENT, "")
                 .orElseThrow(() -> new RuntimeException("Call to " + Announcement.ANNOUNCEMENT + " failed.")));
+    }
+
+    public List<Map<String, Object>> get_chat(User user) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        return getMapList(requestGET(user, Chat.CHAT + "?reverse=true&count=200", "")
+                .orElseThrow(() -> new RuntimeException("Call to " + Chat.CHAT + " failed.")));
+    }
+
+    public Map<String, Object> post_chat(User user, String message) {
+        Preconditions.checkNotNull(user, "user cannot be null");
+
+        return getMap(requestPOST(user, Chat.CHAT, "message="+ message)
+                .orElseThrow(() -> new RuntimeException("Call to " + Chat.CHAT + " failed.")));
     }
 
     public String getInstrumentLastPrice(User user, Symbol symbol) {
