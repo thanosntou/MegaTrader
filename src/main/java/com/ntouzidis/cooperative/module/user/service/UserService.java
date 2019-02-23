@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getOne(int id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("BitmexUser not found"));
     }
 
     public List<User> findAll() {
@@ -132,7 +132,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void linkTrader(User user, int traderId) {
         findTrader(traderId).ifPresent(trader -> {
-            Preconditions.checkArgument(Objects.nonNull(user), "User cannot be null");
+            Preconditions.checkArgument(Objects.nonNull(user), "BitmexUser cannot be null");
 
             CustomerToTraderLink link = new CustomerToTraderLink();
             link.setCustomer(user);
@@ -237,7 +237,7 @@ public class UserService implements UserDetailsService {
             userRepository.save(userOpt.get());
             return userOpt.get();
         }
-        throw new RuntimeException("User not found");
+        throw new RuntimeException("BitmexUser not found");
     }
 
     @Transactional

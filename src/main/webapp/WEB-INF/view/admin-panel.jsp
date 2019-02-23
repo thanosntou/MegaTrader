@@ -128,7 +128,7 @@
                                                 <%--<br/>--%>
                                                 <%--<thead class="thead bg-info">--%>
                                                     <%--<tr>--%>
-                                                        <%--<th scope="col">User<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>--%>
+                                                        <%--<th scope="col">BitmexUser<a href="${sortByIdLink}"><i class="fas fa-chevron-up"></i></a><a href="${sortDescByIdLink}"></a></th>--%>
                                                         <%--<th scope="col">Login Date<a href=""><i class="fas fa-chevron-up"></i></a><a href="${sortDescByNameLink}"></a></th>--%>
                                                     <%--</tr>--%>
                                                 <%--</thead>--%>

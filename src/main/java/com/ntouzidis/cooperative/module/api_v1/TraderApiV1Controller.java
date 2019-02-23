@@ -103,12 +103,6 @@ public class TraderApiV1Controller {
     Preconditions.checkArgument(userService.isTrader(trader));
 
     List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
-//            .stream()
-//            .filter(order -> Arrays.stream(Symbol.values())
-//                    .map(Symbol::getValue)
-//                    .collect(Collectors.toList())
-//                    .contains(order.get("symbol").toString()))
-//            .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
   }

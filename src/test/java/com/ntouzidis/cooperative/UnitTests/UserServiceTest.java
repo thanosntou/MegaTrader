@@ -42,7 +42,7 @@ public class UserServiceTest {
         when(userRepository.findByUsername("testUser")).thenReturn(user);
 
         User foundUser = userService.findByUsername("testUser")
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("BitmexUser not found"));
 
         assertEquals(foundUser.getUsername(), user.getUsername());
     }
@@ -56,7 +56,7 @@ public class UserServiceTest {
         when(authorityService.isCustomer(user)).thenReturn(true);
 
         User foundUser = userService.findCustomer("testUser")
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("BitmexUser not found"));
 
         assertEquals(foundUser.getUsername(), user.getUsername());
     }
@@ -70,7 +70,7 @@ public class UserServiceTest {
         when(authorityService.isTrader(user)).thenReturn(true);
 
         User foundUser = userService.findTrader("testUser")
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("BitmexUser not found"));
 
         assertEquals(foundUser.getUsername(), user.getUsername());
     }
