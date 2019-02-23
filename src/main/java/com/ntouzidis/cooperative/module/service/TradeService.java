@@ -257,7 +257,7 @@ public class TradeService {
 
     private String getSymbolLastPrice(Symbol symbol) {
         return bitmexService.getInstrumentLastPrice(
-                userService.findCustomer("pelaths").orElseThrow(() ->
+                userService.findCustomer("gejocust").orElseThrow(() ->
                         new RuntimeException("Customer not found")
                 ),
                 Symbol.valueOf(symbol.getValue())
