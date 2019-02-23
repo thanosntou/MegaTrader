@@ -52,7 +52,7 @@ public class AdminApiV1Controller {
     }
 
     @GetMapping(
-            value = "/totalBalance",
+            value = "/volume",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Map<String, Double>> calculateTotalBalance(Authentication authentication) {
@@ -70,5 +70,21 @@ public class AdminApiV1Controller {
         map.put("activeVolume", activeVolume);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @GetMapping(
+            value = "/balances",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Map<String, Double>> getBalances(Authentication authentication) {
+
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        Preconditions.checkArgument(
+                userService.isAdmin(user) || userService.isTrader(user)
+        );
+        Map<String, Double> balances = userService.getBalances();
+
+        return new ResponseEntity<>(balances, HttpStatus.OK);
     }
 }
