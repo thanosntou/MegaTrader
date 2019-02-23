@@ -57,7 +57,7 @@ public class TradeService {
 
                     if (OrderType.Stop.equals(dataPostOrder.getOrderType()) || OrderType.StopLimit.equals(dataPostOrder.getOrderType())) {
                         dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer)
-                                bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol()).get("execQty")))
+                                bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol()).get("currentQty")))
                         );
                         if ("0".equals(dataPostOrder.getOrderQty())) {
                             dataPostOrder.withOrderQty(
