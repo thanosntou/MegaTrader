@@ -305,7 +305,7 @@ public class TradeService {
         if (symbol.equals(Symbol.XBTUSD))
             return calculateOrderQty(user, user.getFixedQtyXBTUSD(), leverage, lastPrice);
         if (symbol.equals(Symbol.ETHUSD))
-            return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage);
+            return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage, lastPrice);
         if (symbol.equals(Symbol.ADAXXX))
             return calculateOrderQty(user, user.getFixedQtyADAZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.BCHXXX))
@@ -331,29 +331,27 @@ public class TradeService {
         ));
     }
 
-    private String calculateOrderQtyETHUSD(User user, double fixedQty, String lev) {
+    private String calculateOrderQtyETHUSD(User user, double fixedQty, String lev, String lastPrice) {
         return String.valueOf(Math.round(
-                        ((fixedQty / 100 * Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000)
-                          * leverage(lev)
-                        )
-                        / (Double.parseDouble(bitmexService.getInstrumentLastPrice(user, Symbol.ETHUSD)) * 0.000001)
+                (xbtAmount(user, fixedQty) * leverage(lev)) / lastPriceETHUSD(lastPrice)
         ));
-    }
-
-    private Double lastPrice2(User user, Symbol symbol) {
-        return Double.parseDouble(bitmexService.getInstrumentLastPrice(user, symbol)) * 0.000001;
     }
 
     private Double leverage(String leverage) {
         return Double.parseDouble(leverage);
     }
 
-    private Double xbtAmount(User user, double fixedQty) {
-        return fixedQty / 100 * Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000;
+    private Double lastPrice(String lastPrice) {
+        return Double.parseDouble(lastPrice);
     }
 
-    private Double lastPrice(String leverage) {
-        return Double.parseDouble(leverage);
+    private Double lastPriceETHUSD(String lastPrice) {
+        return Double.parseDouble(lastPrice) * 0.000001;
+    }
+
+    private Double xbtAmount(User user, double fixedQty) {
+        return (fixedQty / 100)
+                * (Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000);
     }
 
 }
