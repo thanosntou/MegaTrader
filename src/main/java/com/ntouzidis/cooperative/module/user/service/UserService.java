@@ -135,7 +135,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public double calculateTotalBalance() {
+    public double calculateTotalVolume() {
         int sum = findAll().stream().mapToInt(user -> {
             try {
                 return ((Integer) bitmexService.get_User_Margin(user).get("walletBalance"));
@@ -147,6 +147,20 @@ public class UserService implements UserDetailsService {
                 .sum();
 
         return (double) sum / 100000000;
+    }
+
+    public double calculateActiveVolume() {
+        return findAll().stream().mapToDouble(user -> {
+            try {
+                double userBalance = ((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue();
+                double userPercentage = (double) user.getFixedQtyXBTUSD() / (double) 100;
+                return userBalance * userPercentage / 100000000;
+            }
+            catch (Exception e) {
+            }
+            return 0;
+        })
+                .sum();
     }
 
     @Transactional
