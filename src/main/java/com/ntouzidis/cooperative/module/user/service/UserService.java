@@ -292,7 +292,7 @@ public class UserService implements UserDetailsService {
         boolean con = usernameExists(userDetails.getUsername());
         Preconditions.checkArgument(!con, "username exists");
 
-        User user = new User(userDetails.getUsername(), passwordEncoder.encode(password));
+        User user = new User(userDetails.getUsername(), simpleEncryptor.encrypt(password));
 
         Wallet wallet = new Wallet();
         wallet.setBalance(0L);
