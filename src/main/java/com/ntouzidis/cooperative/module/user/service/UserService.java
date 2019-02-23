@@ -163,6 +163,20 @@ public class UserService implements UserDetailsService {
                 .sum();
     }
 
+    public Map<String, Double> getBalances() {
+        Map<String, Double> map = new HashMap<>();
+
+        findAll().forEach(user -> {
+            try {
+                double userBalance = ((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000;
+                map.put(user.getUsername(), userBalance);
+            } catch (Exception e) {
+
+            }
+        });
+        return map;
+    }
+
     @Transactional
     public void linkTrader(User user, int traderId) {
         findTrader(traderId).ifPresent(trader -> {
