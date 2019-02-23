@@ -190,19 +190,7 @@ public class TradeApiV1Controller {
 
         Preconditions.checkArgument(userService.isTrader(trader));
 
-        Arrays.stream(Symbol.values()).forEach(symbol -> {
-            DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withSymbol(symbol);
-
-            tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
-
-            DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                    .withSymbol(symbol)
-                    .withOrderType(OrderType.Market)
-                    .withExecInst("Close");
-
-            tradeService.closeAllPosition(trader, dataPostOrderBuilder);
-        });
+        tradeService.panicButton(trader);
 
         return ResponseEntity.ok("{ \"result\": \"ok\" }");
     }
