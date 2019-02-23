@@ -5,19 +5,15 @@ import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
 import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
-import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
-import org.apache.http.concurrent.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -44,7 +40,7 @@ public class TradeService {
     public void placeOrderAll(User trader, DataPostLeverage dataPostLeverage, DataPostOrderBuilder dataPostOrder) {
         List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
-        String uniqueclOrdID1 = UUID.randomUUID().toString();
+        String uniqueclOrdID = UUID.randomUUID().toString();
 
         String lastPrice = getSymbolLastPrice(dataPostOrder.getSymbol());
 
@@ -73,7 +69,7 @@ public class TradeService {
                                 )
                         );
                     }
-                    bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID1));
+                    bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID));
 
                 } catch (Exception e) {
                     logger.error("Order failed for follower: " + follower.getUsername());
@@ -101,59 +97,59 @@ public class TradeService {
     }
 
     public void createSignal(User trader, SignalBuilder sb) {
-        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
-
-        // unique id's to mark the following orders
-        String uniqueclOrdID1 = UUID.randomUUID().toString();
-        String uniqueclOrdID2 = UUID.randomUUID().toString();
-        String uniqueclOrdID3 = UUID.randomUUID().toString();
-
-        DataPostLeverage dataLeverage = new DataPostLeverage()
-                .withSymbol(sb.getSymbol())
-                .withLeverage(sb.getLeverage());
-
-        enabledfollowers.forEach(customer -> {
-            try {
-                // 1. Set Leverage
-                bitmexService.post_Position_Leverage(customer, dataLeverage);
-
-                // 2. Market
-                DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
-                        .withClOrdId(uniqueclOrdID1)
-                        .withOrderType(OrderType.Market)
-                        .withSymbol(sb.getSymbol())
-                        .withSide(sb.getSide());
-
-                bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
-
-                // 3. Stop Market
-                if (sb.getStopLoss() != null) {
-                    DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
-                            .withClOrdId(uniqueclOrdID2)
-                            .withOrderType(OrderType.Stop)
-                            .withSymbol(sb.getSymbol())
-                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
-                            .withExecInst("Close,LastPrice")
-                            .withStopPrice(sb.getStopLoss());
-
-                    bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
-                }
-
-                // 4. Limit
-                if (sb.getProfitTrigger() != null) {
-                    DataPostOrderBuilder limitDataOrder = new DataPostOrderBuilder()
-                            .withClOrdId(uniqueclOrdID3)
-                            .withOrderType(OrderType.Limit)
-                            .withSymbol(sb.getSymbol())
-                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
-                            .withPrice(sb.getProfitTrigger());
-
-                    bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
-                }
-            } catch (Exception e) {
-                logger.error("Order failed for follower: " + customer.getUsername());
-            }
-        });
+//        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
+//
+//        // unique id's to mark the following orders
+//        String uniqueclOrdID1 = UUID.randomUUID().toString();
+//        String uniqueclOrdID2 = UUID.randomUUID().toString();
+//        String uniqueclOrdID3 = UUID.randomUUID().toString();
+//
+//        DataPostLeverage dataLeverage = new DataPostLeverage()
+//                .withSymbol(sb.getSymbol())
+//                .withLeverage(sb.getLeverage());
+//
+//        enabledfollowers.forEach(customer -> {
+//            try {
+//                // 1. Set Leverage
+//                bitmexService.post_Position_Leverage(customer, dataLeverage);
+//
+//                // 2. Market
+//                DataPostOrderBuilder marketDataOrder = new DataPostOrderBuilder()
+//                        .withClOrdId(uniqueclOrdID1)
+//                        .withOrderType(OrderType.Market)
+//                        .withSymbol(sb.getSymbol())
+//                        .withSide(sb.getSide());
+//
+//                bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
+//
+//                // 3. Stop Market
+//                if (sb.getStopLoss() != null) {
+//                    DataPostOrderBuilder stopMarketDataOrder = new DataPostOrderBuilder()
+//                            .withClOrdId(uniqueclOrdID2)
+//                            .withOrderType(OrderType.Stop)
+//                            .withSymbol(sb.getSymbol())
+//                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
+//                            .withExecInst("Close,LastPrice")
+//                            .withStopPrice(sb.getStopLoss());
+//
+//                    bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
+//                }
+//
+//                // 4. Limit
+//                if (sb.getProfitTrigger() != null) {
+//                    DataPostOrderBuilder limitDataOrder = new DataPostOrderBuilder()
+//                            .withClOrdId(uniqueclOrdID3)
+//                            .withOrderType(OrderType.Limit)
+//                            .withSymbol(sb.getSymbol())
+//                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
+//                            .withPrice(sb.getProfitTrigger());
+//
+//                    bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
+//                }
+//            } catch (Exception e) {
+//                logger.error("Order failed for follower: " + customer.getUsername());
+//            }
+//        });
     }
 
     public void panicButton(User trader) {
@@ -333,7 +329,7 @@ public class TradeService {
 
     private String calculateOrderQtyETHUSD(User user, double fixedQty, String lev, String lastPrice) {
         return String.valueOf(Math.round(
-                (xbtAmount(user, fixedQty) * leverage(lev)) / lastPriceETHUSD(lastPrice)
+                (xbtAmount(user, fixedQty) * leverage(lev)) / (lastPrice(lastPrice) * 0.000001)
         ));
     }
 
@@ -345,13 +341,8 @@ public class TradeService {
         return Double.parseDouble(lastPrice);
     }
 
-    private Double lastPriceETHUSD(String lastPrice) {
-        return Double.parseDouble(lastPrice) * 0.000001;
-    }
-
     private Double xbtAmount(User user, double fixedQty) {
-        return (fixedQty / 100)
-                * (Double.parseDouble(bitmexService.get_User_Margin(user).get("walletBalance").toString()) / 100000000);
+        return (fixedQty / 100) * (((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000);
     }
 
 }
