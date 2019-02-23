@@ -156,6 +156,19 @@ public class TradeService {
         });
     }
 
+    public void panicButton(User trader) {
+        DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder();
+        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder();
+
+        for (Symbol symbol: Symbol.values()) {
+            dataDeleteOrderBuilder.withSymbol(symbol);
+            cancelAllOrders(trader, dataDeleteOrderBuilder);
+
+            dataPostOrderBuilder.withSymbol(symbol).withOrderType(OrderType.Market).withExecInst("Close");
+            closeAllPosition(trader, dataPostOrderBuilder);
+        }
+    }
+
     public List<Map<String, Object>> getRandomActiveOrders(User trader) {
         return getRandomActiveOrdersOf(userService.getGuideFollower(trader));
     }
@@ -208,9 +221,17 @@ public class TradeService {
     }
 
     public void cancelAllOrders(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
+        Future<?> future = null;
         List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
-        enabledfollowers.forEach(customer -> bitmexService.cancelAllOrders(customer, dataDeleteOrderBuilder));
+        for (User follower: enabledfollowers) {
+            future = multiExecutor.submit(() -> bitmexService.cancelAllOrders(follower, dataDeleteOrderBuilder));
+        }
+        Optional.ofNullable(future).ifPresent(fut -> {
+            try { fut.get(); } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void postOrder2(User trader, DataPostOrderBuilder dataPostOrderBuilder, int percentage) {
@@ -220,9 +241,17 @@ public class TradeService {
     }
 
     public void closeAllPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
+        Future<?> future = null;
         List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
-        enabledfollowers.forEach(customer -> bitmexService.post_Order_Order(customer, dataPostOrderBuilder));
+        for (User follower: enabledfollowers) {
+            future = multiExecutor.submit(() -> bitmexService.post_Order_Order(follower, dataPostOrderBuilder));
+        }
+        Optional.ofNullable(future).ifPresent(fut -> {
+            try { fut.get(); } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     Map<String, Double> calculateSumFixedQtys(List<User> followers) {
