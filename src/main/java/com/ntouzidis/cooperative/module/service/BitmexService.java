@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -48,6 +49,8 @@ public class BitmexService {
     @Value("${baseUrl}")
     private String base_url;
 
+    @Autowired
+    private RestTemplate restTemplate;
     private final SimpleEncryptor simpleEncryptor;
 
     public BitmexService(SimpleEncryptor simpleEncryptor) {
@@ -225,7 +228,7 @@ public class BitmexService {
             expires = String.valueOf(1600883067);
             signature = calculateSignature(apiSecret, GET, path, expires, data);
 
-            RestTemplate restTemplate = new RestTemplate();
+//            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Accept", "application/json");
             headers.set("Content-type", "application/x-www-form-urlencoded");
@@ -234,11 +237,14 @@ public class BitmexService {
             headers.set("api-key", apikey);
             headers.set("api-signature", signature);
 
-            HttpEntity<String> entity = new HttpEntity<>(headers);
+            ResponseEntity<String> res = restTemplate.exchange(
+                    user.getClient().getValue() + path,
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    String.class
+            );
 
-            ResponseEntity<?> res = restTemplate.exchange(user.getClient().getValue() + path, HttpMethod.GET, entity, String.class);
-
-            return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
+            return Optional.of(Objects.requireNonNull(res.getBody()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,7 +267,7 @@ public class BitmexService {
             expires = String.valueOf(1600883067);
             signature = calculateSignature(apiSecret, POST, path, expires, data);
 
-            RestTemplate restTemplate = new RestTemplate();
+//            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -270,14 +276,13 @@ public class BitmexService {
             headers.set("api-key", apikey);
             headers.set("api-signature", signature);
 
-//            MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
-//            body.add("raw", data);
-
-            HttpEntity<String> entity = new HttpEntity<>(data, headers);
-
-            ResponseEntity<?> res = restTemplate.exchange(user.getClient().getValue() + path, HttpMethod.POST, entity, String.class);
-
-            return Optional.ofNullable(Objects.requireNonNull(res.getBody()).toString());
+            ResponseEntity<String> res = restTemplate.exchange(
+                    user.getClient().getValue() + path,
+                    HttpMethod.POST,
+                    new HttpEntity<>(data, headers),
+                    String.class
+            );
+            return Optional.of(Objects.requireNonNull(res.getBody()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -300,7 +305,7 @@ public class BitmexService {
 
             signature = calculateSignature(apiSecret, DELETE, path, expires, data);
 
-            RestTemplate restTemplate = new RestTemplate();
+//            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -308,9 +313,12 @@ public class BitmexService {
             headers.set("api-key", apikey);
             headers.set("api-signature", signature);
 
-            HttpEntity<String> entity = new HttpEntity<>(data, headers);
-
-            ResponseEntity<?> res = restTemplate.exchange(user.getClient().getValue() + path, HttpMethod.DELETE, entity, String.class);
+            ResponseEntity<String> res = restTemplate.exchange(
+                    user.getClient().getValue() + path,
+                    HttpMethod.DELETE,
+                    new HttpEntity<>(data, headers),
+                    String.class
+            );
 
             Objects.requireNonNull(res.getBody());
 
