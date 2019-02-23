@@ -128,14 +128,4 @@ public class TraderApiV1Controller {
     return new ResponseEntity<>(randomOpenPositions, HttpStatus.OK);
   }
 
-  private User encodeUserApiKeys(User user) {
-    if (user.getApiKey() != null)
-      user.setApiKey(passwordEncoder.encode(user.getApiKey()));
-    if (user.getApiSecret() != null)
-      user.setApiSecret(passwordEncoder.encode(user.getApiSecret()));
-
-    return user;
-  }
-
-
 }

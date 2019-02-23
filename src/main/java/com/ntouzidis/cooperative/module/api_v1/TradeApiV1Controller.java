@@ -100,13 +100,13 @@ public class TradeApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> postOrder2(
+            Authentication authentication,
             @RequestParam("symbol") Symbol symbol,
             @RequestParam("orderType") OrderType orderType,
             @RequestParam("side") Side side,
             @RequestParam(value = "percentage", required = false) int percentage,
             @RequestParam(value = "price", required = false) String price,
-            @RequestParam(value = "execInst", required = false) String execInst,
-            Authentication authentication
+            @RequestParam(value = "execInst", required = false) String execInst
     ) {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
@@ -129,9 +129,9 @@ public class TradeApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> cancelOrder(
+            Authentication authentication,
             @RequestParam(name="clOrdID", required = false) String clOrdID,
-            @RequestParam(name="symbol", required = false) Symbol symbol,
-            Authentication authentication
+            @RequestParam(name="symbol", required = false) Symbol symbol
     ) {
         Preconditions.checkArgument(clOrdID != null || symbol != null,
                 "Either orderID or symbol must be present");
