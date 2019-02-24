@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
             AuthorityService authorityService,
             CustomerToTraderLinkRepository customerToTraderLinkRepository,
             PasswordEncoder passwordEncoder,
-            SimpleEncryptor encryptor,
+            SimpleEncryptor simpleEncryptor,
             LoginRepository loginRepository,
             BitmexService bitmexService
     ) {
@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
         this.authorityService = authorityService;
         this.customerToTraderLinkRepository = customerToTraderLinkRepository;
         this.passwordEncoder = passwordEncoder;
-        this.simpleEncryptor = encryptor;
+        this.simpleEncryptor = simpleEncryptor;
         this.loginRepository = loginRepository;
         this.bitmexService = bitmexService;
     }
@@ -339,9 +339,9 @@ public class UserService implements UserDetailsService {
 
     private User encodeUserApiKeys(User user) {
         if (user.getApiKey() != null)
-            user.setApiKey(passwordEncoder.encode(user.getApiKey()));
+            user.setApiKey(simpleEncryptor.encrypt(user.getApiKey()));
         if (user.getApiSecret() != null)
-            user.setApiSecret(passwordEncoder.encode(user.getApiSecret()));
+            user.setApiSecret(simpleEncryptor.encrypt(user.getApiSecret()));
 
         return user;
     }
