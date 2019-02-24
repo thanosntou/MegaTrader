@@ -330,7 +330,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(encodeUserApiKeys(user));
         authorityService.createAuthorities(user.getUsername(), authorities);
 
-        return userDetails;
+        return user;
     }
 
     private boolean usernameExists(String username) {
@@ -342,6 +342,15 @@ public class UserService implements UserDetailsService {
             user.setApiKey(simpleEncryptor.encrypt(user.getApiKey()));
         if (user.getApiSecret() != null)
             user.setApiSecret(simpleEncryptor.encrypt(user.getApiSecret()));
+
+        return user;
+    }
+
+    private User decodeUserApiKeys(User user) {
+        if (user.getApiKey() != null)
+            user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
+        if (user.getApiSecret() != null)
+            user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
 
         return user;
     }

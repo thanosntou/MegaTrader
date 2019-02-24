@@ -155,7 +155,8 @@ public class UserApiV1Controller {
         Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
 
         User user = userService.createCustomer(username, email, pass, confirmPass);
-
+// for the ui, to login immediately after creation
+        user.setPassword(confirmPass);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
