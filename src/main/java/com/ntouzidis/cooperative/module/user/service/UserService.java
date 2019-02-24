@@ -233,7 +233,6 @@ public class UserService implements UserDetailsService {
     public User createCustomer(String username, String email, String pass, String confirmPass) {
         User user = new User();
         user.setUsername(username);
-        user.setPassword(pass);
         user.setEmail(email);
         user.setApiKey("");
         user.setApiSecret("");
@@ -306,7 +305,7 @@ public class UserService implements UserDetailsService {
         boolean con = usernameExists(userDetails.getUsername());
         Preconditions.checkArgument(!con, "username exists");
 
-        User user = new User(userDetails.getUsername(), simpleEncryptor.encrypt(password));
+        User user = new User(userDetails.getUsername(), passwordEncoder.encode(password));
 
         Wallet wallet = new Wallet();
         wallet.setBalance(0L);
@@ -325,8 +324,8 @@ public class UserService implements UserDetailsService {
         user.setFixedQtyTRXZ18(0);
         user.setFixedQtyXRPZ18(0);
         user.setFixedQtyXBTKRW(0);
-        user.setApiKey("Fill_Me");
-        user.setApiSecret("Fill_Me");
+        user.setApiKey(simpleEncryptor.encrypt("Fill_Me"));
+        user.setApiSecret(simpleEncryptor.encrypt("Fill_Me"));
 
         userRepository.save(encodeUserApiKeys(user));
         authorityService.createAuthorities(user.getUsername(), authorities);
