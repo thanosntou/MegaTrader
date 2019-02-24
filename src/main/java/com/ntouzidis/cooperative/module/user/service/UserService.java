@@ -291,6 +291,9 @@ public class UserService implements UserDetailsService {
     public void delete(User user) {
         loginRepository.deleteAllByUser(user);
         authorityService.deleteAuthorities(user);
+        Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).ifPresent(
+                customerToTraderLinkRepository::delete
+        );
         userRepository.delete(user);
     }
 
