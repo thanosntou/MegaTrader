@@ -42,8 +42,6 @@ public class TradeService {
 
         String uniqueclOrdID = UUID.randomUUID().toString();
 
-        String lastPrice = getSymbolLastPrice(dataPostOrder.getSymbol());
-
         Future<?> future = null;
         long start = System.nanoTime();
         for (User follower: enabledfollowers) {
@@ -58,14 +56,14 @@ public class TradeService {
                         if ("0".equals(dataPostOrder.getOrderQty())) {
                             dataPostOrder.withOrderQty(
                                     calculateFixedQtyForSymbol(
-                                            follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice
+                                            follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), getSymbolLastPrice(dataPostOrder.getSymbol())
                                     )
                             );
                         }
                     } else {
                         dataPostOrder.withOrderQty(
                                 calculateFixedQtyForSymbol(
-                                        follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), lastPrice
+                                        follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), getSymbolLastPrice(dataPostOrder.getSymbol())
                                 )
                         );
                     }
