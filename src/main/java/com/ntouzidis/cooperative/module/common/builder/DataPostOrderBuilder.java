@@ -14,6 +14,7 @@ public class DataPostOrderBuilder {
     private Side side;
     private OrderType orderType;
     private String orderQty;
+    private Integer displayQty;
     private String price;
     private String execInst;
     private String stopPrice;
@@ -67,6 +68,11 @@ public class DataPostOrderBuilder {
         return this;
     }
 
+    public DataPostOrderBuilder withDisplayQty(Integer displayQty) {
+        this.displayQty = displayQty;
+        return this;
+    }
+
     public String get() {
         AtomicReference<String> data = new AtomicReference<>();
         Optional.ofNullable(clOrdID).ifPresent(i -> data.set("clOrdID=" + i));
@@ -74,6 +80,7 @@ public class DataPostOrderBuilder {
         Optional.ofNullable(side).ifPresent(i -> data.set(data.get() + "&side=" + i.getValue()));
         Optional.ofNullable(orderType).ifPresent(i -> data.set(data.get() + "&ordType=" + i.getValue()));
         Optional.ofNullable(orderQty).ifPresent(i -> data.set(data.get() + "&orderQty=" + i));
+        Optional.ofNullable(displayQty).ifPresent(i -> data.set(data.get() + "&displayQty=" + i));
         Optional.ofNullable(price).ifPresent(i -> data.set(data.get() + "&price=" + i));
         Optional.ofNullable(execInst).ifPresent(i -> data.set(data.get() + "&execInst=" + i));
         Optional.ofNullable(stopPrice).ifPresent(i -> data.set(data.get() + "&stopPrice=" + i));
