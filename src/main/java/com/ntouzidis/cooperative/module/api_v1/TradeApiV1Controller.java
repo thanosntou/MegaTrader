@@ -68,6 +68,7 @@ public class TradeApiV1Controller {
             @RequestParam(name="symbol") Symbol symbol,
             @RequestParam(name="side") Side side,
             @RequestParam(name="ordType") OrderType ordType,
+            @RequestParam(name="hidden", required = false) boolean hidden,
             @RequestParam(name="price", required=false) String price,
             @RequestParam(name="execInst", required=false) String execInst,
             @RequestParam(name="stopPx", required = false) String stopPx,
@@ -88,7 +89,8 @@ public class TradeApiV1Controller {
                 .withOrderType(ordType)
                 .withPrice(price)
                 .withExecInst(execInst)
-                .withStopPrice(stopPx);
+                .withStopPrice(stopPx)
+                .withDisplayQty(hidden ? 0 : null);
 
         tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
 
