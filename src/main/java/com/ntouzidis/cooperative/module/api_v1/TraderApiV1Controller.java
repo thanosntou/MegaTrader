@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -95,6 +96,39 @@ public class TraderApiV1Controller {
     follower.setEnabled(!follower.getEnabled());
 
     return new ResponseEntity<>(userService.update(follower), HttpStatus.OK);
+  }
+
+  @PostMapping(
+          value = "/statusAll",
+          produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+  )
+  @PreAuthorize("hasRole('TRADER')")
+  public ResponseEntity<List<User>> enableOrDisableAllFollowers(
+          Authentication authentication,
+          @RequestParam("status") String status
+  ) {
+
+    CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
+
+    if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TRADER")))
+      throw new RuntimeException("Sorry, you are not a trader...");
+
+    List<User> followers = userService.getFollowers(userDetails.getUser());
+
+    if ("disable".equalsIgnoreCase(status)) {
+      followers.forEach(follower -> {
+        follower.setEnabled(false);
+        userService.update(follower);
+      });
+    }
+    else if ("enable".equalsIgnoreCase(status)) {
+      followers.forEach(follower -> {
+        follower.setEnabled(true);
+        userService.update(follower);
+      });
+    }
+
+    return new ResponseEntity<>(followers, HttpStatus.OK);
   }
 
   @GetMapping(
