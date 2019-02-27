@@ -146,7 +146,7 @@ public class TradeController {
         DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(Symbol.valueOf(symbol))
                 .withSide(Side.valueOf(side))
-                .withOrderType(OrderType.valueOf(symbol))
+                .withOrderType(OrderType.valueOf(ordType))
                 .withPrice(price)
                 .withExecInst(execInst)
                 .withStopPrice(stopPx);
@@ -158,34 +158,34 @@ public class TradeController {
         return "redirect:/trade/"+symbol;
     }
 
-    @PostMapping("/positionAll")
-    public String setAllPosition(@RequestParam(name="symbol") String symbol,
-                                 @RequestParam("orderType") String orderType,
-                                 @RequestParam("side") String side,
-                                 @RequestParam("percentage") int percentage,
-                                 @RequestParam("price") String price,
-                                 Authentication authentication) {
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User trader = userDetails.getUser();
-
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(Symbol.valueOf(symbol))
-                .withOrderType(OrderType.valueOf(orderType))
-                .withSide(Side.valueOf(side));
-
-        if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
-
-        tradeService.postOrder2(trader, dataPostOrderBuilder, percentage);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return "redirect:/trade/" + symbol;
-    }
+//    @PostMapping("/positionAll")
+//    public String setAllPosition(@RequestParam(name="symbol") String symbol,
+//                                 @RequestParam("orderType") String orderType,
+//                                 @RequestParam("side") String side,
+//                                 @RequestParam("percentage") int percentage,
+//                                 @RequestParam("price") String price,
+//                                 Authentication authentication) {
+//
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        User trader = userDetails.getUser();
+//
+//        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+//                .withSymbol(Symbol.valueOf(symbol))
+//                .withOrderType(OrderType.valueOf(orderType))
+//                .withSide(Side.valueOf(side));
+//
+//        if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
+//
+//        tradeService.postOrderWithPercentage(trader, dataPostOrderBuilder, percentage);
+//
+//        try {
+//            Thread.sleep(500);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return "redirect:/trade/" + symbol;
+//    }
 
     @PostMapping("/order/cancel")
     public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,

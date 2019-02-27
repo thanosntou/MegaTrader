@@ -49,21 +49,31 @@ public class TradeService {
                 try {
                     bitmexService.post_Position_Leverage(follower, dataPostLeverage);
 
-                    if (OrderType.Stop.equals(dataPostOrder.getOrderType()) || OrderType.StopLimit.equals(dataPostOrder.getOrderType())) {
-                        dataPostOrder.withOrderQty(String.valueOf(Math.abs((Integer)
-                                bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol()).get("currentQty")))
+                    if (OrderType.Stop.equals(dataPostOrder.getOrderType()) || OrderType.StopLimit.equals(dataPostOrder.getOrderType()))
+                    {
+                        dataPostOrder.withOrderQty(
+                                String.valueOf(Math.abs((Integer)
+                                        bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol())
+                                                .get("currentQty"))
+                                )
                         );
                         if ("0".equals(dataPostOrder.getOrderQty())) {
                             dataPostOrder.withOrderQty(
                                     calculateFixedQtyForSymbol(
-                                            follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), getSymbolLastPrice(dataPostOrder.getSymbol())
+                                            follower,
+                                            dataPostOrder.getSymbol(),
+                                            dataPostLeverage.getLeverage(),
+                                            getSymbolLastPrice(dataPostOrder.getSymbol())
                                     )
                             );
                         }
                     } else {
                         dataPostOrder.withOrderQty(
                                 calculateFixedQtyForSymbol(
-                                        follower, dataPostOrder.getSymbol(), dataPostLeverage.getLeverage(), getSymbolLastPrice(dataPostOrder.getSymbol())
+                                        follower,
+                                        dataPostOrder.getSymbol(),
+                                        dataPostLeverage.getLeverage(),
+                                        getSymbolLastPrice(dataPostOrder.getSymbol())
                                 )
                         );
                     }
@@ -74,11 +84,6 @@ public class TradeService {
                 }
             });
         }
-////
-        long end1 = System.nanoTime();
-        long duration = (end1 - start) / 1000000;
-        logger.info("Order took " + duration + "milliseconds to submit for " + enabledfollowers.size() + " followers");
-
         Optional.ofNullable(future).ifPresent(fut -> {
             try {
                 fut.get();
@@ -87,7 +92,49 @@ public class TradeService {
                     long duration2 = (end2 - start) / 1000000;
                     logger.info("Order took " + duration2 + "milliseconds to complete for " + enabledfollowers.size() + " followers");
                 }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
+    public void postOrderWithPercentage(User trader, DataPostOrderBuilder dataPostOrderBuilder, int percentage) {
+        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
+
+        Future<?> future = null;
+        long start = System.nanoTime();
+        for (User follower: enabledfollowers) {
+            future = multiExecutor.submit(() -> {
+                try {
+                    long qty = 0L;
+                    Map<String, Object> position = bitmexService.get_Position(follower)
+                                    .stream()
+                                    .filter(i -> i.get("symbol").toString().equals(dataPostOrderBuilder.getSymbol().getValue()))
+                                    .findAny()
+                                    .orElse(Collections.emptyMap());
+
+                    if (!position.isEmpty())
+                        qty = Long.valueOf(position.get("currentQty").toString());
+
+                    long finalQty = Math.abs(qty * percentage / 100);
+
+                    dataPostOrderBuilder.withOrderQty(Long.toString(finalQty));
+
+                    bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrderBuilder);
+
+                } catch (Exception e) {
+                    logger.error("Order failed for follower: " + follower.getUsername());
+                }
+            });
+        }
+        Optional.ofNullable(future).ifPresent(fut -> {
+            try {
+                fut.get();
+                if (fut.isDone()) {
+                    long end2 = System.nanoTime();
+                    long duration2 = (end2 - start) / 1000000;
+                    logger.info("Order with percentage took " + duration2 + "milliseconds to complete for " + enabledfollowers.size() + " followers");
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -228,12 +275,6 @@ public class TradeService {
         });
     }
 
-    public void postOrder2(User trader, DataPostOrderBuilder dataPostOrderBuilder, int percentage) {
-        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
-
-        enabledfollowers.forEach(customer -> bitmexService.post_Order_Order_WithFixedsAndPercentage(customer, dataPostOrderBuilder, percentage));
-    }
-
     public void closeAllPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
         Future<?> future = null;
         List<User> enabledfollowers = userService.getEnabledFollowers(trader);
@@ -308,7 +349,6 @@ public class TradeService {
             return calculateOrderQty(user, user.getFixedQtyEOSZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.ETHXXX))
             return calculateOrderQty(user, user.getFixedQtyXBTJPY(), leverage, lastPrice);
-        //TODO fix these ethh19
         if (symbol.equals(Symbol.LTCXXX))
             return calculateOrderQty(user, user.getFixedQtyLTCZ18(), leverage, lastPrice);
         if (symbol.equals(Symbol.TRXXXX))
