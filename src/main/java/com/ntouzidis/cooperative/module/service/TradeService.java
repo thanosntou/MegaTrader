@@ -74,7 +74,7 @@ public class TradeService {
                 }
             });
         }
-//
+////
         long end1 = System.nanoTime();
         long duration = (end1 - start) / 1000000;
         logger.info("Order took " + duration + "milliseconds to submit for " + enabledfollowers.size() + " followers");
