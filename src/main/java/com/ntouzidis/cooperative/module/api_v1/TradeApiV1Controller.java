@@ -101,8 +101,8 @@ public class TradeApiV1Controller {
     public ResponseEntity<?> postOrder2(
             Authentication authentication,
             @RequestParam("symbol") Symbol symbol,
-            @RequestParam("orderType") OrderType orderType,
             @RequestParam("side") Side side,
+            @RequestParam("orderType") OrderType orderType,
             @RequestParam(value = "percentage", required = false) int percentage,
             @RequestParam(value = "price", required = false) String price,
             @RequestParam(value = "execInst", required = false) String execInst
@@ -111,12 +111,12 @@ public class TradeApiV1Controller {
 
         DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
                 .withSymbol(symbol)
-                .withOrderType(orderType)
                 .withSide(side)
+                .withOrderType(orderType)
                 .withPrice(price)
                 .withExecInst(execInst);
 
-        tradeService.postOrder2(trader, dataPostOrderBuilder, percentage);
+        tradeService.postOrderWithPercentage(trader, dataPostOrderBuilder, percentage);
 
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }

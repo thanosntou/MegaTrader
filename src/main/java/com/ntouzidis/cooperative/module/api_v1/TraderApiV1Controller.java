@@ -62,7 +62,10 @@ public class TraderApiV1Controller {
     return ResponseEntity.ok(activeTraders);
   }
 
-  @GetMapping("/followers")
+  @GetMapping(
+          value = "/followers",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
   public ResponseEntity<?> getFollowers(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();

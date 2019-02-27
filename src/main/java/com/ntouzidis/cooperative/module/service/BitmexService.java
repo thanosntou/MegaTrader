@@ -119,19 +119,7 @@ public class BitmexService {
     public Map<String, Object> post_Order_Order_WithFixedsAndPercentage(User user, DataPostOrderBuilder dataOrder, int percentage) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
-        long qty = 0L;
-        Map<String, Object> position = get_Position(user)
-                .stream()
-                .filter(i -> i.get("symbol").equals(dataOrder.getSymbol()))
-                .findAny()
-                .orElse(Collections.emptyMap());
-
-        if (!position.isEmpty())
-            qty = Long.valueOf(position.get("currentQty").toString());
-
-        Long finalQty = qty * percentage / 100;
-
-        return getMap(requestPOST(user, Order.ORDER, dataOrder.withOrderQty(finalQty.toString()).get())
+        return getMap(requestPOST(user, Order.ORDER, dataOrder.get())
                 .orElseThrow(() -> new RuntimeException("Call to " + Order.ORDER + " failed.")));
     }
 
