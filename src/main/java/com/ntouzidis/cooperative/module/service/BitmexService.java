@@ -239,7 +239,7 @@ public class BitmexService {
             return Optional.of(Objects.requireNonNull(res.getBody()));
 
         } catch (Exception e) {
-            logger.error("Rest call failed", e);
+            logger.error("Rest call failed", e.getCause());
         }
         return Optional.empty();
     }
