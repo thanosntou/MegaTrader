@@ -11,12 +11,11 @@ import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -86,6 +85,7 @@ public class UserApiV1Controller {
             value = "all",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> readAll(Authentication authentication
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -118,6 +118,7 @@ public class UserApiV1Controller {
             value = "/follow",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<User> followTrader(@RequestParam(name = "traderId") Integer traderId,
                                              Authentication authentication
     ) {
@@ -134,6 +135,7 @@ public class UserApiV1Controller {
             value = "/unfollow",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<User> unfollowTrader(Authentication authentication
     ) {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -184,15 +186,10 @@ public class UserApiV1Controller {
             value = "/wallet/history",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('TRADER')")
     public ResponseEntity<List<Map<String, Object>>> getUserBitmexWalletHistory(
-            @RequestParam("id") int id,
-            Authentication authentication
+            @RequestParam("id") int id
     ) {
-        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        Preconditions.checkArgument(
-                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
-        );
         User user = userService.getOne(id);
 
         List<Map<String, Object>> wallet = bitmexService.getUserWalletHistory(user)
@@ -205,15 +202,10 @@ public class UserApiV1Controller {
             value = "/wallet/summary",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @PreAuthorize("hasRole('TRADER')")
     public ResponseEntity<List<Map<String, Object>>> getUserBitmexWalletSummary(
-            @RequestParam("id") int id,
-            Authentication authentication
+            @RequestParam("id") int id
     ) {
-        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        Preconditions.checkArgument(
-                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
-        );
         User user = userService.getOne(id);
 
         Executor executor = Executors.newSingleThreadExecutor();
@@ -229,14 +221,14 @@ public class UserApiV1Controller {
             value = "/active_orders",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Map<String, Object>>> getActiveOrders(@RequestParam("id") int id,
-                                                                     Authentication authentication
+    @PreAuthorize("hasRole('TRADER')")
+    public ResponseEntity<List<Map<String, Object>>> getActiveOrders(
+            @RequestParam("id") int id,
+
+            Authentication authentication
     ) {
         User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        Preconditions.checkArgument(
-                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
-        );
         User user = userService.getOne(id);
 
         List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrdersOf(user);
@@ -245,14 +237,9 @@ public class UserApiV1Controller {
     }
 
     @GetMapping("/active_positions")
-    public ResponseEntity<List<Map<String, Object>>> getOpenPositions(@RequestParam("id") int id,
-                                                                      Authentication authentication
+    public ResponseEntity<List<Map<String, Object>>> getOpenPositions(
+            @RequestParam("id") int id
     ) {
-        User userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        Preconditions.checkArgument(
-                userService.isAdmin(userDetails) || userService.isTrader(userDetails)
-        );
         User user = userService.getOne(id);
 
         List<Map<String, Object>> randomOpenPositions = tradeService.getRandomPositionsOf(user);
@@ -264,8 +251,9 @@ public class UserApiV1Controller {
             value = "/tx",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> getTX(@RequestParam(name = "id", required = false) Integer id,
-                                   Authentication authentication
+    public ResponseEntity<?> getTX(
+            @RequestParam(name = "id", required = false) Integer id,
+            Authentication authentication
     ) {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
