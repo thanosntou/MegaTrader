@@ -116,20 +116,6 @@ public class BitmexService {
                 .orElseThrow(() -> new RuntimeException("Call to " + Order.ORDER + " failed.")));
     }
 
-    public Map<String, Object> post_Order_Order_WithFixedsAndPercentage(User user, DataPostOrderBuilder dataOrder, int percentage) {
-        Preconditions.checkNotNull(user, "user cannot be null");
-
-        return getMap(requestPOST(user, Order.ORDER, dataOrder.get())
-                .orElseThrow(() -> new RuntimeException("Call to " + Order.ORDER + " failed.")));
-    }
-
-    public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder) {
-        Preconditions.checkNotNull(user, "user cannot be null");
-
-        return getMap(requestPOST(user, Order.ORDER, dataOrder.get())
-                .orElseThrow(() -> new RuntimeException("Call to " + Order.ORDER + " failed.")));
-    }
-
     public Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 

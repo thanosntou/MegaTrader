@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class TradeService {
 
-    Logger logger = LoggerFactory.getLogger(TradeService.class);
+    private Logger logger = LoggerFactory.getLogger(TradeService.class);
 
     private final BitmexService bitmexService;
     private final UserService userService;
@@ -43,54 +43,66 @@ public class TradeService {
         String uniqueclOrdID = UUID.randomUUID().toString();
 
         Future<?> future = null;
-        long start = System.nanoTime();
-        for (User follower: enabledfollowers) {
-            future = multiExecutor.submit(() -> {
-                try {
-                    bitmexService.post_Position_Leverage(follower, dataPostLeverage);
 
-                    if (OrderType.Stop.equals(dataPostOrder.getOrderType()) || OrderType.StopLimit.equals(dataPostOrder.getOrderType()))
-                    {
-                        dataPostOrder.withOrderQty(
-                                String.valueOf(Math.abs((Integer)
-                                        bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol())
-                                                .get("currentQty"))
-                                )
-                        );
-                        if ("0".equals(dataPostOrder.getOrderQty())) {
-                            dataPostOrder.withOrderQty(
-                                    calculateFixedQtyForSymbol(
-                                            follower,
-                                            dataPostOrder.getSymbol(),
-                                            dataPostLeverage.getLeverage(),
-                                            getSymbolLastPrice(dataPostOrder.getSymbol())
-                                    )
-                            );
-                        }
-                    } else {
-                        dataPostOrder.withOrderQty(
-                                calculateFixedQtyForSymbol(
-                                        follower,
-                                        dataPostOrder.getSymbol(),
-                                        dataPostLeverage.getLeverage(),
-                                        getSymbolLastPrice(dataPostOrder.getSymbol())
-                                )
-                        );
-                    }
-                    bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrder.withClOrdId(uniqueclOrdID));
+        for (User follower : enabledfollowers) {
+            try {
+                future = multiExecutor.submit(() -> bitmexService.post_Position_Leverage(follower, dataPostLeverage));
+            } catch (Exception e) {
 
-                } catch (Exception e) {
-                    logger.error("Order failed for follower: " + follower.getUsername());
-                }
-            });
+            }
         }
+
+        if (Optional.ofNullable(future).isPresent()) {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            if (future.isDone()) {
+                for (User follower : enabledfollowers) {
+                    future = multiExecutor.submit(() -> {
+                        try {
+                            if (OrderType.Stop.equals(dataPostOrder.getOrderType()) || OrderType.StopLimit.equals(dataPostOrder.getOrderType())) {
+                                dataPostOrder.withOrderQty(
+                                        String.valueOf(Math.abs((Integer)
+                                                bitmexService.getSymbolPosition(follower, dataPostLeverage.getSymbol())
+                                                        .get("currentQty"))
+                                        )
+                                );
+                                if ("0".equals(dataPostOrder.getOrderQty())) {
+                                    dataPostOrder.withOrderQty(
+                                            calculateFixedQtyForSymbol(
+                                                    follower,
+                                                    dataPostOrder.getSymbol(),
+                                                    dataPostLeverage.getLeverage(),
+                                                    getSymbolLastPrice(dataPostOrder.getSymbol())
+                                            )
+                                    );
+                                }
+                            } else {
+                                dataPostOrder.withOrderQty(
+                                        calculateFixedQtyForSymbol(
+                                                follower,
+                                                dataPostOrder.getSymbol(),
+                                                dataPostLeverage.getLeverage(),
+                                                getSymbolLastPrice(dataPostOrder.getSymbol())
+                                        )
+                                );
+                            }
+                            bitmexService.post_Order_Order(follower, dataPostOrder.withClOrdId(uniqueclOrdID));
+
+                        } catch (Exception e) {
+                            logger.error("Order failed for follower: " + follower.getUsername());
+                        }
+                    });
+                }
+            }
+        }
+
         Optional.ofNullable(future).ifPresent(fut -> {
             try {
                 fut.get();
                 if (fut.isDone()) {
-                    long end2 = System.nanoTime();
-                    long duration2 = (end2 - start) / 1000000;
-                    logger.info("Order took " + duration2 + "milliseconds to complete for " + enabledfollowers.size() + " followers");
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
@@ -120,7 +132,7 @@ public class TradeService {
 
                     dataPostOrderBuilder.withOrderQty(Long.toString(finalQty));
 
-                    bitmexService.post_Order_Order_WithFixeds(follower, dataPostOrderBuilder);
+                    bitmexService.post_Order_Order(follower, dataPostOrderBuilder);
 
                 } catch (Exception e) {
                     logger.error("Order failed for follower: " + follower.getUsername());
