@@ -35,14 +35,13 @@ public class TraderApiV1Controller {
 
   private final UserService userService;
   private final TradeService tradeService;
-  private final PasswordEncoder passwordEncoder;
 
-  public TraderApiV1Controller(UserService userService,
-                               TradeService tradeService,
-                               PasswordEncoder passwordEncoder) {
+  public TraderApiV1Controller(
+          UserService userService,
+          TradeService tradeService
+  ) {
     this.userService = userService;
     this.tradeService = tradeService;
-    this.passwordEncoder = passwordEncoder;
   }
 
   @GetMapping(
@@ -74,7 +73,7 @@ public class TraderApiV1Controller {
 
     Preconditions.checkArgument(userService.isTrader(trader));
 
-    List<User> followers = userService.getFollowers(trader);
+    List<User> followers = userService.getNonHiddenFollowers(trader);
 
     return ResponseEntity.ok(followers);
   }
