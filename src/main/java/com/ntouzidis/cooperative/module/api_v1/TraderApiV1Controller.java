@@ -17,10 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -183,8 +180,15 @@ public class TraderApiV1Controller {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
+    //TODO move this to service layer
+    Map<String, Double> allBalances = userService.getBalances();
+    Map<String, Double> followerBalances = new HashMap<>();
 
-    return new ResponseEntity<>(userService.getBalances(), HttpStatus.OK);
+    userService.getNonHiddenFollowers(trader).forEach(follower ->
+            followerBalances.put(follower.getUsername(), allBalances.get(follower.getUsername()))
+    );
+
+    return new ResponseEntity<>(followerBalances, HttpStatus.OK);
   }
 
 }

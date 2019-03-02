@@ -136,11 +136,27 @@ public class UserApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<User> unfollowTrader(Authentication authentication
-    ) {
+    public ResponseEntity<User> unfollowTrader(Authentication authentication)
+    {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         userService.unlinkTrader(user);
+
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping(
+            value = "/hide",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<User> hide(
+            Authentication authentication,
+            @RequestParam("id") Integer id
+    ) {
+        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+        userService.hideUser(userService.getOne(id));
 
         return ResponseEntity.ok(user);
     }
