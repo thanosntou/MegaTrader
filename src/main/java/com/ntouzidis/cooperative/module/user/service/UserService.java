@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,25 +93,41 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public List<User> getFollowers(User trader) {
-        return customerToTraderLinkRepository.findAllByTrader(trader).stream().map(CustomerToTraderLink::getCustomer).collect(Collectors.toList());
+        return customerToTraderLinkRepository.findAllByTrader(trader)
+                .stream()
+                .map(CustomerToTraderLink::getCustomer)
+                .collect(Collectors.toList());
     }
 
     public List<User> getEnabledFollowers(User trader) {
-        return getFollowers(trader).stream().filter(User::getEnabled).collect(Collectors.toList());
+        return customerToTraderLinkRepository.findAllByTrader(trader)
+                .stream()
+                .map(CustomerToTraderLink::getCustomer)
+                .filter(User::getEnabled)
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getNonHiddenFollowers(User trader) {
+        return customerToTraderLinkRepository.findAllByTrader(trader)
+                .stream()
+                .filter(link -> !link.isHidden())
+                .map(CustomerToTraderLink::getCustomer)
+                .collect(Collectors.toList());
     }
 
     public User getGuideFollower(User trader) {
-
-        CustomerToTraderLink link = customerToTraderLinkRepository.findAllByTraderAndGuide(trader, true)
+        return customerToTraderLinkRepository.findAllByTraderAndGuide(trader, true)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Guide follower not found"));
-
-        return link.getCustomer();
+                .orElseThrow(() -> new RuntimeException("Guide follower not found"))
+                .getCustomer();
     }
 
     public List<User> getTraders() {
-        return  userRepository.findAll().stream().filter(authorityService::isTrader).collect(Collectors.toList());
+        return userRepository.findAll()
+                .stream()
+                .filter(authorityService::isTrader)
+                .collect(Collectors.toList());
     }
 
     public Set<GrantedAuthority> getUserAuthorities(String username) {
@@ -185,7 +202,9 @@ public class UserService implements UserDetailsService {
             CustomerToTraderLink link = new CustomerToTraderLink();
             link.setCustomer(user);
             link.setTrader(trader);
-            link.setCreate_date();
+            link.setCreate_date(LocalDate.now());
+            link.setGuide(false);
+            link.setHidden(false);
 
             customerToTraderLinkRepository.save(link);
             user.setEnabled(false);
