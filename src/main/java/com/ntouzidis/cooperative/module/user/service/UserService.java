@@ -91,7 +91,6 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).map(CustomerToTraderLink::getTrader);
     }
 
-    @Transactional
     public List<User> getFollowers(User trader) {
         return customerToTraderLinkRepository.findAllByTrader(trader)
                 .stream()
@@ -112,6 +111,15 @@ public class UserService implements UserDetailsService {
                 .stream()
                 .filter(link -> !link.isHidden())
                 .map(CustomerToTraderLink::getCustomer)
+                .collect(Collectors.toList());
+    }
+
+    private List<User> getEnabledAndNonHiddenFollowers(User trader) {
+        return customerToTraderLinkRepository.findAllByTrader(trader)
+                .stream()
+                .filter(link -> !link.isHidden())
+                .map(CustomerToTraderLink::getCustomer)
+                .filter(User::getEnabled)
                 .collect(Collectors.toList());
     }
 
@@ -152,8 +160,8 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public double calculateTotalVolume() {
-        int sum = findAll().stream().mapToInt(user -> {
+    public double calculateTotalVolume(User trader) {
+        int sum = getEnabledAndNonHiddenFollowers(trader).stream().mapToInt(user -> {
             try {
                 return ((Integer) bitmexService.get_User_Margin(user).get("walletBalance"));
             }
@@ -166,8 +174,8 @@ public class UserService implements UserDetailsService {
         return (double) sum / 100000000;
     }
 
-    public double calculateActiveVolume() {
-        return findAll().stream().mapToDouble(user -> {
+    public double calculateActiveVolume(User trader) {
+        return getEnabledAndNonHiddenFollowers(trader).stream().mapToDouble(user -> {
             try {
                 double userBalance = ((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue();
                 double userPercentage = (double) user.getFixedQtyXBTUSD() / (double) 100;
@@ -216,6 +224,13 @@ public class UserService implements UserDetailsService {
     public void unlinkTrader(User user) {
         CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
         customerToTraderLinkRepository.delete(link);
+    }
+
+    @Transactional
+    public void hideUser(User user) {
+        CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
+        link.setHidden(true);
+        customerToTraderLinkRepository.save(link);
     }
 
     @Transactional
