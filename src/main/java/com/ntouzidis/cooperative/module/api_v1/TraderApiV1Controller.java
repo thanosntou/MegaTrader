@@ -67,6 +67,7 @@ public class TraderApiV1Controller {
           value = "/followers",
           produces = MediaType.APPLICATION_JSON_VALUE
   )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<?> getFollowers(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -78,7 +79,11 @@ public class TraderApiV1Controller {
     return ResponseEntity.ok(followers);
   }
 
-  @PostMapping(value = "/status")
+  @PostMapping(
+          value = "/status",
+          produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+  )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<User> enableOrDisableFollower(
           Authentication authentication,
           @RequestParam("followerId") Integer followerId
@@ -135,6 +140,7 @@ public class TraderApiV1Controller {
           value = "/active_orders",
           produces = MediaType.APPLICATION_JSON_VALUE
   )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<List<Map<String, Object>>> getActiveOrders(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -146,7 +152,11 @@ public class TraderApiV1Controller {
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
   }
 
-  @GetMapping("/active_positions")
+  @GetMapping(
+          value = "/active_positions",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<List<Map<String, Object>>> getOpenPositions(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -156,13 +166,26 @@ public class TraderApiV1Controller {
     List<Map<String, Object>> randomOpenPositions = tradeService.getRandomPositions(trader)
             .stream()
             .filter(pos -> Arrays.stream(Symbol.values())
-                    .map(Symbol::getValue)
+                    .map(Symbol::name)
                     .collect(Collectors.toList())
                     .contains(pos.get("symbol").toString()))
             .filter(pos -> pos.get("avgEntryPrice") != null)
             .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomOpenPositions, HttpStatus.OK);
+  }
+
+  @GetMapping(
+          value = "/balances",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @PreAuthorize("hasAnyRole('TRADER')")
+  public ResponseEntity<Map<String, Double>> getBalances(Authentication authentication) {
+
+    User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+
+    return new ResponseEntity<>(userService.getBalances(), HttpStatus.OK);
   }
 
 }

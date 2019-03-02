@@ -204,23 +204,23 @@ public class UserService implements UserDetailsService {
 
         Preconditions.checkState(qty <= 100 && qty >= 0, "Wrong quantity input");
 
-        if (symbol.equals(Symbol.XBTUSD.getValue()))
+        if (symbol.equals(Symbol.XBTUSD.name()))
             user.setFixedQtyXBTUSD(qty);
-        else if (symbol.equals(Symbol.ETHUSD.getValue()))
+        else if (symbol.equals(Symbol.ETHUSD.name()))
             user.setFixedQtyETHUSD(qty);
-        else if (symbol.equals(Symbol.ADAXXX.getValue()))
+        else if (symbol.equals(Symbol.ADAH19.name()))
             user.setFixedQtyADAZ18(qty);
-        else if (symbol.equals(Symbol.BCHXXX.getValue()))
+        else if (symbol.equals(Symbol.BCHH19.name()))
             user.setFixedQtyBCHZ18(qty);
-        else if (symbol.equals(Symbol.EOSXXX.getValue()))
+        else if (symbol.equals(Symbol.EOSH19.name()))
             user.setFixedQtyEOSZ18(qty);
-        else if (symbol.equals(Symbol.ETHXXX.getValue()))
-            user.setFixedQtyXBTJPY(qty); // TODO replace with ETHH19
-        else if (symbol.equals(Symbol.LTCXXX.getValue()))
+        else if (symbol.equals(Symbol.ETHH19.name()))
+            user.setFixedQtyXBTJPY(qty);
+        else if (symbol.equals(Symbol.LTCH19.name()))
             user.setFixedQtyLTCZ18(qty);
-        else if (symbol.equals(Symbol.TRXXXX.getValue()))
+        else if (symbol.equals(Symbol.TRXH19.name()))
             user.setFixedQtyTRXZ18(qty);
-        else if (symbol.equals(Symbol.XRPXXX.getValue()))
+        else if (symbol.equals(Symbol.XRPH19.name()))
             user.setFixedQtyXRPZ18(qty);
         else
             throw new IllegalArgumentException("Couldn't set the qty");

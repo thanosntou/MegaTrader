@@ -50,7 +50,7 @@ public class AdminApiV1Controller {
             value = "/volume",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @PreAuthorize("hasAnyRole('TRADER', 'ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Double>> calculateTotalBalance() {
         double totalVolume = userService.calculateTotalVolume();
         double activeVolume = userService.calculateActiveVolume();
