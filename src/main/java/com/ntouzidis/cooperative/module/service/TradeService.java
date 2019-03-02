@@ -70,16 +70,38 @@ public class TradeService {
                                         )
                                 );
                                 if ("0".equals(dataPostOrder.getOrderQty())) {
-                                    dataPostOrder.withOrderQty(
-                                            calculateFixedQtyForSymbol(
-                                                    follower,
-                                                    dataPostOrder.getSymbol(),
-                                                    dataPostLeverage.getLeverage(),
-                                                    getSymbolLastPrice(dataPostOrder.getSymbol())
-                                            )
-                                    );
+
+                                    Optional<Map<String, Object>> openOrderOpt = bitmexService.get_Order_Order(follower)
+                                            .stream()
+                                            .filter(i -> dataPostOrder.getSymbol().name().equals(i.get("symbol").toString()))
+                                            .filter(i -> "Limit".equals(i.get("ordType").toString()))
+                                            .filter(i -> "New".equals(i.get("ordStatus").toString()))
+                                            .findFirst();
+
+                                    if (openOrderOpt.isPresent()) {
+                                        dataPostOrder.withOrderQty(openOrderOpt.get().get("orderQty").toString());
+
+                                    } else {
+                                        dataPostOrder.withOrderQty(
+                                                calculateFixedQtyForSymbol(
+                                                        follower,
+                                                        dataPostOrder.getSymbol(),
+                                                        dataPostLeverage.getLeverage(),
+                                                        getSymbolLastPrice(dataPostOrder.getSymbol())
+                                                )
+                                        );
+                                    }
                                 }
-                            } else {
+                            } else if (OrderType.Limit.equals(dataPostOrder.getOrderType())){
+                                dataPostOrder.withOrderQty(
+                                        calculateFixedQtyForSymbol(
+                                                follower,
+                                                dataPostOrder.getSymbol(),
+                                                dataPostLeverage.getLeverage(),
+                                                dataPostOrder.getPrice()
+                                        )
+                                );
+                            } else if (OrderType.Market.equals(dataPostOrder.getOrderType())){
                                 dataPostOrder.withOrderQty(
                                         calculateFixedQtyForSymbol(
                                                 follower,
@@ -121,7 +143,7 @@ public class TradeService {
                     long qty = 0L;
                     Map<String, Object> position = bitmexService.get_Position(follower)
                                     .stream()
-                                    .filter(i -> i.get("symbol").toString().equals(dataPostOrderBuilder.getSymbol().getValue()))
+                                    .filter(i -> i.get("symbol").toString().equals(dataPostOrderBuilder.getSymbol().name()))
                                     .findAny()
                                     .orElse(Collections.emptyMap());
 
@@ -230,7 +252,7 @@ public class TradeService {
         return bitmexService.get_Order_Order(user)
                 .stream()
                 .filter(order -> Arrays.stream(Symbol.values())
-                        .map(Symbol::getValue)
+                        .map(Symbol::name)
                         .collect(Collectors.toList())
                         .contains(order.get("symbol").toString()))
                 .filter(i -> i.get("ordStatus").equals("New"))
@@ -245,7 +267,7 @@ public class TradeService {
         return bitmexService.get_Position(user)
                 .stream()
                 .filter(pos -> Arrays.stream(Symbol.values())
-                        .map(Symbol::getValue)
+                        .map(Symbol::name)
                         .collect(Collectors.toList())
                         .contains(pos.get("symbol").toString()))
                 .filter(pos -> pos.get("avgEntryPrice") != null)
@@ -303,18 +325,18 @@ public class TradeService {
 
     Map<String, Double> calculateSumFixedQtys(List<User> followers) {
         Map<String, Double> sumFixedQtys = new HashMap<>();
-        Arrays.stream(Symbol.values()).forEach(symbol -> sumFixedQtys.put(symbol.getValue(), (double) 0));
+        Arrays.stream(Symbol.values()).forEach(symbol -> sumFixedQtys.put(symbol.name(), (double) 0));
 
         followers.forEach(f -> {
-            sumFixedQtys.put(Symbol.XBTUSD.getValue(), sumFixedQtys.get(Symbol.XBTUSD.getValue()) + f.getFixedQtyXBTUSD());
-            sumFixedQtys.put(Symbol.ETHUSD.getValue(), sumFixedQtys.get(Symbol.ETHUSD.getValue()) + f.getFixedQtyXBTJPY());
-            sumFixedQtys.put(Symbol.ADAXXX.getValue(), sumFixedQtys.get(Symbol.ADAXXX.getValue()) + f.getFixedQtyADAZ18());
-            sumFixedQtys.put(Symbol.BCHXXX.getValue(), sumFixedQtys.get(Symbol.BCHXXX.getValue()) + f.getFixedQtyBCHZ18());
-            sumFixedQtys.put(Symbol.EOSXXX.getValue(), sumFixedQtys.get(Symbol.EOSXXX.getValue()) + f.getFixedQtyEOSZ18());
-            sumFixedQtys.put(Symbol.ETHXXX.getValue(), sumFixedQtys.get(Symbol.ETHXXX.getValue()) + f.getFixedQtyETHUSD());
-            sumFixedQtys.put(Symbol.LTCXXX.getValue(), sumFixedQtys.get(Symbol.LTCXXX.getValue()) + f.getFixedQtyLTCZ18());
-            sumFixedQtys.put(Symbol.TRXXXX.getValue(), sumFixedQtys.get(Symbol.TRXXXX.getValue()) + f.getFixedQtyTRXZ18());
-            sumFixedQtys.put(Symbol.XRPXXX.getValue(), sumFixedQtys.get(Symbol.XRPXXX.getValue()) + f.getFixedQtyXRPZ18());
+            sumFixedQtys.put(Symbol.XBTUSD.name(), sumFixedQtys.get(Symbol.XBTUSD.name()) + f.getFixedQtyXBTUSD());
+            sumFixedQtys.put(Symbol.ETHUSD.name(), sumFixedQtys.get(Symbol.ETHUSD.name()) + f.getFixedQtyXBTJPY());
+            sumFixedQtys.put(Symbol.ADAH19.name(), sumFixedQtys.get(Symbol.ADAH19.name()) + f.getFixedQtyADAZ18());
+            sumFixedQtys.put(Symbol.BCHH19.name(), sumFixedQtys.get(Symbol.BCHH19.name()) + f.getFixedQtyBCHZ18());
+            sumFixedQtys.put(Symbol.EOSH19.name(), sumFixedQtys.get(Symbol.EOSH19.name()) + f.getFixedQtyEOSZ18());
+            sumFixedQtys.put(Symbol.ETHH19.name(), sumFixedQtys.get(Symbol.ETHH19.name()) + f.getFixedQtyETHUSD());
+            sumFixedQtys.put(Symbol.LTCH19.name(), sumFixedQtys.get(Symbol.LTCH19.name()) + f.getFixedQtyLTCZ18());
+            sumFixedQtys.put(Symbol.TRXH19.name(), sumFixedQtys.get(Symbol.TRXH19.name()) + f.getFixedQtyTRXZ18());
+            sumFixedQtys.put(Symbol.XRPH19.name(), sumFixedQtys.get(Symbol.XRPH19.name()) + f.getFixedQtyXRPZ18());
         });
 
         return sumFixedQtys;
@@ -322,7 +344,7 @@ public class TradeService {
 
     Map<String, Double> calculateSumPositions(List<User> followers) {
         Map<String, Double> sumPositions = new HashMap<>();
-        Arrays.stream(Symbol.values()).forEach(symbol -> sumPositions.put(symbol.getValue(), (double) 0));
+        Arrays.stream(Symbol.values()).forEach(symbol -> sumPositions.put(symbol.name(), (double) 0));
 
         try {
             followers.forEach(f -> bitmexService.getAllSymbolPosition(f)
@@ -344,7 +366,7 @@ public class TradeService {
                 userService.findCustomer("gejocust").orElseThrow(() ->
                         new RuntimeException("Customer not found")
                 ),
-                Symbol.valueOf(symbol.getValue())
+                symbol
         );
     }
 
@@ -353,20 +375,20 @@ public class TradeService {
             return calculateOrderQty(user, user.getFixedQtyXBTUSD(), leverage, lastPrice);
         if (symbol.equals(Symbol.ETHUSD))
             return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage, lastPrice);
-        if (symbol.equals(Symbol.ADAXXX))
-            return calculateOrderQty(user, user.getFixedQtyADAZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.BCHXXX))
-            return calculateOrderQty(user, user.getFixedQtyBCHZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.EOSXXX))
-            return calculateOrderQty(user, user.getFixedQtyEOSZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.ETHXXX))
-            return calculateOrderQty(user, user.getFixedQtyXBTJPY(), leverage, lastPrice);
-        if (symbol.equals(Symbol.LTCXXX))
-            return calculateOrderQty(user, user.getFixedQtyLTCZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.TRXXXX))
-            return calculateOrderQty(user, user.getFixedQtyTRXZ18(), leverage, lastPrice);
-        if (symbol.equals(Symbol.XRPXXX))
-            return calculateOrderQty(user, user.getFixedQtyXRPZ18(), leverage, lastPrice);
+        if (symbol.equals(Symbol.ADAH19))
+            return calculateOrderQtyOther(user, user.getFixedQtyADAZ18(), leverage, lastPrice);
+        if (symbol.equals(Symbol.BCHH19))
+            return calculateOrderQtyOther(user, user.getFixedQtyBCHZ18(), leverage, lastPrice);
+        if (symbol.equals(Symbol.EOSH19))
+            return calculateOrderQtyOther(user, user.getFixedQtyEOSZ18(), leverage, lastPrice);
+        if (symbol.equals(Symbol.ETHH19))
+            return calculateOrderQtyOther(user, user.getFixedQtyXBTJPY(), leverage, lastPrice);
+        if (symbol.equals(Symbol.LTCH19))
+            return calculateOrderQtyOther(user, user.getFixedQtyLTCZ18(), leverage, lastPrice);
+        if (symbol.equals(Symbol.TRXH19))
+            return calculateOrderQtyOther(user, user.getFixedQtyTRXZ18(), leverage, lastPrice);
+        if (symbol.equals(Symbol.XRPH19))
+            return calculateOrderQtyOther(user, user.getFixedQtyXRPZ18(), leverage, lastPrice);
 
         throw new RuntimeException("Fixed qty user calculation failed");
     }
@@ -376,6 +398,13 @@ public class TradeService {
                 xbtAmount(user, fixedQty) * leverage(lev) * lastPrice(lastPrice)
         ));
     }
+
+    private String calculateOrderQtyOther(User user, double fixedQty, String lev, String lastPrice) {
+        return String.valueOf(Math.round(
+                xbtAmount(user, fixedQty) * leverage(lev) / lastPrice(lastPrice)
+        ));
+    }
+
 
     private String calculateOrderQtyETHUSD(User user, double fixedQty, String lev, String lastPrice) {
         return String.valueOf(Math.round(

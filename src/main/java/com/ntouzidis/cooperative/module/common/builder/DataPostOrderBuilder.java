@@ -76,7 +76,7 @@ public class DataPostOrderBuilder {
     public String get() {
         AtomicReference<String> data = new AtomicReference<>();
         data.set("");
-        Optional.ofNullable(symbol).ifPresent(i -> data.set(data.get() + "symbol=" + i.getValue()));
+        Optional.ofNullable(symbol).ifPresent(i -> data.set(data.get() + "symbol=" + i.name()));
         Optional.ofNullable(clOrdID).ifPresent(i -> data.set(data.get() + "&clOrdID=" + i));
         Optional.ofNullable(side).ifPresent(i -> data.set(data.get() + "&side=" + i.getValue()));
         Optional.ofNullable(orderType).ifPresent(i -> data.set(data.get() + "&ordType=" + i.getValue()));
