@@ -1,9 +1,12 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
+import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.Login;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.repository.LoginRepository;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminApiV1Controller {
+
+    private Logger logger = LoggerFactory.getLogger(TradeService.class);
 
     @Value("${trader}")
     private String traderName;
@@ -61,6 +66,7 @@ public class AdminApiV1Controller {
         User trader = userService.findByUsername(traderName)
                 .orElseThrow(() -> new RuntimeException("Trader " + traderName + " not found"));
 
+        logger.warn(String.valueOf(userService.calculateTotalVolume(trader)));
         Map<String, Double> map = new HashMap<>();
         map.put("totalVolume", userService.calculateTotalVolume(trader));
         map.put("activeVolume", userService.calculateActiveVolume(trader));
