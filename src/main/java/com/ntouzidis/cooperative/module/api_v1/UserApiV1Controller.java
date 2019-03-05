@@ -378,7 +378,7 @@ public class UserApiV1Controller {
             user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
             user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
         } catch (Exception e) {
-            logger.warn("Api keys decryption failed", e);
+            logger.warn("Api keys decryption failed", e.getMessage());
         }
 
     }

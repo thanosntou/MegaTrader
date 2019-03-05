@@ -1,6 +1,5 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
-import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.Login;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.repository.LoginRepository;
@@ -63,19 +62,20 @@ public class AdminApiV1Controller {
             value = "/volume", produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Double>> calculateTotalBalance() {
+    public ResponseEntity<?> calculateTotalBalance() {
         logger.info("traderName: " + traderName);
 
         User trader = userService.findByUsername(traderName).orElseThrow(() ->
                 new RuntimeException("Trader " + traderName + " not found"));
 
         logger.info("Calculating total balance for trader: " + trader);
+        logger.info(trader.getClass().getCanonicalName());
 
         double totalVolume = userService.calculateTotalVolume(trader);
         double activeVolume = userService.calculateActiveVolume(trader);
 
         logger.info(String.valueOf(totalVolume));
-        logger.info(String.valueOf(totalVolume));
+        logger.info(String.valueOf(activeVolume));
 
         Map<String, Double> map = new HashMap<>();
         map.put("totalVolume", totalVolume);
