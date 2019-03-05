@@ -26,10 +26,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/admin")
 public class AdminApiV1Controller {
 
-    private Logger logger = LoggerFactory.getLogger(TradeService.class);
+    private Logger logger = LoggerFactory.getLogger(AdminApiV1Controller.class);
 
     @Value("${trader}")
     private String traderName;
+
+    @Value("${superAdmin}")
+    private String admin;
 
     private final LoginRepository loginRepository;
     private final UserService userService;
@@ -87,8 +90,8 @@ public class AdminApiV1Controller {
     )
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Map<String, Double>> getBalances() {
-        logger.info("traderName: " + traderName);
-        logger.info("Calculating total balance for all users");
+        logger.info("admin: " + admin);
+        logger.info("Calculating total balance of all users");
 
         Map<String, Double> balances = userService.getBalances();
 
