@@ -57,19 +57,26 @@ public class AdminApiV1Controller {
     }
 
     @GetMapping(
-            value = "/volume",
-            produces = MediaType.APPLICATION_JSON_VALUE
+            value = "/volume", produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Double>> calculateTotalBalance() {
+        logger.info("traderName: " + traderName);
 
-        User trader = userService.findByUsername(traderName)
-                .orElseThrow(() -> new RuntimeException("Trader " + traderName + " not found"));
+        User trader = userService.findByUsername(traderName).orElseThrow(() ->
+                new RuntimeException("Trader " + traderName + " not found"));
 
-        logger.warn(String.valueOf(userService.calculateTotalVolume(trader)));
+        logger.info("Calculating total balance for trader: " + trader);
+
+        double totalVolume = userService.calculateTotalVolume(trader);
+        double activeVolume = userService.calculateActiveVolume(trader);
+
+        logger.info(String.valueOf(totalVolume));
+        logger.info(String.valueOf(totalVolume));
+
         Map<String, Double> map = new HashMap<>();
-        map.put("totalVolume", userService.calculateTotalVolume(trader));
-        map.put("activeVolume", userService.calculateActiveVolume(trader));
+        map.put("totalVolume", totalVolume);
+        map.put("activeVolume", activeVolume);
 
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
@@ -80,6 +87,13 @@ public class AdminApiV1Controller {
     )
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Map<String, Double>> getBalances() {
-        return new ResponseEntity<>(userService.getBalances(), HttpStatus.OK);
+        logger.info("traderName: " + traderName);
+        logger.info("Calculating total balance for all users");
+
+        Map<String, Double> balances = userService.getBalances();
+
+        logger.info(balances.toString());
+
+        return new ResponseEntity<>(balances, HttpStatus.OK);
     }
 }
