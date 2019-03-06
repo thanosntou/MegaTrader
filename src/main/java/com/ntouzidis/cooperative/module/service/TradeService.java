@@ -239,7 +239,10 @@ public class TradeService {
             dataDeleteOrderBuilder.withSymbol(symbol);
             cancelAllOrders(trader, dataDeleteOrderBuilder);
 
-            dataPostOrderBuilder.withSymbol(symbol).withOrderType(OrderType.Market).withExecInst("Close");
+            dataPostOrderBuilder.withSymbol(symbol)
+                    .withOrderType(OrderType.Market)
+                    .withExecInst("Close");
+
             closeAllPosition(trader, dataPostOrderBuilder);
         }
     }
@@ -290,16 +293,22 @@ public class TradeService {
     }
 
     public void cancelOrder(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
-        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
+        Future<?> future = null;
 
-        enabledfollowers.forEach(customer -> bitmexService.cancelOrder(customer, dataDeleteOrderBuilder));
+        for (User follower: userService.getEnabledFollowers(trader)) {
+            future = multiExecutor.submit(() -> bitmexService.cancelOrder(follower, dataDeleteOrderBuilder));
+        }
+        Optional.ofNullable(future).ifPresent(fut -> {
+            try { fut.get(); } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void cancelAllOrders(User trader, DataDeleteOrderBuilder dataDeleteOrderBuilder) {
         Future<?> future = null;
-        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
-        for (User follower: enabledfollowers) {
+        for (User follower: userService.getEnabledFollowers(trader)) {
             future = multiExecutor.submit(() -> bitmexService.cancelAllOrders(follower, dataDeleteOrderBuilder));
         }
         Optional.ofNullable(future).ifPresent(fut -> {
@@ -311,9 +320,8 @@ public class TradeService {
 
     public void closeAllPosition(User trader, DataPostOrderBuilder dataPostOrderBuilder) {
         Future<?> future = null;
-        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
-        for (User follower: enabledfollowers) {
+        for (User follower: userService.getEnabledFollowers(trader)) {
             future = multiExecutor.submit(() -> bitmexService.post_Order_Order(follower, dataPostOrderBuilder));
         }
         Optional.ofNullable(future).ifPresent(fut -> {
