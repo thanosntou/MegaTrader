@@ -380,7 +380,7 @@ public class TradeService {
 
     private String calculateFixedQtyForSymbol(User user, Symbol symbol, String leverage, String lastPrice) {
         if (symbol.equals(Symbol.XBTUSD))
-            return calculateOrderQty(user, user.getFixedQtyXBTUSD(), leverage, lastPrice);
+            return calculateOrderQty(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.ETHUSD))
             return calculateOrderQtyETHUSD(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.ADAH19))
