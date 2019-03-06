@@ -382,21 +382,21 @@ public class TradeService {
         if (symbol.equals(Symbol.XBTUSD))
             return calculateOrderQty(user, user.getFixedQtyXBTUSD(), leverage, lastPrice);
         if (symbol.equals(Symbol.ETHUSD))
-            return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage, lastPrice);
+            return calculateOrderQtyETHUSD(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.ADAH19))
-            return calculateOrderQtyOther(user, user.getFixedQtyADAZ18(), leverage, lastPrice);
+            return calculateOrderQtyOther(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.BCHH19))
-            return calculateOrderQtyOther(user, user.getFixedQtyBCHZ18(), leverage, lastPrice);
+            return calculateOrderQtyOther(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.EOSH19))
-            return calculateOrderQtyOther(user, user.getFixedQtyEOSZ18(), leverage, lastPrice);
+            return calculateOrderQtyOther(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.ETHH19))
-            return calculateOrderQtyOther(user, user.getFixedQtyXBTJPY(), leverage, lastPrice);
+            return calculateOrderQtyOther(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.LTCH19))
-            return calculateOrderQtyOther(user, user.getFixedQtyLTCZ18(), leverage, lastPrice);
+            return calculateOrderQtyOther(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.TRXH19))
-            return calculateOrderQtyOther(user, user.getFixedQtyTRXZ18(), leverage, lastPrice);
+            return calculateOrderQtyOther(user, 0.1, leverage, lastPrice);
         if (symbol.equals(Symbol.XRPH19))
-            return calculateOrderQtyOther(user, user.getFixedQtyXRPZ18(), leverage, lastPrice);
+            return calculateOrderQtyOther(user, 0.1, leverage, lastPrice);
 
         throw new RuntimeException("Fixed qty user calculation failed");
     }
