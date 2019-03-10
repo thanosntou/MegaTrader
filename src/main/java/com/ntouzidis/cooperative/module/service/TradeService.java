@@ -147,14 +147,16 @@ public class TradeService {
                                     .findAny()
                                     .orElse(Collections.emptyMap());
 
-                    if (!position.isEmpty())
+                    if (!position.isEmpty()) {
                         qty = Long.valueOf(position.get("currentQty").toString());
 
-                    long finalQty = Math.abs(qty * percentage / 100);
+                        long finalQty = Math.abs(qty * percentage / 100);
 
-                    dataPostOrderBuilder.withOrderQty(Long.toString(finalQty));
+                        dataPostOrderBuilder.withOrderQty(Long.toString(finalQty));
 
-                    bitmexService.post_Order_Order(follower, dataPostOrderBuilder);
+                        bitmexService.post_Order_Order(follower, dataPostOrderBuilder);
+                    }
+
 
                 } catch (Exception e) {
                     logger.error("Order failed for follower: " + follower.getUsername());
