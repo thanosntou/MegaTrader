@@ -338,23 +338,23 @@ public class TradeService {
 
     private String calculateFixedQtyForSymbol(User user, Symbol symbol, String leverage, String lastPrice) {
         if (symbol.equals(Symbol.XBTUSD))
-            return calculateOrderQty(user, user.getFixedQtyXBTUSD(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.ETHUSD))
-            return calculateOrderQtyETHUSD(user, user.getFixedQtyETHUSD(), leverage, lastPrice);
+            return calculateOrderQtyETHUSD(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.ADAXXX))
-            return calculateOrderQty(user, user.getFixedQtyADAZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.BCHXXX))
-            return calculateOrderQty(user, user.getFixedQtyBCHZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.EOSXXX))
-            return calculateOrderQty(user, user.getFixedQtyEOSZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.ETHXXX))
-            return calculateOrderQty(user, user.getFixedQtyXBTJPY(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.LTCXXX))
-            return calculateOrderQty(user, user.getFixedQtyLTCZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.TRXXXX))
-            return calculateOrderQty(user, user.getFixedQtyTRXZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.XRPXXX))
-            return calculateOrderQty(user, user.getFixedQtyXRPZ18(), leverage, lastPrice);
+            return calculateOrderQty(user, 10, leverage, lastPrice);
 
         throw new RuntimeException("Fixed qty user calculation failed");
     }
