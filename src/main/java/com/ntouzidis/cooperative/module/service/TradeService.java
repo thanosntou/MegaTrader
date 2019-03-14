@@ -389,19 +389,19 @@ public class TradeService {
             return calculateOrderQty(user, 10, leverage, lastPrice);
         if (symbol.equals(Symbol.ETHUSD))
             return calculateOrderQtyETHUSD(user, 10, leverage, lastPrice);
-        if (symbol.equals(Symbol.ADAXXX))
+        if (symbol.equals(Symbol.ADAH19))
             return calculateOrderQty(user, 10, leverage, lastPrice);
-        if (symbol.equals(Symbol.BCHXXX))
+        if (symbol.equals(Symbol.BCHH19))
             return calculateOrderQty(user, 10, leverage, lastPrice);
-        if (symbol.equals(Symbol.EOSXXX))
+        if (symbol.equals(Symbol.EOSH19))
             return calculateOrderQty(user, 10, leverage, lastPrice);
-        if (symbol.equals(Symbol.ETHXXX))
+        if (symbol.equals(Symbol.ETHH19))
             return calculateOrderQty(user, 10, leverage, lastPrice);
-        if (symbol.equals(Symbol.LTCXXX))
+        if (symbol.equals(Symbol.LTCH19))
             return calculateOrderQty(user, 10, leverage, lastPrice);
-        if (symbol.equals(Symbol.TRXXXX))
+        if (symbol.equals(Symbol.TRXH19))
             return calculateOrderQty(user, 10, leverage, lastPrice);
-        if (symbol.equals(Symbol.XRPXXX))
+        if (symbol.equals(Symbol.XRPH19))
             return calculateOrderQty(user, 10, leverage, lastPrice);
 
         throw new RuntimeException("Fixed qty user calculation failed");
