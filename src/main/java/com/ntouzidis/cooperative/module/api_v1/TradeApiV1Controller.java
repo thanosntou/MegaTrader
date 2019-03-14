@@ -28,32 +28,32 @@ public class TradeApiV1Controller {
         this.tradeService = tradeService;
     }
 
-    @PostMapping(
-            value = "/signal",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> createSignal(
-            Authentication authentication,
-            @RequestParam(name="symbol", required = false) Symbol symbol,
-            @RequestParam(name="side", required = false) Side side,
-            @RequestParam(name="leverage", required = false) String leverage,
-            @RequestParam(name="stopLoss", required = false) String stopLoss,
-            @RequestParam(name="profitTrigger", required = false) String profitTrigger
-    ) {
-        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        SignalBuilder signalBuilder = new SignalBuilder()
-                .withSymbol(symbol)
-                .withSide(side)
-                .withleverage(leverage)
-                .withStopLoss(stopLoss)
-                .withProfitTrigger(profitTrigger);
-
-        tradeService.createSignal(trader, signalBuilder);
-
-        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
-    }
+//    @PostMapping(
+//            value = "/signal",
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @PreAuthorize("hasRole('TRADER')")
+//    public ResponseEntity<?> createSignal(
+//            Authentication authentication,
+//            @RequestParam(name="symbol", required = false) Symbol symbol,
+//            @RequestParam(name="side", required = false) Side side,
+//            @RequestParam(name="leverage", required = false) String leverage,
+//            @RequestParam(name="stopLoss", required = false) String stopLoss,
+//            @RequestParam(name="profitTrigger", required = false) String profitTrigger
+//    ) {
+//        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+//
+//        SignalBuilder signalBuilder = new SignalBuilder()
+//                .withSymbol(symbol)
+//                .withSide(side)
+//                .withleverage(leverage)
+//                .withStopLoss(stopLoss)
+//                .withProfitTrigger(profitTrigger);
+//
+//        tradeService.createSignal(trader, signalBuilder);
+//
+//        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
+//    }
 
 
     @PostMapping(

@@ -136,8 +136,8 @@ public class UserApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<User> unfollowTrader(Authentication authentication
-    ) {
+    public ResponseEntity<User> unfollowTrader(Authentication authentication)
+    {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         userService.unlinkTrader(user);
@@ -362,7 +362,7 @@ public class UserApiV1Controller {
             user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
             user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
         } catch (Exception e) {
-            logger.warn("Api keys decryption failed", e);
+            logger.warn("Api keys decryption failed", e.getMessage());
         }
 
     }

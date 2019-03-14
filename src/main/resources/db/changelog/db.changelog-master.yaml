@@ -54,3 +54,6 @@ databaseChangeLog:
   - include:
       file: changeset-020-alter_qties_type.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-021-add_hidden_to_customer_to_trader_links.yaml
+      relativeToChangelogFile: true

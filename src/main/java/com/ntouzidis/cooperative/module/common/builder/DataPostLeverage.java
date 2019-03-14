@@ -22,7 +22,7 @@ public class DataPostLeverage {
 
     public String get() {
         AtomicReference<String> data = new AtomicReference<>();
-        Optional.ofNullable(symbol).ifPresent(i -> data.set("symbol=" + i.getValue()));
+        Optional.ofNullable(symbol).ifPresent(i -> data.set("symbol=" + i.name()));
         Optional.ofNullable(leverage).ifPresent(i -> data.set(data.get() + "&leverage=" + i));
         return data.get();
     }

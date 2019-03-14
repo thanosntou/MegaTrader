@@ -34,7 +34,7 @@ public class DataDeleteOrderBuilder {
 
     public String get() {
         AtomicReference<String> data = new AtomicReference<>();
-        Optional.ofNullable(symbol).ifPresent(i -> data.set("symbol=" + i.getValue()));
+        Optional.ofNullable(symbol).ifPresent(i -> data.set("symbol=" + i.name()));
         Optional.ofNullable(orderID).ifPresent(i -> data.set(data.get() + "&orderID=" + i));
         Optional.ofNullable(clOrdID).ifPresent(i -> data.set(data.get() + "&clOrdID=" + i));
         Optional.ofNullable(text).ifPresent(i -> data.set(data.get() + "&text=" + i));

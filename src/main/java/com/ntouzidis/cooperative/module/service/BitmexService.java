@@ -74,10 +74,10 @@ public class BitmexService {
         Preconditions.checkNotNull(symbol, "symbol cannot be null");
 
         List<Map<String, Object>> maplist = getMapList(
-                requestGET(user,Instrument.INSTRUMENT + "?symbol=" + symbol.getValue(), "")
+                requestGET(user,Instrument.INSTRUMENT + "?symbol=" + symbol.name(), "")
                         .orElseThrow(() -> new RuntimeException("Call to " + Instrument.INSTRUMENT + " failed."))
         );
-        Preconditions.checkState(symbol.getValue().equals(maplist.get(0).get("symbol")));
+        Preconditions.checkState(symbol.name().equals(maplist.get(0).get("symbol")));
         return maplist.get(0).get("lastPrice").toString();
     }
 
@@ -116,20 +116,6 @@ public class BitmexService {
                 .orElseThrow(() -> new RuntimeException("Call to " + Order.ORDER + " failed.")));
     }
 
-    public Map<String, Object> post_Order_Order_WithFixedsAndPercentage(User user, DataPostOrderBuilder dataOrder, int percentage) {
-        Preconditions.checkNotNull(user, "user cannot be null");
-
-        return getMap(requestPOST(user, Order.ORDER, dataOrder.get())
-                .orElseThrow(() -> new RuntimeException("Call to " + Order.ORDER + " failed.")));
-    }
-
-    public Map<String, Object> post_Order_Order_WithFixeds(User user, DataPostOrderBuilder dataOrder) {
-        Preconditions.checkNotNull(user, "user cannot be null");
-
-        return getMap(requestPOST(user, Order.ORDER, dataOrder.get())
-                .orElseThrow(() -> new RuntimeException("Call to " + Order.ORDER + " failed.")));
-    }
-
     public Map<String, Object> post_Order_Order(User user, DataPostOrderBuilder dataOrder) {
         Preconditions.checkNotNull(user, "user cannot be null");
 
@@ -152,7 +138,7 @@ public class BitmexService {
 
         return getMapList(res.orElse(null))
                 .stream()
-                .filter(i -> i.get("symbol").equals(symbol.getValue()))
+                .filter(i -> i.get("symbol").equals(symbol.name()))
                 .findAny().orElse(null);
     }
 

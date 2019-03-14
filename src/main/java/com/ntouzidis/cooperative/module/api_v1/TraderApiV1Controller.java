@@ -10,16 +10,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,14 +32,13 @@ public class TraderApiV1Controller {
 
   private final UserService userService;
   private final TradeService tradeService;
-  private final PasswordEncoder passwordEncoder;
 
-  public TraderApiV1Controller(UserService userService,
-                               TradeService tradeService,
-                               PasswordEncoder passwordEncoder) {
+  public TraderApiV1Controller(
+          UserService userService,
+          TradeService tradeService
+  ) {
     this.userService = userService;
     this.tradeService = tradeService;
-    this.passwordEncoder = passwordEncoder;
   }
 
   @GetMapping(
@@ -66,18 +63,23 @@ public class TraderApiV1Controller {
           value = "/followers",
           produces = MediaType.APPLICATION_JSON_VALUE
   )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<?> getFollowers(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
     Preconditions.checkArgument(userService.isTrader(trader));
 
-    List<User> followers = userService.getFollowers(trader);
+    List<User> followers = userService.getNonHiddenFollowers(trader);
 
     return ResponseEntity.ok(followers);
   }
 
-  @PostMapping(value = "/status")
+  @PostMapping(
+          value = "/status",
+          produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+  )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<User> enableOrDisableFollower(
           Authentication authentication,
           @RequestParam("followerId") Integer followerId
@@ -97,10 +99,44 @@ public class TraderApiV1Controller {
     return new ResponseEntity<>(userService.update(follower), HttpStatus.OK);
   }
 
+  @PostMapping(
+          value = "/statusAll",
+          produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+  )
+  @PreAuthorize("hasRole('TRADER')")
+  public ResponseEntity<List<User>> enableOrDisableAllFollowers(
+          Authentication authentication,
+          @RequestParam("status") String status
+  ) {
+
+    CustomUserDetails userDetails = ((CustomUserDetails) authentication.getPrincipal());
+
+    if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TRADER")))
+      throw new RuntimeException("Sorry, you are not a trader...");
+
+    List<User> followers = userService.getFollowers(userDetails.getUser());
+
+    if ("disable".equalsIgnoreCase(status)) {
+      followers.forEach(follower -> {
+        follower.setEnabled(false);
+        userService.update(follower);
+      });
+    }
+    else if ("enable".equalsIgnoreCase(status)) {
+      followers.forEach(follower -> {
+        follower.setEnabled(true);
+        userService.update(follower);
+      });
+    }
+
+    return new ResponseEntity<>(followers, HttpStatus.OK);
+  }
+
   @GetMapping(
           value = "/active_orders",
           produces = MediaType.APPLICATION_JSON_VALUE
   )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<List<Map<String, Object>>> getActiveOrders(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -112,7 +148,11 @@ public class TraderApiV1Controller {
     return new ResponseEntity<>(randomActiveOrders, HttpStatus.OK);
   }
 
-  @GetMapping("/active_positions")
+  @GetMapping(
+          value = "/active_positions",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<List<Map<String, Object>>> getOpenPositions(Authentication authentication) {
 
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
@@ -122,13 +162,33 @@ public class TraderApiV1Controller {
     List<Map<String, Object>> randomOpenPositions = tradeService.getRandomPositions(trader)
             .stream()
             .filter(pos -> Arrays.stream(Symbol.values())
-                    .map(Symbol::getValue)
+                    .map(Symbol::name)
                     .collect(Collectors.toList())
                     .contains(pos.get("symbol").toString()))
             .filter(pos -> pos.get("avgEntryPrice") != null)
             .collect(Collectors.toList());
 
     return new ResponseEntity<>(randomOpenPositions, HttpStatus.OK);
+  }
+
+  @GetMapping(
+          value = "/balances",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @PreAuthorize("hasAnyRole('TRADER')")
+  public ResponseEntity<Map<String, Double>> getBalances(Authentication authentication) {
+
+    User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+
+    //TODO move this to service layer
+    Map<String, Double> allBalances = userService.getBalances();
+    Map<String, Double> followerBalances = new HashMap<>();
+
+    userService.getNonHiddenFollowers(trader).forEach(follower ->
+            followerBalances.put(follower.getUsername(), allBalances.get(follower.getUsername()))
+    );
+
+    return new ResponseEntity<>(followerBalances, HttpStatus.OK);
   }
 
 }
