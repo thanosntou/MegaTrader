@@ -18,7 +18,7 @@ public class CooperativeApplication {
 
     @Bean(name = "multiExecutor")
     public ExecutorService multiExecutor() {
-        return Executors.newCachedThreadPool();
+        return Executors.newFixedThreadPool(50);
     }
 
     @Bean(name ="restTemplate")

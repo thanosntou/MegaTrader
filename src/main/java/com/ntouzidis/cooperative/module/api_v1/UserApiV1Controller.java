@@ -145,22 +145,22 @@ public class UserApiV1Controller {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<User> create(@RequestParam(value = "username") String username,
-                                       @RequestParam(value = "email") String email,
-                                       @RequestParam(value = "pass") String pass,
-                                       @RequestParam(value = "confirmPass") String confirmPass
-    ) {
-//        Preconditions.checkArgument(pin != null, "You need a secret pin to create a user. Ask your trader");
-        Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
-        Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
-        Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
-
-        User user = userService.createCustomer(username, email, pass, confirmPass);
-// for the ui, to login immediately after creation
-        user.setPassword(confirmPass);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
+//    @PostMapping("/new")
+//    public ResponseEntity<User> create(@RequestParam(value = "username") String username,
+//                                       @RequestParam(value = "email") String email,
+//                                       @RequestParam(value = "pass") String pass,
+//                                       @RequestParam(value = "confirmPass") String confirmPass
+//    ) {
+////        Preconditions.checkArgument(pin != null, "You need a secret pin to create a user. Ask your trader");
+//        Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
+//        Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
+//        Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
+//
+//        User user = userService.createCustomer(username, email, pass, confirmPass);
+//// for the ui, to login immediately after creation
+//        user.setPassword(confirmPass);
+//        return new ResponseEntity<>(user, HttpStatus.CREATED);
+//    }
 
     @GetMapping(
             value = "/wallet",
