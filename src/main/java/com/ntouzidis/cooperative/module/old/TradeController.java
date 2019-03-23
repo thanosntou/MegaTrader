@@ -1,12 +1,12 @@
 package com.ntouzidis.cooperative.module.old;
 
+import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
@@ -139,11 +139,11 @@ public class TradeController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
+        DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder()
                 .withSymbol(Symbol.valueOf(symbol))
                 .withLeverage(leverage);
 
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
+        DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(Symbol.valueOf(symbol))
                 .withSide(Side.valueOf(side))
                 .withOrderType(OrderType.valueOf(ordType))
@@ -169,7 +169,7 @@ public class TradeController {
 //        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 //        User trader = userDetails.getUser();
 //
-//        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+//        DataOrderBuilder dataPostOrderBuilder = new DataOrderBuilder()
 //                .withSymbol(Symbol.valueOf(symbol))
 //                .withOrderType(OrderType.valueOf(orderType))
 //                .withSide(Side.valueOf(side));
@@ -225,12 +225,12 @@ public class TradeController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
 
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+        DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(Symbol.valueOf(symbol))
                 .withExecInst("Close")
                 .withOrderType(OrderType.Market);
 
-        tradeService.closeAllPosition(trader, dataPostOrderBuilder);
+        tradeService.closeAllPosition(trader, dataOrderBuilder);
 
         try {
             Thread.sleep(500);
@@ -274,11 +274,11 @@ public class TradeController {
         return maxLeverages;
     }
 
-    private Map<String, Object> getSymbolPosition(User user, String symbol) {
-        return bitmexService.getAllSymbolPosition(user)
-                .stream()
-                .filter(k -> k.get("symbol").equals(symbol))
-                .findAny().orElse(null);
-    }
+//    private Map<String, Object> getSymbolPosition(User user, String symbol) {
+//        return bitmexService.get_Position(user)
+//                .stream()
+//                .filter(k -> k.get("symbol").equals(symbol))
+//                .findAny().orElse(null);
+//    }
 
 }

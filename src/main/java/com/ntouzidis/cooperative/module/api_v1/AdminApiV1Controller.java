@@ -36,10 +36,7 @@ public class AdminApiV1Controller {
     private final LoginRepository loginRepository;
     private final UserService userService;
 
-    public AdminApiV1Controller(
-            LoginRepository loginRepository,
-            UserService userService
-    ) {
+    public AdminApiV1Controller(LoginRepository loginRepository, UserService userService) {
         this.loginRepository = loginRepository;
         this.userService = userService;
     }
@@ -93,9 +90,10 @@ public class AdminApiV1Controller {
         logger.info("admin: " + admin);
         logger.info("Calculating total balance of all users");
 
-        Map<String, Double> balances = userService.getBalances();
+        User trader = userService.findByUsername(traderName).orElseThrow(() ->
+                new RuntimeException("Trader " + traderName + "not found"));
 
-        logger.info(balances.toString());
+        Map<String, Double> balances = userService.getFollowerBalances(trader);
 
         return new ResponseEntity<>(balances, HttpStatus.OK);
     }

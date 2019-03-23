@@ -181,7 +181,7 @@ public class TraderApiV1Controller {
     User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
     //TODO move this to service layer
-    Map<String, Double> allBalances = userService.getBalances();
+    Map<String, Double> allBalances = userService.getFollowerBalances(trader);
     Map<String, Double> followerBalances = new HashMap<>();
 
     userService.getNonHiddenFollowers(trader).forEach(follower ->

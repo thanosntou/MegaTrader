@@ -7,7 +7,7 @@ import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class DataPostOrderBuilder {
+public class DataOrderBuilder implements DataBuilder {
 
     private Symbol symbol;
     private String clOrdID;
@@ -20,63 +20,64 @@ public class DataPostOrderBuilder {
     private String stopPrice;
     private String text = "BITMEXCALLBOT";
 
-    public DataPostOrderBuilder() {
+    public DataOrderBuilder() {
     }
 
-    public DataPostOrderBuilder withClOrdId(String clOrdID) {
+    public DataOrderBuilder withClOrdId(String clOrdID) {
         this.clOrdID = clOrdID;
         return this;
     }
 
-    public DataPostOrderBuilder withSymbol(Symbol symbol) {
+    public DataOrderBuilder withSymbol(Symbol symbol) {
         this.symbol = symbol;
         return this;
     }
 
-    public DataPostOrderBuilder withSide(Side side) {
+    public DataOrderBuilder withSide(Side side) {
         this.side = side;
         return this;
     }
 
-    public DataPostOrderBuilder withOrderType(OrderType orderType) {
+    public DataOrderBuilder withOrderType(OrderType orderType) {
         this.orderType = orderType;
         return this;
     }
 
-    public DataPostOrderBuilder withOrderQty(String orderQty) {
+    public DataOrderBuilder withOrderQty(String orderQty) {
         this.orderQty = orderQty;
         return this;
     }
 
-    public DataPostOrderBuilder withPrice(String price) {
+    public DataOrderBuilder withPrice(String price) {
         this.price = price;
         return this;
     }
 
-    public DataPostOrderBuilder withExecInst(String execInst) {
+    public DataOrderBuilder withExecInst(String execInst) {
         this.execInst = execInst;
         return this;
     }
 
-    public DataPostOrderBuilder withStopPrice(String stopPrice) {
+    public DataOrderBuilder withStopPrice(String stopPrice) {
         this.stopPrice = stopPrice;
         return this;
     }
 
-    public DataPostOrderBuilder withText(String text) {
+    public DataOrderBuilder withText(String text) {
         this.text = text;
         return this;
     }
 
-    public DataPostOrderBuilder withDisplayQty(Integer displayQty) {
+    public DataOrderBuilder withDisplayQty(Integer displayQty) {
         this.displayQty = displayQty;
         return this;
     }
 
+    @Override
     public String get() {
         AtomicReference<String> data = new AtomicReference<>();
         data.set("");
-        Optional.ofNullable(symbol).ifPresent(i -> data.set(data.get() + "symbol=" + i.name()));
+        Optional.of(symbol).ifPresent(i -> data.set(data.get() + "symbol=" + i.name()));
         Optional.ofNullable(clOrdID).ifPresent(i -> data.set(data.get() + "&clOrdID=" + i));
         Optional.ofNullable(side).ifPresent(i -> data.set(data.get() + "&side=" + i.getValue()));
         Optional.ofNullable(orderType).ifPresent(i -> data.set(data.get() + "&ordType=" + i.getValue()));

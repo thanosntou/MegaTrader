@@ -9,6 +9,7 @@ import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,7 +111,7 @@ public class UserApiV1Controller {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         User personalTrader = userService.getPersonalTrader(user.getUsername()).orElseThrow(() ->
-                new RuntimeException("BitmexUser don't have a personal trader"));
+                new RuntimeException("User don't have a personal trader"));
 
         return ResponseEntity.ok(personalTrader);
     }
@@ -145,22 +147,26 @@ public class UserApiV1Controller {
         return ResponseEntity.ok(user);
     }
 
-//    @PostMapping("/new")
-//    public ResponseEntity<User> create(@RequestParam(value = "username") String username,
-//                                       @RequestParam(value = "email") String email,
-//                                       @RequestParam(value = "pass") String pass,
-//                                       @RequestParam(value = "confirmPass") String confirmPass
-//    ) {
-////        Preconditions.checkArgument(pin != null, "You need a secret pin to create a user. Ask your trader");
-//        Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
-//        Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
-//        Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
-//
-//        User user = userService.createCustomer(username, email, pass, confirmPass);
-//// for the ui, to login immediately after creation
-//        user.setPassword(confirmPass);
-//        return new ResponseEntity<>(user, HttpStatus.CREATED);
-//    }
+    @PostMapping("/new")
+    public ResponseEntity<User> create(@RequestParam(value = "username") String username,
+                                       @RequestParam(value = "email") String email,
+                                       @RequestParam(value = "pass") String pass,
+                                       @RequestParam(value = "confirmPass") String confirmPass,
+                                       @RequestParam(value = "PIN") String PIN
+    ) {
+        Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
+        Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
+        Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
+
+        LocalDate today = LocalDate.now();
+        String dailyPIN = String.valueOf(today.getDayOfMonth() + today.getMonthValue() + today.getYear());
+        Preconditions.checkArgument(dailyPIN.equals(PIN), "WRONG PIN");
+
+        User user = userService.createCustomer(username, email, pass, confirmPass);
+        // for the ui, to login immediately after creation
+        user.setPassword(confirmPass);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
 
     @GetMapping(
             value = "/wallet",

@@ -2,9 +2,8 @@ package com.ntouzidis.cooperative.module.api_v1;
 
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
@@ -28,58 +27,27 @@ public class TradeApiV1Controller {
         this.tradeService = tradeService;
     }
 
-//    @PostMapping(
-//            value = "/signal",
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    @PreAuthorize("hasRole('TRADER')")
-//    public ResponseEntity<?> createSignal(
-//            Authentication authentication,
-//            @RequestParam(name="symbol", required = false) Symbol symbol,
-//            @RequestParam(name="side", required = false) Side side,
-//            @RequestParam(name="leverage", required = false) String leverage,
-//            @RequestParam(name="stopLoss", required = false) String stopLoss,
-//            @RequestParam(name="profitTrigger", required = false) String profitTrigger
-//    ) {
-//        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-//
-//        SignalBuilder signalBuilder = new SignalBuilder()
-//                .withSymbol(symbol)
-//                .withSide(side)
-//                .withleverage(leverage)
-//                .withStopLoss(stopLoss)
-//                .withProfitTrigger(profitTrigger);
-//
-//        tradeService.createSignal(trader, signalBuilder);
-//
-//        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
-//    }
-
-
     @PostMapping(
             value = "/orderAll",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> postOrderAll(
+    public ResponseEntity<?> postOrder(
             Authentication authentication,
             @RequestParam(name="symbol") Symbol symbol,
             @RequestParam(name="side") Side side,
             @RequestParam(name="ordType") OrderType ordType,
-            @RequestParam(name="hidden", required = false) boolean hidden,
             @RequestParam(name="price", required=false) String price,
             @RequestParam(name="execInst", required=false) String execInst,
             @RequestParam(name="stopPx", required = false) String stopPx,
-            @RequestParam(name="leverage", required = false) String leverage
+            @RequestParam(name="leverage", required = false) String leverage,
+            @RequestParam(name="hidden", required = false) boolean hidden
     ) {
-
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
-                .withSymbol(symbol)
-                .withLeverage(leverage);
+        DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder().withSymbol(symbol).withLeverage(leverage);
 
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
+        DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(symbol)
                 .withSide(side)
                 .withOrderType(ordType)
@@ -98,25 +66,27 @@ public class TradeApiV1Controller {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> postOrder2(
+    public ResponseEntity<?> postOrderWithPercentage(
             Authentication authentication,
             @RequestParam("symbol") Symbol symbol,
             @RequestParam("side") Side side,
             @RequestParam("orderType") OrderType orderType,
             @RequestParam(value = "percentage", required = false) int percentage,
             @RequestParam(value = "price", required = false) String price,
-            @RequestParam(value = "execInst", required = false) String execInst
+            @RequestParam(value = "execInst", required = false) String execInst,
+            @RequestParam(name="hidden", required = false) boolean hidden
     ) {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+        DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(symbol)
                 .withSide(side)
                 .withOrderType(orderType)
                 .withPrice(price)
-                .withExecInst(execInst);
+                .withExecInst(execInst)
+                .withDisplayQty(hidden ? 0 : null);
 
-        tradeService.postOrderWithPercentage(trader, dataPostOrderBuilder, percentage);
+        tradeService.postOrderWithPercentage(trader, dataOrderBuilder, percentage);
 
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }
@@ -137,18 +107,12 @@ public class TradeApiV1Controller {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
         if (symbol != null) {
-            DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withSymbol(symbol);
-
-            tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
+            tradeService.cancelAllOrders(trader, new DataDeleteOrderBuilder().withSymbol(symbol));
 
             return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
 
         } else {
-            DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withClientOrderId(clOrdID);
-
-            tradeService.cancelOrder(trader, dataDeleteOrderBuilder);
+            tradeService.cancelOrder(trader, new DataDeleteOrderBuilder().withClientOrderId(clOrdID));
 
             return new ResponseEntity<>("{ \"clOrdID\": \"" + clOrdID + "\" }", HttpStatus.OK);
         }
@@ -165,12 +129,12 @@ public class TradeApiV1Controller {
     ) {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+        DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(symbol)
                 .withOrderType(OrderType.Market)
                 .withExecInst("Close");
 
-        tradeService.closeAllPosition(trader, dataPostOrderBuilder);
+        tradeService.closeAllPosition(trader, dataOrderBuilder);
 
         return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
     }

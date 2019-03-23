@@ -5,6 +5,7 @@ import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.service.BitmexService;
+import com.ntouzidis.cooperative.module.service.RestTemplateService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -12,6 +13,8 @@ import com.ntouzidis.cooperative.module.user.entity.Wallet;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
 import com.ntouzidis.cooperative.module.user.repository.LoginRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -27,6 +30,8 @@ import java.util.stream.Collectors;
 
 @Service("userDetailsService")
 public class UserService implements UserDetailsService {
+
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final AuthorityService authorityService;
@@ -182,21 +187,22 @@ public class UserService implements UserDetailsService {
                 return userBalance * userPercentage / 100000000;
             }
             catch (Exception e) {
+                logger.warn("failed to get read balance of follower: " + user.getUsername());
             }
             return 0;
         })
                 .sum();
     }
 
-    public Map<String, Double> getBalances() {
+    public Map<String, Double> getFollowerBalances(User trader) {
         Map<String, Double> map = new HashMap<>();
 
-        findAll().forEach(user -> {
+        getEnabledFollowers(trader).forEach(user -> {
             try {
                 double userBalance = ((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000;
                 map.put(user.getUsername(), userBalance);
             } catch (Exception e) {
-
+                logger.warn("failed to get read balance of follower: " + user.getUsername());
             }
         });
         return map;
