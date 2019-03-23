@@ -24,6 +24,7 @@ public class EmailController {
     @PostMapping("/send")
     public String sendMail(
             @RequestParam(name="message") String message) {
+        
 
         LinkedList<String> emails = new LinkedList<>();
 //        List<Customer> customers = customerService.getSortedAndOrdered("username", "asc");
