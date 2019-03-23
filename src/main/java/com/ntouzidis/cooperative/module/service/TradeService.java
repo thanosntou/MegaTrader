@@ -51,6 +51,7 @@ public class TradeService {
 
             }
         }
+        
 
         if (Optional.ofNullable(future).isPresent()) {
             try {
