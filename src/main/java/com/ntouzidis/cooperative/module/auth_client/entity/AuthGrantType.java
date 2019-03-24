@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.security.auth_client.entity;
+package com.ntouzidis.cooperative.module.auth_client.entity;
 
 import lombok.Data;
 
@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 @Data
 @Entity
-@Table(name = "auth_client_scope")
-public class AuthClientScope implements Serializable {
+@Table(name = "auth_client_grant_type")
+public class AuthGrantType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +20,5 @@ public class AuthClientScope implements Serializable {
 
     @Column(name = "name")
     private String name;
+
 }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.util.Formatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +44,6 @@ public class DashboardController {
             availableMargin = bitmexUserWalletGet.get("availableMargin");
             activeBalance = String.valueOf(Integer.parseInt(walletBalance.toString()) - Integer.parseInt(availableMargin.toString()));
         }
-
         activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
         openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
 
@@ -59,15 +57,6 @@ public class DashboardController {
         model.addAttribute("activeBalance",activeBalance );
         model.addAttribute("openPositions", openPositions);
         model.addAttribute("activeOrders", activeOrders);
-
         return "dashboard";
-    }
-
-    private static String toHexString(byte[] bytes) {
-        Formatter formatter = new Formatter();
-        for (byte b : bytes) {
-            formatter.format("%02x", b);
-        }
-        return formatter.toString();
     }
 }

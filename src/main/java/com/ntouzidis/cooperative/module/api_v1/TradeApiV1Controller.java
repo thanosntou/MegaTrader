@@ -45,7 +45,9 @@ public class TradeApiV1Controller {
     ) {
         User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
 
-        DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder().withSymbol(symbol).withLeverage(leverage);
+        DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder()
+                .withSymbol(symbol)
+                .withLeverage(leverage);
 
         DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(symbol)
@@ -108,12 +110,10 @@ public class TradeApiV1Controller {
 
         if (symbol != null) {
             tradeService.cancelAllOrders(trader, new DataDeleteOrderBuilder().withSymbol(symbol));
-
             return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
 
         } else {
             tradeService.cancelOrder(trader, new DataDeleteOrderBuilder().withClientOrderId(clOrdID));
-
             return new ResponseEntity<>("{ \"clOrdID\": \"" + clOrdID + "\" }", HttpStatus.OK);
         }
     }

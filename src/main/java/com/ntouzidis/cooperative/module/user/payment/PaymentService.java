@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.payment;
+package com.ntouzidis.cooperative.module.user.payment;
 
 import java.util.List;
 

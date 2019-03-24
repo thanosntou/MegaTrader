@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.payment;
+package com.ntouzidis.cooperative.module.user.payment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;

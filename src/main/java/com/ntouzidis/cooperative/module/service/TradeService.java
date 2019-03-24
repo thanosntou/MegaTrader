@@ -3,7 +3,6 @@ package com.ntouzidis.cooperative.module.service;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -152,83 +151,11 @@ public class TradeService {
     });
   }
 
-  public void createSignal(User trader, SignalBuilder sb) {
-//        List<User> enabledfollowers = userService.getEnabledFollowers(trader);
-//
-//        // unique id's to mark the following orders
-//        String uniqueclOrdID1 = UUID.randomUUID().toString();
-//        String uniqueclOrdID2 = UUID.randomUUID().toString();
-//        String uniqueclOrdID3 = UUID.randomUUID().toString();
-//
-//        DataLeverageBuilder dataLeverage = new DataLeverageBuilder()
-//                .withSymbol(sb.getSymbol())
-//                .withLeverage(sb.getLeverage());
-//
-//        enabledfollowers.forEach(customer -> {
-//            try {
-//                // 1. Set Leverage
-//                bitmexService.post_Position_Leverage(customer, dataLeverage);
-//
-//                // 2. Market
-//                DataOrderBuilder marketDataOrder = new DataOrderBuilder()
-//                        .withClOrdId(uniqueclOrdID1)
-//                        .withOrderType(OrderType.Market)
-//                        .withSymbol(sb.getSymbol())
-//                        .withSide(sb.getSide());
-//
-//                bitmexService.post_Order_Order_WithFixeds(customer, marketDataOrder);
-//
-//                // 3. Stop Market
-//                if (sb.getStopLoss() != null) {
-//                    DataOrderBuilder stopMarketDataOrder = new DataOrderBuilder()
-//                            .withClOrdId(uniqueclOrdID2)
-//                            .withOrderType(OrderType.Stop)
-//                            .withSymbol(sb.getSymbol())
-//                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
-//                            .withExecInst("Close,LastPrice")
-//                            .withStopPrice(sb.getStopLoss());
-//
-//                    bitmexService.post_Order_Order_WithFixeds(customer, stopMarketDataOrder);
-//                }
-//
-//                // 4. Limit
-//                if (sb.getProfitTrigger() != null) {
-//                    DataOrderBuilder limitDataOrder = new DataOrderBuilder()
-//                            .withClOrdId(uniqueclOrdID3)
-//                            .withOrderType(OrderType.Limit)
-//                            .withSymbol(sb.getSymbol())
-//                            .withSide(sb.getSide().equals(Side.Buy) ? Side.Sell : Side.Buy)
-//                            .withPrice(sb.getProfitTrigger());
-//
-//                    bitmexService.post_Order_Order_WithFixeds(customer, limitDataOrder);
-//                }
-//            } catch (Exception e) {
-//                logger.error("Order failed for follower: " + customer.getUsername());
-//            }
-//        });
-  }
-
-  public void panicButton(User trader) {
-    DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder();
-    DataOrderBuilder dataOrderBuilder = new DataOrderBuilder();
-
-    for (Symbol symbol: Symbol.values()) {
-      dataDeleteOrderBuilder.withSymbol(symbol);
-      cancelAllOrders(trader, dataDeleteOrderBuilder);
-
-      dataOrderBuilder.withSymbol(symbol)
-              .withOrderType(OrderType.Market)
-              .withExecInst("Close");
-
-      closeAllPosition(trader, dataOrderBuilder);
-    }
-  }
-
   public List<Map<String, Object>> getRandomActiveOrders(User trader) {
-    return getRandomActiveOrdersOf(userService.getGuideFollower(trader));
+    return getActiveOrdersOf(userService.getGuideFollower(trader));
   }
 
-  public List<Map<String, Object>> getRandomActiveOrdersOf(User user) {
+  public List<Map<String, Object>> getActiveOrdersOf(User user) {
     return bitmexService.get_Order_Order(user)
             .stream()
             .filter(order -> Arrays.stream(Symbol.values())
@@ -240,10 +167,10 @@ public class TradeService {
   }
 
   public List<Map<String, Object>> getRandomPositions(User trader) {
-    return getRandomPositionsOf(userService.getGuideFollower(trader));
+    return getPositionsOf(userService.getGuideFollower(trader));
   }
 
-  public List<Map<String, Object>> getRandomPositionsOf(User user) {
+  public List<Map<String, Object>> getPositionsOf(User user) {
     return bitmexService.get_Position(user)
             .stream()
             .filter(pos -> Arrays.stream(Symbol.values())
@@ -306,6 +233,22 @@ public class TradeService {
         e.printStackTrace();
       }
     });
+  }
+
+  public void panicButton(User trader) {
+    DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder();
+    DataOrderBuilder dataOrderBuilder = new DataOrderBuilder();
+
+    for (Symbol symbol: Symbol.values()) {
+      dataDeleteOrderBuilder.withSymbol(symbol);
+      cancelAllOrders(trader, dataDeleteOrderBuilder);
+
+      dataOrderBuilder.withSymbol(symbol)
+              .withOrderType(OrderType.Market)
+              .withExecInst("Close");
+
+      closeAllPosition(trader, dataOrderBuilder);
+    }
   }
 
   Map<String, Double> calculateSumFixedQtys(List<User> followers) {
@@ -374,22 +317,20 @@ public class TradeService {
   }
 
   private String calculateOrderQtyXBTUSD(User user, double fixedQty, String lev, String lastPrice) {
-    return String.valueOf(Math.round(
-            xbtAmount(user, fixedQty) * leverage(lev) * lastPrice(lastPrice)
-    ));
+    return String.valueOf(Math.round(xbtAmount(user, fixedQty) * leverage(lev) * lastPrice(lastPrice)));
   }
 
   private String calculateOrderQtyOther(User user, double fixedQty, String lev, String lastPrice) {
-    return String.valueOf(Math.round(
-            xbtAmount(user, fixedQty) * leverage(lev) / lastPrice(lastPrice)
-    ));
+    return String.valueOf(Math.round(xbtAmount(user, fixedQty) * leverage(lev) / lastPrice(lastPrice)));
   }
 
 
   private String calculateOrderQtyETHUSD(User user, double fixedQty, String lev, String lastPrice) {
-    return String.valueOf(Math.round(
-            (xbtAmount(user, fixedQty) * leverage(lev)) / (lastPrice(lastPrice) * 0.000001)
-    ));
+    return String.valueOf(Math.round((xbtAmount(user, fixedQty) * leverage(lev)) / (lastPrice(lastPrice) * 0.000001)));
+  }
+
+  private Double xbtAmount(User user, double fixedQty) {
+    return (fixedQty / 100) * (((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000);
   }
 
   private Double leverage(String leverage) {
@@ -398,10 +339,6 @@ public class TradeService {
 
   private Double lastPrice(String lastPrice) {
     return Double.parseDouble(lastPrice);
-  }
-
-  private Double xbtAmount(User user, double fixedQty) {
-    return (fixedQty / 100) * (((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000);
   }
 
 }

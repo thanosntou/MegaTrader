@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -33,10 +32,8 @@ public class TraderApiV1Controller {
   private final UserService userService;
   private final TradeService tradeService;
 
-  public TraderApiV1Controller(
-          UserService userService,
-          TradeService tradeService
-  ) {
+  public TraderApiV1Controller(UserService userService,
+                               TradeService tradeService) {
     this.userService = userService;
     this.tradeService = tradeService;
   }

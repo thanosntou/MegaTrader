@@ -7,7 +7,6 @@ import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,76 +24,57 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/admin")
 public class AdminApiV1Controller {
 
-    private Logger logger = LoggerFactory.getLogger(AdminApiV1Controller.class);
+  private Logger logger = LoggerFactory.getLogger(AdminApiV1Controller.class);
 
-    @Value("${trader}")
-    private String traderName;
+  @Value("${trader}")
+  private String traderName;
 
-    @Value("${superAdmin}")
-    private String admin;
+  @Value("${superAdmin}")
+  private String admin;
 
-    private final LoginRepository loginRepository;
-    private final UserService userService;
+  private final LoginRepository loginRepository;
+  private final UserService userService;
 
-    public AdminApiV1Controller(LoginRepository loginRepository, UserService userService) {
-        this.loginRepository = loginRepository;
-        this.userService = userService;
-    }
+  public AdminApiV1Controller(LoginRepository loginRepository, UserService userService) {
+    this.loginRepository = loginRepository;
+    this.userService = userService;
+  }
 
-    @GetMapping(
-            value = "/logins",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Login>> readLogins() {
-        List<Login> logins = loginRepository.findAll()
-                .stream()
-                .sorted(Comparator.comparing(Login::getId))
-                .collect(Collectors.toList());
+  @GetMapping(
+          value = "/logins",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<List<Login>> readLogins()
+  {
+    return ResponseEntity.ok(loginRepository.findAll()
+            .stream()
+            .sorted(Comparator.comparing(Login::getId))
+            .collect(Collectors.toList()));
+  }
 
-        return new ResponseEntity<>(logins, HttpStatus.OK);
-    }
+  @GetMapping(
+          value = "/volume", produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<?> calculateTotalBalance()
+  {
+    logger.info("Calculating total balance for trader: " + traderName);
+    User trader = userService.getTrader(traderName);
 
-    @GetMapping(
-            value = "/volume", produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> calculateTotalBalance() {
-        logger.info("traderName: " + traderName);
+    Map<String, Double> map = new HashMap<>();
+    map.put("totalVolume", userService.calculateTotalVolume(trader));
+    map.put("activeVolume", userService.calculateActiveVolume(trader));
+    return ResponseEntity.ok(map);
+  }
 
-        User trader = userService.findByUsername(traderName).orElseThrow(() ->
-                new RuntimeException("Trader " + traderName + " not found"));
-
-        logger.info("Calculating total balance for trader: " + trader);
-        logger.info(trader.getClass().getCanonicalName());
-
-        double totalVolume = userService.calculateTotalVolume(trader);
-        double activeVolume = userService.calculateActiveVolume(trader);
-
-        logger.info(String.valueOf(totalVolume));
-        logger.info(String.valueOf(activeVolume));
-
-        Map<String, Double> map = new HashMap<>();
-        map.put("totalVolume", totalVolume);
-        map.put("activeVolume", activeVolume);
-
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
-
-    @GetMapping(
-            value = "/balances",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Map<String, Double>> getBalances() {
-        logger.info("admin: " + admin);
-        logger.info("Calculating total balance of all users");
-
-        User trader = userService.findByUsername(traderName).orElseThrow(() ->
-                new RuntimeException("Trader " + traderName + "not found"));
-
-        Map<String, Double> balances = userService.getFollowerBalances(trader);
-
-        return new ResponseEntity<>(balances, HttpStatus.OK);
-    }
+  @GetMapping(
+          value = "/balances",
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<Map<String, Double>> getBalances()
+  {
+    return ResponseEntity.ok(userService.getFollowerBalances(userService.getTrader(traderName)));
+  }
 }

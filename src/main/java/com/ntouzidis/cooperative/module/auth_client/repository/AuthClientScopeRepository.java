@@ -1,6 +1,6 @@
-package com.ntouzidis.cooperative.module.security.auth_client.repository;
+package com.ntouzidis.cooperative.module.auth_client.repository;
 
-import com.ntouzidis.cooperative.module.security.auth_client.entity.AuthClientScope;
+import com.ntouzidis.cooperative.module.auth_client.entity.AuthClientScope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

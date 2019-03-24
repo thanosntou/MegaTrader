@@ -37,7 +37,7 @@ public class RestTemplateService {
   }
 
   public Optional<HttpEntity<String>> GET(User user, String path, String data) {
-    Preconditions.checkState(user.getClient() != null, "BitmexUser has not set a client");
+    Preconditions.checkState(user.getClient() != null, "User has not set a client");
 
     final Optional<String> signatureOpt = calculateSignature(
             simpleEncryptor.decrypt(user.getApiSecret()), HttpMethod.GET.name(), path, data);
@@ -61,7 +61,7 @@ public class RestTemplateService {
   }
 
   public Optional<HttpEntity<String>> POST(User user, String path, String data) {
-    Preconditions.checkState(user.getClient() != null, "BitmexUser has not set a client");
+    Preconditions.checkState(user.getClient() != null, "User has not set a client");
 
     final Optional<String> signatureOpt = calculateSignature(
             simpleEncryptor.decrypt(user.getApiSecret()), HttpMethod.POST.name(), path, data);
@@ -85,7 +85,7 @@ public class RestTemplateService {
   }
 
   public Optional<HttpEntity<String>> DELETE(User user, String path, String data) {
-      Preconditions.checkState(user.getClient() != null, "BitmexUser has not set a client");
+      Preconditions.checkState(user.getClient() != null, "User has not set a client");
 
       final Optional<String> signatureOpt = calculateSignature(
               simpleEncryptor.decrypt(user.getApiSecret()), HttpMethod.DELETE.name(), path, data);

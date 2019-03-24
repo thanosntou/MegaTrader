@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
-import com.ntouzidis.cooperative.module.common.endpoints.*;
+import com.ntouzidis.cooperative.module.common.endpoints.bitmex_api.*;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.json.JSONArray;
@@ -30,36 +30,9 @@ public class BitmexService {
     this.restTemplateService = restTemplateService;
   }
 
-  public List<Map<String, Object>> get_Announcements(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Announcement.ANNOUNCEMENT, "");
-
-    if (responseOpt.isPresent())
-      return getMapList(responseOpt.get().getBody());
-
-    throw new RuntimeException();
-  }
-
-  public List<Map<String, Object>> get_chat(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(
-            user, Chat.CHAT + "?reverse=true&count=200", ""
-    );
-    if (responseOpt.isPresent()) {
-      return getMapList(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
-  }
-
-  public Map<String, Object> post_chat(User user, String message) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.POST(user, Chat.CHAT, "message=" + message);
-    if (responseOpt.isPresent()) {
-      return getMap(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
-  }
-
   public String getInstrumentLastPrice(User user, Symbol symbol) {
     Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(
-            user,Instrument.INSTRUMENT + "?symbol=" + symbol.name(), ""
+            user, Instrument.INSTRUMENT + "?symbol=" + symbol.name(), ""
     );
     Optional<List<Map<String, Object>>> mapOpt = responseOpt.map(stringHttpEntity ->
             getMapList(stringHttpEntity.getBody())
@@ -155,15 +128,6 @@ public class BitmexService {
 
   public List<Map<String, Object>> get_Position(User user) {
     Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Position.POSITION, "");
-
-    if (responseOpt.isPresent()) {
-      return getMapList(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
-  }
-
-  public List<Map<String, Object>> get_Position_Leverage(User user, String data) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Position.POSITION_LEVERAGE, data);
 
     if (responseOpt.isPresent()) {
       return getMapList(responseOpt.get().getBody());
