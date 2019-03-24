@@ -1,6 +1,6 @@
-package com.ntouzidis.cooperative.module.common.endpoints;
+package com.ntouzidis.cooperative.module.common.endpoints.bitmex_api;
 
-public class Order extends BitmexAPI {
+public class Order {
 
     public static final String ORDER = "/api/v1/order";
     public static final String ORDER_ALL = "/api/v1/order/all";

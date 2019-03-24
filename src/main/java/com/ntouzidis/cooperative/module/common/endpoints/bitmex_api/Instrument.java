@@ -1,6 +1,6 @@
-package com.ntouzidis.cooperative.module.common.endpoints;
+package com.ntouzidis.cooperative.module.common.endpoints.bitmex_api;
 
-public class Instrument extends BitmexAPI {
+public class Instrument {
 
     public static final String INSTRUMENT = "/api/v1/instrument";
     public static final String INSTRUMENT_ACTICE = "/api/v1/instrument/active";

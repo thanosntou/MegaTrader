@@ -1,6 +1,6 @@
-package com.ntouzidis.cooperative.module.common.endpoints;
+package com.ntouzidis.cooperative.module.common.endpoints.bitmex_api;
 
-public class Position extends BitmexAPI {
+public class Position {
 
     public static final String POSITION = "/api/v1/position";
     public static final String POSITION_ISOLATE = "/api/v1/position/isolate";
