@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/user/follower")
+@RequestMapping("/api/v1/follower")
 public class FollowerApiV1Controller {
 
   private final UserService userService;

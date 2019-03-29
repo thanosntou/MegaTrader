@@ -253,7 +253,7 @@ public class UserService implements UserDetailsService {
       user.setFixedQtyXBTUSD(qty);
     else if (symbol.equals(Symbol.ETHUSD.name()))
       user.setFixedQtyETHUSD(qty);
-    else if (symbol.equals(Symbol.ADAH19.name()))
+    else if (symbol.equals(Symbol.ADAM19.name()))
       user.setFixedQtyADAZ18(qty);
     else if (symbol.equals(Symbol.BCHH19.name()))
       user.setFixedQtyBCHZ18(qty);

@@ -258,7 +258,7 @@ public class TradeService {
     followers.forEach(f -> {
       sumFixedQtys.put(Symbol.XBTUSD.name(), sumFixedQtys.get(Symbol.XBTUSD.name()) + f.getFixedQtyXBTUSD());
       sumFixedQtys.put(Symbol.ETHUSD.name(), sumFixedQtys.get(Symbol.ETHUSD.name()) + f.getFixedQtyXBTJPY());
-      sumFixedQtys.put(Symbol.ADAH19.name(), sumFixedQtys.get(Symbol.ADAH19.name()) + f.getFixedQtyADAZ18());
+      sumFixedQtys.put(Symbol.ADAM19.name(), sumFixedQtys.get(Symbol.ADAM19.name()) + f.getFixedQtyADAZ18());
       sumFixedQtys.put(Symbol.BCHH19.name(), sumFixedQtys.get(Symbol.BCHH19.name()) + f.getFixedQtyBCHZ18());
       sumFixedQtys.put(Symbol.EOSH19.name(), sumFixedQtys.get(Symbol.EOSH19.name()) + f.getFixedQtyEOSZ18());
       sumFixedQtys.put(Symbol.ETHH19.name(), sumFixedQtys.get(Symbol.ETHH19.name()) + f.getFixedQtyETHUSD());
@@ -298,7 +298,7 @@ public class TradeService {
       return calculateOrderQtyXBTUSD(user, 10, leverage, lastPrice);
     if (symbol.equals(Symbol.ETHUSD))
       return calculateOrderQtyETHUSD(user, 10, leverage, lastPrice);
-    if (symbol.equals(Symbol.ADAH19))
+    if (symbol.equals(Symbol.ADAM19))
       return calculateOrderQtyOther(user, 10, leverage, lastPrice);
     if (symbol.equals(Symbol.BCHH19))
       return calculateOrderQtyOther(user, 10, leverage, lastPrice);
