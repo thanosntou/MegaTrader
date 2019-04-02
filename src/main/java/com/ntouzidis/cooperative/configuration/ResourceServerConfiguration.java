@@ -18,48 +18,48 @@ import org.springframework.web.context.request.RequestContextListener;
 @EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    private static final String RESOURCE_ID = "my-rest-api";
+  private static final String RESOURCE_ID = "my-rest-api";
 
-    @Bean
-    public RequestContextListener requestContextListener() {
-        return new RequestContextListener();
-    }
+  @Bean
+  public RequestContextListener requestContextListener() {
+    return new RequestContextListener();
+  }
 
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
-        handler.setUseReferer(true);
-        return handler;
-    }
+  @Bean
+  public AuthenticationSuccessHandler successHandler() {
+    SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
+    handler.setUseReferer(true);
+    return handler;
+  }
 
-    @Bean
-    public LogoutSuccessHandler customLogoutHandler() {
-        SimpleUrlLogoutSuccessHandler handler = new SimpleUrlLogoutSuccessHandler();
-        handler.setUseReferer(true);
-        return handler;
-    }
+  @Bean
+  public LogoutSuccessHandler customLogoutHandler() {
+    SimpleUrlLogoutSuccessHandler handler = new SimpleUrlLogoutSuccessHandler();
+    handler.setUseReferer(true);
+    return handler;
+  }
 
-    @Override
-    @Order(1)
-    public void configure(ResourceServerSecurityConfigurer resources) {
-        resources.resourceId(RESOURCE_ID);
-    }
+  @Override
+  @Order(1)
+  public void configure(ResourceServerSecurityConfigurer resources) {
+    resources.resourceId(RESOURCE_ID);
+  }
 
-    @Override
-    @Order(1)
-    public void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().disable()
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().anonymous().disable()
-                .requestMatchers().antMatchers("/api/**").and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/**").permitAll()
-                .and().authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .successHandler(successHandler())
-                .and().logout().logoutSuccessHandler(customLogoutHandler())
-                .permitAll();
-    }
+  @Override
+  @Order(1)
+  public void configure(HttpSecurity http) throws Exception {
+    http.httpBasic().disable()
+            .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .and().anonymous().disable()
+            .requestMatchers().antMatchers("/api/**").and().csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/api/**").permitAll()
+            .and().authorizeRequests()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin()
+            .successHandler(successHandler())
+            .and().logout().logoutSuccessHandler(customLogoutHandler())
+            .permitAll();
+  }
 }

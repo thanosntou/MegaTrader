@@ -32,30 +32,26 @@ public class UserService implements UserDetailsService {
 
   private Logger logger = LoggerFactory.getLogger(UserService.class);
 
+  private final BitmexService bitmexService;
   private final UserRepository userRepository;
-  private final AuthorityService authorityService;
-  private final CustomerToTraderLinkRepository customerToTraderLinkRepository;
   private final PasswordEncoder passwordEncoder;
   private final SimpleEncryptor simpleEncryptor;
   private final LoginRepository loginRepository;
-  private final BitmexService bitmexService;
+  private final AuthorityService authorityService;
+  private final CustomerToTraderLinkRepository customerToTraderLinkRepository;
 
-  public UserService(
-          UserRepository userRepository,
-          AuthorityService authorityService,
-          CustomerToTraderLinkRepository customerToTraderLinkRepository,
-          PasswordEncoder passwordEncoder,
-          SimpleEncryptor simpleEncryptor,
-          LoginRepository loginRepository,
-          BitmexService bitmexService
-  ) {
+  public UserService(UserRepository userRepository, AuthorityService authorityService,
+                     CustomerToTraderLinkRepository customerToTraderLinkRepository, PasswordEncoder passwordEncoder,
+                     SimpleEncryptor simpleEncryptor, LoginRepository loginRepository, BitmexService bitmexService)
+  {
+    this.bitmexService = bitmexService;
     this.userRepository = userRepository;
-    this.authorityService = authorityService;
-    this.customerToTraderLinkRepository = customerToTraderLinkRepository;
     this.passwordEncoder = passwordEncoder;
     this.simpleEncryptor = simpleEncryptor;
     this.loginRepository = loginRepository;
-    this.bitmexService = bitmexService;
+    this.authorityService = authorityService;
+    this.customerToTraderLinkRepository = customerToTraderLinkRepository;
+
   }
 
   public User getOne(int id) {
@@ -192,7 +188,7 @@ public class UserService implements UserDetailsService {
         return userBalance * userPercentage / 100000000;
       }
       catch (Exception e) {
-        logger.warn("failed to get read balance of follower: " + user.getUsername());
+        logger.warn(String.format("failed to get read balance of follower: %s", user.getUsername()));
       }
       return 0;
     })
@@ -207,7 +203,7 @@ public class UserService implements UserDetailsService {
         double userBalance = ((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000;
         map.put(user.getUsername(), userBalance);
       } catch (Exception e) {
-        logger.warn("failed to get read balance of follower: " + user.getUsername());
+        logger.warn(String.format("failed to get read balance of follower: %s", user.getUsername()));
       }
     });
     return map;

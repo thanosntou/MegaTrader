@@ -1,11 +1,15 @@
 package com.ntouzidis.cooperative.module.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
 import com.ntouzidis.cooperative.module.common.endpoints.bitmex_api.*;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +20,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -32,11 +37,10 @@ public class BitmexService {
 
   public String getInstrumentLastPrice(User user, Symbol symbol) {
     Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(
-            user, Instrument.INSTRUMENT + "?symbol=" + symbol.name(), ""
-    );
-    Optional<List<Map<String, Object>>> mapOpt = responseOpt.map(stringHttpEntity ->
-            getMapList(stringHttpEntity.getBody())
-    );
+            user, Instrument.INSTRUMENT + "?symbol=" + symbol.name(), "");
+
+    Optional<List<Map<String, Object>>> mapOpt = responseOpt.map(stringHttpEntity -> getMapList(stringHttpEntity.getBody()));
+
     if (mapOpt.isPresent()) {
       Preconditions.checkState(symbol.name().equals(mapOpt.get().get(0).get("symbol")));
       return mapOpt.get().get(0).get("lastPrice").toString();
@@ -114,25 +118,32 @@ public class BitmexService {
     }
   }
 
-  public Map<String, Object> getSymbolPosition(User user, Symbol symbol) {
+  public BitmexPosition getSymbolPosition(User user, Symbol symbol) {
     Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Position.POSITION, "");
-
-    if (responseOpt.isPresent())
-      return getMapList(responseOpt.get().getBody())
-              .stream()
-              .filter(i -> i.get("symbol").equals(symbol.name()))
-              .findAny().orElseThrow(RuntimeException::new);
-
-    throw new RuntimeException();
+    return convertToPositionPojoList(responseOpt.get().getBody()).stream()
+            .filter(i -> i.getSymbol().equals(symbol))
+            .findAny().orElseThrow(RuntimeException::new);
   }
 
-  public List<Map<String, Object>> get_Position(User user) {
+  public List<BitmexPosition> getAllPositions(User user) {
     Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Position.POSITION, "");
+    return convertToPositionPojoList(responseOpt.get().getBody());
+  }
 
-    if (responseOpt.isPresent()) {
-      return getMapList(responseOpt.get().getBody());
+  private BitmexPosition convertToPositionPojo(String body) {
+    try {
+      return new ObjectMapper().readValue(body, BitmexPosition.class);
+    } catch (IOException e) {
+      logger.error("Failed to convert response body to BitmexPosition POJO");
+      throw new RuntimeException();
     }
-    throw new RuntimeException();
+  }
+
+  private List<BitmexPosition> convertToPositionPojoList(String body) {
+    ObjectMapper mapper = new ObjectMapper();
+    List<BitmexPosition> positions = new ArrayList<>();
+    getMapList(body).forEach(map -> positions.add(mapper.convertValue(map, BitmexPosition.class)));
+    return positions;
   }
 
   public Map<String, Object> post_Position_Leverage(User user, DataLeverageBuilder dataLeverage) {

@@ -40,41 +40,29 @@ public class AdminApiV1Controller {
     this.userService = userService;
   }
 
-  @GetMapping(
-          value = "/logins",
-          produces = MediaType.APPLICATION_JSON_VALUE
-  )
+  @GetMapping(value = "/logins", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<List<Login>> readLogins()
-  {
+  public ResponseEntity<List<Login>> readLogins() {
     return ResponseEntity.ok(loginRepository.findAll()
             .stream()
             .sorted(Comparator.comparing(Login::getId))
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList())
+    );
   }
 
-  @GetMapping(
-          value = "/volume", produces = MediaType.APPLICATION_JSON_VALUE
-  )
+  @GetMapping(value = "/volume", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<?> calculateTotalBalance()
-  {
-    logger.info("Calculating total balance for trader: " + traderName);
+  public ResponseEntity<Map<String, Double>> calculateTotalBalance() {
     User trader = userService.getTrader(traderName);
-
     Map<String, Double> map = new HashMap<>();
     map.put("totalVolume", userService.calculateTotalVolume(trader));
     map.put("activeVolume", userService.calculateActiveVolume(trader));
     return ResponseEntity.ok(map);
   }
 
-  @GetMapping(
-          value = "/balances",
-          produces = MediaType.APPLICATION_JSON_VALUE
-  )
+  @GetMapping(value = "/balances", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasAnyRole('ADMIN')")
-  public ResponseEntity<Map<String, Double>> getBalances()
-  {
+  public ResponseEntity<Map<String, Double>> getBalances() {
     return ResponseEntity.ok(userService.getFollowerBalances(userService.getTrader(traderName)));
   }
 }

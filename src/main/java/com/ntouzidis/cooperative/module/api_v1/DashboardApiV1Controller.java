@@ -1,13 +1,10 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
+import com.ntouzidis.cooperative.module.common.pojo.Context;
 import com.ntouzidis.cooperative.module.service.BitmexService;
-import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
-import com.ntouzidis.cooperative.module.user.entity.User;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,26 +19,23 @@ public class DashboardApiV1Controller {
     @Value("${baseUrl}")
     private String client;
 
+    private final Context context;
     private final BitmexService bitmexService;
 
-    public DashboardApiV1Controller(BitmexService bitmexService) {
+    public DashboardApiV1Controller(Context context, BitmexService bitmexService) {
+        this.context = context;
         this.bitmexService = bitmexService;
     }
 
-    @GetMapping(
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Map<String, String>> getDashboardInfo(Authentication authentication) {
-
-        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> getDashboardInfo() {
 //        List<Map<String, Object>> activeOrders;
 //        List<Map<String, Object>> openPositions;
         String walletBalance = null;
         String availableMargin = null;
         String activeBalance = null;
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
+        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(context.getUser());
 //        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
 //        List<Map<String, Object>> positions = bitmexService.get_Position(user);
 
@@ -61,6 +55,6 @@ public class DashboardApiV1Controller {
         infoMap.put("activeBalance", activeBalance);
         infoMap.put("earned", "0");
 
-        return new ResponseEntity<>(infoMap, HttpStatus.OK);
+        return ResponseEntity.ok(infoMap);
     }
 }

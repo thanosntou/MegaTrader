@@ -6,6 +6,7 @@ import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -55,12 +56,12 @@ public class TradeController {
 //        Map<String, Double> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
         // random positions. for sure not empty
-        List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
+        List<BitmexPosition> randomPositions = tradeService.getRandomPositions(trader);
 
         // Current Leverage
         String currentCoinLeverage = String.valueOf(randomPositions.stream()
-                .filter(i -> i.get("symbol").equals(symbol))
-                .map(i -> i.get("leverage"))
+                .filter(i -> i.getSymbol().name().equals(symbol))
+                .map(BitmexPosition::getLeverage)
                 .findAny().orElse(0));
 
         // Current Price Step
@@ -104,7 +105,8 @@ public class TradeController {
                                @RequestParam(name="price", required=false) String price,
                                @RequestParam(name="execInst", required=false) String execInst,
                                @RequestParam(name="stopPx", required = false) String stopPx,
-                               @RequestParam(name="leverage", required = false) String leverage
+                               @RequestParam(name="leverage", required = false) String leverage,
+                               @RequestParam(name="percentage", required = false, defaultValue = "10") Integer percentage
     ) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -122,7 +124,7 @@ public class TradeController {
                 .withExecInst(execInst)
                 .withStopPrice(stopPx);
 
-        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
+        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder, percentage);
 
         model.addAttribute("user", trader);
 

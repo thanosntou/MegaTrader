@@ -6,7 +6,6 @@ import com.ntouzidis.cooperative.module.user.entity.User;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,9 +23,7 @@ public class RestTemplateService {
   private Logger logger = LoggerFactory.getLogger(RestTemplateService.class);
 
   private static final long EXPIRES_SECONDS = 1600883067;
-
-  @Value("${baseUrl}")
-  private String base_url;
+  private static final String CLIENT_NOT_SET= "User has not set a client";
 
   private final RestTemplate restTemplate;
   private final SimpleEncryptor simpleEncryptor;
@@ -37,7 +34,7 @@ public class RestTemplateService {
   }
 
   public Optional<HttpEntity<String>> GET(User user, String path, String data) {
-    Preconditions.checkState(user.getClient() != null, "User has not set a client");
+    Preconditions.checkState(user.getClient() != null, CLIENT_NOT_SET);
 
     final Optional<String> signatureOpt = calculateSignature(
             simpleEncryptor.decrypt(user.getApiSecret()), HttpMethod.GET.name(), path, data);
@@ -47,21 +44,20 @@ public class RestTemplateService {
         ResponseEntity<String> res = restTemplate.exchange(
                 user.getClient().getValue() + path,
                 HttpMethod.GET,
-                new HttpEntity<>(getHeaders(simpleEncryptor.decrypt(user.getApiKey()), signatureOpt.get())),
+                new HttpEntity<>(getHeaders(user.getApiKey(), signatureOpt.get())),
                 String.class
         );
         return Optional.of(res);
 
       } catch (HttpClientErrorException e) {
-        String errorMessage = "GET request for user: " + user.getUsername() + " for path: " + path + " failed !!!";
-        logger.error(errorMessage);
+        logger.error(String.format("GET request for user: %s for path: %s failed !!!", user.getUsername(), path), e);
       }
     }
     return Optional.empty();
   }
 
   public Optional<HttpEntity<String>> POST(User user, String path, String data) {
-    Preconditions.checkState(user.getClient() != null, "User has not set a client");
+    Preconditions.checkState(user.getClient() != null, CLIENT_NOT_SET);
 
     final Optional<String> signatureOpt = calculateSignature(
             simpleEncryptor.decrypt(user.getApiSecret()), HttpMethod.POST.name(), path, data);
@@ -71,21 +67,20 @@ public class RestTemplateService {
         ResponseEntity<String> res = restTemplate.exchange(
                 user.getClient().getValue() + path,
                 HttpMethod.POST,
-                new HttpEntity<>(data, getHeaders(simpleEncryptor.decrypt(user.getApiKey()), signatureOpt.get())),
+                new HttpEntity<>(data, getHeaders(user.getApiKey(), signatureOpt.get())),
                 String.class
         );
         return Optional.of(res);
 
       } catch (HttpClientErrorException e) {
-        String errorMessage = "POST request for user: " + user.getUsername() + " for path: " + path + " failed !!!";
-        logger.error(errorMessage);
+        logger.error(String.format("POST request for user: %s for path: %s failed !!!", user.getUsername(), path));
       }
     }
     return Optional.empty();
   }
 
   public Optional<HttpEntity<String>> DELETE(User user, String path, String data) {
-      Preconditions.checkState(user.getClient() != null, "User has not set a client");
+      Preconditions.checkState(user.getClient() != null, CLIENT_NOT_SET);
 
       final Optional<String> signatureOpt = calculateSignature(
               simpleEncryptor.decrypt(user.getApiSecret()), HttpMethod.DELETE.name(), path, data);
@@ -95,17 +90,47 @@ public class RestTemplateService {
           ResponseEntity<String> res = restTemplate.exchange(
                   user.getClient().getValue() + path,
                   HttpMethod.DELETE,
-                  new HttpEntity<>(data, getHeaders(simpleEncryptor.decrypt(user.getApiKey()), signatureOpt.get())),
+                  new HttpEntity<>(data, getHeaders(user.getApiKey(), signatureOpt.get())),
                   String.class
           );
           return Optional.of(res);
 
         } catch (HttpClientErrorException e) {
-          String errorMessage = "DELETE request for user: " + user.getUsername() + " for path: " + path + " failed !!!";
-          logger.error(errorMessage);
+          logger.error(String.format("DELETE request for user: %s for path: %s failed !!!", user.getUsername(), path));
         }
       }
       return Optional.empty();
+  }
+
+  private HttpHeaders getHeaders(String apiKey, String signature) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    headers.set("X-Requested-With", "XMLHttpRequest");
+    headers.set("api-expires", String.valueOf(EXPIRES_SECONDS));
+    headers.set("api-key", simpleEncryptor.decrypt(apiKey));
+    headers.set("api-signature", signature);
+    return headers;
+  }
+
+  private Optional<String> calculateSignature(String apiSecret, String verb, String path, String data) {
+    try {
+      Preconditions.checkNotNull(apiSecret, "Signature CalculationAPI: Secret is null");
+      Preconditions.checkNotNull(verb, "Signature CalculationAPI: Request method is null");
+      Preconditions.checkNotNull(path, "Signature CalculationAPI: Path is null");
+      Preconditions.checkNotNull(data, "Signature CalculationAPI: Data is null");
+
+      String message = verb + path + EXPIRES_SECONDS + data;
+
+      Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+      SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
+      sha256_HMAC.init(secret_key);
+
+      return Optional.of(Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8))));
+    } catch (Exception e) {
+      logger.error("Calculation of signature failed");
+    }
+    return Optional.empty();
   }
 
 //    private String requestGET3(String username, String baseUrl, String path, String data) {
@@ -144,35 +169,4 @@ public class RestTemplateService {
 //        }
 //        return null;
 //    }
-
-  private HttpHeaders getHeaders(String apiKey, String signature) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("X-Requested-With", "XMLHttpRequest");
-        headers.set("api-expires", String.valueOf(EXPIRES_SECONDS));
-        headers.set("api-key", apiKey);
-        headers.set("api-signature", signature);
-        return headers;
-  }
-
-  private Optional<String> calculateSignature(String apiSecret, String verb, String path, String data) {
-    try {
-      Preconditions.checkNotNull(apiSecret, "Signature CalculationAPI: Secret is null");
-      Preconditions.checkNotNull(verb, "Signature CalculationAPI: Request method is null");
-      Preconditions.checkNotNull(path, "Signature CalculationAPI: Path is null");
-      Preconditions.checkNotNull(data, "Signature CalculationAPI: Data is null");
-
-      String message = verb + path + EXPIRES_SECONDS + data;
-
-      Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-      SecretKeySpec secret_key = new SecretKeySpec(apiSecret.getBytes(), "HmacSHA256");
-      sha256_HMAC.init(secret_key);
-
-      return Optional.of(Hex.encodeHexString(sha256_HMAC.doFinal(message.getBytes(StandardCharsets.UTF_8))));
-    } catch (Exception e) {
-      logger.error("Calculation of signature failed");
-    }
-    return Optional.empty();
-  }
 }
