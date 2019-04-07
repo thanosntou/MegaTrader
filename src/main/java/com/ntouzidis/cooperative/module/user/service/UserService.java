@@ -210,21 +210,17 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public void linkTrader(User user, int traderId) {
-    findTrader(traderId).ifPresent(trader -> {
-      Preconditions.checkArgument(Objects.nonNull(user), "User cannot be null");
-
+  public void linkTrader(User customer, User trader) {
       CustomerToTraderLink link = new CustomerToTraderLink();
-      link.setCustomer(user);
+      link.setCustomer(customer);
       link.setTrader(trader);
       link.setCreate_date(LocalDate.now());
       link.setGuide(false);
       link.setHidden(false);
 
       customerToTraderLinkRepository.save(link);
-      user.setEnabled(false);
-      userRepository.save(user);
-    });
+      customer.setEnabled(false);
+      userRepository.save(customer);
   }
 
   @Transactional

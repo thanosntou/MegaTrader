@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
+import com.ntouzidis.cooperative.module.common.pojo.Context;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.http.MediaType;
@@ -14,18 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/customer")
 public class CustomerApiV1Controller {
 
+  private final Context context;
   private final UserService userService;
 
-  public CustomerApiV1Controller(UserService userService) {
+  public CustomerApiV1Controller(Context context, UserService userService) {
+    this.context = context;
     this.userService = userService;
   }
 
   @PostMapping(value = "/follow", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('CUSTOMER')")
-  public ResponseEntity<User> followTrader(@RequestParam(name = "traderId") Integer traderId
-  ) {
+  public ResponseEntity<User> followTrader(@RequestParam(name = "traderId") Integer traderId) {
     User trader = userService.findTrader(traderId).orElseThrow(() -> new RuntimeException("Trader not found"));
-    userService.linkTrader(trader, trader.getId());
+
+    userService.linkTrader(context.getUser(), trader);
     return ResponseEntity.ok(trader);
   }
 }
