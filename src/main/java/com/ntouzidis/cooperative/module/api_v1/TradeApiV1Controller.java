@@ -1,5 +1,7 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
@@ -13,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/trade")
@@ -28,7 +32,7 @@ public class TradeApiV1Controller {
 
   @PostMapping(value = "/orderAll", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<?> postOrder(
+  public ResponseEntity<JsonNode> postOrder(
           @RequestParam(name="symbol") Symbol symbol,
           @RequestParam(name="side") Side side,
           @RequestParam(name="ordType") OrderType ordType,
@@ -53,12 +57,13 @@ public class TradeApiV1Controller {
             .withDisplayQty(hidden ? 0 : null);
 
     tradeService.placeOrderAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage);
-    return ResponseEntity.ok("{ \"symbol\": \"" + symbol + "\" }");
+
+    return ResponseEntity.ok(toJsonNode(symbol));
   }
 
   @PostMapping(value = "/orderAll2", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<?> postOrderWithPercentage(
+  public ResponseEntity<JsonNode> postOrderWithPercentage(
           @RequestParam(name = "symbol") Symbol symbol,
           @RequestParam(name = "side") Side side,
           @RequestParam(name = "ordType") OrderType ordType,
@@ -76,7 +81,8 @@ public class TradeApiV1Controller {
             .withDisplayQty(hidden ? 0 : null);
 
     tradeService.postOrderWithPercentage(context.getUser(), dataOrderBuilder, percentage);
-    return ResponseEntity.ok("{ \"symbol\": \"" + symbol + "\" }");
+
+    return ResponseEntity.ok(toJsonNode(symbol));
   }
 
   @DeleteMapping(value = "/order", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,7 +95,7 @@ public class TradeApiV1Controller {
             "Either orderID or symbol must be present");
     if (symbol != null) {
       tradeService.cancelAllOrders(context.getUser(), new DataDeleteOrderBuilder().withSymbol(symbol));
-      return ResponseEntity.ok("{ \"symbol\": \"" + symbol + "\" }");
+      return ResponseEntity.ok(toJsonNode(symbol));
 
     } else {
       tradeService.cancelOrder(context.getUser(), new DataDeleteOrderBuilder().withClientOrderId(clOrdID));
@@ -99,7 +105,7 @@ public class TradeApiV1Controller {
 
   @DeleteMapping(value = "/position", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<?> closePosition(
+  public ResponseEntity<JsonNode> closePosition(
           @RequestParam(name="symbol", required = false) Symbol symbol
   ) {
     DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
@@ -108,7 +114,8 @@ public class TradeApiV1Controller {
             .withExecInst("Close");
 
     tradeService.closeAllPosition(context.getUser(), dataOrderBuilder);
-    return ResponseEntity.ok("{ \"symbol\": \"" + symbol + "\" }");
+
+    return ResponseEntity.ok(toJsonNode(symbol));
   }
 
   @DeleteMapping(value = "/panic", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -116,5 +123,13 @@ public class TradeApiV1Controller {
   public ResponseEntity<?> panicButton() {
     tradeService.panicButton(context.getUser());
     return ResponseEntity.ok("{ \"result\": \"ok\" }");
+  }
+
+  private JsonNode toJsonNode(Symbol symbol) {
+    try {
+      return new ObjectMapper().readTree("{\"symbol\": \"" + symbol.name() + "\" }");
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e.getCause());
+    }
   }
 }

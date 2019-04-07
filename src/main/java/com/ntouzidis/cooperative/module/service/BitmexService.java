@@ -1,14 +1,14 @@
 package com.ntouzidis.cooperative.module.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
 import com.ntouzidis.cooperative.module.common.endpoints.bitmex_api.*;
+import com.ntouzidis.cooperative.module.common.enumeration.OrderStatus;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexInstrument;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import org.json.JSONArray;
@@ -17,11 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -35,99 +35,92 @@ public class BitmexService {
     this.restTemplateService = restTemplateService;
   }
 
-  public String getInstrumentLastPrice(User user, Symbol symbol) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(
-            user, Instrument.INSTRUMENT + "?symbol=" + symbol.name(), "");
+  String getInstrumentLastPrice(User user, Symbol symbol) {
+    return restTemplateService.get(user, Instrument.INSTRUMENT + "?symbol=" + symbol.name(), "")
+        .map(httpEntity -> convertToInstrumentPojoList(httpEntity.getBody()).stream().findFirst())
+        .orElseThrow(() -> new RuntimeException("Failed to find the wanted instrument"))
+        .map(BitmexInstrument::getLastPrice)
+        .orElseThrow(() -> new RuntimeException("Uknown instrument price"));
+  }
 
-    Optional<List<Map<String, Object>>> mapOpt = responseOpt.map(stringHttpEntity -> getMapList(stringHttpEntity.getBody()));
+  BitmexPosition getSymbolPosition(User user, Symbol symbol) {
+    return getOpenPositions(user)
+        .stream()
+        .filter(i -> i.getSymbol().equals(symbol))
+        .findAny()
+        .orElseThrow(RuntimeException::new);
+  }
 
-    if (mapOpt.isPresent()) {
-      Preconditions.checkState(symbol.name().equals(mapOpt.get().get(0).get("symbol")));
-      return mapOpt.get().get(0).get("lastPrice").toString();
-    }
-    throw new RuntimeException();
+  private List<BitmexPosition> getPositions(User user) {
+    return restTemplateService.get(user, Position.POSITION, "")
+        .map(httpEntity -> convertToPositionPojoList(httpEntity.getBody()))
+        .orElse(Collections.emptyList());
+  }
+
+  public List<BitmexPosition> getOpenPositions(User user) {
+    return getPositions(user)
+            .stream()
+            .filter(pos -> Arrays.stream(Symbol.values()).anyMatch(p -> p.equals(pos.getSymbol())))
+            .filter(pos -> pos.getEntryPrice() != null)
+            .collect(Collectors.toList());
+  }
+
+  Map<String, Object> postPositionLeverage(User user, DataLeverageBuilder dataLeverage) {
+    return restTemplateService.post(user, Position.POSITION_LEVERAGE, dataLeverage.get())
+        .map(httpEntity -> getMap(httpEntity.getBody()))
+        .orElseThrow(RuntimeException::new);
+  }
+
+  private List<BitmexOrder> getOrders(User user) {
+    return restTemplateService.get(user, Order.ORDER + "?reverse=true", "")
+        .map(httpEntity -> convertToOrderPojoList(httpEntity.getBody()))
+        .orElse(Collections.emptyList());
+  }
+
+  public List<BitmexOrder> getActiveOrders(User user) {
+    return getOrders(user)
+        .stream()
+        .filter(order -> Arrays.stream(Symbol.values()).anyMatch(p -> p.name().equals(order.getSymbol())))
+        .filter(i -> i.getOrdStatus().equals(OrderStatus.New.getValue()))
+        .collect(Collectors.toList());
+  }
+
+  BitmexOrder postOrderOrder(User user, DataOrderBuilder dataOrder) {
+    return restTemplateService.post(user, Order.ORDER, dataOrder.get())
+        .map(httpEntity -> convertToOrderPojo(httpEntity.getBody()))
+        .orElseThrow(RuntimeException::new);
   }
 
   public Map<String, Object> getUserWallet(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, BitmexUser.USER_WALLET, "");
-
-    if (responseOpt.isPresent()) {
-      return getMap(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
+    return restTemplateService.get(user, BitmexUser.USER_WALLET, "")
+        .map(httpEntity -> getMap(httpEntity.getBody()))
+        .orElseThrow(RuntimeException::new);
   }
 
   public List<Map<String, Object>> getUserWalletHistory(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, BitmexUser.USER_WALLET_HISTORY, "");
-
-    if (responseOpt.isPresent()) {
-      return getMapList(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
+    return restTemplateService.get(user, BitmexUser.USER_WALLET_HISTORY, "")
+        .map(httpEntity -> getMapList(httpEntity.getBody()))
+        .orElseThrow(RuntimeException::new);
   }
 
   public List<Map<String, Object>> getUserWalletSummary(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, BitmexUser.USER_WALLET_SUMMARY, "");
-
-    if (responseOpt.isPresent()) {
-      return getMapList(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
+    return restTemplateService.get(user, BitmexUser.USER_WALLET_SUMMARY, "")
+        .map(httpEntity -> getMapList(httpEntity.getBody()))
+        .orElseThrow(RuntimeException::new);
   }
 
-  public Map<String, Object> get_User_Margin(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, BitmexUser.USER_MARGIN, "");
-
-    if (responseOpt.isPresent()) {
-      return getMap(responseOpt.get().getBody());
-    }
-    throw new RuntimeException("");
+  public Map<String, Object> getUserMargin(User user) {
+    return restTemplateService.get(user, BitmexUser.USER_MARGIN, "")
+        .map(httpEntity -> getMap(httpEntity.getBody()))
+        .orElseThrow(RuntimeException::new);
   }
 
-  public List<Map<String, Object>> get_Order_Order(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Order.ORDER + "?reverse=true", "");
-
-    if (responseOpt.isPresent()) {
-      return getMapList(responseOpt.get().getBody());
-    }
-    return Collections.emptyList();
+  void cancelOrder(User user, DataDeleteOrderBuilder dataDeleteOrder) {
+    restTemplateService.delete(user, Order.ORDER, dataDeleteOrder.get()).orElseThrow(RuntimeException::new);
   }
 
-  public Map<String, Object> post_Order_Order(User user, DataOrderBuilder dataOrder) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.POST(user, Order.ORDER, dataOrder.get());
-
-    if (responseOpt.isPresent()) {
-      return getMap(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
-  }
-
-  public void cancelOrder(User user, DataDeleteOrderBuilder dataDeleteOrder) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.DELETE(user, Order.ORDER, dataDeleteOrder.get());
-
-    if (!responseOpt.isPresent()) {
-      throw new RuntimeException();
-    }
-  }
-
-  public void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrder) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.DELETE(user, Order.ORDER_ALL, dataDeleteOrder.get());
-
-    if (!responseOpt.isPresent()) {
-      throw new RuntimeException();
-    }
-  }
-
-  public BitmexPosition getSymbolPosition(User user, Symbol symbol) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Position.POSITION, "");
-    return convertToPositionPojoList(responseOpt.get().getBody()).stream()
-            .filter(i -> i.getSymbol().equals(symbol))
-            .findAny().orElseThrow(RuntimeException::new);
-  }
-
-  public List<BitmexPosition> getAllPositions(User user) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.GET(user, Position.POSITION, "");
-    return convertToPositionPojoList(responseOpt.get().getBody());
+  void cancelAllOrders(User user, DataDeleteOrderBuilder dataDeleteOrder) {
+    restTemplateService.delete(user, Order.ORDER_ALL, dataDeleteOrder.get()).orElseThrow(RuntimeException::new);
   }
 
   private BitmexPosition convertToPositionPojo(String body) {
@@ -146,14 +139,22 @@ public class BitmexService {
     return positions;
   }
 
-  public Map<String, Object> post_Position_Leverage(User user, DataLeverageBuilder dataLeverage) {
-    Optional<HttpEntity<String>> responseOpt = restTemplateService.POST(
-            user, Position.POSITION_LEVERAGE, dataLeverage.get()
-    );
-    if (responseOpt.isPresent()) {
-      return getMap(responseOpt.get().getBody());
-    }
-    throw new RuntimeException();
+  private BitmexOrder convertToOrderPojo(String body) {
+    return new ObjectMapper().convertValue(getMap(body), BitmexOrder.class);
+  }
+
+  private List<BitmexOrder> convertToOrderPojoList(String body) {
+    ObjectMapper mapper = new ObjectMapper();
+    List<BitmexOrder> orders = new ArrayList<>();
+    getMapList(body).forEach(map -> orders.add(mapper.convertValue(map, BitmexOrder.class)));
+    return orders;
+  }
+
+  private List<BitmexInstrument> convertToInstrumentPojoList(String body) {
+    ObjectMapper mapper = new ObjectMapper();
+    List<BitmexInstrument> instruments = new ArrayList<>();
+    getMapList(body).forEach(map -> instruments.add(mapper.convertValue(map, BitmexInstrument.class)));
+    return instruments;
   }
 
   private Map<String, Object> getMap(String responseBody) {

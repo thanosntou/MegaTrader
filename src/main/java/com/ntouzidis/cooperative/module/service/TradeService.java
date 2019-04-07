@@ -5,6 +5,7 @@ import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TradeService {
@@ -32,160 +32,110 @@ public class TradeService {
   }
 
   public void placeOrderAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
-    Future<?> future = null;
-    List<User> enabledfollowers = userService.getEnabledFollowers(trader);
-    final String uniqueclOrdID = UUID.randomUUID().toString();
+    final Future<?>[] future = new Future[1];
+    List<User> enabledFollowers = userService.getEnabledFollowers(trader);
 
-    for (User follower : enabledfollowers) {
+    setLeverage(enabledFollowers, future, dataLeverage);
+    waitToComplete(future[0]);
+
+    configureAndPlaceOrder(enabledFollowers, future, dataOrder, dataLeverage, percentage);
+    waitToComplete(future[0]);
+  }
+
+  private void configureAndPlaceOrder(List<User> followers, Future<?>[] future, DataOrderBuilder dataOrder, DataLeverageBuilder dataLeverage, Integer percentage) {
+    final String uniqueClOrdID = UUID.randomUUID().toString();
+    followers.forEach(follower -> future[0] = multiExecutor.submit(() -> {
       try {
-        future = multiExecutor.submit(() -> bitmexService.post_Position_Leverage(follower, dataLeverage));
-      } catch (NullPointerException | RejectedExecutionException | CancellationException e) {
-        logger.error(e.getMessage(), e.getCause());
-      }
-    }
+        // OPTION 1: STOP or STOP LIMIT
+        if (OrderType.Stop.equals(dataOrder.getOrderType()) || OrderType.StopLimit.equals(dataOrder.getOrderType())) {
+          dataOrder.withOrderQty(calculateQtyFromOpenPosition(follower, dataOrder.getSymbol(), percentage));
 
-    if (Optional.ofNullable(future).isPresent()) {
-      try {
-        future.get();
-      } catch (InterruptedException | CancellationException | ExecutionException e) {
-        logger.error(e.getMessage(), e.getCause());
-      }
-      if (future.isDone()) {
-        for (User follower : enabledfollowers) {
-          future = multiExecutor.submit(() -> {
-            try {
-              if (OrderType.Stop.equals(dataOrder.getOrderType()) || OrderType.StopLimit.equals(dataOrder.getOrderType())) {
-                dataOrder.withOrderQty(
-                        String.valueOf(Math.abs(bitmexService.getSymbolPosition(follower, dataLeverage.getSymbol()).getSize())
-                        )
-                );
-                if ("0".equals(dataOrder.getOrderQty())) {
-
-                  Optional<Map<String, Object>> openOrderOpt = bitmexService.get_Order_Order(follower)
-                          .stream()
-                          .filter(i -> dataOrder.getSymbol().name().equals(i.get("symbol").toString()))
-                          .filter(i -> "Limit".equals(i.get("ordType").toString()))
-                          .filter(i -> "New".equals(i.get("ordStatus").toString()))
-                          .findFirst();
-
-                  if (openOrderOpt.isPresent()) {
-                    dataOrder.withOrderQty(openOrderOpt.get().get("orderQty").toString());
-
-                  } else {
-                    dataOrder.withOrderQty(
-                            calculateFixedQtyForSymbol(
-                                    follower, dataOrder.getSymbol(), dataLeverage.getLeverage(),
-                                    getSymbolLastPrice(follower, dataOrder.getSymbol()), percentage
-                            )
-                    );
-                  }
-                }
-              } else if (OrderType.Limit.equals(dataOrder.getOrderType())){
-                dataOrder.withOrderQty(
-                        calculateFixedQtyForSymbol(
-                                follower, dataOrder.getSymbol(), dataLeverage.getLeverage(),
-                                dataOrder.getPrice(), percentage
-                        )
-                );
-              } else if (OrderType.Market.equals(dataOrder.getOrderType())){
-                dataOrder.withOrderQty(
-                        calculateFixedQtyForSymbol(
-                                follower, dataOrder.getSymbol(), dataLeverage.getLeverage(),
-                                bitmexService.getInstrumentLastPrice(follower, dataOrder.getSymbol()), percentage
-                        )
-                );
-              }
-              bitmexService.post_Order_Order(follower, dataOrder.withClOrdId(uniqueclOrdID));
-
-            } catch (Exception e) {
-              logger.error(String.format("Order failed for follower: %s", follower.getUsername()));
-            }
-          });
+          if ("0".equals(dataOrder.getOrderQty()))
+            dataOrder.withOrderQty(
+                findActiveOrder(follower, dataOrder.getSymbol())
+                    .orElseThrow(RuntimeException::new)
+                    .getOrderQty()
+            );
         }
+        // OPTION 2: LIMIT
+        else if (OrderType.Limit.equals(dataOrder.getOrderType())) {
+          dataOrder.withOrderQty(
+              "Close".equals(dataOrder.getExecInst()) ?
+                  calculateQtyFromOpenPosition(follower, dataOrder.getSymbol(), percentage)
+                  : calculateFixedQtyForSymbol(follower, dataOrder.getSymbol(), dataLeverage.getLeverage(), dataOrder.getPrice(), percentage)
+          );
+        }
+        // OPTION 3: MARKET
+        else if (OrderType.Market.equals(dataOrder.getOrderType())) {
+          dataOrder.withOrderQty(
+              calculateFixedQtyForSymbol(
+                  follower, dataOrder.getSymbol(), dataLeverage.getLeverage(),
+                  bitmexService.getInstrumentLastPrice(follower, dataOrder.getSymbol()), percentage));
+        }
+
+        bitmexService.postOrderOrder(follower, dataOrder.withClOrdId(uniqueClOrdID));
+      } catch (Exception e) {
+        logger.error(e.getMessage(), e);
       }
-    }
-    Optional.ofNullable(future).ifPresent(fut -> {
-      try {
-        fut.get();
-      } catch (InterruptedException | ExecutionException e) {
-        logger.error(e.getMessage(), e.getCause());
+    }));
+  }
+
+  private void waitToComplete(Future<?> future) {
+    Optional.ofNullable(future).ifPresent(f -> {
+      try { future.get(); }
+      catch (InterruptedException | CancellationException | ExecutionException e) {
+        logger.error(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage(), e.getCause());
       }
     });
   }
 
-  public void postOrderWithPercentage(User trader, DataOrderBuilder dataOrderBuilder, int percentage) {
-    List<User> enabledfollowers = userService.getEnabledFollowers(trader);
+  private List<User> setLeverage(List<User> users, Future<?>[] future, DataLeverageBuilder dataLeverage) {
+    users.removeIf(user -> {
+      try {
+        future[0] = multiExecutor.submit(() -> bitmexService.postPositionLeverage(user, dataLeverage));
+        return false;
+      }
+      catch (NullPointerException | RejectedExecutionException | CancellationException e) {
+        logger.error(e.getMessage(), e.getCause());
+        return true;
+      }
+    });
+    return users;
+  }
+
+  public void postOrderWithPercentage(User trader, DataOrderBuilder dataOrder, int percentage) {
+    final Future<?>[] future = new Future[1];
     final String uniqueclOrdID = UUID.randomUUID().toString();
+    List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
-    Future<?> future = null;
     for (User follower: enabledfollowers) {
-      future = multiExecutor.submit(() -> {
+      future[0] = multiExecutor.submit(() -> {
         try {
-          BitmexPosition position = bitmexService.getSymbolPosition(follower, dataOrderBuilder.getSymbol());
+          dataOrder
+              .withClOrdId(uniqueclOrdID)
+              .withOrderQty(calculateQtyFromOpenPosition(follower, dataOrder.getSymbol(), percentage));
 
-          long finalQty = Math.abs(position.getSize() * percentage / 100);
-
-          dataOrderBuilder.withOrderQty(Long.toString(finalQty)).withClOrdId(uniqueclOrdID);
-
-          bitmexService.post_Order_Order(follower, dataOrderBuilder);
+          bitmexService.postOrderOrder(follower, dataOrder);
 
         } catch (Exception e) {
-          logger.error(String.format("Order failed for follower: %s", follower.getUsername()));
+          logger.error(e.getMessage(), e);
         }
       });
     }
-    Optional.ofNullable(future).ifPresent(fut -> {
-      try {
-        fut.get();
-      } catch (InterruptedException | ExecutionException e) {
-        logger.error(e.getMessage(), e.getCause());
-      }
-    });
+    waitToComplete(future[0]);
   }
 
-  public List<Map<String, Object>> getRandomActiveOrders(User trader) {
+  public List<BitmexOrder> getGuideActiveOrders(User trader) {
     return getActiveOrdersOf(userService.getGuideFollower(trader));
   }
 
-  public List<Map<String, Object>> getActiveOrdersOf(User user) {
-    return bitmexService.get_Order_Order(user)
-            .stream()
-            .filter(order -> Arrays.stream(Symbol.values())
-                    .map(Symbol::name)
-                    .collect(Collectors.toList())
-                    .contains(order.get("symbol").toString()))
-            .filter(i -> i.get("ordStatus").equals("New"))
-            .collect(Collectors.toList());
+  private List<BitmexOrder> getActiveOrdersOf(User user) {
+    return bitmexService.getActiveOrders(user);
   }
 
-  public List<BitmexPosition> getRandomPositions(User trader) {
-    return getPositionsOf(userService.getGuideFollower(trader));
-  }
-
-  public List<BitmexPosition> getPositionsOf(User user) {
-    return bitmexService.getAllPositions(user)
-            .stream()
-            .filter(pos -> Arrays.stream(Symbol.values())
-                    .map(Symbol::name)
-                    .collect(Collectors.toList())
-                    .contains(pos.getSymbol().toString()))
-            .filter(pos -> pos.getEntryPrice() != null)
-            .collect(Collectors.toList());
-  }
-
-  public List<Map<String, Object>> getRandomTX(User trader) {
-    List<Map<String, Object>> randomTX;
-
-    List<User> enabledfollowers = userService.getEnabledFollowers(trader);
-
-    for (User f: enabledfollowers) {
-      randomTX = bitmexService.get_Order_Order(f);
-
-      if (!randomTX.isEmpty())
-        return randomTX;
-    }
-
-    return Collections.emptyList();
+  public List<BitmexPosition> getGuideOpenPositions(User trader) {
+    return bitmexService.getOpenPositions(userService.getGuideFollower(trader));
   }
 
   public void cancelOrder(User trader, DataDeleteOrderBuilder dataDeleteOrder) {
@@ -196,7 +146,7 @@ public class TradeService {
     }
     Optional.ofNullable(future).ifPresent(fut -> {
       try { fut.get(); } catch (InterruptedException | ExecutionException e) {
-        logger.error(e.getMessage(), e.getCause());
+        logger.error(e.getMessage(), e);
       }
     });
   }
@@ -209,7 +159,7 @@ public class TradeService {
     }
     Optional.ofNullable(future).ifPresent(fut -> {
       try { fut.get(); } catch (InterruptedException | ExecutionException e) {
-        logger.error(e.getMessage(), e.getCause());
+        logger.error(e.getMessage(), e);
       }
     });
   }
@@ -218,11 +168,11 @@ public class TradeService {
     Future<?> future = null;
 
     for (User follower: userService.getEnabledFollowers(trader)) {
-      future = multiExecutor.submit(() -> bitmexService.post_Order_Order(follower, dataOrder));
+      future = multiExecutor.submit(() -> bitmexService.postOrderOrder(follower, dataOrder));
     }
     Optional.ofNullable(future).ifPresent(fut -> {
       try { fut.get(); } catch (InterruptedException | ExecutionException e) {
-        logger.error(e.getMessage(), e.getCause());
+        logger.error(e.getMessage(), e);
       }
     });
   }
@@ -250,12 +200,12 @@ public class TradeService {
       sumFixedQtys.put(Symbol.XBTUSD.name(), sumFixedQtys.get(Symbol.XBTUSD.name()) + f.getFixedQtyXBTUSD());
       sumFixedQtys.put(Symbol.ETHUSD.name(), sumFixedQtys.get(Symbol.ETHUSD.name()) + f.getFixedQtyXBTJPY());
       sumFixedQtys.put(Symbol.ADAM19.name(), sumFixedQtys.get(Symbol.ADAM19.name()) + f.getFixedQtyADAZ18());
-      sumFixedQtys.put(Symbol.BCHH19.name(), sumFixedQtys.get(Symbol.BCHH19.name()) + f.getFixedQtyBCHZ18());
-      sumFixedQtys.put(Symbol.EOSH19.name(), sumFixedQtys.get(Symbol.EOSH19.name()) + f.getFixedQtyEOSZ18());
-      sumFixedQtys.put(Symbol.ETHH19.name(), sumFixedQtys.get(Symbol.ETHH19.name()) + f.getFixedQtyETHUSD());
-      sumFixedQtys.put(Symbol.LTCH19.name(), sumFixedQtys.get(Symbol.LTCH19.name()) + f.getFixedQtyLTCZ18());
-      sumFixedQtys.put(Symbol.TRXH19.name(), sumFixedQtys.get(Symbol.TRXH19.name()) + f.getFixedQtyTRXZ18());
-      sumFixedQtys.put(Symbol.XRPH19.name(), sumFixedQtys.get(Symbol.XRPH19.name()) + f.getFixedQtyXRPZ18());
+      sumFixedQtys.put(Symbol.BCHM19.name(), sumFixedQtys.get(Symbol.BCHM19.name()) + f.getFixedQtyBCHZ18());
+      sumFixedQtys.put(Symbol.EOSM19.name(), sumFixedQtys.get(Symbol.EOSM19.name()) + f.getFixedQtyEOSZ18());
+      sumFixedQtys.put(Symbol.ETHM19.name(), sumFixedQtys.get(Symbol.ETHM19.name()) + f.getFixedQtyETHUSD());
+      sumFixedQtys.put(Symbol.LTCM19.name(), sumFixedQtys.get(Symbol.LTCM19.name()) + f.getFixedQtyLTCZ18());
+      sumFixedQtys.put(Symbol.TRXM19.name(), sumFixedQtys.get(Symbol.TRXM19.name()) + f.getFixedQtyTRXZ18());
+      sumFixedQtys.put(Symbol.XRPM19.name(), sumFixedQtys.get(Symbol.XRPM19.name()) + f.getFixedQtyXRPZ18());
     });
 
     return sumFixedQtys;
@@ -266,7 +216,7 @@ public class TradeService {
     Arrays.stream(Symbol.values()).forEach(symbol -> sumPositions.put(symbol.name(), (double) 0));
 
     try {
-      followers.forEach(f -> bitmexService.getAllPositions(f)
+      followers.forEach(follower -> bitmexService.getOpenPositions(follower)
               .stream()
               .filter(Objects::nonNull)
               .forEach(map -> {
@@ -280,8 +230,16 @@ public class TradeService {
     return sumPositions;
   }
 
-  private String getSymbolLastPrice(User user, Symbol symbol) {
-    return bitmexService.getInstrumentLastPrice(user, symbol);
+  private Optional<BitmexOrder> findActiveOrder(User user, Symbol symbol) {
+    return bitmexService.getActiveOrders(user)
+        .stream()
+        .filter(i -> symbol.name().equals(i.getSymbol()))
+        .findFirst();
+  }
+
+  private String calculateQtyFromOpenPosition(User user, Symbol symbol, Integer percentage) {
+    BitmexPosition position = bitmexService.getSymbolPosition(user, symbol);
+    return String.valueOf(Math.abs(position.getSize() * percentage / 100));
   }
 
   private String calculateFixedQtyForSymbol(User user, Symbol symbol, String leverage, String lastPrice, Integer percentage) {
@@ -291,17 +249,17 @@ public class TradeService {
       return calculateOrderQtyETHUSD(user, percentage, leverage, lastPrice);
     if (symbol.equals(Symbol.ADAM19))
       return calculateOrderQtyOther(user, percentage, leverage, lastPrice);
-    if (symbol.equals(Symbol.BCHH19))
+    if (symbol.equals(Symbol.BCHM19))
       return calculateOrderQtyOther(user, percentage, leverage, lastPrice);
-    if (symbol.equals(Symbol.EOSH19))
+    if (symbol.equals(Symbol.EOSM19))
       return calculateOrderQtyOther(user, percentage, leverage, lastPrice);
-    if (symbol.equals(Symbol.ETHH19))
+    if (symbol.equals(Symbol.ETHM19))
       return calculateOrderQtyOther(user, percentage, leverage, lastPrice);
-    if (symbol.equals(Symbol.LTCH19))
+    if (symbol.equals(Symbol.LTCM19))
       return calculateOrderQtyOther(user, percentage, leverage, lastPrice);
-    if (symbol.equals(Symbol.TRXH19))
+    if (symbol.equals(Symbol.TRXM19))
       return calculateOrderQtyOther(user, percentage, leverage, lastPrice);
-    if (symbol.equals(Symbol.XRPH19))
+    if (symbol.equals(Symbol.XRPM19))
       return calculateOrderQtyOther(user, percentage, leverage, lastPrice);
 
     throw new RuntimeException("Fixed qty user calculation failed");
@@ -321,7 +279,7 @@ public class TradeService {
   }
 
   private Double xbtAmount(User user, Integer percentage) {
-    return (((double)percentage) / 100) * (((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000);
+    return (((double)percentage) / 100) * (((Integer) bitmexService.getUserMargin(user).get("walletBalance")).doubleValue() / 100000000);
   }
 
   private Double leverage(String leverage) {

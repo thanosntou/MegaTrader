@@ -1,7 +1,7 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
 import com.ntouzidis.cooperative.module.common.pojo.Context;
-import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -14,7 +14,6 @@ import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/trader")
@@ -42,8 +41,8 @@ public class TraderApiV1Controller {
     activeTraders.add(
             userService.findByUsername(traderName)
                     .orElseGet(() -> userService.findByUsername(superAdmin)
-                            .orElseThrow(() -> new NotFoundException("App Trader not found")))
-    );
+                            .orElseThrow(() -> new NotFoundException("App Trader not found"))));
+
     return ResponseEntity.ok(activeTraders);
   }
 
@@ -81,23 +80,14 @@ public class TraderApiV1Controller {
 
   @GetMapping(value = "/active_orders", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<List<Map<String, Object>>> getActiveOrders() {
-    return ResponseEntity.ok(tradeService.getRandomActiveOrders(context.getUser()));
+  public ResponseEntity<List<BitmexOrder>> getActiveOrders() {
+    return ResponseEntity.ok(tradeService.getGuideActiveOrders(context.getUser()));
   }
 
-  @GetMapping(value = "/active_positions", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/open_positions", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<List<BitmexPosition>> getOpenPositions() {
-    return ResponseEntity.ok(
-            tradeService.getRandomPositions(context.getUser())
-                    .stream()
-                    .filter(pos -> Arrays.stream(Symbol.values())
-                            .map(Symbol::name)
-                            .collect(Collectors.toList())
-                            .contains(pos.getSymbol().name()))
-                    .filter(pos -> pos.getEntryPrice() != null)
-                    .collect(Collectors.toList())
-    );
+    return ResponseEntity.ok(tradeService.getGuideOpenPositions(context.getUser()));
   }
 
   @GetMapping(value = "/balances", produces = MediaType.APPLICATION_JSON_VALUE)

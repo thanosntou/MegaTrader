@@ -35,7 +35,7 @@ public class DashboardApiV1Controller {
         String availableMargin = null;
         String activeBalance = null;
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(context.getUser());
+        Map<String, Object> bitmexUserWalletGet = bitmexService.getUserMargin(context.getUser());
 //        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
 //        List<Map<String, Object>> positions = bitmexService.get_Position(user);
 

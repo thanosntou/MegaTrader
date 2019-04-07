@@ -6,6 +6,7 @@ import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
@@ -56,7 +57,7 @@ public class TradeController {
 //        Map<String, Double> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
         // random positions. for sure not empty
-        List<BitmexPosition> randomPositions = tradeService.getRandomPositions(trader);
+        List<BitmexPosition> randomPositions = tradeService.getGuideOpenPositions(trader);
 
         // Current Leverage
         String currentCoinLeverage = String.valueOf(randomPositions.stream()
@@ -77,7 +78,7 @@ public class TradeController {
                 .getValue();
 
         // random active orders. for sure not empty
-        List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
+        List<BitmexOrder> randomActiveOrders = tradeService.getGuideActiveOrders(trader);
 
         model.addAttribute("page", "trade");
         model.addAttribute("symbol", symbol);

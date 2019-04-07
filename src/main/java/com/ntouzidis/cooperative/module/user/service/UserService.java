@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +30,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
   private Logger logger = LoggerFactory.getLogger(UserService.class);
+  private static final String USER_NOT_FOUND = "User %s not found";
 
   private final BitmexService bitmexService;
   private final UserRepository userRepository;
@@ -42,8 +42,8 @@ public class UserService implements UserDetailsService {
 
   public UserService(UserRepository userRepository, AuthorityService authorityService,
                      CustomerToTraderLinkRepository customerToTraderLinkRepository, PasswordEncoder passwordEncoder,
-                     SimpleEncryptor simpleEncryptor, LoginRepository loginRepository, BitmexService bitmexService)
-  {
+                     SimpleEncryptor simpleEncryptor, LoginRepository loginRepository, BitmexService bitmexService) {
+
     this.bitmexService = bitmexService;
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
@@ -54,8 +54,74 @@ public class UserService implements UserDetailsService {
 
   }
 
+  public List<User> getFollowers(User trader) {
+    return customerToTraderLinkRepository.findAllByTrader(trader)
+        .stream()
+        .map(CustomerToTraderLink::getCustomer)
+        .collect(Collectors.toList());
+  }
+
+  public List<User> getEnabledFollowers(User trader) {
+    return customerToTraderLinkRepository.findAllByTrader(trader)
+        .stream()
+        .map(CustomerToTraderLink::getCustomer)
+        .filter(User::getEnabled)
+        .collect(Collectors.toList());
+  }
+
+  public List<User> getNonHiddenFollowers(User trader) {
+    return customerToTraderLinkRepository.findAllByTrader(trader)
+        .stream()
+        .filter(link -> !link.isHidden())
+        .map(CustomerToTraderLink::getCustomer)
+        .collect(Collectors.toList());
+  }
+
+  private List<User> getEnabledAndNonHiddenFollowers(User trader) {
+    return customerToTraderLinkRepository.findAllByTrader(trader)
+        .stream()
+        .filter(link -> !link.isHidden())
+        .map(CustomerToTraderLink::getCustomer)
+        .filter(User::getEnabled)
+        .collect(Collectors.toList());
+  }
+
+  public User getGuideFollower(User trader) {
+    return customerToTraderLinkRepository.findAllByTraderAndGuide(trader, true)
+        .stream()
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Guide follower not found"))
+        .getCustomer();
+  }
+
+  public List<User> getTraders() {
+    return userRepository.findAll()
+        .stream()
+        .filter(authorityService::isTrader)
+        .collect(Collectors.toList());
+  }
+
   public User getOne(int id) {
-    return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    return userRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(USER_NOT_FOUND, id)));
+  }
+
+  public User getOne(String username) {
+    return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException(String.format(USER_NOT_FOUND, username)));
+  }
+
+  public User getTrader(String username) {
+    return userRepository.findByUsername(username).filter(this::isTrader)
+        .orElseThrow(() -> new RuntimeException("Trader " + username + "not found"));
+  }
+
+  public User getTrader(Integer id) {
+    return findTrader(id).orElseThrow(() -> new RuntimeException("Trader not found"));
+  }
+
+  public User getPersonalTraderOf(User customer) {
+    return customerToTraderLinkRepository.findByCustomer(customer)
+        .map(CustomerToTraderLink::getTrader)
+        .orElseThrow(() -> new RuntimeException("User don't have a personal trader"));
   }
 
   public List<User> findAll() {
@@ -67,13 +133,7 @@ public class UserService implements UserDetailsService {
   }
 
   public Optional<User> findByUsername(String username) {
-    return Optional.ofNullable(userRepository.findByUsername(username));
-  }
-
-  public User getTrader(String username) {
-    return Optional.ofNullable(userRepository.findByUsername(username))
-            .filter(this::isTrader)
-            .orElseThrow(() -> new RuntimeException("Trader " + username + "not found"));
+    return userRepository.findByUsername(username);
   }
 
   public Optional<User> findCustomer(Integer id) {
@@ -81,78 +141,27 @@ public class UserService implements UserDetailsService {
   }
 
   public Optional<User> findCustomer(String username) {
-    return Optional.ofNullable(userRepository.findByUsername(username)).filter(this::isCustomer);
+    return userRepository.findByUsername(username)
+        .filter(this::isCustomer);
   }
 
-  public Optional<User> findTrader(Integer id) {
+  private Optional<User> findTrader(Integer id) {
     return userRepository.findById(id).filter(this::isTrader);
   }
 
   public Optional<User> findTrader(String username) {
-    return Optional.ofNullable(userRepository.findByUsername(username)).filter(this::isTrader);
-  }
-
-  public Optional<User> getPersonalTrader(String username) {
-    User user = findByUsername(username).orElseThrow(() -> new RuntimeException("customer not found"));
-    return Optional.ofNullable(customerToTraderLinkRepository.findByCustomer(user)).map(CustomerToTraderLink::getTrader);
-  }
-
-  public List<User> getFollowers(User trader) {
-    return customerToTraderLinkRepository.findAllByTrader(trader)
-            .stream()
-            .map(CustomerToTraderLink::getCustomer)
-            .collect(Collectors.toList());
-  }
-
-  public List<User> getEnabledFollowers(User trader) {
-    return customerToTraderLinkRepository.findAllByTrader(trader)
-            .stream()
-            .map(CustomerToTraderLink::getCustomer)
-            .filter(User::getEnabled)
-            .collect(Collectors.toList());
-  }
-
-  public List<User> getNonHiddenFollowers(User trader) {
-    return customerToTraderLinkRepository.findAllByTrader(trader)
-            .stream()
-            .filter(link -> !link.isHidden())
-            .map(CustomerToTraderLink::getCustomer)
-            .collect(Collectors.toList());
-  }
-
-  private List<User> getEnabledAndNonHiddenFollowers(User trader) {
-    return customerToTraderLinkRepository.findAllByTrader(trader)
-            .stream()
-            .filter(link -> !link.isHidden())
-            .map(CustomerToTraderLink::getCustomer)
-            .filter(User::getEnabled)
-            .collect(Collectors.toList());
-  }
-
-  public User getGuideFollower(User trader) {
-    return customerToTraderLinkRepository.findAllByTraderAndGuide(trader, true)
-            .stream()
-            .findFirst()
-            .orElseThrow(() -> new RuntimeException("Guide follower not found"))
-            .getCustomer();
-  }
-
-  public List<User> getTraders() {
-    return userRepository.findAll()
-            .stream()
-            .filter(authorityService::isTrader)
-            .collect(Collectors.toList());
+    return userRepository.findByUsername(username).filter(this::isTrader);
   }
 
   public Set<GrantedAuthority> getUserAuthorities(String username) {
     return authorityService.getAuthorities(username);
   }
 
-  public boolean isCustomer(User user) {
+  private boolean isCustomer(User user) {
     return authorityService.isCustomer(user);
   }
 
-  public boolean isTrader(User user) {
+  private boolean isTrader(User user) {
     return authorityService.isTrader(user);
   }
 
@@ -169,9 +178,9 @@ public class UserService implements UserDetailsService {
   public double calculateTotalVolume(User trader) {
     int sum = getEnabledAndNonHiddenFollowers(trader).stream().mapToInt(user -> {
       try {
-        return ((Integer) bitmexService.get_User_Margin(user).get("walletBalance"));
+        return ((Integer) bitmexService.getUserMargin(user).get("walletBalance"));
       }
-      catch (Exception e) {
+      catch (Exception ignored) {
       }
       return 0;
     })
@@ -183,7 +192,7 @@ public class UserService implements UserDetailsService {
   public double calculateActiveVolume(User trader) {
     return getEnabledAndNonHiddenFollowers(trader).stream().mapToDouble(user -> {
       try {
-        double userBalance = ((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue();
+        double userBalance = ((Integer) bitmexService.getUserMargin(user).get("walletBalance")).doubleValue();
         double userPercentage = (double) user.getFixedQtyXBTUSD() / (double) 100;
         return userBalance * userPercentage / 100000000;
       }
@@ -200,7 +209,7 @@ public class UserService implements UserDetailsService {
 
     getEnabledFollowers(trader).forEach(user -> {
       try {
-        double userBalance = ((Integer) bitmexService.get_User_Margin(user).get("walletBalance")).doubleValue() / 100000000;
+        double userBalance = ((Integer) bitmexService.getUserMargin(user).get("walletBalance")).doubleValue() / 100000000;
         map.put(user.getUsername(), userBalance);
       } catch (Exception e) {
         logger.warn(String.format("failed to get read balance of follower: %s", user.getUsername()));
@@ -210,7 +219,7 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public void linkTrader(User customer, User trader) {
+  public void linkTraderOf(User customer, User trader) {
       CustomerToTraderLink link = new CustomerToTraderLink();
       link.setCustomer(customer);
       link.setTrader(trader);
@@ -224,21 +233,20 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public void unlinkTrader(User user) {
-    CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
-    customerToTraderLinkRepository.delete(link);
+  public void unlinkTraderOf(User user) {
+    customerToTraderLinkRepository.findByCustomer(user).ifPresent(customerToTraderLinkRepository::delete);
   }
 
   @Transactional
   public void hideUser(User user) {
-    CustomerToTraderLink link = customerToTraderLinkRepository.findByCustomer(user);
-    link.setHidden(true);
-    customerToTraderLinkRepository.save(link);
+    customerToTraderLinkRepository.findByCustomer(user).ifPresent(i -> {
+      i.setHidden(true);
+      customerToTraderLinkRepository.save(i);
+    });
   }
 
   @Transactional
   public User setFixedQty(User user, String symbol, long qty) {
-
     Preconditions.checkState(qty <= 100 && qty >= 0, "Wrong quantity input");
 
     if (symbol.equals(Symbol.XBTUSD.name()))
@@ -247,17 +255,17 @@ public class UserService implements UserDetailsService {
       user.setFixedQtyETHUSD(qty);
     else if (symbol.equals(Symbol.ADAM19.name()))
       user.setFixedQtyADAZ18(qty);
-    else if (symbol.equals(Symbol.BCHH19.name()))
+    else if (symbol.equals(Symbol.BCHM19.name()))
       user.setFixedQtyBCHZ18(qty);
-    else if (symbol.equals(Symbol.EOSH19.name()))
+    else if (symbol.equals(Symbol.EOSM19.name()))
       user.setFixedQtyEOSZ18(qty);
-    else if (symbol.equals(Symbol.ETHH19.name()))
+    else if (symbol.equals(Symbol.ETHM19.name()))
       user.setFixedQtyXBTJPY(qty);
-    else if (symbol.equals(Symbol.LTCH19.name()))
+    else if (symbol.equals(Symbol.LTCM19.name()))
       user.setFixedQtyLTCZ18(qty);
-    else if (symbol.equals(Symbol.TRXH19.name()))
+    else if (symbol.equals(Symbol.TRXM19.name()))
       user.setFixedQtyTRXZ18(qty);
-    else if (symbol.equals(Symbol.XRPH19.name()))
+    else if (symbol.equals(Symbol.XRPM19.name()))
       user.setFixedQtyXRPZ18(qty);
     else
       throw new IllegalArgumentException("Couldn't set the qty");
@@ -337,9 +345,8 @@ public class UserService implements UserDetailsService {
 
   @Transactional(readOnly=true)
   @Override
-  public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return Optional.of(new CustomUserDetails(userRepository.findByUsername(username), authorityService.getAuthorities(username)))
-            .orElseThrow(() -> new RuntimeException("user not found"));
+  public CustomUserDetails loadUserByUsername(String username) {
+    return new CustomUserDetails(getOne(username), authorityService.getAuthorities(username));
   }
 
   private User createUSer(User userDetails, String password, List<GrantedAuthority> authorities) {
@@ -355,6 +362,7 @@ public class UserService implements UserDetailsService {
     user.setCreate_date();
     user.setWallet(wallet);
     user.setClient(Client.BITMEX);
+    user.setEnabled(false);
     user.setFixedQtyXBTUSD(0);
     user.setFixedQtyXBTJPY(0);
     user.setFixedQtyADAZ18(0);
@@ -370,7 +378,6 @@ public class UserService implements UserDetailsService {
 
     userRepository.save(encodeUserApiKeys(user));
     authorityService.createAuthorities(user.getUsername(), authorities);
-
     return user;
   }
 
@@ -383,7 +390,6 @@ public class UserService implements UserDetailsService {
       user.setApiKey(simpleEncryptor.encrypt(user.getApiKey()));
     if (user.getApiSecret() != null)
       user.setApiSecret(simpleEncryptor.encrypt(user.getApiSecret()));
-
     return user;
   }
 
@@ -392,7 +398,6 @@ public class UserService implements UserDetailsService {
       user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
     if (user.getApiSecret() != null)
       user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
-
     return user;
   }
 }

@@ -1,5 +1,6 @@
 package com.ntouzidis.cooperative.module.old;
 
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -30,23 +31,23 @@ public class DashboardController {
     public String getDashboard(Model model, Principal principal) {
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
 
-        List<Map<String, Object>> activeOrders;
+        List<BitmexOrder> activeOrders;
         List<BitmexPosition> openPositions;
         Object walletBalance = null;
         Object availableMargin = null;
         String activeBalance = null;
 
-        Map<String, Object> bitmexUserWalletGet = bitmexService.get_User_Margin(user);
-        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
-        List<BitmexPosition> positions = bitmexService.getAllPositions(user);
+        Map<String, Object> bitmexUserWalletGet = bitmexService.getUserMargin(user);
+//        List<BitmexOrder> allOrders = bitmexService.getOrderOrder(user);
+//        List<BitmexPosition> positions = bitmexService.getAllPositions(user);
 
         if (!bitmexUserWalletGet.isEmpty()) {
             walletBalance = bitmexUserWalletGet.get("walletBalance");
             availableMargin = bitmexUserWalletGet.get("availableMargin");
             activeBalance = String.valueOf(Integer.parseInt(walletBalance.toString()) - Integer.parseInt(availableMargin.toString()));
         }
-        activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
-        openPositions = positions.stream().filter(BitmexPosition::isOpen).collect(Collectors.toList());
+//        activeOrders = allOrders.stream().filter(i -> i.getOrdStatus().equals("New")).collect(Collectors.toList());
+//        openPositions = positions.stream().filter(BitmexPosition::isOpen).collect(Collectors.toList());
 
         model.addAttribute("user", user);
 //        model.addAttribute("symbol", user);
@@ -56,8 +57,8 @@ public class DashboardController {
         model.addAttribute("earned", "0");
         model.addAttribute("availableMargin", availableMargin);
         model.addAttribute("activeBalance",activeBalance );
-        model.addAttribute("openPositions", openPositions);
-        model.addAttribute("activeOrders", activeOrders);
+//        model.addAttribute("openPositions", openPositions);
+//        model.addAttribute("activeOrders", activeOrders);
         return "dashboard";
     }
 }

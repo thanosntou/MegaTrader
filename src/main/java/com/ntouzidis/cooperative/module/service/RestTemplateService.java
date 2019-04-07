@@ -33,7 +33,7 @@ public class RestTemplateService {
     this.simpleEncryptor = simpleEncryptor;
   }
 
-  public Optional<HttpEntity<String>> GET(User user, String path, String data) {
+  public Optional<HttpEntity<String>> get(User user, String path, String data) {
     Preconditions.checkState(user.getClient() != null, CLIENT_NOT_SET);
 
     final Optional<String> signatureOpt = calculateSignature(
@@ -56,7 +56,7 @@ public class RestTemplateService {
     return Optional.empty();
   }
 
-  public Optional<HttpEntity<String>> POST(User user, String path, String data) {
+  public Optional<HttpEntity<String>> post(User user, String path, String data) {
     Preconditions.checkState(user.getClient() != null, CLIENT_NOT_SET);
 
     final Optional<String> signatureOpt = calculateSignature(
@@ -79,7 +79,7 @@ public class RestTemplateService {
     return Optional.empty();
   }
 
-  public Optional<HttpEntity<String>> DELETE(User user, String path, String data) {
+  public Optional<HttpEntity<String>> delete(User user, String path, String data) {
       Preconditions.checkState(user.getClient() != null, CLIENT_NOT_SET);
 
       final Optional<String> signatureOpt = calculateSignature(
