@@ -82,10 +82,13 @@ public class TradeService {
                   bitmexService.getInstrumentLastPrice(follower, dataOrder.getSymbol()), percentage));
         }
         bitmexService.postOrderOrder(follower, dataOrder.withClOrdId(uniqueClOrdID));
-        report.addOneSucceeded();
-
+        synchronized (this) {
+          report.addOneSucceeded();
+        }
       } catch (Exception e) {
-        report.addOneFailed();
+        synchronized (this) {
+          report.addOneFailed();
+        }
         logger.error(e.getMessage(), e);
       }
     }));

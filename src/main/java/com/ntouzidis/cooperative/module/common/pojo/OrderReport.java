@@ -23,12 +23,12 @@ public class OrderReport implements Serializable {
     return failed;
   }
 
-  public synchronized void addOneSucceeded() {
+  public void addOneSucceeded() {
     this.succeeded += 1;
     this.total += 1;
   }
 
-  public synchronized void addOneFailed() {
+  public void addOneFailed() {
     this.failed += 1;
     this.total += 1;
   }
