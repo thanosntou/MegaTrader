@@ -278,32 +278,6 @@ public class UserService implements UserDetailsService {
   }
 
   @Transactional
-  public User createCustomer(String username, String email, String pass, String confirmPass) {
-    User user = new User();
-    user.setUsername(username);
-    user.setEmail(email);
-    user.setApiKey("");
-    user.setApiSecret("");
-    user.setEnabled(false);
-    user.setFixedQtyXBTUSD(0L);
-    user.setFixedQtyETHUSD(0L);
-    user.setFixedQtyADAZ18(0L);
-    user.setFixedQtyBCHZ18(0L);
-    user.setFixedQtyEOSZ18(0L);
-    user.setFixedQtyXBTJPY(0L);//TODO should change to ethxxx
-    user.setFixedQtyLTCZ18(0L);
-    user.setFixedQtyTRXZ18(0L);
-    user.setFixedQtyXRPZ18(0L);
-
-    return createUSer(user, pass, AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
-  }
-
-  @Transactional
-  public User createTrader(User user, String password) {
-    return createUSer(user, password, AuthorityUtils.createAuthorityList("ROLE_TRADER"));
-  }
-
-  @Transactional
   public User saveKeys(User user, String apiKey, String apiSecret) {
     if (apiKey != null) user.setApiKey(simpleEncryptor.encrypt(apiKey));
     if (apiSecret != null) user.setApiSecret(simpleEncryptor.encrypt(apiSecret));
@@ -346,33 +320,41 @@ public class UserService implements UserDetailsService {
     userRepository.delete(user);
   }
 
-  @Transactional(readOnly=true)
-  @Override
-  public CustomUserDetails loadUserByUsername(String username) {
-    return new CustomUserDetails(getOne(username), authorityService.getAuthorities(username));
+  @Transactional
+  public User createCustomer(String username, String email, String pass) {
+    return createUser(username, email, pass, AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
   }
 
-  private User createUSer(User userDetails, String password, List<GrantedAuthority> authorities) {
-    boolean con = usernameExists(userDetails.getUsername());
-    Preconditions.checkArgument(!con, "username exists");
+  @Transactional
+  public User createTrader(String username, String email, String password) {
+    return createUser(username, email, password, AuthorityUtils.createAuthorityList("ROLE_TRADER"));
+  }
 
-    User user = new User(userDetails.getUsername(), passwordEncoder.encode(password));
+  @Transactional
+  public User createAdmin(String username, String email, String password) {
+    return createUser(username, email, password, AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
+  }
+
+  private User createUser(String username, String email, String password, List<GrantedAuthority> authorities) {
+    Preconditions.checkArgument(!usernameExists(username), "username exists");
+
+    User user = new User(username, passwordEncoder.encode(password));
 
     Wallet wallet = new Wallet();
     wallet.setBalance(0L);
 
     user.setTenant(context.getTenant());
-    user.setEmail(userDetails.getEmail());
+    user.setEmail(email);
     user.setCreate_date();
     user.setWallet(wallet);
     user.setClient(Client.BITMEX);
     user.setEnabled(false);
     user.setFixedQtyXBTUSD(0);
-    user.setFixedQtyXBTJPY(0);
+    user.setFixedQtyETHUSD(0);
     user.setFixedQtyADAZ18(0);
+    user.setFixedQtyXBTJPY(0);
     user.setFixedQtyBCHZ18(0);
     user.setFixedQtyEOSZ18(0);
-    user.setFixedQtyETHUSD(0);
     user.setFixedQtyLTCZ18(0);
     user.setFixedQtyTRXZ18(0);
     user.setFixedQtyXRPZ18(0);
@@ -397,11 +379,9 @@ public class UserService implements UserDetailsService {
     return user;
   }
 
-  private User decodeUserApiKeys(User user) {
-    if (user.getApiKey() != null)
-      user.setApiKey(simpleEncryptor.decrypt(user.getApiKey()));
-    if (user.getApiSecret() != null)
-      user.setApiSecret(simpleEncryptor.decrypt(user.getApiSecret()));
-    return user;
+  @Transactional(readOnly=true)
+  @Override
+  public CustomUserDetails loadUserByUsername(String username) {
+    return new CustomUserDetails(getOne(username), authorityService.getAuthorities(username));
   }
 }

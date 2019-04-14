@@ -44,6 +44,7 @@ public class UserApiV1Controller {
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<User> read(
           @RequestParam(name = "id", required = false) Integer id,
           @RequestParam(name = "name", required = false) String name
@@ -76,6 +77,7 @@ public class UserApiV1Controller {
   }
 
   @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAnyRole('TRADER', 'ADMIN')")
   public ResponseEntity<User> create(
           @RequestParam(value = "username") String username,
           @RequestParam(value = "email") String email,
@@ -91,7 +93,7 @@ public class UserApiV1Controller {
     String dailyPIN = String.valueOf(today.getDayOfMonth() + today.getMonthValue() + today.getYear());
     Preconditions.checkArgument(dailyPIN.equals(PIN), "WRONG PIN");
 
-    User user = userService.createCustomer(username, email, pass, confirmPass);
+    User user = userService.createCustomer(username, email, pass);
     // for the ui, to login immediately after creation
     user.setPassword(confirmPass);
     return ResponseEntity.ok(user);

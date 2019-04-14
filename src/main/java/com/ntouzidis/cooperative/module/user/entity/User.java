@@ -18,7 +18,8 @@ public class User implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name="tenant_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="tenant_id")
     private Tenant tenant;
 
     @Column(name="username")

@@ -1,11 +1,12 @@
 package com.ntouzidis.cooperative.module.user.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "tenant")
-public class Tenant {
+public class Tenant implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tenantSeqGen")
