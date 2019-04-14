@@ -1,6 +1,8 @@
 package com.ntouzidis.cooperative.module.common.pojo;
 
-public class OrderReport {
+import java.io.Serializable;
+
+public class OrderReport implements Serializable {
 
   private int total;
   private int succeeded;
@@ -9,15 +11,15 @@ public class OrderReport {
   public OrderReport() {
   }
 
-  public Integer getTotal() {
+  public int getTotal() {
     return total;
   }
 
-  public Integer getSucceeded() {
+  public int getSucceeded() {
     return succeeded;
   }
 
-  public Integer getFailed() {
+  public int getFailed() {
     return failed;
   }
 
@@ -29,5 +31,14 @@ public class OrderReport {
   public void addOneFailed() {
     this.failed += 1;
     this.total += 1;
+  }
+
+  @Override
+  public String toString() {
+    return "OrderReport{" +
+        "total=" + total +
+        ", succeeded=" + succeeded +
+        ", failed=" + failed +
+        '}';
   }
 }

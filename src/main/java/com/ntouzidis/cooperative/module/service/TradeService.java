@@ -37,7 +37,8 @@ public class TradeService {
 
   public OrderReport placeOrderAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
     final Future<?>[] future = new Future[1];
-    OrderReport report = new OrderReport();
+    final OrderReport report = new OrderReport();
+
     List<User> enabledFollowers = userService.getEnabledFollowers(trader);
 
     setLeverage(enabledFollowers, future, dataLeverage);
@@ -84,8 +85,8 @@ public class TradeService {
         report.addOneSucceeded();
 
       } catch (Exception e) {
-        logger.error(e.getMessage(), e);
         report.addOneFailed();
+        logger.error(e.getMessage(), e);
       }
     }));
   }
