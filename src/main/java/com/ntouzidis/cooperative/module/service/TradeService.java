@@ -25,7 +25,10 @@ public class TradeService {
   private final BitmexService bitmexService;
   private final ExecutorService multiExecutor;
 
-  public TradeService(UserService userService, BitmexService bitmexService, ExecutorService multiExecutor) {
+  public TradeService(UserService userService,
+                      BitmexService bitmexService,
+                      ExecutorService multiExecutor) {
+
     this.userService = userService;
     this.bitmexService = bitmexService;
     this.multiExecutor = multiExecutor;
@@ -78,16 +81,6 @@ public class TradeService {
         logger.error(e.getMessage(), e);
       }
     }));
-  }
-
-  private void waitToComplete(Future<?> future) {
-    Optional.ofNullable(future).ifPresent(f -> {
-      try { future.get(); }
-      catch (InterruptedException | CancellationException | ExecutionException e) {
-        logger.error(e.getMessage(), e);
-        throw new RuntimeException(e.getMessage(), e.getCause());
-      }
-    });
   }
 
   private List<User> setLeverage(List<User> users, Future<?>[] future, DataLeverageBuilder dataLeverage) {
@@ -279,7 +272,8 @@ public class TradeService {
   }
 
   private Double xbtAmount(User user, Integer percentage) {
-    return (((double)percentage) / 100) * (((Integer) bitmexService.getUserMargin(user).get("walletBalance")).doubleValue() / 100000000);
+    return (((double)percentage) / 100)
+        * (((Integer) bitmexService.getUserMargin(user).get("walletBalance")).doubleValue() / 100000000);
   }
 
   private Double leverage(String leverage) {
@@ -288,6 +282,16 @@ public class TradeService {
 
   private Double lastPrice(String lastPrice) {
     return Double.parseDouble(lastPrice);
+  }
+
+  private void waitToComplete(Future<?> future) {
+    Optional.ofNullable(future).ifPresent(f -> {
+      try { future.get(); }
+      catch (InterruptedException | CancellationException | ExecutionException e) {
+        logger.error(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage(), e.getCause());
+      }
+    });
   }
 
 }

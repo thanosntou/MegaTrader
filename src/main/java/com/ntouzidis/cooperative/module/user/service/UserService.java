@@ -3,6 +3,7 @@ package com.ntouzidis.cooperative.module.user.service;
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.Context;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
@@ -32,6 +33,7 @@ public class UserService implements UserDetailsService {
   private Logger logger = LoggerFactory.getLogger(UserService.class);
   private static final String USER_NOT_FOUND = "User %s not found";
 
+  private final Context context;
   private final BitmexService bitmexService;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
@@ -40,9 +42,10 @@ public class UserService implements UserDetailsService {
   private final AuthorityService authorityService;
   private final CustomerToTraderLinkRepository customerToTraderLinkRepository;
 
-  public UserService(UserRepository userRepository, AuthorityService authorityService,
+  public UserService(Context context, UserRepository userRepository, AuthorityService authorityService,
                      CustomerToTraderLinkRepository customerToTraderLinkRepository, PasswordEncoder passwordEncoder,
                      SimpleEncryptor simpleEncryptor, LoginRepository loginRepository, BitmexService bitmexService) {
+    this.context = context;
 
     this.bitmexService = bitmexService;
     this.userRepository = userRepository;
@@ -358,6 +361,7 @@ public class UserService implements UserDetailsService {
     Wallet wallet = new Wallet();
     wallet.setBalance(0L);
 
+    user.setTenant(context.getTenant());
     user.setEmail(userDetails.getEmail());
     user.setCreate_date();
     user.setWallet(wallet);
@@ -382,7 +386,7 @@ public class UserService implements UserDetailsService {
   }
 
   private boolean usernameExists(String username) {
-    return Optional.ofNullable(userRepository.findByUsername(username)).isPresent();
+    return userRepository.findByUsername(username).isPresent();
   }
 
   private User encodeUserApiKeys(User user) {

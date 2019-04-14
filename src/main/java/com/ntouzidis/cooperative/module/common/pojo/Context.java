@@ -1,11 +1,11 @@
 package com.ntouzidis.cooperative.module.common.pojo;
 
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
+import com.ntouzidis.cooperative.module.user.entity.Tenant;
 import com.ntouzidis.cooperative.module.user.entity.User;
 
 public class Context {
 
-  private String tenantID;
   private String host;
   private String ip;
   private CustomUserDetails customUserDetails;
@@ -14,12 +14,8 @@ public class Context {
   public Context() {
   }
 
-  public String getTenantID() {
-    return tenantID;
-  }
-
-  public void setTenantID(String tenantID) {
-    this.tenantID = tenantID;
+  public Tenant getTenant() {
+    return customUserDetails.getUser().getTenant();
   }
 
   public String getHost() {
