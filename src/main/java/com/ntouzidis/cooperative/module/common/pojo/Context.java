@@ -4,42 +4,20 @@ import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.Tenant;
 import com.ntouzidis.cooperative.module.user.entity.User;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class Context {
 
-  private String host;
-  private String ip;
-  private CustomUserDetails customUserDetails;
+  private final HttpServletRequest request;
+  private final CustomUserDetails customUserDetails;
 
-
-  public Context() {
-  }
-
-  public Tenant getTenant() {
-    return customUserDetails.getUser().getTenant();
-  }
-
-  public String getHost() {
-    return host;
-  }
-
-  public void setHost(String host) {
-    this.host = host;
-  }
-
-  public String getIp() {
-    return ip;
-  }
-
-  public void setIp(String ip) {
-    this.ip = ip;
+  public Context(HttpServletRequest request, CustomUserDetails customUserDetails) {
+    this.request = request;
+    this.customUserDetails = customUserDetails;
   }
 
   public CustomUserDetails getCustomUserDetails() {
     return customUserDetails;
-  }
-
-  public void setCustomUserDetails(CustomUserDetails customUserDetails) {
-    this.customUserDetails = customUserDetails;
   }
 
   public User getUser() {
@@ -47,7 +25,19 @@ public class Context {
   }
 
   public Integer getUserID() {
-    return customUserDetails.getUser().getId();
+    return getUser().getId();
+  }
+
+  public Tenant getTenant() {
+    return customUserDetails.getUser().getTenant();
+  }
+
+  public Integer getTenantId() {
+    return getTenant().getId();
+  }
+
+  public String getAdrress() {
+    return request.getRemoteAddr();
   }
 }
 

@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) {
-    web.ignoring().antMatchers("/api/v1/user/new");
+    web.ignoring().antMatchers("/api/v1/root/**");
   }
 
   @Bean

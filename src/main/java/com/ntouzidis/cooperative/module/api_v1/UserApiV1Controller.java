@@ -10,16 +10,13 @@ import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,14 +25,9 @@ public class UserApiV1Controller {
 
   private Logger logger = LoggerFactory.getLogger(UserApiV1Controller.class);
 
-  @Value("${trader}")
-  private String traderName;
-  @Value("${superAdmin}")
-  private String superAdmin;
-
+  private final Context context;
   private final UserService userService;
   private final SimpleEncryptor simpleEncryptor;
-  private final Context context;
 
   public UserApiV1Controller(UserService userService, SimpleEncryptor simpleEncryptor, Context context) {
     this.userService = userService;
@@ -47,17 +39,9 @@ public class UserApiV1Controller {
   @PreAuthorize("isAuthenticated()")
   public ResponseEntity<User> read(
           @RequestParam(name = "id", required = false) Integer id,
-          @RequestParam(name = "name", required = false) String name
+          @RequestParam(name = "username", required = false) String username
   ) {
-    Preconditions.checkArgument(id != null || name != null);
-
-    Optional<User> userOpt;
-    if (id != null)
-      userOpt = userService.findById(id);
-    else
-      userOpt = userService.findByUsername(name);
-
-    User user = userOpt.orElseThrow(() -> new NotFoundException("user not found"));
+    User user = userService.getOne(id, username);
 
     if (userService.isAdmin(context.getUser()))
       decryptApiKeys(user);
@@ -68,16 +52,11 @@ public class UserApiV1Controller {
   @GetMapping(value = "all", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<List<User>> readAll() {
-    List<User> users = userService.findAll();
-
-    if (userService.isAdmin(context.getUser()))
-      users = users.stream().peek(this::decryptApiKeys).collect(Collectors.toList());
-
-    return ResponseEntity.ok(users);
+    return ResponseEntity.ok(userService.getAll().stream().peek(this::decryptApiKeys).collect(Collectors.toList()));
   }
 
   @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAnyRole('TRADER', 'ADMIN')")
+  @PreAuthorize("hasAnyRole('TRADER')")
   public ResponseEntity<User> create(
           @RequestParam(value = "username") String username,
           @RequestParam(value = "email") String email,
@@ -85,9 +64,8 @@ public class UserApiV1Controller {
           @RequestParam(value = "confirmPass") String confirmPass,
           @RequestParam(value = "PIN") String PIN
   ) {
-    Preconditions.checkArgument(!userService.findByUsername(username).isPresent(), "Username exists");
     Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
-    Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Password doesn't match");
+    Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Wrong email");
 
     LocalDate today = LocalDate.now();
     String dailyPIN = String.valueOf(today.getDayOfMonth() + today.getMonthValue() + today.getYear());
@@ -142,6 +120,7 @@ public class UserApiV1Controller {
   }
 
   @GetMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("isAuthenticated()")
   public ResponseEntity<CustomUserDetails> authenticate() {
         return ResponseEntity.ok(context.getCustomUserDetails());
   }

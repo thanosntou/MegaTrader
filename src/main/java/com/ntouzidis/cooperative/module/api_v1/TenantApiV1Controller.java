@@ -23,7 +23,7 @@ public class TenantApiV1Controller {
   }
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('SUPER_ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<Tenant> get(
       @RequestParam(name = "id", required = false) Integer id,
       @RequestParam(name = "name", required = false) String name
@@ -40,17 +40,15 @@ public class TenantApiV1Controller {
   }
 
   @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('SUPER_ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<List<Tenant>> getAll() {
     return ResponseEntity.ok(tenantService.getAll());
   }
 
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('SUPER_ADMIN')")
+  @PreAuthorize("hasRole('ROOT')")
   public ResponseEntity<Tenant> create(@RequestParam("name") String name) {
     Preconditions.checkArgument(StringUtils.isNotBlank(name));
     return ResponseEntity.ok(tenantService.create(name));
   }
-
-
 }

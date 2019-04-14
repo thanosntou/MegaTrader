@@ -10,6 +10,7 @@ import com.ntouzidis.cooperative.module.common.pojo.Context;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.OrderReport;
 import com.ntouzidis.cooperative.module.service.TradeService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class TradeApiV1Controller {
 
   @PostMapping(value = "/orderAll", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<JsonNode> postOrder(
+  public ResponseEntity<OrderReport> postOrder(
           @RequestParam(name="symbol") Symbol symbol,
           @RequestParam(name="side") Side side,
           @RequestParam(name="ordType") OrderType ordType,
@@ -56,9 +57,9 @@ public class TradeApiV1Controller {
             .withStopPrice(stopPx)
             .withDisplayQty(hidden ? 0 : null);
 
-    tradeService.placeOrderAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage);
+    OrderReport report = tradeService.placeOrderAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage);
 
-    return ResponseEntity.ok(toJsonNode(symbol));
+    return ResponseEntity.ok(report);
   }
 
   @PostMapping(value = "/orderAll2", produces = MediaType.APPLICATION_JSON_VALUE)

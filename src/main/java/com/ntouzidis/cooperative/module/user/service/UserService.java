@@ -1,21 +1,20 @@
 package com.ntouzidis.cooperative.module.user.service;
 
 import com.google.common.base.Preconditions;
+import com.ntouzidis.cooperative.module.common.NotFoundException;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.pojo.Context;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
 import com.ntouzidis.cooperative.module.service.BitmexService;
-import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
-import com.ntouzidis.cooperative.module.user.entity.CustomerToTraderLink;
-import com.ntouzidis.cooperative.module.user.entity.User;
-import com.ntouzidis.cooperative.module.user.entity.Wallet;
+import com.ntouzidis.cooperative.module.user.entity.*;
 import com.ntouzidis.cooperative.module.user.repository.CustomerToTraderLinkRepository;
 import com.ntouzidis.cooperative.module.user.repository.LoginRepository;
+import com.ntouzidis.cooperative.module.user.repository.TenantRepository;
 import com.ntouzidis.cooperative.module.user.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,6 +33,7 @@ public class UserService implements UserDetailsService {
   private static final String USER_NOT_FOUND = "User %s not found";
 
   private final Context context;
+  private final TenantRepository tenantRepository;
   private final BitmexService bitmexService;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
@@ -42,10 +42,11 @@ public class UserService implements UserDetailsService {
   private final AuthorityService authorityService;
   private final CustomerToTraderLinkRepository customerToTraderLinkRepository;
 
-  public UserService(Context context, UserRepository userRepository, AuthorityService authorityService,
+  public UserService(Context context, TenantRepository tenantRepository, UserRepository userRepository, AuthorityService authorityService,
                      CustomerToTraderLinkRepository customerToTraderLinkRepository, PasswordEncoder passwordEncoder,
                      SimpleEncryptor simpleEncryptor, LoginRepository loginRepository, BitmexService bitmexService) {
     this.context = context;
+    this.tenantRepository = tenantRepository;
 
     this.bitmexService = bitmexService;
     this.userRepository = userRepository;
@@ -104,16 +105,25 @@ public class UserService implements UserDetailsService {
         .collect(Collectors.toList());
   }
 
+  public User getOne(Integer id, String username) {
+    Preconditions.checkArgument(Objects.nonNull(id) || StringUtils.isNotBlank(username));
+
+    if (Objects.nonNull(id))
+      return getOne(id);
+    else
+      return getOne(username);
+  }
+
   public User getOne(int id) {
-    return userRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(USER_NOT_FOUND, id)));
+    return userRepository.findOne(id).orElseThrow(() -> new NotFoundException(String.format(USER_NOT_FOUND, id)));
   }
 
   public User getOne(String username) {
-    return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException(String.format(USER_NOT_FOUND, username)));
+    return userRepository.findOne(username).orElseThrow(() -> new NotFoundException(String.format(USER_NOT_FOUND, username)));
   }
 
   public User getTrader(String username) {
-    return userRepository.findByUsername(username).filter(this::isTrader)
+    return userRepository.findOne(username).filter(this::isTrader)
         .orElseThrow(() -> new RuntimeException("Trader " + username + "not found"));
   }
 
@@ -127,33 +137,33 @@ public class UserService implements UserDetailsService {
         .orElseThrow(() -> new RuntimeException("User don't have a personal trader"));
   }
 
-  public List<User> findAll() {
-    return userRepository.findAll(Sort.by(Sort.Direction.ASC, "username"));
+  public List<User> getAll() {
+    return userRepository.findAll();
   }
 
-  public Optional<User> findById(Integer id) {
-    return userRepository.findById(id);
-  }
-
-  public Optional<User> findByUsername(String username) {
-    return userRepository.findByUsername(username);
-  }
+//  public Optional<User> findById(Integer id) {
+//    return userRepository.findOne(id);
+//  }
+//
+//  public Optional<User> findByUsername(String username) {
+//    return userRepository.findOne(username);
+//  }
 
   public Optional<User> findCustomer(Integer id) {
-    return userRepository.findById(id).filter(this::isCustomer);
+    return userRepository.findOne(id).filter(this::isCustomer);
   }
 
   public Optional<User> findCustomer(String username) {
-    return userRepository.findByUsername(username)
+    return userRepository.findOne(username)
         .filter(this::isCustomer);
   }
 
   private Optional<User> findTrader(Integer id) {
-    return userRepository.findById(id).filter(this::isTrader);
+    return userRepository.findOne(id).filter(this::isTrader);
   }
 
   public Optional<User> findTrader(String username) {
-    return userRepository.findByUsername(username).filter(this::isTrader);
+    return userRepository.findOne(username).filter(this::isTrader);
   }
 
   public Set<GrantedAuthority> getUserAuthorities(String username) {
@@ -174,7 +184,7 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public User update(User user) {
-    userRepository.save(user);
+    userRepository.update(user);
     return user;
   }
 
@@ -232,7 +242,7 @@ public class UserService implements UserDetailsService {
 
       customerToTraderLinkRepository.save(link);
       customer.setEnabled(false);
-      userRepository.save(customer);
+      userRepository.update(customer);
   }
 
   @Transactional
@@ -273,7 +283,7 @@ public class UserService implements UserDetailsService {
     else
       throw new IllegalArgumentException("Couldn't set the qty");
 
-    userRepository.save(user);
+    userRepository.update(user);
     return user;
   }
 
@@ -282,7 +292,7 @@ public class UserService implements UserDetailsService {
     if (apiKey != null) user.setApiKey(simpleEncryptor.encrypt(apiKey));
     if (apiSecret != null) user.setApiSecret(simpleEncryptor.encrypt(apiSecret));
 
-    userRepository.save(user);
+    userRepository.update(user);
     return user;
   }
 
@@ -290,7 +300,7 @@ public class UserService implements UserDetailsService {
   public User updateClient(User user, Client client) {
     if (client != null) user.setClient(client);
 
-    userRepository.save(user);
+    userRepository.update(user);
     return user;
   }
 
@@ -299,11 +309,11 @@ public class UserService implements UserDetailsService {
     Preconditions.checkArgument( newPass != null && confirmPass != null, "Password is empty");
     Preconditions.checkArgument(newPass.equals(confirmPass), "Wrong confirmation password");
 
-    Optional<User> userOpt = findById(id);
+    Optional<User> userOpt = userRepository.findOne(id);
 
     if (userOpt.isPresent()) {
       userOpt.get().setPassword(passwordEncoder.encode(newPass));
-      userRepository.save(userOpt.get());
+      userRepository.update(userOpt.get());
       return userOpt.get();
     }
     throw new RuntimeException("User not found");
@@ -322,30 +332,29 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public User createCustomer(String username, String email, String pass) {
-    return createUser(username, email, pass, AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
+    return createUser(username, pass, email, context.getTenant(), AuthorityUtils.createAuthorityList("ROLE_CUSTOMER"));
   }
 
   @Transactional
-  public User createTrader(String username, String email, String password) {
-    return createUser(username, email, password, AuthorityUtils.createAuthorityList("ROLE_TRADER"));
+  public User createTrader(String username, String email, String pass) {
+    return createUser(username, pass, email, context.getTenant(), AuthorityUtils.createAuthorityList("ROLE_TRADER"));
   }
 
   @Transactional
-  public User createAdmin(String username, String email, String password) {
-    return createUser(username, email, password, AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
+  public User createAdmin(Tenant tenant, String username, String email, String pass) {
+    return createUser(username, pass, email, tenant, AuthorityUtils.createAuthorityList("ROLE_ADMIN"));
   }
 
-  private User createUser(String username, String email, String password, List<GrantedAuthority> authorities) {
+  private User createUser(String username, String pass, String email, Tenant tenant,  List<GrantedAuthority> authorities) {
     Preconditions.checkArgument(!usernameExists(username), "username exists");
 
-    User user = new User(username, passwordEncoder.encode(password));
+    User user = new User(username, passwordEncoder.encode(pass));
 
     Wallet wallet = new Wallet();
     wallet.setBalance(0L);
 
-    user.setTenant(context.getTenant());
+    user.setTenant(tenant);
     user.setEmail(email);
-    user.setCreate_date();
     user.setWallet(wallet);
     user.setClient(Client.BITMEX);
     user.setEnabled(false);
@@ -359,29 +368,24 @@ public class UserService implements UserDetailsService {
     user.setFixedQtyTRXZ18(0);
     user.setFixedQtyXRPZ18(0);
     user.setFixedQtyXBTKRW(0);
-    user.setApiKey(simpleEncryptor.encrypt("Fill_Me"));
-    user.setApiSecret(simpleEncryptor.encrypt("Fill_Me"));
+    user.setApiKey("Fill_Me");
+    user.setApiSecret("Fill_Me");
 
-    userRepository.save(encodeUserApiKeys(user));
+    userRepository.save(user);
     authorityService.createAuthorities(user.getUsername(), authorities);
     return user;
   }
 
   private boolean usernameExists(String username) {
-    return userRepository.findByUsername(username).isPresent();
-  }
-
-  private User encodeUserApiKeys(User user) {
-    if (user.getApiKey() != null)
-      user.setApiKey(simpleEncryptor.encrypt(user.getApiKey()));
-    if (user.getApiSecret() != null)
-      user.setApiSecret(simpleEncryptor.encrypt(user.getApiSecret()));
-    return user;
+    return userRepository.findOneGlobal(username).isPresent();
   }
 
   @Transactional(readOnly=true)
   @Override
   public CustomUserDetails loadUserByUsername(String username) {
-    return new CustomUserDetails(getOne(username), authorityService.getAuthorities(username));
+    return new CustomUserDetails(
+        userRepository.findOneGlobal(username).orElseThrow(NotFoundException::new),
+        authorityService.getAuthorities(username)
+    );
   }
 }

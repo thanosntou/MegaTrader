@@ -5,6 +5,7 @@ import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
 import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.OrderReport;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -34,18 +35,22 @@ public class TradeService {
     this.multiExecutor = multiExecutor;
   }
 
-  public void placeOrderAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
+  public OrderReport placeOrderAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
     final Future<?>[] future = new Future[1];
+    OrderReport report = new OrderReport();
     List<User> enabledFollowers = userService.getEnabledFollowers(trader);
 
     setLeverage(enabledFollowers, future, dataLeverage);
     waitToComplete(future[0]);
 
-    configureAndPlaceOrder(enabledFollowers, future, dataOrder, dataLeverage, percentage);
+    configureAndPlaceOrder(enabledFollowers, future, dataOrder, dataLeverage, percentage, report);
     waitToComplete(future[0]);
+
+    return report;
   }
 
-  private void configureAndPlaceOrder(List<User> followers, Future<?>[] future, DataOrderBuilder dataOrder, DataLeverageBuilder dataLeverage, Integer percentage) {
+  private void configureAndPlaceOrder(List<User> followers, Future<?>[] future, DataOrderBuilder dataOrder,
+                                      DataLeverageBuilder dataLeverage, Integer percentage, OrderReport report) {
     final String uniqueClOrdID = UUID.randomUUID().toString();
     followers.forEach(follower -> future[0] = multiExecutor.submit(() -> {
       try {
@@ -75,10 +80,12 @@ public class TradeService {
                   follower, dataOrder.getSymbol(), dataLeverage.getLeverage(),
                   bitmexService.getInstrumentLastPrice(follower, dataOrder.getSymbol()), percentage));
         }
-
         bitmexService.postOrderOrder(follower, dataOrder.withClOrdId(uniqueClOrdID));
+        report.addOneSucceeded();
+
       } catch (Exception e) {
         logger.error(e.getMessage(), e);
+        report.addOneFailed();
       }
     }));
   }

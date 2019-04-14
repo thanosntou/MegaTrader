@@ -38,10 +38,7 @@ public class TraderApiV1Controller {
   public ResponseEntity<List<User>> readAll() {
     // temporary till choose the final business model
     List<User> activeTraders = new ArrayList<>();
-    activeTraders.add(
-            userService.findByUsername(traderName)
-                    .orElseGet(() -> userService.findByUsername(superAdmin)
-                            .orElseThrow(() -> new NotFoundException("App Trader not found"))));
+    activeTraders.add(userService.getOne(traderName));
 
     return ResponseEntity.ok(activeTraders);
   }
@@ -56,7 +53,7 @@ public class TraderApiV1Controller {
   @PostMapping(value = "/status", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   @PreAuthorize("hasRole('TRADER')")
   public ResponseEntity<User> enableOrDisableFollower(@RequestParam("followerId") Integer followerId) {
-    User follower = userService.findById(followerId).orElseThrow(() -> new RuntimeException("Follower not found"));
+    User follower = userService.getOne(followerId);
     follower.setEnabled(!follower.getEnabled());
     return ResponseEntity.ok(userService.update(follower));
   }

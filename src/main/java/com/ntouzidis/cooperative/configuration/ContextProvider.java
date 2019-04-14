@@ -23,9 +23,6 @@ public class ContextProvider {
   @Bean
   @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
   public Context context() {
-    Context context = new Context();
-    context.setHost(request.getRemoteHost());
-    context.setCustomUserDetails((CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-    return context;
+    return new Context(request, (CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
   }
 }

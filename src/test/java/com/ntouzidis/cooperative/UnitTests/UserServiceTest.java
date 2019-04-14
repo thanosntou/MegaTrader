@@ -31,10 +31,9 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("testUser");
 
-        when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
+        when(userRepository.findOne("testUser")).thenReturn(Optional.of(user));
 
-        User foundUser = userService.findByUsername("testUser")
-                .orElseThrow(() -> new NotFoundException("BitmexUser not found"));
+        User foundUser = userService.getOne("testUser");
 
         assertEquals(foundUser.getUsername(), user.getUsername());
     }
@@ -44,7 +43,7 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("testUser");
 
-        when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
+        when(userRepository.findOne("testUser")).thenReturn(Optional.of(user));
         when(authorityService.isCustomer(user)).thenReturn(true);
 
         User foundUser = userService.findCustomer("testUser")
@@ -58,7 +57,7 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("testUser");
 
-        when(userRepository.findByUsername("testUser")).thenReturn(Optional.of(user));
+        when(userRepository.findOne("testUser")).thenReturn(Optional.of(user));
         when(authorityService.isTrader(user)).thenReturn(true);
 
         User foundUser = userService.findTrader("testUser")

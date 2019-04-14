@@ -29,7 +29,7 @@ public class DashboardController {
 
     @GetMapping(value = {"", "/"})
     public String getDashboard(Model model, Principal principal) {
-        User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("user not found"));
+        User user = userService.getOne(principal.getName());
 
         List<BitmexOrder> activeOrders;
         List<BitmexPosition> openPositions;
