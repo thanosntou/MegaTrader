@@ -10,6 +10,7 @@ import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
 import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
+import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,22 +37,53 @@ public class TradeService {
   }
 
   public OrderReport placeOrderAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
-    ArrayList<Future<Boolean>> futureList;
-    List<User> enabledFollowers = userService.getEnabledFollowers(trader);
+    final List<User> enabledFollowers = Collections.synchronizedList(new ArrayList<>(userService.getEnabledFollowers(trader)));
+    final Map<Integer, DataLeverageBuilder> leverageBuilderMap = Collections.synchronizedMap(new HashMap<>());
+    final Map<Integer, DataOrderBuilder> orderBuilderMap = Collections.synchronizedMap(new HashMap<>());
 
-    setLeverage(enabledFollowers, dataLeverage);
+    enabledFollowers.forEach(follower -> {
+      leverageBuilderMap.put(follower.getId(),  SerializationUtils.clone(dataLeverage));
+      orderBuilderMap.put(follower.getId(),  SerializationUtils.clone(dataOrder));
+    });
 
-    futureList = configureAndPlaceOrder(enabledFollowers, dataOrder, dataLeverage, percentage);
+    setLeverage(enabledFollowers, leverageBuilderMap);
 
-    return generateOrderReport(futureList);
+    return configurePlaceOrderAndReport(enabledFollowers, percentage, orderBuilderMap, leverageBuilderMap);
   }
 
-  private ArrayList<Future<Boolean>> configureAndPlaceOrder(List<User> followers, DataOrderBuilder dataOrder,
-                                      DataLeverageBuilder dataLeverage, Integer percentage) {
-    final String uniqueClOrdID = UUID.randomUUID().toString();
-    ArrayList<Future<Boolean>> futureList = new ArrayList<>();
+  private void setLeverage(List<User> enabledFollowers, Map<Integer, DataLeverageBuilder> leverageBuilderMap) {
+    final List<User> failedFollowers = Collections.synchronizedList(new ArrayList<>());
+    final List<Future<Boolean>> futureList = Collections.synchronizedList(new ArrayList<>());
 
-    followers.forEach(follower -> futureList.add(multiExecutor.submit(() -> {
+    enabledFollowers.parallelStream().forEach(follower -> {
+      try {
+        futureList.add(multiExecutor.submit(() -> {
+          try {
+            bitmexService.postPositionLeverage(follower, leverageBuilderMap.get(follower.getId()));
+            return true;
+          } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+          }
+        }));
+      } catch (NullPointerException | RejectedExecutionException | CancellationException e) {
+        logger.error(e.getMessage(), e.getCause());
+        failedFollowers.add(follower);
+      }
+    });
+    waitFuturesToComplete(futureList);
+    enabledFollowers.removeAll(failedFollowers);
+  }
+
+  private OrderReport configurePlaceOrderAndReport(List<User> followers, Integer percentage,
+                                                   Map<Integer, DataOrderBuilder> orderBuilderMap,
+                                                   Map<Integer, DataLeverageBuilder> leverageBuilderMap) {
+    final String uniqueClOrdID = UUID.randomUUID().toString();
+    final List<Future<Boolean>> futureList = Collections.synchronizedList(new ArrayList<>());
+
+    followers.parallelStream().forEach(follower -> futureList.add(multiExecutor.submit(() -> {
+      DataLeverageBuilder dataLeverage = leverageBuilderMap.get(follower.getId());
+      DataOrderBuilder dataOrder = orderBuilderMap.get(follower.getId());
       try {
         // OPTION 1: STOP or STOP LIMIT
         if (OrderType.Stop.equals(dataOrder.getOrderType()) || OrderType.StopLimit.equals(dataOrder.getOrderType())) {
@@ -87,44 +119,34 @@ public class TradeService {
       }
     })));
     waitFuturesToComplete(futureList);
-    return futureList;
-  }
-
-  private void setLeverage(List<User> users, DataLeverageBuilder dataLeverage) {
-    ArrayList<Future<Boolean>> futureList = new ArrayList<>();
-    users.removeIf(follower -> !futureList.add(multiExecutor.submit(() -> {
-      try {
-        bitmexService.postPositionLeverage(follower, dataLeverage);
-        return true;
-      } catch (NullPointerException | RejectedExecutionException | CancellationException e) {
-        logger.error(e.getMessage(), e.getCause());
-        return false;
-      }
-    })));
-    waitFuturesToComplete(futureList);
+    return generateOrderReport(futureList);
   }
 
   public void postOrderWithPercentage(User trader, DataOrderBuilder dataOrder, int percentage) {
-    final Future<?>[] future = new Future[1];
+    final List<Future<Boolean>> futureList = Collections.synchronizedList(new ArrayList<>());
     final String uniqueclOrdID = UUID.randomUUID().toString();
+    final Map<Integer, DataOrderBuilder> orderBuilderMap = Collections.synchronizedMap(new HashMap<>());
+
     List<User> enabledfollowers = userService.getEnabledFollowers(trader);
 
-    for (User follower: enabledfollowers) {
-      future[0] = multiExecutor.submit(() -> {
-        try {
-          dataOrder
-              .withClOrdId(uniqueclOrdID)
-              .withOrderQty(calculateQtyFromOpenPosition(follower, dataOrder.getSymbol(), percentage));
+    enabledfollowers.forEach(follower -> orderBuilderMap.put(follower.getId(),  SerializationUtils.clone(dataOrder)));
 
-          bitmexService.postOrderOrder(follower, dataOrder);
+    enabledfollowers.parallelStream().forEach(follower -> futureList.add(
+        multiExecutor.submit(() -> futureList.add(multiExecutor.submit(() -> {
+          try {
+            dataOrder
+                .withClOrdId(uniqueclOrdID)
+                .withOrderQty(calculateQtyFromOpenPosition(follower, dataOrder.getSymbol(), percentage));
 
-        } catch (Exception e) {
-          logger.error(e.getMessage(), e);
-        }
-      });
-    }
-    // TODO
-//    waitToComplete(future[0]);
+            bitmexService.postOrderOrder(follower, dataOrder);
+            return true;
+          } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+          }
+        })))
+    ));
+    waitFuturesToComplete(futureList);
   }
 
   public List<BitmexOrder> getGuideActiveOrders(User trader) {
@@ -292,20 +314,12 @@ public class TradeService {
     return Double.parseDouble(lastPrice);
   }
 
-  private void waitExecutorToComplete() {
-    try {
-      multiExecutor.awaitTermination(60, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      logger.error(e.getMessage(), e);
-    }
-  }
-
-  private void waitFuturesToComplete(ArrayList<Future<Boolean>> futureList) {
+  private void waitFuturesToComplete(List<Future<Boolean>> futureList) {
     futureList.forEach(this::waitFutureToComplete);
   }
 
   private void waitFutureToComplete(Future<?> future) {
-    Optional.ofNullable(future).ifPresent(f -> {
+    Optional.of(future).ifPresent(f -> {
       try {
         future.get();
       } catch (InterruptedException | CancellationException | ExecutionException e) {
@@ -315,7 +329,7 @@ public class TradeService {
     });
   }
 
-  private OrderReport generateOrderReport(ArrayList<Future<Boolean>> futureList) {
+  private OrderReport generateOrderReport(List<Future<Boolean>> futureList) {
     final OrderReport report = new OrderReport();
 
     futureList.forEach(future -> {

@@ -23,6 +23,10 @@ public class DataOrderBuilder implements DataBuilder {
     public DataOrderBuilder() {
     }
 
+    public DataOrderBuilder(DataOrderBuilder dataOrderBuilder) {
+        
+    }
+
     public DataOrderBuilder withClOrdId(String clOrdID) {
         this.clOrdID = clOrdID;
         return this;

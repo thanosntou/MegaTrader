@@ -1,6 +1,8 @@
 package com.ntouzidis.cooperative.module.common.builder;
 
-public interface DataBuilder {
+import java.io.Serializable;
+
+public interface DataBuilder extends Serializable {
 
     String get();
 }

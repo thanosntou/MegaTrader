@@ -44,11 +44,11 @@ public class TradeApiV1Controller {
           @RequestParam(name="hidden", required = false) Boolean hidden,
           @RequestParam(name="percentage", required = false, defaultValue = "10") Integer percentage
   ) {
-    DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder()
+    final DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder()
             .withSymbol(symbol)
             .withLeverage(leverage);
 
-    DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
+    final DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
             .withSymbol(symbol)
             .withSide(side)
             .withOrderType(ordType)
@@ -57,9 +57,7 @@ public class TradeApiV1Controller {
             .withStopPrice(stopPx)
             .withDisplayQty(hidden ? 0 : null);
 
-    OrderReport report = tradeService.placeOrderAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage);
-
-    return ResponseEntity.ok(report);
+    return ResponseEntity.ok(tradeService.placeOrderAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage));
   }
 
   @PostMapping(value = "/orderAll2", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,7 +71,7 @@ public class TradeApiV1Controller {
           @RequestParam(name = "execInst", required = false) String execInst,
           @RequestParam(name = "hidden", required = false) boolean hidden
   ) {
-    DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
+    final DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
             .withSymbol(symbol)
             .withSide(side)
             .withOrderType(ordType)
