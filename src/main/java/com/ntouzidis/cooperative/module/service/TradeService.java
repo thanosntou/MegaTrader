@@ -36,24 +36,22 @@ public class TradeService {
   }
 
   public OrderReport placeOrderAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
-    final Future<?>[] future = new Future[1];
-    final OrderReport report = new OrderReport();
-
+    ArrayList<Future<Boolean>> futureList;
     List<User> enabledFollowers = userService.getEnabledFollowers(trader);
 
-    setLeverage(enabledFollowers, future, dataLeverage);
-    waitToComplete(future[0]);
+    setLeverage(enabledFollowers, dataLeverage);
 
-    configureAndPlaceOrder(enabledFollowers, future, dataOrder, dataLeverage, percentage, report);
-    waitToComplete(future[0]);
+    futureList = configureAndPlaceOrder(enabledFollowers, dataOrder, dataLeverage, percentage);
 
-    return report;
+    return generateOrderReport(futureList);
   }
 
-  private void configureAndPlaceOrder(List<User> followers, Future<?>[] future, DataOrderBuilder dataOrder,
-                                      DataLeverageBuilder dataLeverage, Integer percentage, OrderReport report) {
+  private ArrayList<Future<Boolean>> configureAndPlaceOrder(List<User> followers, DataOrderBuilder dataOrder,
+                                      DataLeverageBuilder dataLeverage, Integer percentage) {
     final String uniqueClOrdID = UUID.randomUUID().toString();
-    followers.forEach(follower -> future[0] = multiExecutor.submit(() -> {
+    ArrayList<Future<Boolean>> futureList = new ArrayList<>();
+
+    followers.forEach(follower -> futureList.add(multiExecutor.submit(() -> {
       try {
         // OPTION 1: STOP or STOP LIMIT
         if (OrderType.Stop.equals(dataOrder.getOrderType()) || OrderType.StopLimit.equals(dataOrder.getOrderType())) {
@@ -82,30 +80,28 @@ public class TradeService {
                   bitmexService.getInstrumentLastPrice(follower, dataOrder.getSymbol()), percentage));
         }
         bitmexService.postOrderOrder(follower, dataOrder.withClOrdId(uniqueClOrdID));
-        synchronized (this) {
-          report.addOneSucceeded();
-        }
+        return true;
       } catch (Exception e) {
-        synchronized (this) {
-          report.addOneFailed();
-        }
         logger.error(e.getMessage(), e);
-      }
-    }));
-  }
-
-  private List<User> setLeverage(List<User> users, Future<?>[] future, DataLeverageBuilder dataLeverage) {
-    users.removeIf(user -> {
-      try {
-        future[0] = multiExecutor.submit(() -> bitmexService.postPositionLeverage(user, dataLeverage));
         return false;
       }
-      catch (NullPointerException | RejectedExecutionException | CancellationException e) {
-        logger.error(e.getMessage(), e.getCause());
+    })));
+    waitFuturesToComplete(futureList);
+    return futureList;
+  }
+
+  private void setLeverage(List<User> users, DataLeverageBuilder dataLeverage) {
+    ArrayList<Future<Boolean>> futureList = new ArrayList<>();
+    users.removeIf(follower -> !futureList.add(multiExecutor.submit(() -> {
+      try {
+        bitmexService.postPositionLeverage(follower, dataLeverage);
         return true;
+      } catch (NullPointerException | RejectedExecutionException | CancellationException e) {
+        logger.error(e.getMessage(), e.getCause());
+        return false;
       }
-    });
-    return users;
+    })));
+    waitFuturesToComplete(futureList);
   }
 
   public void postOrderWithPercentage(User trader, DataOrderBuilder dataOrder, int percentage) {
@@ -127,7 +123,8 @@ public class TradeService {
         }
       });
     }
-    waitToComplete(future[0]);
+    // TODO
+//    waitToComplete(future[0]);
   }
 
   public List<BitmexOrder> getGuideActiveOrders(User trader) {
@@ -295,14 +292,46 @@ public class TradeService {
     return Double.parseDouble(lastPrice);
   }
 
-  private void waitToComplete(Future<?> future) {
+  private void waitExecutorToComplete() {
+    try {
+      multiExecutor.awaitTermination(60, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      logger.error(e.getMessage(), e);
+    }
+  }
+
+  private void waitFuturesToComplete(ArrayList<Future<Boolean>> futureList) {
+    futureList.forEach(this::waitFutureToComplete);
+  }
+
+  private void waitFutureToComplete(Future<?> future) {
     Optional.ofNullable(future).ifPresent(f -> {
-      try { future.get(); }
-      catch (InterruptedException | CancellationException | ExecutionException e) {
+      try {
+        future.get();
+      } catch (InterruptedException | CancellationException | ExecutionException e) {
         logger.error(e.getMessage(), e);
         throw new RuntimeException(e.getMessage(), e.getCause());
       }
     });
   }
+
+  private OrderReport generateOrderReport(ArrayList<Future<Boolean>> futureList) {
+    final OrderReport report = new OrderReport();
+
+    futureList.forEach(future -> {
+      boolean futureResult = false;
+      try {
+        futureResult = future.get();
+      } catch (InterruptedException | ExecutionException e) {
+        logger.error(e.getMessage(), e);
+      }
+      if (futureResult)
+        report.addOneSucceeded();
+      else
+        report.addOneFailed();
+    });
+    return report;
+  }
+
 
 }
