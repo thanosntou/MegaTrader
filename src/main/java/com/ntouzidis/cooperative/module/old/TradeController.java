@@ -125,7 +125,7 @@ public class TradeController {
                 .withExecInst(execInst)
                 .withStopPrice(stopPx);
 
-        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder, percentage);
+        tradeService.placeOrderForAll(trader, dataLeverageBuilder, dataOrderBuilder, percentage);
 
         model.addAttribute("user", trader);
 

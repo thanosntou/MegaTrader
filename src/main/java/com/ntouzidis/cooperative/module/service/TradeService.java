@@ -36,7 +36,7 @@ public class TradeService {
     this.multiExecutor = multiExecutor;
   }
 
-  public OrderReport placeOrderAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
+  public OrderReport placeOrderForAll(User trader, DataLeverageBuilder dataLeverage, DataOrderBuilder dataOrder, Integer percentage) {
     final List<User> enabledFollowers = Collections.synchronizedList(new ArrayList<>(userService.getEnabledFollowers(trader)));
     final Map<Integer, DataLeverageBuilder> leverageBuilderMap = Collections.synchronizedMap(new HashMap<>());
     final Map<Integer, DataOrderBuilder> orderBuilderMap = Collections.synchronizedMap(new HashMap<>());
@@ -82,8 +82,8 @@ public class TradeService {
     final List<Future<Boolean>> futureList = Collections.synchronizedList(new ArrayList<>());
 
     followers.parallelStream().forEach(follower -> futureList.add(multiExecutor.submit(() -> {
-      DataLeverageBuilder dataLeverage = leverageBuilderMap.get(follower.getId());
-      DataOrderBuilder dataOrder = orderBuilderMap.get(follower.getId());
+      final DataLeverageBuilder dataLeverage = leverageBuilderMap.get(follower.getId());
+      final DataOrderBuilder dataOrder = orderBuilderMap.get(follower.getId());
       try {
         // OPTION 1: STOP or STOP LIMIT
         if (OrderType.Stop.equals(dataOrder.getOrderType()) || OrderType.StopLimit.equals(dataOrder.getOrderType())) {
@@ -122,7 +122,7 @@ public class TradeService {
     return generateOrderReport(futureList);
   }
 
-  public void postOrderWithPercentage(User trader, DataOrderBuilder dataOrder, int percentage) {
+  public OrderReport postOrderWithPercentage(User trader, DataOrderBuilder dataOrder, int percentage) {
     final List<Future<Boolean>> futureList = Collections.synchronizedList(new ArrayList<>());
     final String uniqueclOrdID = UUID.randomUUID().toString();
     final Map<Integer, DataOrderBuilder> orderBuilderMap = Collections.synchronizedMap(new HashMap<>());
@@ -147,6 +147,7 @@ public class TradeService {
         })))
     ));
     waitFuturesToComplete(futureList);
+    return generateOrderReport(futureList);
   }
 
   public List<BitmexOrder> getGuideActiveOrders(User trader) {

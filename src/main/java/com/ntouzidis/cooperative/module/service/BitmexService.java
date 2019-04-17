@@ -48,7 +48,7 @@ public class BitmexService {
         .stream()
         .filter(i -> i.getSymbol().equals(symbol))
         .findAny()
-        .orElseThrow(RuntimeException::new);
+        .orElseGet(this::emptyPosition);
   }
 
   private List<BitmexPosition> getPositions(User user) {
@@ -130,6 +130,12 @@ public class BitmexService {
       logger.error("Failed to convert response body to BitmexPosition POJO");
       throw new RuntimeException();
     }
+  }
+
+  private BitmexPosition emptyPosition() {
+    BitmexPosition position = new BitmexPosition();
+    position.setSize(0L);
+    return position;
   }
 
   private List<BitmexPosition> convertToPositionPojoList(String body) {

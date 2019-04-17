@@ -57,12 +57,12 @@ public class TradeApiV1Controller {
             .withStopPrice(stopPx)
             .withDisplayQty(hidden ? 0 : null);
 
-    return ResponseEntity.ok(tradeService.placeOrderAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage));
+    return ResponseEntity.ok(tradeService.placeOrderForAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage));
   }
 
   @PostMapping(value = "/orderAll2", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<JsonNode> postOrderWithPercentage(
+  public ResponseEntity<OrderReport> postOrderWithPercentage(
           @RequestParam(name = "symbol") Symbol symbol,
           @RequestParam(name = "side") Side side,
           @RequestParam(name = "ordType") OrderType ordType,
@@ -79,9 +79,7 @@ public class TradeApiV1Controller {
             .withExecInst(execInst)
             .withDisplayQty(hidden ? 0 : null);
 
-    tradeService.postOrderWithPercentage(context.getUser(), dataOrderBuilder, percentage);
-
-    return ResponseEntity.ok(toJsonNode(symbol));
+    return ResponseEntity.ok(tradeService.postOrderWithPercentage(context.getUser(), dataOrderBuilder, percentage));
   }
 
   @DeleteMapping(value = "/order", produces = MediaType.APPLICATION_JSON_VALUE)
