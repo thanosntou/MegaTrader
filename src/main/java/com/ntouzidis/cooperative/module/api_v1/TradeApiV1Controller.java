@@ -1,191 +1,142 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
+import com.ntouzidis.cooperative.module.common.pojo.Context;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
+import com.ntouzidis.cooperative.module.common.pojo.OrderReport;
 import com.ntouzidis.cooperative.module.service.TradeService;
-import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
-import com.ntouzidis.cooperative.module.user.entity.User;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
+import static com.ntouzidis.cooperative.module.common.ControllerPathsConstants.TRADE_CONTROLLER_PATH;
+import static com.ntouzidis.cooperative.module.common.ParamsConstants.*;
+import static com.ntouzidis.cooperative.module.common.RolesConstants.TRADER_ROLE;
+
 @RestController
-@RequestMapping("/api/v1/trade")
+@RequestMapping(
+    value = TRADE_CONTROLLER_PATH,
+    produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class TradeApiV1Controller {
 
-    private final TradeService tradeService;
+  private static final String PANIC_PATH = "/panic";
+  private static final String POSITION_PATH = "/position";
+  private static final String ORDER_PATH = "/order";
+  private static final String ORDER_ALL_PATH = "/orderAll";
+  private static final String ORDER_ALL2_PATH = "/orderAll2";
 
-    public TradeApiV1Controller(TradeService tradeService) {
-        this.tradeService = tradeService;
+  private final Context context;
+  private final TradeService tradeService;
+
+  public TradeApiV1Controller(Context context, TradeService tradeService) {
+    this.context = context;
+    this.tradeService = tradeService;
+  }
+
+  @PostMapping(ORDER_ALL_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<OrderReport> postOrder(
+          @RequestParam(SYMBOL_PARAM) Symbol symbol,
+          @RequestParam(SIDE_PARAM) Side side,
+          @RequestParam(ORD_TYPE_PARAM) OrderType ordType,
+          @RequestParam(value = PRICE_PARAM, required=false) String price,
+          @RequestParam(value = EXEC_INST_PARAM, required=false) String execInst,
+          @RequestParam(value = STOP_PX_PARAM, required = false) String stopPx,
+          @RequestParam(value = LEVERAGE_PARAM, required = false) String leverage,
+          @RequestParam(value = HIDDEN_PARAM, required = false) boolean hidden,
+          @RequestParam(value = PERCENTAGE_PARAM, defaultValue = "10") Integer percentage
+  ) {
+    final DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder()
+            .withSymbol(symbol)
+            .withLeverage(leverage);
+
+    final DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
+            .withSymbol(symbol)
+            .withSide(side)
+            .withOrderType(ordType)
+            .withPrice(price)
+            .withExecInst(execInst)
+            .withStopPrice(stopPx)
+            .withDisplayQty(hidden ? 0 : null);
+
+    return ResponseEntity.ok(tradeService.placeOrderForAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage));
+  }
+
+  @PostMapping(ORDER_ALL2_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<OrderReport> postOrderWithPercentage(
+          @RequestParam(SYMBOL_PARAM) Symbol symbol,
+          @RequestParam(SIDE_PARAM) Side side,
+          @RequestParam(ORD_TYPE_PARAM) OrderType ordType,
+          @RequestParam(name = PERCENTAGE_PARAM, required = false) int percentage,
+          @RequestParam(name = PRICE_PARAM, required = false) String price,
+          @RequestParam(name = EXEC_INST_PARAM, required = false) String execInst,
+          @RequestParam(name = HIDDEN_PARAM, required = false) boolean hidden
+  ) {
+    final DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
+            .withSymbol(symbol)
+            .withSide(side)
+            .withOrderType(ordType)
+            .withPrice(price)
+            .withExecInst(execInst)
+            .withDisplayQty(hidden ? 0 : null);
+
+    return ResponseEntity.ok(tradeService.postOrderWithPercentage(context.getUser(), dataOrderBuilder, percentage));
+  }
+
+  @DeleteMapping(ORDER_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<?> cancelOrder(@RequestParam(name = CL_ORD_ID_PARAM, required = false) String clOrdID,
+                                       @RequestParam(name = SYMBOL_PARAM, required = false) Symbol symbol
+  ) {
+    Preconditions.checkArgument(clOrdID != null || symbol != null,
+            "Either orderID or symbol must be present");
+    if (symbol != null) {
+      tradeService.cancelAllOrders(context.getUser(), new DataDeleteOrderBuilder().withSymbol(symbol));
+      return ResponseEntity.ok(toJsonNode(symbol));
+
+    } else {
+      tradeService.cancelOrder(context.getUser(), new DataDeleteOrderBuilder().withClientOrderId(clOrdID));
+      return ResponseEntity.ok("{ \"clOrdID\": \"" + clOrdID + "\" }");
     }
+  }
 
-//    @PostMapping(
-//            value = "/signal",
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    @PreAuthorize("hasRole('TRADER')")
-//    public ResponseEntity<?> createSignal(
-//            Authentication authentication,
-//            @RequestParam(name="symbol", required = false) Symbol symbol,
-//            @RequestParam(name="side", required = false) Side side,
-//            @RequestParam(name="leverage", required = false) String leverage,
-//            @RequestParam(name="stopLoss", required = false) String stopLoss,
-//            @RequestParam(name="profitTrigger", required = false) String profitTrigger
-//    ) {
-//        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-//
-//        SignalBuilder signalBuilder = new SignalBuilder()
-//                .withSymbol(symbol)
-//                .withSide(side)
-//                .withleverage(leverage)
-//                .withStopLoss(stopLoss)
-//                .withProfitTrigger(profitTrigger);
-//
-//        tradeService.createSignal(trader, signalBuilder);
-//
-//        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
-//    }
+  @DeleteMapping(POSITION_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<JsonNode> closePosition(@RequestParam(name = SYMBOL_PARAM, required = false) Symbol symbol) {
+    DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
+            .withSymbol(symbol)
+            .withOrderType(OrderType.Market)
+            .withExecInst("Close");
 
+    tradeService.closeAllPosition(context.getUser(), dataOrderBuilder);
 
-    @PostMapping(
-            value = "/orderAll",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> postOrderAll(
-            Authentication authentication,
-            @RequestParam(name="symbol") Symbol symbol,
-            @RequestParam(name="side") Side side,
-            @RequestParam(name="ordType") OrderType ordType,
-            @RequestParam(name="hidden", required = false) boolean hidden,
-            @RequestParam(name="price", required=false) String price,
-            @RequestParam(name="execInst", required=false) String execInst,
-            @RequestParam(name="stopPx", required = false) String stopPx,
-            @RequestParam(name="leverage", required = false) String leverage
-    ) {
+    return ResponseEntity.ok(toJsonNode(symbol));
+  }
 
-        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+  @DeleteMapping(PANIC_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity panicButton() {
+    tradeService.panicButton(context.getUser());
+    return ResponseEntity.ok().build();
+  }
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
-                .withSymbol(symbol)
-                .withLeverage(leverage);
-
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(symbol)
-                .withSide(side)
-                .withOrderType(ordType)
-                .withPrice(price)
-                .withExecInst(execInst)
-                .withStopPrice(stopPx)
-                .withDisplayQty(hidden ? 0 : null);
-
-        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
-
-        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
+  private JsonNode toJsonNode(Symbol symbol) {
+    try {
+      return new ObjectMapper().readTree("{\"symbol\": \"" + symbol.name() + "\" }");
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e.getCause());
     }
-
-    @PostMapping(
-            value = "/orderAll2",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> postOrder2(
-            Authentication authentication,
-            @RequestParam("symbol") Symbol symbol,
-            @RequestParam("side") Side side,
-            @RequestParam("orderType") OrderType orderType,
-            @RequestParam(value = "percentage", required = false) int percentage,
-            @RequestParam(value = "price", required = false) String price,
-            @RequestParam(value = "execInst", required = false) String execInst
-    ) {
-        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(symbol)
-                .withSide(side)
-                .withOrderType(orderType)
-                .withPrice(price)
-                .withExecInst(execInst);
-
-        tradeService.postOrderWithPercentage(trader, dataPostOrderBuilder, percentage);
-
-        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
-    }
-
-    @DeleteMapping(
-            value = "/order",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> cancelOrder(
-            Authentication authentication,
-            @RequestParam(name="clOrdID", required = false) String clOrdID,
-            @RequestParam(name="symbol", required = false) Symbol symbol
-    ) {
-        Preconditions.checkArgument(clOrdID != null || symbol != null,
-                "Either orderID or symbol must be present");
-
-        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        if (symbol != null) {
-            DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withSymbol(symbol);
-
-            tradeService.cancelAllOrders(trader, dataDeleteOrderBuilder);
-
-            return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
-
-        } else {
-            DataDeleteOrderBuilder dataDeleteOrderBuilder = new DataDeleteOrderBuilder()
-                    .withClientOrderId(clOrdID);
-
-            tradeService.cancelOrder(trader, dataDeleteOrderBuilder);
-
-            return new ResponseEntity<>("{ \"clOrdID\": \"" + clOrdID + "\" }", HttpStatus.OK);
-        }
-    }
-
-    @DeleteMapping(
-            value = "/position",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> closePosition(
-            Authentication authentication,
-            @RequestParam(name="symbol", required = false) Symbol symbol
-    ) {
-        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-                .withSymbol(symbol)
-                .withOrderType(OrderType.Market)
-                .withExecInst("Close");
-
-        tradeService.closeAllPosition(trader, dataPostOrderBuilder);
-
-        return new ResponseEntity<>("{ \"symbol\": \"" + symbol + "\" }", HttpStatus.OK);
-    }
-
-    @DeleteMapping(
-            value = "/panic",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @PreAuthorize("hasRole('TRADER')")
-    public ResponseEntity<?> panicButton(Authentication authentication) {
-
-        User trader = ((CustomUserDetails) authentication.getPrincipal()).getUser();
-
-        tradeService.panicButton(trader);
-
-        return ResponseEntity.ok("{ \"result\": \"ok\" }");
-    }
+  }
 }

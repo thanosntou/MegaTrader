@@ -12,18 +12,18 @@ import java.util.concurrent.*;
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class CooperativeApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(CooperativeApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(CooperativeApplication.class, args);
+  }
 
-    @Bean(name = "multiExecutor")
-    public ExecutorService multiExecutor() {
-        return Executors.newFixedThreadPool(50);
-    }
+  @Bean(name = "multiExecutor")
+  public ExecutorService multiExecutor() {
+    return Executors.newFixedThreadPool(50);
+  }
 
-    @Bean(name ="restTemplate")
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
+  @Bean(name ="restTemplate")
+  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    return builder.build();
+  }
 
 }

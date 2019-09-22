@@ -1,13 +1,13 @@
 package com.ntouzidis.cooperative.module.old;
 
+import com.ntouzidis.cooperative.module.common.builder.DataLeverageBuilder;
+import com.ntouzidis.cooperative.module.common.builder.DataOrderBuilder;
 import com.ntouzidis.cooperative.module.common.enumeration.OrderType;
 import com.ntouzidis.cooperative.module.common.enumeration.Side;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
-import com.ntouzidis.cooperative.module.service.BitmexService;
 import com.ntouzidis.cooperative.module.common.builder.DataDeleteOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.DataPostLeverage;
-import com.ntouzidis.cooperative.module.common.builder.DataPostOrderBuilder;
-import com.ntouzidis.cooperative.module.common.builder.SignalBuilder;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexOrder;
+import com.ntouzidis.cooperative.module.common.pojo.bitmex.BitmexPosition;
 import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.CustomUserDetails;
 import com.ntouzidis.cooperative.module.user.entity.User;
@@ -27,12 +27,10 @@ public class TradeController {
 //    @Value("${trader}")
 //    private String traderName;
 
-    private final BitmexService bitmexService;
     private final UserService userService;
     private final TradeService tradeService;
 
-    public TradeController(BitmexService bitmexService, UserService userService, TradeService tradeService) {
-        this.bitmexService = bitmexService;
+    public TradeController(UserService userService, TradeService tradeService) {
         this.userService = userService;
         this.tradeService = tradeService;
     }
@@ -59,12 +57,12 @@ public class TradeController {
 //        Map<String, Double> sumFixedQtys = tradeService.calculateSumFixedQtys(followers);
 
         // random positions. for sure not empty
-        List<Map<String, Object>> randomPositions = tradeService.getRandomPositions(trader);
+        List<BitmexPosition> randomPositions = tradeService.getGuideOpenPositions(trader);
 
         // Current Leverage
         String currentCoinLeverage = String.valueOf(randomPositions.stream()
-                .filter(i -> i.get("symbol").equals(symbol))
-                .map(i -> i.get("leverage"))
+                .filter(i -> i.getSymbol().name().equals(symbol))
+                .map(BitmexPosition::getLeverage)
                 .findAny().orElse(0));
 
         // Current Price Step
@@ -80,7 +78,7 @@ public class TradeController {
                 .getValue();
 
         // random active orders. for sure not empty
-        List<Map<String, Object>> randomActiveOrders = tradeService.getRandomActiveOrders(trader);
+        List<BitmexOrder> randomActiveOrders = tradeService.getGuideActiveOrders(trader);
 
         model.addAttribute("page", "trade");
         model.addAttribute("symbol", symbol);
@@ -100,50 +98,26 @@ public class TradeController {
     }
 
     @SuppressWarnings("Duplicates")
-    @PostMapping(value = "/signal")
-    public String createSignal(@RequestParam(name="symbol", required = false) String symbol,
-                               @RequestParam(name="side") String side,
-                               @RequestParam(name="leverage", required = false) String leverage,
-                               @RequestParam(name="stopLoss", required = false) String stopLoss,
-                               @RequestParam(name="profitTrigger", required = false) String profitTrigger,
-                               Model model, Authentication authentication) {
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User trader = userDetails.getUser();
-
-        SignalBuilder signalBuilder = new SignalBuilder()
-                .withSymbol(Symbol.valueOf(symbol))
-                .withSide(Side.valueOf(side))
-                .withleverage(leverage)
-                .withStopLoss(stopLoss)
-                .withProfitTrigger(profitTrigger);
-
-        tradeService.createSignal(trader, signalBuilder);
-
-        model.addAttribute("user", trader);
-
-        return "redirect:/trade/" + symbol;
-    }
-
-    @SuppressWarnings("Duplicates")
     @PostMapping(value = "/orderAll")
-    public String postOrderAll(@RequestParam(name="symbol") String symbol,
+    public String postOrderAll(Model model, Authentication authentication,
+                               @RequestParam(name="symbol") String symbol,
                                @RequestParam(name="side") String side,
                                @RequestParam(name="ordType") String ordType,
                                @RequestParam(name="price", required=false) String price,
                                @RequestParam(name="execInst", required=false) String execInst,
                                @RequestParam(name="stopPx", required = false) String stopPx,
                                @RequestParam(name="leverage", required = false) String leverage,
-                               Model model, Authentication authentication) {
+                               @RequestParam(name="percentage", required = false, defaultValue = "10") Integer percentage
+    ) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
 
-        DataPostLeverage dataLeverageBuilder = new DataPostLeverage()
+        DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder()
                 .withSymbol(Symbol.valueOf(symbol))
                 .withLeverage(leverage);
 
-        DataPostOrderBuilder dataOrderBuilder = new DataPostOrderBuilder()
+        DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(Symbol.valueOf(symbol))
                 .withSide(Side.valueOf(side))
                 .withOrderType(OrderType.valueOf(ordType))
@@ -151,46 +125,18 @@ public class TradeController {
                 .withExecInst(execInst)
                 .withStopPrice(stopPx);
 
-        tradeService.placeOrderAll(trader, dataLeverageBuilder, dataOrderBuilder);
+        tradeService.placeOrderForAll(trader, dataLeverageBuilder, dataOrderBuilder, percentage);
 
         model.addAttribute("user", trader);
 
         return "redirect:/trade/"+symbol;
     }
 
-//    @PostMapping("/positionAll")
-//    public String setAllPosition(@RequestParam(name="symbol") String symbol,
-//                                 @RequestParam("orderType") String orderType,
-//                                 @RequestParam("side") String side,
-//                                 @RequestParam("percentage") int percentage,
-//                                 @RequestParam("price") String price,
-//                                 Authentication authentication) {
-//
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-//        User trader = userDetails.getUser();
-//
-//        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
-//                .withSymbol(Symbol.valueOf(symbol))
-//                .withOrderType(OrderType.valueOf(orderType))
-//                .withSide(Side.valueOf(side));
-//
-//        if (orderType.equals("Limit")) dataPostOrderBuilder.withPrice(price);
-//
-//        tradeService.postOrderWithPercentage(trader, dataPostOrderBuilder, percentage);
-//
-//        try {
-//            Thread.sleep(500);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return "redirect:/trade/" + symbol;
-//    }
-
     @PostMapping("/order/cancel")
-    public String cancelOrder(@RequestParam(name="symbol", required = false) String symbol,
-                              @RequestParam(name="orderID") String orderID,
-                              Authentication authentication) {
+    public String cancelOrder(Authentication authentication,
+                              @RequestParam(name="symbol", required = false) String symbol,
+                              @RequestParam(name="orderID") String orderID
+    ) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
@@ -204,9 +150,9 @@ public class TradeController {
     }
 
     @PostMapping("/order/cancelAll")
-    public String cancelOrderAll(@RequestParam(name="symbol", required = false) String symbol,
-                                 Authentication authentication) {
-
+    public String cancelOrderAll(Authentication authentication,
+                                 @RequestParam(name="symbol", required = false) String symbol
+    ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
 
@@ -219,24 +165,18 @@ public class TradeController {
     }
 
     @PostMapping("/position/closeAll")
-    public String closeAllPosition(@RequestParam(name="symbol") String symbol,
-                                 Authentication authentication) {
-
+    public String closeAllPosition(Authentication authentication,
+                                   @RequestParam(name="symbol") String symbol
+    ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         User trader = userDetails.getUser();
 
-        DataPostOrderBuilder dataPostOrderBuilder = new DataPostOrderBuilder()
+        DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
                 .withSymbol(Symbol.valueOf(symbol))
                 .withExecInst("Close")
                 .withOrderType(OrderType.Market);
 
-        tradeService.closeAllPosition(trader, dataPostOrderBuilder);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        tradeService.closeAllPosition(trader, dataOrderBuilder);
 
         return "redirect:/trade/" + symbol;
     }
@@ -272,13 +212,6 @@ public class TradeController {
         maxLeverages.put("maxLeverageXBTKRW", "100");
 
         return maxLeverages;
-    }
-
-    private Map<String, Object> getSymbolPosition(User user, String symbol) {
-        return bitmexService.getAllSymbolPosition(user)
-                .stream()
-                .filter(k -> k.get("symbol").equals(symbol))
-                .findAny().orElse(null);
     }
 
 }

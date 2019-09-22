@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 023-add_tenant_id_to_users
+      author: ntouzidis
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: tenant_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_tenant_id
+                    references: tenant(id)

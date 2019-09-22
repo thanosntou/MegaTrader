@@ -5,7 +5,7 @@ import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class DataDeleteOrderBuilder {
+public class DataDeleteOrderBuilder implements DataBuilder {
 
     private Symbol symbol;
     private String orderID;
@@ -32,6 +32,7 @@ public class DataDeleteOrderBuilder {
         return this;
     }
 
+    @Override
     public String get() {
         AtomicReference<String> data = new AtomicReference<>();
         Optional.ofNullable(symbol).ifPresent(i -> data.set("symbol=" + i.name()));
