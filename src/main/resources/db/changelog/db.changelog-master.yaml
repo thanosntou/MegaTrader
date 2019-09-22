@@ -57,3 +57,9 @@ databaseChangeLog:
   - include:
       file: changeset-021-add_hidden_to_customer_to_trader_links.yaml
       relativeToChangelogFile: true
+  - include:
+      file: changeset-022-createTable-tenant.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: changeset-023-add_tenant_id_to_users.yaml
+      relativeToChangelogFile: true

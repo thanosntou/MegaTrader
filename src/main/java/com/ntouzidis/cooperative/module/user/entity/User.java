@@ -18,6 +18,10 @@ public class User implements Serializable {
     @Column(name = "id")
     private Integer id;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="tenant_id")
+    private Tenant tenant;
+
     @Column(name="username")
     private String username;
 
@@ -25,7 +29,10 @@ public class User implements Serializable {
     private String password;
 
     @NotNull(message=" is required")
-    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Pattern(
+        regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+        message="Invalid email"
+    )
     @Column(name="email")
     private String email;
 
@@ -106,6 +113,14 @@ public class User implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
     }
 
     public void setUsername(String username) {
@@ -259,27 +274,28 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "BitmexUser{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", enabled=" + enabled +
-                ", create_date=" + create_date +
-                ", apiKey='" + apiKey + '\'' +
-                ", apiSecret='" + apiSecret + '\'' +
-                ", wallet=" + wallet +
-                ", fixedQtyXBTUSD=" + fixedQtyXBTUSD +
-                ", fixedQtyXBTJPY=" + fixedQtyXBTJPY +
-                ", fixedQtyADAZ18=" + fixedQtyADAZ18 +
-                ", fixedQtyBCHZ18=" + fixedQtyBCHZ18 +
-                ", fixedQtyEOSZ18=" + fixedQtyEOSZ18 +
-                ", fixedQtyETHUSD=" + fixedQtyETHUSD +
-                ", fixedQtyLTCZ18=" + fixedQtyLTCZ18 +
-                ", fixedQtyTRXZ18=" + fixedQtyTRXZ18 +
-                ", fixedQtyXRPZ18=" + fixedQtyXRPZ18 +
-                ", fixedQtyXBTKRW=" + fixedQtyXBTKRW +
-                ", client=" + client +
-                '}';
+        return "User{" +
+            "id=" + id +
+            ", tenant=" + tenant +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            ", email='" + email + '\'' +
+            ", enabled=" + enabled +
+            ", create_date=" + create_date +
+            ", apiKey='" + apiKey + '\'' +
+            ", apiSecret='" + apiSecret + '\'' +
+            ", wallet=" + wallet +
+            ", fixedQtyXBTUSD=" + fixedQtyXBTUSD +
+            ", fixedQtyXBTJPY=" + fixedQtyXBTJPY +
+            ", fixedQtyADAZ18=" + fixedQtyADAZ18 +
+            ", fixedQtyBCHZ18=" + fixedQtyBCHZ18 +
+            ", fixedQtyEOSZ18=" + fixedQtyEOSZ18 +
+            ", fixedQtyETHUSD=" + fixedQtyETHUSD +
+            ", fixedQtyLTCZ18=" + fixedQtyLTCZ18 +
+            ", fixedQtyTRXZ18=" + fixedQtyTRXZ18 +
+            ", fixedQtyXRPZ18=" + fixedQtyXRPZ18 +
+            ", fixedQtyXBTKRW=" + fixedQtyXBTKRW +
+            ", client=" + client +
+            '}';
     }
 }
