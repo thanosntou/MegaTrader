@@ -1,6 +1,5 @@
 package com.ntouzidis.cooperative.module.api_v1;
 
-import com.google.common.base.Preconditions;
 import com.ntouzidis.cooperative.module.common.pojo.Context;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.service.SimpleEncryptor;
@@ -10,36 +9,54 @@ import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.ntouzidis.cooperative.module.common.ControllerPathsConstants.ID_PATH;
+import static com.ntouzidis.cooperative.module.common.ControllerPathsConstants.USER_CONTROLLER_PATH;
+import static com.ntouzidis.cooperative.module.common.ParamsConstants.*;
+import static com.ntouzidis.cooperative.module.common.RolesConstants.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping(
+    value = USER_CONTROLLER_PATH,
+    produces = APPLICATION_JSON_VALUE
+)
 public class UserApiV1Controller {
 
   private Logger logger = LoggerFactory.getLogger(UserApiV1Controller.class);
+
+  private static final String ALL_PATH = "/all";
+  private static final String AUTHENTICATE_PATH = "/authenticate";
+  private static final String CLIENT_PATH = "/client";
+  private static final String FIXED_QTY_PATH = "/fixedQty";
+  private static final String NEW_PATH = "/new";
+  private static final String KEYS_PATH = "/keys";
+  private static final String PASS_PATH = "/pass";
 
   private final Context context;
   private final UserService userService;
   private final SimpleEncryptor simpleEncryptor;
 
-  public UserApiV1Controller(UserService userService, SimpleEncryptor simpleEncryptor, Context context) {
+  public UserApiV1Controller(UserService userService,
+                             SimpleEncryptor simpleEncryptor,
+                             Context context) {
     this.userService = userService;
     this.simpleEncryptor = simpleEncryptor;
     this.context = context;
   }
 
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("isAuthenticated()")
+  @GetMapping
+  @PreAuthorize(AUTHENTICATED)
   public ResponseEntity<User> read(
-          @RequestParam(name = "id", required = false) Integer id,
-          @RequestParam(name = "username", required = false) String username
+      @RequestParam(name = ID_PARAM, required = false) Integer id,
+      @RequestParam(name = USERNAME_PARAM, required = false) String username
   ) {
     User user = userService.getOne(id, username);
 
@@ -49,27 +66,29 @@ public class UserApiV1Controller {
     return ResponseEntity.ok(user);
   }
 
-  @GetMapping(value = "all", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping(ALL_PATH)
+  @PreAuthorize(ADMIN_ROLE)
   public ResponseEntity<List<User>> readAll() {
-    return ResponseEntity.ok(userService.getAll().stream().peek(this::decryptApiKeys).collect(Collectors.toList()));
+    List<User> users = userService.getAll();
+    users.forEach(this::decryptApiKeys);
+    return ResponseEntity.ok(users);
   }
 
-  @PostMapping(value = "/new", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAnyRole('TRADER')")
+  @PostMapping(NEW_PATH)
+  @PreAuthorize(TRADER_ROLE)
   public ResponseEntity<User> create(
-          @RequestParam(value = "username") String username,
-          @RequestParam(value = "email") String email,
-          @RequestParam(value = "pass") String pass,
-          @RequestParam(value = "confirmPass") String confirmPass,
-          @RequestParam(value = "PIN") String PIN
+      @RequestParam(USERNAME_PARAM) String username,
+      @RequestParam(EMAIL_PARAM) String email,
+      @RequestParam(PASS_PARAM) String pass,
+      @RequestParam(CONFIRM_PASS_PARAM) String confirmPass,
+      @RequestParam(PIN_PARAM) String PIN
   ) {
-    Preconditions.checkArgument(pass.equals(confirmPass), "Password doesn't match");
-    Preconditions.checkArgument(StringUtils.isNotBlank(email) , "Wrong email");
+    checkArgument(pass.equals(confirmPass), "Password doesn't match");
+    checkArgument(StringUtils.isNotBlank(email) , "Wrong email");
 
     LocalDate today = LocalDate.now();
     String dailyPIN = String.valueOf(today.getDayOfMonth() + today.getMonthValue() + today.getYear());
-    Preconditions.checkArgument(dailyPIN.equals(PIN), "WRONG PIN");
+    checkArgument(dailyPIN.equals(PIN), "WRONG PIN");
 
     User user = userService.createCustomer(username, email, pass);
     // for the ui, to login immediately after creation
@@ -77,50 +96,50 @@ public class UserApiV1Controller {
     return ResponseEntity.ok(user);
   }
 
-  @PostMapping(value = "/keys", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(KEYS_PATH)
   public ResponseEntity<User> updateKeys(
-          @RequestParam(name = "apiKey", required = false) String apiKey,
-          @RequestParam(name = "apiSecret", required = false) String apiSecret
+      @RequestParam(name = API_KEY_PARAM, required = false) String apiKey,
+      @RequestParam(name = API_SECRET_PARAM, required = false) String apiSecret
   ) {
     return ResponseEntity.ok(userService.saveKeys(userService.getOne(context.getUserID()), apiKey, apiSecret));
   }
 
-  @PostMapping(value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(CLIENT_PATH)
   public ResponseEntity<User> updateClient(
-          @RequestParam(name = "client", required = false) Client client
+      @RequestParam(name = CLIENT_PARAM, required = false) Client client
   ) {
     return ResponseEntity.ok(userService.updateClient(userService.getOne(context.getUserID()), client));
   }
 
-  @PostMapping(value = "/fixedQty", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(FIXED_QTY_PATH)
   public ResponseEntity<User> setFixedQty(
-          @RequestParam("symbol") String symbol,
-          @RequestParam("fixedQty") long qty
+      @RequestParam(SYMBOL_PARAM) String symbol,
+      @RequestParam(FIXED_QTY_PARAM) long qty
   ) {
     return ResponseEntity.ok(userService.setFixedQty(userService.getOne(context.getUserID()), symbol, qty));
   }
 
-  @PostMapping(value = "/pass", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(PASS_PATH)
   public ResponseEntity<User> updatePass(
-          @RequestParam("oldPass") String oldPass,
-          @RequestParam("newPass") String newPass,
-          @RequestParam("confirmPass") String confirmPass
+      @RequestParam(OLD_PASS_PARAM) String oldPass,
+      @RequestParam(NEW_PASS_PARAM) String newPass,
+      @RequestParam(CONFIRM_PASS_PARAM) String confirmPass
   ) {
     return ResponseEntity.ok(userService.changePassword(context.getUserID(), newPass, confirmPass));
   }
 
-  @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @DeleteMapping(ID_PATH)
   public ResponseEntity<User> delete(
-          @PathVariable Integer id
+      @PathVariable Integer id
   ) {
-      Preconditions.checkArgument(userService.isAdmin(context.getUser()));
+      checkArgument(userService.isAdmin(context.getUser()));
       User user = userService.getOne(id);
       userService.delete(user);
       return ResponseEntity.ok(user);
   }
 
-  @GetMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("isAuthenticated()")
+  @GetMapping(AUTHENTICATE_PATH)
+  @PreAuthorize(AUTHENTICATED)
   public ResponseEntity<CustomUserDetails> authenticate() {
         return ResponseEntity.ok(context.getCustomUserDetails());
   }

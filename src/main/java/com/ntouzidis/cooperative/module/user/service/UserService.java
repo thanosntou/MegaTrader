@@ -1,7 +1,7 @@
 package com.ntouzidis.cooperative.module.user.service;
 
 import com.google.common.base.Preconditions;
-import com.ntouzidis.cooperative.module.common.NotFoundException;
+import com.ntouzidis.cooperative.module.common.exceptions.NotFoundException;
 import com.ntouzidis.cooperative.module.common.enumeration.Client;
 import com.ntouzidis.cooperative.module.common.enumeration.Symbol;
 import com.ntouzidis.cooperative.module.common.pojo.Context;

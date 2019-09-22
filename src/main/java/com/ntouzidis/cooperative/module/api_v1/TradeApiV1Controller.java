@@ -19,9 +19,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+import static com.ntouzidis.cooperative.module.common.ControllerPathsConstants.TRADE_CONTROLLER_PATH;
+import static com.ntouzidis.cooperative.module.common.ParamsConstants.*;
+import static com.ntouzidis.cooperative.module.common.RolesConstants.TRADER_ROLE;
+
 @RestController
-@RequestMapping("/api/v1/trade")
+@RequestMapping(
+    value = TRADE_CONTROLLER_PATH,
+    produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class TradeApiV1Controller {
+
+  private static final String PANIC_PATH = "/panic";
+  private static final String POSITION_PATH = "/position";
+  private static final String ORDER_PATH = "/order";
+  private static final String ORDER_ALL_PATH = "/orderAll";
+  private static final String ORDER_ALL2_PATH = "/orderAll2";
 
   private final Context context;
   private final TradeService tradeService;
@@ -31,18 +44,18 @@ public class TradeApiV1Controller {
     this.tradeService = tradeService;
   }
 
-  @PostMapping(value = "/orderAll", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
+  @PostMapping(ORDER_ALL_PATH)
+  @PreAuthorize(TRADER_ROLE)
   public ResponseEntity<OrderReport> postOrder(
-          @RequestParam(name="symbol") Symbol symbol,
-          @RequestParam(name="side") Side side,
-          @RequestParam(name="ordType") OrderType ordType,
-          @RequestParam(name="price", required=false) String price,
-          @RequestParam(name="execInst", required=false) String execInst,
-          @RequestParam(name="stopPx", required = false) String stopPx,
-          @RequestParam(name="leverage", required = false) String leverage,
-          @RequestParam(name="hidden", required = false) Boolean hidden,
-          @RequestParam(name="percentage", required = false, defaultValue = "10") Integer percentage
+          @RequestParam(SYMBOL_PARAM) Symbol symbol,
+          @RequestParam(SIDE_PARAM) Side side,
+          @RequestParam(ORD_TYPE_PARAM) OrderType ordType,
+          @RequestParam(value = PRICE_PARAM, required=false) String price,
+          @RequestParam(value = EXEC_INST_PARAM, required=false) String execInst,
+          @RequestParam(value = STOP_PX_PARAM, required = false) String stopPx,
+          @RequestParam(value = LEVERAGE_PARAM, required = false) String leverage,
+          @RequestParam(value = HIDDEN_PARAM, required = false) boolean hidden,
+          @RequestParam(value = PERCENTAGE_PARAM, defaultValue = "10") Integer percentage
   ) {
     final DataLeverageBuilder dataLeverageBuilder = new DataLeverageBuilder()
             .withSymbol(symbol)
@@ -60,16 +73,16 @@ public class TradeApiV1Controller {
     return ResponseEntity.ok(tradeService.placeOrderForAll(context.getUser(), dataLeverageBuilder, dataOrderBuilder, percentage));
   }
 
-  @PostMapping(value = "/orderAll2", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
+  @PostMapping(ORDER_ALL2_PATH)
+  @PreAuthorize(TRADER_ROLE)
   public ResponseEntity<OrderReport> postOrderWithPercentage(
-          @RequestParam(name = "symbol") Symbol symbol,
-          @RequestParam(name = "side") Side side,
-          @RequestParam(name = "ordType") OrderType ordType,
-          @RequestParam(name = "percentage", required = false) int percentage,
-          @RequestParam(name = "price", required = false) String price,
-          @RequestParam(name = "execInst", required = false) String execInst,
-          @RequestParam(name = "hidden", required = false) boolean hidden
+          @RequestParam(SYMBOL_PARAM) Symbol symbol,
+          @RequestParam(SIDE_PARAM) Side side,
+          @RequestParam(ORD_TYPE_PARAM) OrderType ordType,
+          @RequestParam(name = PERCENTAGE_PARAM, required = false) int percentage,
+          @RequestParam(name = PRICE_PARAM, required = false) String price,
+          @RequestParam(name = EXEC_INST_PARAM, required = false) String execInst,
+          @RequestParam(name = HIDDEN_PARAM, required = false) boolean hidden
   ) {
     final DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
             .withSymbol(symbol)
@@ -82,11 +95,10 @@ public class TradeApiV1Controller {
     return ResponseEntity.ok(tradeService.postOrderWithPercentage(context.getUser(), dataOrderBuilder, percentage));
   }
 
-  @DeleteMapping(value = "/order", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<?> cancelOrder(
-          @RequestParam(name="clOrdID", required = false) String clOrdID,
-          @RequestParam(name="symbol", required = false) Symbol symbol
+  @DeleteMapping(ORDER_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<?> cancelOrder(@RequestParam(name = CL_ORD_ID_PARAM, required = false) String clOrdID,
+                                       @RequestParam(name = SYMBOL_PARAM, required = false) Symbol symbol
   ) {
     Preconditions.checkArgument(clOrdID != null || symbol != null,
             "Either orderID or symbol must be present");
@@ -100,11 +112,9 @@ public class TradeApiV1Controller {
     }
   }
 
-  @DeleteMapping(value = "/position", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<JsonNode> closePosition(
-          @RequestParam(name="symbol", required = false) Symbol symbol
-  ) {
+  @DeleteMapping(POSITION_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<JsonNode> closePosition(@RequestParam(name = SYMBOL_PARAM, required = false) Symbol symbol) {
     DataOrderBuilder dataOrderBuilder = new DataOrderBuilder()
             .withSymbol(symbol)
             .withOrderType(OrderType.Market)
@@ -115,11 +125,11 @@ public class TradeApiV1Controller {
     return ResponseEntity.ok(toJsonNode(symbol));
   }
 
-  @DeleteMapping(value = "/panic", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<?> panicButton() {
+  @DeleteMapping(PANIC_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity panicButton() {
     tradeService.panicButton(context.getUser());
-    return ResponseEntity.ok("{ \"result\": \"ok\" }");
+    return ResponseEntity.ok().build();
   }
 
   private JsonNode toJsonNode(Symbol symbol) {

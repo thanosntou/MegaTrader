@@ -7,17 +7,31 @@ import com.ntouzidis.cooperative.module.service.TradeService;
 import com.ntouzidis.cooperative.module.user.entity.User;
 import com.ntouzidis.cooperative.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static com.ntouzidis.cooperative.module.common.ControllerPathsConstants.TRADER_CONTROLLER_PATH;
+import static com.ntouzidis.cooperative.module.common.ParamsConstants.FOLLOWER_ID_PARAM;
+import static com.ntouzidis.cooperative.module.common.ParamsConstants.STATUS_PARAM;
+import static com.ntouzidis.cooperative.module.common.RolesConstants.TRADER_ROLE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
-@RequestMapping("/api/v1/trader")
+@RequestMapping(
+    value = TRADER_CONTROLLER_PATH,
+    produces = APPLICATION_JSON_VALUE
+)
 public class TraderApiV1Controller {
+
+  private static final String FOLLOWERS_PATH = "/followers";
+  private static final String STATUS_PATH = "/status";
+  private static final String BALANCES_PATH = "/balances";
+  private static final String STATUS_ALL_PATH = "/statusAll";
+  private static final String ACTIVE_ORDERS_PATH = "/active_orders";
+  private static final String OPEN_POSITIONS_PATH = "/open_positions";
 
   @Value("${trader}")
   private String traderName;
@@ -34,7 +48,7 @@ public class TraderApiV1Controller {
     this.tradeService = tradeService;
   }
 
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping
   public ResponseEntity<List<User>> readAll() {
     // temporary till choose the final business model
     List<User> activeTraders = new ArrayList<>();
@@ -43,24 +57,28 @@ public class TraderApiV1Controller {
     return ResponseEntity.ok(activeTraders);
   }
 
-  @GetMapping(value = "/followers", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
+  @GetMapping(FOLLOWERS_PATH)
+  @PreAuthorize(TRADER_ROLE)
   public ResponseEntity<List<User>> getFollowers() {
     List<User> followers = userService.getNonHiddenFollowers(context.getUser());
     return ResponseEntity.ok(followers);
   }
 
-  @PostMapping(value = "/status", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<User> enableOrDisableFollower(@RequestParam("followerId") Integer followerId) {
+  @PostMapping(STATUS_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<User> enableOrDisableFollower(
+      @RequestParam(FOLLOWER_ID_PARAM) Integer followerId
+  ) {
     User follower = userService.getOne(followerId);
     follower.setEnabled(!follower.getEnabled());
     return ResponseEntity.ok(userService.update(follower));
   }
 
-  @PostMapping(value = "/statusAll", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
-  public ResponseEntity<List<User>> enableOrDisableAllFollowers(@RequestParam("status") String status) {
+  @PostMapping(STATUS_ALL_PATH)
+  @PreAuthorize(TRADER_ROLE)
+  public ResponseEntity<List<User>> enableOrDisableAllFollowers(
+      @RequestParam(STATUS_PARAM) String status
+  ) {
     List<User> followers = userService.getFollowers(context.getUser());
     if ("disable".equalsIgnoreCase(status))
       followers.forEach(follower -> {
@@ -75,29 +93,29 @@ public class TraderApiV1Controller {
     return ResponseEntity.ok(followers);
   }
 
-  @GetMapping(value = "/active_orders", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
+  @GetMapping(ACTIVE_ORDERS_PATH)
+  @PreAuthorize(TRADER_ROLE)
   public ResponseEntity<List<BitmexOrder>> getActiveOrders() {
     return ResponseEntity.ok(tradeService.getGuideActiveOrders(context.getUser()));
   }
 
-  @GetMapping(value = "/open_positions", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('TRADER')")
+  @GetMapping(OPEN_POSITIONS_PATH)
+  @PreAuthorize(TRADER_ROLE)
   public ResponseEntity<List<BitmexPosition>> getOpenPositions() {
     return ResponseEntity.ok(tradeService.getGuideOpenPositions(context.getUser()));
   }
 
-  @GetMapping(value = "/balances", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasAnyRole('TRADER')")
+  @GetMapping(BALANCES_PATH)
+  @PreAuthorize(TRADER_ROLE)
   public ResponseEntity<Map<String, Double>> getBalances() {
 
     //TODO move this to service layer
     Map<String, Double> allBalances = userService.getFollowerBalances(context.getUser());
     Map<String, Double> followerBalances = new HashMap<>();
 
-    userService.getNonHiddenFollowers(context.getUser()).forEach(follower ->
-            followerBalances.put(follower.getUsername(), allBalances.get(follower.getUsername()))
-    );
+    userService.getNonHiddenFollowers(context.getUser())
+        .forEach(follower -> followerBalances.put(follower.getUsername(), allBalances.get(follower.getUsername())));
+
     return ResponseEntity.ok(followerBalances);
   }
 

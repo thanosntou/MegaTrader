@@ -8,9 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.ntouzidis.cooperative.module.common.ControllerPathsConstants.ROOT_CONTROLLER_PATH;
+import static com.ntouzidis.cooperative.module.common.ParamsConstants.PASS_PARAM;
+
 @RestController
-@RequestMapping("/api/v1/root")
+@RequestMapping(ROOT_CONTROLLER_PATH)
 public class RootController {
+
+  private static final String SETUP_PATH = "/setup";
 
   private final RootService rootService;
 
@@ -18,11 +23,11 @@ public class RootController {
     this.rootService = rootService;
   }
 
-  @PostMapping("/setup")
-  public ResponseEntity<User> createRootUser(@RequestParam(name = "pass") String pass) {
+  @PostMapping(SETUP_PATH)
+  public ResponseEntity<User> createRootUser(
+      @RequestParam(PASS_PARAM) String pass
+  ) {
     return ResponseEntity.ok(rootService.setuUp(pass));
   }
-
-
 
 }

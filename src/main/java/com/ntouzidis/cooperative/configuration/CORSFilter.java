@@ -1,6 +1,5 @@
 package com.ntouzidis.cooperative.configuration;
 
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter {
 
   @Override
-  public void init(FilterConfig fc) throws ServletException {
+  public void init(FilterConfig fc) {
   }
 
   @Override
@@ -29,8 +30,15 @@ public class CORSFilter implements Filter {
     response.setHeader("Access-Control-Allow-Origin", "*");
     response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
     response.setHeader("Access-Control-Max-Age", "3600");
-    response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, " +
-            "Content-Type, Authorization, credential, X-XSRF-TOKEN, X-Forwarded-For, X-Forwarded-Proto");
+    response.setHeader("Access-Control-Allow-Headers",
+        "x-requested-with" +
+            "authorization" +
+            "Content-Type" +
+            "Authorization" +
+            "credential" +
+            "X-XSRF-TOKEN" +
+            "X-Forwarded-For" +
+            "X-Forwarded-Proto");
 
     if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
       response.setStatus(HttpServletResponse.SC_OK);

@@ -1,6 +1,6 @@
 package com.ntouzidis.cooperative.module.user.service;
 
-import com.ntouzidis.cooperative.module.common.NotFoundException;
+import com.ntouzidis.cooperative.module.common.exceptions.NotFoundException;
 import com.ntouzidis.cooperative.module.user.entity.Tenant;
 import com.ntouzidis.cooperative.module.user.repository.TenantRepository;
 import org.springframework.data.domain.Sort;

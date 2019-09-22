@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ntouzidis.cooperative.module.common.ControllerPathsConstants.DASHBOARD_CONTROLLER_PATH;
+
 @RestController
-@RequestMapping("/api/v1/dashboard")
+@RequestMapping(DASHBOARD_CONTROLLER_PATH)
 public class DashboardApiV1Controller {
 
     @Value("${baseUrl}")
@@ -29,31 +31,26 @@ public class DashboardApiV1Controller {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> getDashboardInfo() {
-//        List<Map<String, Object>> activeOrders;
-//        List<Map<String, Object>> openPositions;
-        String walletBalance = null;
-        String availableMargin = null;
-        String activeBalance = null;
-
-        Map<String, Object> bitmexUserWalletGet = bitmexService.getUserMargin(context.getUser());
-//        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
-//        List<Map<String, Object>> positions = bitmexService.get_Position(user);
-
-        if (!bitmexUserWalletGet.isEmpty()) {
-            walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
-            availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
-            activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
-        }
-
-//        activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
-//        openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
-
         Map<String, String> infoMap = new HashMap<>();
         infoMap.put("client", client);
-        infoMap.put("walletBalance", walletBalance);
-        infoMap.put("availableMargin", availableMargin);
-        infoMap.put("activeBalance", activeBalance);
         infoMap.put("earned", "0");
+
+        Map<String, Object> bitmexUserWalletGet = bitmexService.getUserMargin(context.getUser());
+
+        if (!bitmexUserWalletGet.isEmpty()) {
+            String walletBalance = bitmexUserWalletGet.get("walletBalance").toString();
+            String availableMargin = bitmexUserWalletGet.get("availableMargin").toString();
+            String activeBalance = String.valueOf(Integer.parseInt(walletBalance) - Integer.parseInt(availableMargin));
+
+            infoMap.put("walletBalance", walletBalance);
+            infoMap.put("availableMargin", availableMargin);
+            infoMap.put("activeBalance", activeBalance);
+        }
+
+//        List<Map<String, Object>> allOrders = bitmexService.get_Order_Order(user);
+//        List<Map<String, Object>> positions = bitmexService.get_Position(user);
+//        activeOrders = allOrders.stream().filter(i -> i.get("ordStatus").equals("New")).collect(Collectors.toList());
+//        openPositions = positions.stream().filter(i -> (boolean) i.get("isOpen")).collect(Collectors.toList());
 
         return ResponseEntity.ok(infoMap);
     }
