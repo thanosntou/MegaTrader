@@ -1,4 +1,4 @@
-package com.ntouzidis.cooperative.module.common;
+package com.ntouzidis.cooperative.module.common.exceptions;
 
 public class NotFoundException extends RuntimeException {
 
