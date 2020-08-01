@@ -1,0 +1,1 @@
+INSERT INTO tenant (id, name, created_on) VALUES (1, 'test', now());
