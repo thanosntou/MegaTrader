@@ -11,7 +11,6 @@ import com.ntouzidis.bitmex_trader.module.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.ntouzidis.bitmex_trader.module.common.constants.AuthorizationConstants.ROOT;
 import static com.ntouzidis.bitmex_trader.module.common.constants.ControllerPaths.ROOT_CONTROLLER_PATH;
 import static com.ntouzidis.bitmex_trader.module.common.utils.UserUtils.toDTO;
@@ -47,26 +45,9 @@ public class RootController {
   public ResponseEntity<List<UserDTO>> readAllUsers() {
     return ok(userService.getAll()
             .stream()
-            .sorted((u1, u2) -> {
-              Integer u1Hierarchy;
-              Integer u2Hierarchy;
-              if (UserUtils.isAdmin(u1))
-                u1Hierarchy = 3;
-              else if (UserUtils.isTrader(u1))
-                u1Hierarchy = 2;
-              else if (UserUtils.isFollower(u1))
-                u1Hierarchy = 1;
-              else
-                u1Hierarchy = 0;
-              if (UserUtils.isAdmin(u2))
-                u2Hierarchy = 3;
-              else if (UserUtils.isTrader(u2))
-                u2Hierarchy = 2;
-              else if (UserUtils.isFollower(u2))
-                u2Hierarchy = 1;
-              else
-                u2Hierarchy = 0;
-
+            .sorted((user1, user2) -> {
+              int u1Hierarchy = getHierarchy(user1);
+              Integer u2Hierarchy = getHierarchy(user2);
               return u2Hierarchy.compareTo(u1Hierarchy);
             })
             .map(UserUtils::toDTOForRoot)
@@ -159,6 +140,17 @@ public class RootController {
   @ApiOperation("Delete a Tenant")
   public ResponseEntity<Tenant> deleteTenant(@PathVariable Long id) {
     return ok(rootService.deleteTenant(id));
+  }
+
+  private int getHierarchy(User user) {
+    if (UserUtils.isAdmin(user))
+      return 3;
+    else if (UserUtils.isTrader(user))
+      return 2;
+    else if (UserUtils.isFollower(user))
+      return 1;
+    else
+      return 0;
   }
 
 }

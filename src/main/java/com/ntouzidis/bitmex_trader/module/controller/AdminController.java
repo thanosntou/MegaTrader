@@ -52,7 +52,7 @@ public class AdminController {
 
   @GetMapping("/users")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Read all Users (Admin-only)")
+  @ApiOperation("Read all Users")
   public ResponseEntity<List<UserDTO>> readAllUsers() {
     return ok((userService.getAll())
             .stream()
@@ -63,21 +63,21 @@ public class AdminController {
 
   @GetMapping("/traders")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Read all Traders (Admin-only)")
+  @ApiOperation("Read all Traders")
   public ResponseEntity<List<User>> readAll() {
     return ok(userService.getTraders());
   }
 
   @GetMapping("/traders/{traderId}/admins")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Read all Traders (Admin-only)")
-  public ResponseEntity<List<User>> readAllAdminsOfTrader() {
-    return ok(userService.getTraders());
+  @ApiOperation("Read all Traders")
+  public ResponseEntity<List<User>> readAllAdminsOfTrader(@PathVariable Long traderId) {
+    return ok(userService.getAdminsByTenant(traderId));
   }
 
   @GetMapping("/user/{id}")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Read a User by ID (Admin-only)")
+  @ApiOperation("Read a User by ID")
   public ResponseEntity<UserDTO> readUser(@PathVariable Long id) {
     return ok(Optional.of(userService.getOne(id))
             .map(i -> toDTO(i, false))
@@ -88,7 +88,7 @@ public class AdminController {
 
   @GetMapping("/user/by-name/{username}")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Read a User by username (Admin-only)")
+  @ApiOperation("Read a User by username")
   public ResponseEntity<UserDTO> readByUsername(@PathVariable String username) {
     return ok(Optional.of(userService.getOne(username))
             .map(i -> toDTO(i, false))
@@ -99,7 +99,7 @@ public class AdminController {
 
   @GetMapping("/logins")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Get All Logins (Admin-only)")
+  @ApiOperation("Get All Logins")
   public ResponseEntity<List<LoginDTO>> getAllLogins() {
     return ok(loginRepository.findAllByTenantId(context.getTenantId())
         .stream()
@@ -111,7 +111,7 @@ public class AdminController {
 
   @GetMapping("/volume")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Calculate total and active balances, of the specified trader (Admin-only)")
+  @ApiOperation("Calculate total and active balances, of the specified trader")
   public ResponseEntity<Map<String, Double>> calculateTotalBalance(
       @RequestParam(TRADER_PARAM) String traderName
   ) {
@@ -123,7 +123,7 @@ public class AdminController {
 
   @GetMapping("/balances")
   @PreAuthorize(ADMIN)
-  @ApiOperation("Get the follower balances, of the specified trader (Admin-only)")
+  @ApiOperation("Get the follower balances, of the specified trader")
   public ResponseEntity<Map<String, Double>> getBalances(
       @RequestParam(TRADER_PARAM) String traderName
   ) {

@@ -1,8 +1,13 @@
 package com.ntouzidis.bitmex_trader.integration_tests;
 
+import com.ntouzidis.bitmex_trader.module.common.forms.UserPasswordForm;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.*;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import static com.ntouzidis.bitmex_trader.module.common.constants.ControllerPaths.ROOT_CONTROLLER_PATH;
 import static com.ntouzidis.bitmex_trader.module.common.constants.ControllerPaths.USER_CONTROLLER_PATH;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserControllerTest extends Base {
+class UserControllerIT extends Base {
 
   @BeforeAll
   private void beforeClassTests() throws Exception {
@@ -22,68 +27,47 @@ public class UserControllerTest extends Base {
 
   @Test
   @Order(1)
-  public void testContainer() {
+  void testContainer() {
     assertTrue(mysqlContainer.isRunning());
   }
 
   @Test
   @Order(2)
-  public void testReadAll() throws Exception {
-    mockMvc.perform(GET(USER_CONTROLLER_PATH)
+  void testReadAll() throws Exception {
+    mockMvc.perform(authenticatedGET(ROOT_CONTROLLER_PATH + "/users")
         .header("Authorization", "Bearer " + rootToken))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.size()").value(1));
-  }
-
-  @Test
-  @Order(3)
-  public void testRead() throws Exception {
-    mockMvc.perform(GET(USER_CONTROLLER_PATH + "/1"))
-        .andDo(print())
-        .andExpect(status().isOk());
-  }
-
-  @Test
-  @Order(4)
-  public void testReadByName() throws Exception {
-    mockMvc.perform(GET(USER_CONTROLLER_PATH + "/by-name/root"))
-        .andDo(print())
-        .andExpect(status().isOk());
+        .andExpect(jsonPath("$.size()").value(3));
   }
 
   @Test
   @Order(5)
-  public void testReadByNameNotExist() throws Exception {
-    mockMvc.perform(GET(USER_CONTROLLER_PATH + "/by-name/someone"))
+  void testReadByNameNotExist() throws Exception {
+    mockMvc.perform(authenticatedGET(USER_CONTROLLER_PATH + "/by-name/someone"))
         .andDo(print())
         .andExpect(status().isNotFound());
   }
 
   @Test
   @Order(6)
-  public void testReadOneNotExist() throws Exception {
-    mockMvc.perform(GET(USER_CONTROLLER_PATH + "/1000000"))
+  void testReadOneNotExist() throws Exception {
+    mockMvc.perform(authenticatedGET(USER_CONTROLLER_PATH + "/1000000"))
         .andDo(print())
         .andExpect(status().isNotFound());
   }
 
   @Test
   @Order(7)
-  public void testChangePass() throws Exception {
-    mockMvc.perform(POST(USER_CONTROLLER_PATH + "/pass")
-        .param("newPass", "new password")
-        .param("confirmPass", "new password"))
+  void testChangePass() throws Exception {
+    mockMvc.perform(authenticatedPUT(USER_CONTROLLER_PATH + "/pass")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsBytes(UserPasswordForm.builder()
+                    .newPass("new password")
+                    .confirmPass("new password")
+                    .build())))
         .andDo(print())
         .andExpect(status().isOk());
-  }
-
-  public MockHttpServletRequestBuilder GET(String url) {
-    return get(url).header("Authorization", "Bearer " + rootToken);
-  }
-
-  public MockHttpServletRequestBuilder POST(String url) {
-    return post(url).header("Authorization", "Bearer " + rootToken);
   }
 
 }

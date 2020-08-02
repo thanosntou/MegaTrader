@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.common.util.JacksonJsonParser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.MySQLContainer;
@@ -23,7 +24,7 @@ import org.testcontainers.containers.MySQLContainer;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +39,7 @@ public abstract class Base {
   public static MySQLContainer<IntegrationTestMysqlContainer> mysqlContainer = IntegrationTestMysqlContainer.getInstance();
 
   @Autowired
-  public static MockMvc mockMvc;
+  public MockMvc mockMvc;
 
   @Autowired
   public PasswordEncoder passwordEncoder;
@@ -62,14 +63,14 @@ public abstract class Base {
     }
   }
 
-  static void initializeTokens() throws Exception {
+  void initializeTokens() throws Exception {
     if (rootToken == null)
       rootToken = obtainAccessToken("root", "root");
 //    if (adminToken == null)
 //      adminToken = obtainAccessToken();
   }
 
-  public static String obtainAccessToken(String username, String password) throws Exception {
+  public String obtainAccessToken(String username, String password) throws Exception {
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     params.add("grant_type", "password");
     params.add("username", username);
@@ -86,5 +87,21 @@ public abstract class Base {
 
     JacksonJsonParser jsonParser = new JacksonJsonParser();
     return jsonParser.parseMap(resultString).get("access_token").toString();
+  }
+
+  public static MockHttpServletRequestBuilder authenticatedGET(String url) {
+    return get(url).header("Authorization", "Bearer " + rootToken);
+  }
+
+  public static MockHttpServletRequestBuilder authenticatedPOST(String url) {
+    return post(url).header("Authorization", "Bearer " + rootToken);
+  }
+
+  public static MockHttpServletRequestBuilder authenticatedPUT(String url) {
+    return put(url).header("Authorization", "Bearer " + rootToken);
+  }
+
+  public static MockHttpServletRequestBuilder authenticatedDelete(String url) {
+    return delete(url).header("Authorization", "Bearer " + rootToken);
   }
 }
