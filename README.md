@@ -14,10 +14,10 @@ Sign up as trader and start the trading.
 
 - The admin/admins are considered the owner/owners of their tenant, and they are managing only their traders and followers that are registered on their tenant.  
 
-- Anyone can freely register as a trader or as a follower, specifying any trader or another follower (of any tenant) he wants to get grouped with (TODO reference system).
-Note that it's required to already know the trader or follower name to search with.
+- Anyone can freely register as a trader or as a follower, specifying any known user (follower, trader or admin of any tenant) he wants to get grouped with.
+Note that it's required to already know the username of the user to search with.
 
-- The root user can create as many tenants and as many admins(specifying the tenant) he wants.
+- The root user can create as many tenants and as many admins (specifying the tenant) he wants.
 
 - During the first startup, it initializes with the unique root user, with 1 tenant and with 1 admin, 1 trader and 1 follower users, that are grouped on this tenant.
 
