@@ -182,6 +182,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public List<User> getAllGlobal() {
+    return userRepository.findAllGlobal();
+  }
+
+  @Override
   public List<User> getTraders() {
     return userRepository.findAll()
         .stream()
@@ -248,7 +253,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User create(UserForm form) {
+  public User signUp(UserForm form) {
     Role role = form.getRole();
     String username = form.getUsername();
     String email = form.getEmail();
@@ -278,6 +283,30 @@ public class UserServiceImpl implements UserService {
     checkArgument(pass.equals(confirmPass), PASSWORD_NOT_MATCH);
 
     return createUser(tenant, username, pass, email, ImmutableSet.of(new Authority(ADMIN)));
+  }
+
+  @Override
+  public User createTrader(Tenant tenant, AdminForm form) {
+    String username = form.getUsername();
+    String pass = form.getPass();
+    String confirmPass = form.getConfirmPass();
+    String email = form.getEmail();
+
+    checkArgument(pass.equals(confirmPass), PASSWORD_NOT_MATCH);
+
+    return createUser(tenant, username, pass, email, ImmutableSet.of(new Authority(TRADER)));
+  }
+
+  @Override
+  public User createFollower(Tenant tenant, AdminForm form) {
+    String username = form.getUsername();
+    String pass = form.getPass();
+    String confirmPass = form.getConfirmPass();
+    String email = form.getEmail();
+
+    checkArgument(pass.equals(confirmPass), PASSWORD_NOT_MATCH);
+
+    return createUser(tenant, username, pass, email, ImmutableSet.of(new Authority(FOLLOWER)));
   }
 
   public User createUser(Tenant tenant, String username, String pass, String email, Set<Authority> authorities) {

@@ -14,5 +14,7 @@ public interface IUserDAO extends JpaRepository<User, Long> {
 
   Optional<User> findByTenantIdAndUsername(Long tenantId, String username);
 
+  Optional<User> findById(Long id);
+
   Optional<User> findByUsername(String username);
 }

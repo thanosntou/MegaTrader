@@ -25,6 +25,13 @@ public class UserRepository {
         .collect(toList());
   }
 
+  public List<User> findAllGlobal() {
+    return userDAO.findAll()
+            .stream()
+            .filter(i -> !UserUtils.isRoot(i))
+            .collect(toList());
+  }
+
   public List<User> findAllByTenant(Long tenantId) {
     return userDAO.findAllByTenantId(tenantId)
             .stream()
@@ -42,6 +49,10 @@ public class UserRepository {
 
   public Optional<User> findOneGlobal(String username) {
     return userDAO.findByUsername(username);
+  }
+
+  public Optional<User> findOneGlobal(Long id) {
+    return userDAO.findById(id);
   }
 
   public User save(User user) {

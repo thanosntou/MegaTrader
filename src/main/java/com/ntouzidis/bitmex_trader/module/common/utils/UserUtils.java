@@ -81,6 +81,7 @@ public class UserUtils {
             .enabled(user.getEnabled())
             .createdOn(user.getCreatedOn())
             .authorities(user.getAuthorities().stream().map(Authority::getAuthority).collect(toSet()))
+            .tenant(user.getTenant())
             .build();
   }
 

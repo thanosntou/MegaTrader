@@ -54,6 +54,8 @@ public interface UserService {
 
   List<User> getAll();
 
+  List<User> getAllGlobal();
+
   List<User> getTraders();
 
   List<User> getTradersByTenant(Long tenantId);
@@ -70,9 +72,13 @@ public interface UserService {
 
   List<User> getEnabledAndNonHiddenFollowers(User trader);
 
-  User create(UserForm userForm);
+  User signUp(UserForm userForm);
 
   User createAdmin(Tenant tenant, AdminForm adminForm);
+
+  User createTrader(Tenant tenant, AdminForm adminForm);
+
+  User createFollower(Tenant tenant, AdminForm adminForm);
 
   User update(Long userId, UserUpdateForm userUpdateForm);
 

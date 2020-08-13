@@ -35,7 +35,7 @@ public class UserController {
   @PostMapping
   @ApiOperation(value = "Sign up as a Follower or Trader")
   public ResponseEntity<UserDTO> signUp(@RequestBody @Valid UserForm userForm) {
-    User user = userService.create(userForm);
+    User user = userService.signUp(userForm);
 
     // setting the non encrypted pass for the ui,
     // to login immediately after creation

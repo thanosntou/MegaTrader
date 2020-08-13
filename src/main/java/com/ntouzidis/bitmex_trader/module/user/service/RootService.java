@@ -3,7 +3,13 @@ package com.ntouzidis.bitmex_trader.module.user.service;
 import com.ntouzidis.bitmex_trader.module.user.entity.Tenant;
 import com.ntouzidis.bitmex_trader.module.user.entity.User;
 
+import java.util.List;
+
 public interface RootService {
+
+    User getTraderGlobally(Long traderId);
+
+    List<User> getFollowersByTrader(Long traderId);
 
     /**
      * Delete a user of role Follower, providing it's ID or the entity

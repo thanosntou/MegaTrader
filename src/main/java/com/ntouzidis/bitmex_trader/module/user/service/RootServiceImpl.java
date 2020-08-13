@@ -1,18 +1,45 @@
 package com.ntouzidis.bitmex_trader.module.user.service;
 
+import com.ntouzidis.bitmex_trader.module.common.exceptions.NotFoundException;
+import com.ntouzidis.bitmex_trader.module.common.utils.UserUtils;
+import com.ntouzidis.bitmex_trader.module.user.entity.FollowerToTraderLink;
 import com.ntouzidis.bitmex_trader.module.user.entity.Tenant;
 import com.ntouzidis.bitmex_trader.module.user.entity.User;
+import com.ntouzidis.bitmex_trader.module.user.repository.FollowerToTraderLinkRepository;
+import com.ntouzidis.bitmex_trader.module.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+
+import static com.ntouzidis.bitmex_trader.module.common.constants.MessagesConstants.TRADER_NOT_FOUND_BY_ID;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
 public class RootServiceImpl implements RootService {
 
     private final UserService userService;
+    private final UserRepository userRepository;
     private final TenantService tenantService;
+    private final FollowerToTraderLinkRepository followerToTraderLinkRepository;
+
+    @Override
+    public User getTraderGlobally(Long traderId) {
+        return userRepository.findOneGlobal(traderId)
+                .filter(UserUtils::isTrader)
+                .orElseThrow(() -> new NotFoundException(format(TRADER_NOT_FOUND_BY_ID, traderId)));
+    }
+
+    @Override
+    public List<User> getFollowersByTrader(Long traderId) {
+        return followerToTraderLinkRepository.findAllByTrader(getTraderGlobally(traderId))
+                .stream()
+                .map(FollowerToTraderLink::getFollower)
+                .collect(toList());
+    }
 
     @Override
     public User deleteFollowerUser(User follower, Long id) {

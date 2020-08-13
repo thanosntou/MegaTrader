@@ -43,7 +43,7 @@ public class RootController {
   @PreAuthorize(ROOT)
   @ApiOperation("Read all Users")
   public ResponseEntity<List<UserDTO>> readAllUsers() {
-    return ok(userService.getAll()
+    return ok(userService.getAllGlobal()
             .stream()
             .sorted((user1, user2) -> {
               int u1Hierarchy = getHierarchy(user1);
@@ -79,9 +79,27 @@ public class RootController {
   @PostMapping("/admin")
   @PreAuthorize(ROOT)
   @ApiOperation("Create a new Admin")
-  public ResponseEntity<UserDTO> createAdmin(@RequestBody @Valid AdminForm adminForm) {
-    Tenant tenant = tenantService.getOne(adminForm.getTenantId());
-    User user = userService.createAdmin(tenant, adminForm);
+  public ResponseEntity<UserDTO> createAdmin(@RequestBody @Valid AdminForm form) {
+    Tenant tenant = tenantService.getOne(form.getTenantId());
+    User user = userService.createAdmin(tenant, form);
+    return ok(toDTO(user, true));
+  }
+
+  @PostMapping("/trader")
+  @PreAuthorize(ROOT)
+  @ApiOperation("Create a new Trader")
+  public ResponseEntity<UserDTO> createTrader(@RequestBody @Valid AdminForm form) {
+    Tenant tenant = tenantService.getOne(form.getTenantId());
+    User user = userService.createTrader(tenant, form);
+    return ok(toDTO(user, true));
+  }
+
+  @PostMapping("/follower")
+  @PreAuthorize(ROOT)
+  @ApiOperation("Create a new Follower")
+  public ResponseEntity<UserDTO> createFollower(@RequestBody @Valid AdminForm form) {
+    Tenant tenant = tenantService.getOne(form.getTenantId());
+    User user = userService.createFollower(tenant, form);
     return ok(toDTO(user, true));
   }
 
@@ -103,7 +121,7 @@ public class RootController {
   @PreAuthorize(ROOT)
   @ApiOperation("Read the Followers of a specific trader")
   public ResponseEntity<List<User>> readAllFollowersByTrader(@PathVariable Long traderId) {
-    return ok(userService.getFollowersByTrader(traderId));
+    return ok(rootService.getFollowersByTrader(traderId));
   }
 
   @DeleteMapping("/users/{id}")
