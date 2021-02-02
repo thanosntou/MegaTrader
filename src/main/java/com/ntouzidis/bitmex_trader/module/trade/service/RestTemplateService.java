@@ -30,7 +30,7 @@ import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 @RequiredArgsConstructor
 public class RestTemplateService implements IRestTemplateService {
 
-  private static final long EXPIRES_SECONDS = 1600883067;
+  private static final long EXPIRES_SECONDS = 1706899909;
   private static final String HMAC_SHA_256 = "HmacSHA256";
   private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
 
